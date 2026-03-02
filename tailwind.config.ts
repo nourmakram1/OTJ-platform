@@ -47,6 +47,30 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        otj: {
+          white: "hsl(var(--otj-white))",
+          off: "hsl(var(--otj-off))",
+          light: "hsl(var(--otj-light))",
+          border: "hsl(var(--otj-border))",
+          muted: "hsl(var(--otj-muted))",
+          text: "hsl(var(--otj-text))",
+          black: "hsl(var(--otj-black))",
+          blue: "hsl(var(--otj-blue))",
+          "blue-bg": "hsl(var(--otj-blue-bg))",
+          "blue-border": "hsl(var(--otj-blue-border))",
+          green: "hsl(var(--otj-green))",
+          "green-bg": "hsl(var(--otj-green-bg))",
+          "green-border": "hsl(var(--otj-green-border))",
+          yellow: "hsl(var(--otj-yellow))",
+          "yellow-bg": "hsl(var(--otj-yellow-bg))",
+          "yellow-border": "hsl(var(--otj-yellow-border))",
+          red: "hsl(var(--otj-red))",
+          "red-bg": "hsl(var(--otj-red-bg))",
+          orange: "hsl(var(--otj-orange))",
+          "orange-bg": "hsl(var(--otj-orange-bg))",
+          purple: "hsl(var(--otj-purple))",
+          "purple-bg": "hsl(var(--otj-purple-bg))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -65,20 +89,12 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
