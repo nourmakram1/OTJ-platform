@@ -39,6 +39,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
   const [offerLocked, setOfferLocked] = useState(false);
   const [showPlusMenu, setShowPlusMenu] = useState(false);
   const [showCollabPanel, setShowCollabPanel] = useState(false);
+  const [mobileShowChat, setMobileShowChat] = useState(false);
   const [showZoomPicker, setShowZoomPicker] = useState(false);
   const [zoomDate, setZoomDate] = useState<Date | undefined>(undefined);
   const [zoomTime, setZoomTime] = useState('14:00');
@@ -191,16 +192,16 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
   });
 
   return (
-    <div className={`grid h-[calc(100vh-52px)] transition-all duration-200 ${showCollabPanel ? 'grid-cols-[280px_1fr_320px]' : 'grid-cols-[280px_1fr]'}`}>
+    <div className={`h-[calc(100vh-52px)] pb-14 md:pb-0 transition-all duration-200 ${showCollabPanel ? 'md:grid md:grid-cols-[280px_1fr_320px]' : 'md:grid md:grid-cols-[280px_1fr]'}`}>
       {/* Hidden file input */}
       <input ref={fileInputRef} type="file" multiple accept="image/*,.pdf,.doc,.docx,.psd,.ai,.fig,.mp4,.mov,.zip" className="hidden" onChange={handleFileSelected} />
-      {/* Thread list */}
-      <div className="bg-card border-r border-border overflow-y-auto">
+      {/* Thread list — hidden on mobile when chat is open */}
+      <div className={`bg-card border-r border-border overflow-y-auto ${mobileShowChat ? 'hidden md:block' : 'block'}`}>
         <div className="p-4 border-b border-border text-sm font-extrabold tracking-[-0.03em]">Messages</div>
         {threads.map(t => (
           <div
             key={t.id}
-            onClick={() => { setActiveThread(t.id); }}
+            onClick={() => { setActiveThread(t.id); setMobileShowChat(true); }}
             className={`p-3 px-4 border-b border-border cursor-pointer transition-colors duration-150 flex gap-2.5 items-start ${
               activeThread === t.id ? 'bg-otj-blue-bg' : 'hover:bg-otj-off'
             }`}
@@ -218,10 +219,12 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
         ))}
       </div>
 
-      {/* Message area */}
-      <div className="flex flex-col h-full">
+      {/* Message area — hidden on mobile when threads list is showing */}
+      <div className={`flex flex-col h-full ${mobileShowChat ? 'block' : 'hidden md:flex'}`}>
         {/* Header */}
         <div className="p-3.5 px-[18px] border-b border-border bg-card flex items-center gap-3">
+          {/* Mobile back button */}
+          <button onClick={() => setMobileShowChat(false)} className="md:hidden w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-sm text-otj-text shrink-0">←</button>
           <div className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg">{currentThread?.emoji || '👩‍💼'}</div>
           <div
             onClick={() => setShowCollabPanel(prev => !prev)}
@@ -398,7 +401,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
 
       {/* Right Collaboration Panel */}
       {showCollabPanel && (
-        <div className="bg-card border-l border-border overflow-y-auto">
+        <div className="hidden md:block bg-card border-l border-border overflow-y-auto">
           {/* Panel header */}
           <div className="flex items-center justify-between p-4 border-b border-border">
             <span className="text-[15px] font-extrabold tracking-[-0.03em]">Collaboration</span>

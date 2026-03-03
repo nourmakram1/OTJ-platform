@@ -140,7 +140,7 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief }) => 
   );
 
   return (
-    <div className="p-[20px_24px_80px]">
+    <div className="p-[16px_16px_80px] md:p-[20px_24px_80px]">
       <div className="flex gap-1.5 mb-5 overflow-x-auto pb-1 hide-scrollbar">
         {filters.map(f => (
           <div
@@ -161,7 +161,7 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief }) => 
         <div className="text-lg font-extrabold tracking-[-0.04em]">Featured This Week</div>
         <div className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer">View all →</div>
       </div>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5 mb-7">
+      <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2 md:gap-2.5 mb-7">
         {creatives.map(c => <CreativeCard key={c.id} c={c} />)}
       </div>
 
@@ -169,7 +169,7 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief }) => 
         <div className="text-lg font-extrabold tracking-[-0.04em]">Recently Active</div>
         <div className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer">View all →</div>
       </div>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5 mb-7">
+      <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2 md:gap-2.5 mb-7">
         {moreCreatives.map(c => <CreativeCard key={c.id} c={c} />)}
       </div>
     </div>

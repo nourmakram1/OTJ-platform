@@ -118,21 +118,21 @@ const ProjectProfile = () => {
       <NavBar />
       {/* Hero */}
       <div className="bg-card border-b border-border">
-        <div className="max-w-[1100px] mx-auto px-8 py-6 pt-[72px]">
+        <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 pt-[72px]">
           <div className="flex items-center gap-2 text-[12px] text-otj-text mb-4 cursor-pointer" onClick={() => navigate('/dashboard')}>
             ← Dashboard / Projects
           </div>
-          <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-[14px] bg-otj-off flex items-center justify-center text-[28px] shrink-0">{proj.icon}</div>
+          <div className="flex flex-col md:flex-row md:items-start gap-4">
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-[14px] bg-otj-off flex items-center justify-center text-[24px] md:text-[28px] shrink-0">{proj.icon}</div>
             <div className="flex-1">
-              <div className="flex items-center gap-3 mb-1">
-                <div className="text-[22px] font-extrabold tracking-[-0.04em] text-foreground">{proj.name}</div>
+              <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1">
+                <div className="text-[18px] md:text-[22px] font-extrabold tracking-[-0.04em] text-foreground">{proj.name}</div>
                 <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${statusClass}`}>{statusLabel}</span>
               </div>
-              <div className="text-[13px] text-otj-text">Client: {proj.clientName} · {proj.clientCompany}</div>
+              <div className="text-[12px] md:text-[13px] text-otj-text">Client: {proj.clientName} · {proj.clientCompany}</div>
             </div>
             {!isProposal && (
-              <div className="flex gap-2 shrink-0">
+              <div className="flex gap-2 shrink-0 flex-wrap">
                 <button onClick={() => navigate('/messages')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">💬 Message</button>
                 <button onClick={() => showToast('Opening deliverables…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">📦 Deliverables</button>
                 <button onClick={() => showToast('Marking phase done…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">✓ Mark Phase Done</button>
@@ -140,7 +140,7 @@ const ProjectProfile = () => {
             )}
           </div>
           {!isProposal && (
-            <div className="grid grid-cols-6 gap-3 mt-5 pt-4 border-t border-border">
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mt-5 pt-4 border-t border-border">
               {[
                 { label: '% Complete', val: `${pctComplete}%` },
                 { label: 'Days Left', val: String(daysLeft) },
@@ -161,7 +161,7 @@ const ProjectProfile = () => {
 
       {isProposal ? (
         /* Proposal Builder */
-        <div className="max-w-[1100px] mx-auto px-8 py-6">
+        <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 pb-20">
           <ProposalBuilder
             project={proj}
             onSubmit={handleSubmitProposal}
@@ -171,7 +171,7 @@ const ProjectProfile = () => {
         <>
           {/* Tab bar */}
           <div className="border-b border-border bg-card sticky top-[52px] z-10">
-            <div className="max-w-[1100px] mx-auto px-8 flex gap-1 overflow-x-auto hide-scrollbar py-2">
+            <div className="max-w-[1100px] mx-auto px-4 md:px-8 flex gap-1 overflow-x-auto hide-scrollbar py-2">
               {tabs.map((t, i) => (
                 <button key={t} onClick={() => setActiveTab(i)} className={`text-[12.5px] font-semibold px-4 py-[7px] rounded-full border-[1.5px] cursor-pointer whitespace-nowrap transition-all duration-150 shrink-0 ${
                   activeTab === i ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
@@ -633,7 +633,7 @@ const AttachmentsTab: React.FC<{
       </div>
 
       {/* Attachment grid */}
-      <div className="grid grid-cols-4 gap-2.5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
         {(proj.attachments || []).map((att: AttachmentData) => (
           <div key={att.id} className="bg-card border border-border rounded-xl overflow-hidden transition-all duration-150 hover:border-foreground group relative">
             {/* Preview */}
