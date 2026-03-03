@@ -95,6 +95,8 @@ interface ProjectContextType {
   updateProject: (projectId: string, updates: Partial<ProjectData>) => void;
   addMeeting: (projectId: string, meeting: Omit<MeetingData, 'id'>) => void;
   addAttachment: (projectId: string, attachment: Omit<AttachmentData, 'id'>) => void;
+  removeAttachment: (projectId: string, attachmentId: string) => void;
+  renameAttachment: (projectId: string, attachmentId: string, newName: string) => void;
   allMeetings: MeetingData[];
 }
 
@@ -359,10 +361,24 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [activeProjects]);
 
   const addAttachment = useCallback((projectId: string, attachment: Omit<AttachmentData, 'id'>) => {
-    const newAtt: AttachmentData = { ...attachment, id: `att-${Date.now()}` };
+    const newAtt: AttachmentData = { ...attachment, id: `att-${Date.now()}-${Math.random().toString(36).slice(2, 6)}` };
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
       return { ...p, attachments: [...p.attachments, newAtt] };
+    }));
+  }, []);
+
+  const removeAttachment = useCallback((projectId: string, attachmentId: string) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      return { ...p, attachments: p.attachments.filter(a => a.id !== attachmentId) };
+    }));
+  }, []);
+
+  const renameAttachment = useCallback((projectId: string, attachmentId: string, newName: string) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      return { ...p, attachments: p.attachments.map(a => a.id === attachmentId ? { ...a, name: newName } : a) };
     }));
   }, []);
 
@@ -371,7 +387,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [activeProjects]);
 
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, allMeetings }}>
+    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings }}>
       {children}
     </ProjectContext.Provider>
   );
