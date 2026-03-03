@@ -1,17 +1,31 @@
 import React, { useState, useCallback } from 'react';
-import { TopNavBooking } from '../components/TopNavBooking';
+import { useLocation } from 'react-router-dom';
+import { NavBar } from '../components/NavBar';
 import { ExploreScreen } from '../components/ExploreScreen';
 import { MessagesScreen } from '../components/MessagesScreen';
 import { DashboardScreen } from '../components/DashboardScreen';
-import { QuickBriefPopup, CounterOfferModal, NotifPopup } from '../components/BookingModals';
+import { QuickBriefPopup, CounterOfferModal } from '../components/BookingModals';
+import { CalendarConfirmModal } from '../components/CalendarConfirmModal';
 import { Toast, showToast } from '../components/Toast';
 
 const BookingFlow = () => {
-  const [activeTab, setActiveTab] = useState('explore');
-  const [showNotif, setShowNotif] = useState(false);
+  const location = useLocation();
+  const getTabFromPath = () => {
+    if (location.pathname === '/messages') return 'messages';
+    if (location.pathname === '/dashboard') return 'dashboard';
+    return 'explore';
+  };
+
+  const [activeTab, setActiveTab] = useState(getTabFromPath);
   const [showBrief, setShowBrief] = useState(false);
   const [showCounter, setShowCounter] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
   const [briefCreative, setBriefCreative] = useState<string | null>(null);
+
+  // Sync tab with route
+  React.useEffect(() => {
+    setActiveTab(getTabFromPath());
+  }, [location.pathname]);
 
   const openBrief = useCallback((creativeId: string) => {
     setBriefCreative(creativeId);
@@ -25,11 +39,9 @@ const BookingFlow = () => {
 
   return (
     <>
-      <TopNavBooking
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        onNotifToggle={() => setShowNotif(prev => !prev)}
-        onNewBrief={() => { setBriefCreative(null); setShowBrief(true); }}
+      <NavBar
+        onAcceptBrief={acceptBrief}
+        onOpenCounter={() => setShowCounter(true)}
       />
 
       <div className="min-h-screen pt-[52px]">
@@ -45,16 +57,9 @@ const BookingFlow = () => {
         )}
       </div>
 
-      <NotifPopup
-        visible={showNotif}
-        onClose={() => setShowNotif(false)}
-        onAcceptBrief={acceptBrief}
-        onCounter={() => { setShowNotif(false); setShowCounter(true); }}
-        onSwitchToMessages={() => { setShowNotif(false); setActiveTab('messages'); }}
-      />
-
       <QuickBriefPopup visible={showBrief} onClose={() => setShowBrief(false)} creativeId={briefCreative} />
       <CounterOfferModal visible={showCounter} onClose={() => setShowCounter(false)} />
+      <CalendarConfirmModal visible={showCalendar} onClose={() => setShowCalendar(false)} />
       <Toast />
     </>
   );
