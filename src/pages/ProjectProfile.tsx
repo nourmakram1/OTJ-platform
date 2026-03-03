@@ -659,8 +659,19 @@ const AttachmentsTab: React.FC<{
               {menuOpenId === att.id && (
                 <div className="absolute top-8 right-1 w-[140px] bg-card border border-border rounded-[10px] shadow-[0_6px_20px_rgba(0,0,0,0.1)] py-1 z-[100] animate-fade-up" onClick={e => e.stopPropagation()}>
                   <div onClick={() => startRename(att)} className="px-3 py-1.5 text-[11px] font-semibold text-foreground cursor-pointer hover:bg-otj-off">✏️ Rename</div>
-                  {att.type === 'link' && (
+                  {att.type === 'link' ? (
                     <div onClick={() => { window.open(att.url, '_blank'); setMenuOpenId(null); }} className="px-3 py-1.5 text-[11px] font-semibold text-foreground cursor-pointer hover:bg-otj-off">↗ Open Link</div>
+                  ) : (
+                    <div onClick={() => {
+                      const a = document.createElement('a');
+                      a.href = att.url;
+                      a.download = att.name;
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                      setMenuOpenId(null);
+                      showToast('⬇ Downloading…');
+                    }} className="px-3 py-1.5 text-[11px] font-semibold text-foreground cursor-pointer hover:bg-otj-off">⬇ Download</div>
                   )}
                   <div className="h-px bg-border mx-2 my-0.5" />
                   <div onClick={() => handleDelete(att.id)} className="px-3 py-1.5 text-[11px] font-semibold text-destructive cursor-pointer hover:bg-otj-off">🗑 Delete</div>
