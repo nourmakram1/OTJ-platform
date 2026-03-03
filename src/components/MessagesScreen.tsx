@@ -1,17 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { showToast } from './Toast';
+import { useProjects } from '../context/ProjectContext';
 
 const threads = [
-  { id: 'randa', name: 'Randa Hatem', emoji: '👩‍💼', preview: 'Can we do 3,200 EGP?', time: '10:35 AM', unread: 2 },
-  { id: 'ahmed', name: 'Ahmed Karim', emoji: '👨‍💼', preview: 'Photos look great! Can we schedule…', time: 'Yesterday', unread: 1 },
-  { id: 'sara', name: 'Sara M.', emoji: '🎨', preview: 'Sent you the brand guidelines', time: 'Mon', unread: 0 },
+  { id: 'randa', name: 'Randa Hatem', emoji: '👩‍💼', preview: 'Can we do 3,200 EGP?', time: '10:35 AM', unread: 2, projectId: 'proj-existing-1' },
+  { id: 'ahmed', name: 'Ahmed Karim', emoji: '👨‍💼', preview: 'Photos look great! Can we schedule…', time: 'Yesterday', unread: 1, projectId: 'proj-existing-2' },
+  { id: 'sara', name: 'Sara M.', emoji: '🎨', preview: 'Sent you the brand guidelines', time: 'Mon', unread: 0, projectId: 'proj-existing-3' },
 ];
 
 interface Message {
   text: string;
   isMe: boolean;
   time: string;
-  type?: 'calendar';
+  type?: 'calendar' | 'attachment';
+  meetingData?: { title: string; date: string; time: string };
 }
 
 const initialMessages: Message[] = [
@@ -25,11 +27,14 @@ interface MessagesScreenProps {
 }
 
 export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter }) => {
+  const { addMeeting, activeProjects } = useProjects();
   const [activeThread, setActiveThread] = useState('randa');
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState('');
   const [offerLocked, setOfferLocked] = useState(false);
   const threadRef = useRef<HTMLDivElement>(null);
+
+  const currentThread = threads.find(t => t.id === activeThread);
 
   useEffect(() => {
     if (threadRef.current) threadRef.current.scrollTop = threadRef.current.scrollHeight;
@@ -40,11 +45,59 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
     setMessages(prev => [...prev, { text: input, isMe: true, time: 'You · Just now · ✓' }]);
     const text = input;
     setInput('');
-    const dateWords = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday','tomorrow','march','april','next week','pm','am'];
+
+    // Detect date/meeting mentions
+    const dateWords = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday','tomorrow','march','april','next week','pm','am','meeting','call','schedule'];
     if (dateWords.some(w => text.toLowerCase().includes(w))) {
+      // Extract a rough meeting title
+      const meetingTitle = text.length > 40 ? text.substring(0, 40) + '…' : text;
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const dateStr = tomorrow.toISOString().split('T')[0];
+
       setTimeout(() => {
-        setMessages(prev => [...prev, { text: 'Meeting mention in your message', isMe: false, time: '', type: 'calendar' }]);
+        setMessages(prev => [...prev, {
+          text: `📅 Schedule detected: "${meetingTitle}"`,
+          isMe: false,
+          time: '',
+          type: 'calendar',
+          meetingData: { title: meetingTitle, date: dateStr, time: '10:00 AM' },
+        }]);
       }, 800);
+    }
+  };
+
+  const handleAddMeeting = (meetingData: { title: string; date: string; time: string }) => {
+    const projectId = currentThread?.projectId;
+    if (projectId) {
+      addMeeting(projectId, {
+        title: meetingData.title,
+        date: meetingData.date,
+        time: meetingData.time,
+        type: 'meeting',
+        projectId,
+        clientName: currentThread?.name,
+      });
+      showToast('📅 Meeting added to project schedule & calendar');
+    } else {
+      showToast('📅 Added to calendar');
+    }
+  };
+
+  const handleScheduleCall = () => {
+    const projectId = currentThread?.projectId;
+    if (projectId) {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 2);
+      addMeeting(projectId, {
+        title: `Call with ${currentThread?.name}`,
+        date: tomorrow.toISOString().split('T')[0],
+        time: '3:00 PM',
+        type: 'call',
+        projectId,
+        clientName: currentThread?.name,
+      });
+      showToast('📞 Call scheduled & added to project');
     }
   };
 
@@ -77,13 +130,14 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
       {/* Message area */}
       <div className="flex flex-col h-full">
         <div className="p-3.5 px-[18px] border-b border-border bg-card flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg">👩‍💼</div>
+          <div className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg">{currentThread?.emoji || '👩‍💼'}</div>
           <div>
-            <div className="text-sm font-extrabold tracking-[-0.03em]">Randa Hatem</div>
+            <div className="text-sm font-extrabold tracking-[-0.03em]">{currentThread?.name || 'Randa Hatem'}</div>
             <div className="text-[11px] text-otj-green">Online</div>
           </div>
           <div className="ml-auto flex gap-1.5">
             <button onClick={() => showToast('Opening profile…')} className="text-[11.5px] font-semibold px-3 py-[5px] rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">View Profile</button>
+            <button onClick={handleScheduleCall} className="text-[11.5px] font-semibold px-3 py-[5px] rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">📞 Schedule Call</button>
             <button onClick={() => showToast('Creating brief…')} className="text-[11.5px] font-semibold px-3 py-[5px] rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">New Brief</button>
           </div>
         </div>
@@ -117,11 +171,14 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
         {/* Messages */}
         <div ref={threadRef} className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2.5">
           {messages.map((msg, i) => msg.type === 'calendar' ? (
-            <div key={i} className="bg-otj-blue-bg border border-otj-blue-border rounded-[10px] p-2.5 px-3 max-w-[300px] self-start">
-              <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue mb-1">📅 Calendar Mention Detected</div>
-              <div className="text-[12.5px] font-bold text-foreground mb-[7px]">{msg.text}</div>
+            <div key={i} className="bg-otj-blue-bg border border-otj-blue-border rounded-[10px] p-2.5 px-3 max-w-[340px] self-start">
+              <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue mb-1">📅 Schedule Detected</div>
+              <div className="text-[12.5px] font-bold text-foreground mb-1">{msg.text}</div>
+              {msg.meetingData && (
+                <div className="text-[11px] text-otj-text mb-[7px]">{msg.meetingData.date} · {msg.meetingData.time}</div>
+              )}
               <div className="flex gap-1.5">
-                <button onClick={() => showToast('📅 Added to calendar')} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full cursor-pointer transition-all duration-150 bg-otj-blue text-primary-foreground border-[1.5px] border-otj-blue">+ Add to Calendar</button>
+                <button onClick={() => msg.meetingData && handleAddMeeting(msg.meetingData)} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full cursor-pointer transition-all duration-150 bg-otj-blue text-primary-foreground border-[1.5px] border-otj-blue">+ Add to Project Schedule</button>
                 <button className="text-[11.5px] font-bold px-3 py-[5px] rounded-full cursor-pointer transition-all duration-150 border-[1.5px] border-otj-blue-border text-otj-blue bg-card">Dismiss</button>
               </div>
             </div>
@@ -155,45 +212,61 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
       <div className="bg-card border-l border-border overflow-y-auto p-4">
         <div className="mb-5">
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">Linked Project</div>
-          <div className="p-3 rounded-xl border border-border bg-otj-off cursor-pointer transition-all duration-150 hover:border-foreground">
-            <div className="text-[13px] font-bold tracking-[-0.02em] mb-0.5">Edita Re-Branding</div>
-            <div className="text-[11px] text-otj-blue mb-1.5">Phase 2 · Shoot Day</div>
-            <div className="h-1 rounded-full bg-otj-light overflow-hidden"><div className="h-full rounded-full bg-otj-blue w-[60%]" /></div>
-          </div>
-        </div>
-        <div className="mb-5">
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">Your Calendar</div>
-          <div className="border border-border rounded-xl overflow-hidden">
-            <div className="p-2.5 px-3 border-b border-border text-xs font-extrabold tracking-[-0.02em] flex items-center justify-between">
-              March 2026 <span className="flex gap-1"><span className="text-sm cursor-pointer text-otj-text px-1">‹</span><span className="text-sm cursor-pointer text-otj-text px-1">›</span></span>
-            </div>
-            <div className="grid grid-cols-7">
-              {['M','T','W','T','F','S','S'].map((d,i) => <div key={i} className="p-1.5 text-center text-[9.5px] font-bold uppercase tracking-[0.06em] text-otj-muted">{d}</div>)}
-              {Array.from({length:28}, (_,i) => i+1).map(d => (
-                <div key={d} className={`p-[5px_4px] text-center text-[11px] cursor-pointer transition-all duration-150 rounded-md m-px ${
-                  d === 2 ? 'bg-primary text-primary-foreground font-bold' :
-                  d === 15 ? 'bg-otj-blue-bg text-otj-blue font-bold' :
-                  d === 13 || d === 25 ? 'bg-otj-green-bg text-otj-green font-bold' :
-                  'hover:bg-otj-off'
-                }`}>{d}</div>
-              ))}
-            </div>
-          </div>
-          <div className="mt-2.5 flex flex-col gap-[5px]">
-            {[
-              { color: 'bg-otj-blue', title: 'Edita Shoot', time: 'Mar 15 · Full day' },
-              { color: 'bg-otj-green', title: 'Vodafone Campaign', time: 'Mar 25 · Morning' },
-              { color: 'bg-otj-orange', title: 'Phase 2 Deadline', time: 'Mar 20 · Task due' },
-            ].map((ev, i) => (
-              <div key={i} className="flex items-center gap-2 p-[7px_10px] rounded-[9px] cursor-pointer transition-all duration-150 hover:bg-otj-off">
-                <div className={`w-2 h-2 rounded-full shrink-0 ${ev.color}`} />
-                <div className="flex-1">
-                  <div className="text-[11.5px] font-bold tracking-[-0.01em]">{ev.title}</div>
-                  <div className="text-[10.5px] text-otj-text">{ev.time}</div>
-                </div>
+          {(() => {
+            const linkedProj = activeProjects.find(p => p.id === currentThread?.projectId);
+            if (!linkedProj) return <div className="text-[12px] text-otj-muted">No linked project</div>;
+            const activePhase = linkedProj.phases.find(ph => ph.status === 'active');
+            const phaseDone = linkedProj.phases.filter(p => p.status === 'complete').length;
+            const pct = linkedProj.phases.length ? Math.round((phaseDone / linkedProj.phases.length) * 100) : 0;
+            return (
+              <div className="p-3 rounded-xl border border-border bg-otj-off cursor-pointer transition-all duration-150 hover:border-foreground">
+                <div className="text-[13px] font-bold tracking-[-0.02em] mb-0.5">{linkedProj.name}</div>
+                <div className="text-[11px] text-otj-blue mb-1.5">{activePhase ? `Phase ${activePhase.num} · ${activePhase.title}` : 'Awaiting Start'}</div>
+                <div className="h-1 rounded-full bg-otj-light overflow-hidden"><div className="h-full rounded-full bg-otj-blue" style={{ width: `${pct}%` }} /></div>
               </div>
-            ))}
-          </div>
+            );
+          })()}
+        </div>
+
+        {/* Upcoming schedule for linked project */}
+        <div className="mb-5">
+          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">Project Schedule</div>
+          {(() => {
+            const linkedProj = activeProjects.find(p => p.id === currentThread?.projectId);
+            const meetings = linkedProj?.meetings || [];
+            const tasks = linkedProj?.phases.flatMap(ph => ph.tasks.filter(t => !t.done).map(t => ({ text: t.text, due: t.due, phase: ph.num }))) || [];
+
+            return (
+              <div className="flex flex-col gap-[5px]">
+                {meetings.map((m, i) => (
+                  <div key={`m-${i}`} className="flex items-center gap-2 p-[7px_10px] rounded-[9px] cursor-pointer transition-all duration-150 hover:bg-otj-off">
+                    <div className={`w-2 h-2 rounded-full shrink-0 ${m.type === 'call' ? 'bg-otj-orange' : 'bg-otj-green'}`} />
+                    <div className="flex-1">
+                      <div className="text-[11.5px] font-bold tracking-[-0.01em]">{m.title}</div>
+                      <div className="text-[10.5px] text-otj-text">{m.date} · {m.time}</div>
+                    </div>
+                  </div>
+                ))}
+                {tasks.slice(0, 3).map((t, i) => (
+                  <div key={`t-${i}`} className="flex items-center gap-2 p-[7px_10px] rounded-[9px] cursor-pointer transition-all duration-150 hover:bg-otj-off">
+                    <div className="w-2 h-2 rounded-full shrink-0 bg-otj-yellow" />
+                    <div className="flex-1">
+                      <div className="text-[11.5px] font-bold tracking-[-0.01em]">{t.text}</div>
+                      <div className="text-[10.5px] text-otj-text">Due {t.due} · Phase {t.phase}</div>
+                    </div>
+                  </div>
+                ))}
+                {meetings.length === 0 && tasks.length === 0 && (
+                  <div className="text-[12px] text-otj-muted text-center py-2">No upcoming items</div>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <button onClick={handleScheduleCall} className="text-[11.5px] font-bold w-full py-2 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">📞 Schedule Call</button>
+          <button onClick={() => showToast('Attachment upload coming soon')} className="text-[11.5px] font-bold w-full py-2 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">📎 Add Attachment to Project</button>
         </div>
       </div>
     </div>

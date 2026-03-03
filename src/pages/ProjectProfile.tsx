@@ -3,15 +3,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
-import { useProjects, PhaseData, PaymentMilestone, PaymentMethod } from '../context/ProjectContext';
+import { useProjects, PhaseData, PaymentMilestone, PaymentMethod, MeetingData } from '../context/ProjectContext';
 import { ProposalBuilder } from '../components/ProposalBuilder';
 
-const tabs = ['Phases & Tasks', 'Brief', 'Attachments', 'Deliverables', 'Payments', 'Timeline', 'Team'];
+const tabs = ['Phases & Tasks', 'Brief', 'Schedule', 'Attachments', 'Deliverables', 'Payments', 'Timeline', 'Team'];
 
 const ProjectProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { getProject, submitProposal } = useProjects();
+  const { getProject, submitProposal, addMeeting } = useProjects();
   const [activeTab, setActiveTab] = useState(0);
   const [expandedPhase, setExpandedPhase] = useState(0);
 
@@ -34,6 +34,7 @@ const ProjectProfile = () => {
     status: 'active' as const,
     proposalDeliverables: [] as string[],
     paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' as const }, { label: '50% On Completion', percentage: 50, status: 'held' as const }],
+    paymentMethod: undefined as PaymentMethod | undefined,
     proposalPrice: '3,500 EGP',
     phases: [
       { num: 1, title: 'Pre-Production', status: 'complete' as const, tasks: [
@@ -63,6 +64,7 @@ const ProjectProfile = () => {
       { label: 'Phase 2 Started', date: 'Mar 13', status: 'active' as const },
     ],
     createdAt: 'March 5, 2026',
+    meetings: [] as MeetingData[],
   };
 
   const isProposal = proj.status === 'proposal';
@@ -242,6 +244,80 @@ const ProjectProfile = () => {
               {activeTab === 2 && (
                 <div className="animate-fade-up">
                   <div className="flex items-center justify-between mb-4">
+                    <div className="text-lg font-extrabold tracking-[-0.04em]">📅 Schedule</div>
+                    <button onClick={() => showToast('Schedule a meeting from Messages')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-card cursor-pointer hover:border-foreground">+ Add Meeting</button>
+                  </div>
+
+                  {/* Meetings */}
+                  {proj.meetings.length > 0 && (
+                    <div className="mb-4">
+                      <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Meetings & Calls</div>
+                      <div className="flex flex-col gap-2">
+                        {proj.meetings.map((m, i) => (
+                          <div key={i} className="bg-card border border-border rounded-[10px] p-3.5 px-4 flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-otj-green-bg flex items-center justify-center text-sm shrink-0">
+                              {m.type === 'call' ? '📞' : m.type === 'shoot' ? '📸' : '🤝'}
+                            </div>
+                            <div className="flex-1">
+                              <div className="text-[13px] font-bold">{m.title}</div>
+                              <div className="text-[11px] text-otj-text">{m.date} · {m.time}{m.location ? ` · ${m.location}` : ''}</div>
+                            </div>
+                            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-otj-green-bg text-otj-green">Scheduled</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Phase deadlines */}
+                  <div className="mb-4">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Phase Deadlines</div>
+                    <div className="flex flex-col gap-2">
+                      {proj.phases.map((p, i) => (
+                        <div key={i} className="bg-card border border-border rounded-[10px] p-3.5 px-4 flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${
+                            p.status === 'complete' ? 'bg-otj-green text-primary-foreground' :
+                            p.status === 'active' ? 'bg-otj-blue text-primary-foreground' :
+                            'bg-otj-off text-otj-muted'
+                          }`}>{p.status === 'complete' ? '✓' : p.num}</div>
+                          <div className="flex-1">
+                            <div className="text-[13px] font-bold">Phase {p.num} — {p.title}</div>
+                            <div className="text-[11px] text-otj-text">{p.deadline || 'No deadline set'}</div>
+                          </div>
+                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                            p.status === 'complete' ? 'bg-otj-green-bg text-otj-green' :
+                            p.status === 'active' ? 'bg-otj-blue-bg text-otj-blue' :
+                            'bg-otj-off text-otj-muted'
+                          }`}>{p.status === 'complete' ? 'Done' : p.status === 'active' ? 'Active' : 'Locked'}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Upcoming tasks */}
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Upcoming Tasks</div>
+                    <div className="flex flex-col gap-2">
+                      {proj.phases.flatMap(ph => ph.tasks.filter(t => !t.done).map(t => ({ ...t, phase: ph.num, phaseTitle: ph.title }))).map((t, i) => (
+                        <div key={i} className="bg-card border border-border rounded-[10px] p-3 px-4 flex items-center gap-3">
+                          <div className="w-[18px] h-[18px] rounded border-[1.5px] border-border shrink-0" />
+                          <div className="flex-1">
+                            <div className="text-[13px] font-medium">{t.text}</div>
+                            <div className="text-[11px] text-otj-text">Phase {t.phase} · Due {t.due}</div>
+                          </div>
+                        </div>
+                      ))}
+                      {proj.phases.flatMap(ph => ph.tasks.filter(t => !t.done)).length === 0 && (
+                        <div className="text-[12px] text-otj-muted text-center py-3">All tasks complete 🎉</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 3 && (
+                <div className="animate-fade-up">
+                  <div className="flex items-center justify-between mb-4">
                     <div className="text-lg font-extrabold tracking-[-0.04em]">Attachments</div>
                     <button onClick={() => showToast('Upload coming soon')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-card cursor-pointer hover:border-foreground">+ Upload</button>
                   </div>
@@ -256,7 +332,7 @@ const ProjectProfile = () => {
                 </div>
               )}
 
-              {activeTab === 3 && (
+              {activeTab === 4 && (
                 <div className="animate-fade-up">
                   {proj.proposalDeliverables.length > 0 ? (
                     <>
@@ -290,7 +366,7 @@ const ProjectProfile = () => {
                 </div>
               )}
 
-              {activeTab === 4 && (
+              {activeTab === 5 && (
                 <div className="animate-fade-up">
                   <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4 mb-4">
                     <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-blue mb-2">Escrow Summary</div>
@@ -329,7 +405,7 @@ const ProjectProfile = () => {
                 </div>
               )}
 
-              {activeTab === 5 && (
+              {activeTab === 6 && (
                 <div className="animate-fade-up">
                   <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">Timeline</div>
                   <div className="relative pl-6">
@@ -352,7 +428,7 @@ const ProjectProfile = () => {
                 </div>
               )}
 
-              {activeTab === 6 && (
+              {activeTab === 7 && (
                 <div className="animate-fade-up">
                   <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">Team</div>
                   {[

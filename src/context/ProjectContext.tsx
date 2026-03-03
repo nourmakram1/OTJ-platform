@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 
 export interface BriefData {
   id: string;
@@ -38,6 +38,17 @@ export interface PaymentMethod {
   instapayHandle?: string;
 }
 
+export interface MeetingData {
+  id: string;
+  title: string;
+  date: string; // ISO date
+  time: string;
+  type: 'meeting' | 'call' | 'shoot';
+  projectId?: string;
+  clientName?: string;
+  location?: string;
+}
+
 export interface ProjectData {
   id: string;
   icon: string;
@@ -60,6 +71,7 @@ export interface ProjectData {
   escrow: { total: string; deposited: string; held: string; fee: string };
   timeline: { label: string; date: string; status: 'complete' | 'active' | 'upcoming' | 'locked' }[];
   createdAt: string;
+  meetings: MeetingData[];
 }
 
 interface ProjectContextType {
@@ -70,6 +82,8 @@ interface ProjectContextType {
   getProject: (id: string) => ProjectData | undefined;
   submitProposal: (projectId: string, phases: PhaseData[], deliverables: string[], price: string, milestones: PaymentMilestone[], paymentMethod: PaymentMethod) => void;
   updateProject: (projectId: string, updates: Partial<ProjectData>) => void;
+  addMeeting: (projectId: string, meeting: Omit<MeetingData, 'id'>) => void;
+  allMeetings: MeetingData[];
 }
 
 const defaultBriefs: BriefData[] = [
@@ -145,6 +159,9 @@ const defaultActiveProjects: ProjectData[] = [
       { label: 'Phase 2 Started', date: 'Mar 13', status: 'active' },
     ],
     createdAt: 'March 5, 2026',
+    meetings: [
+      { id: 'meet-1', title: 'Shoot Day Briefing', date: '2026-03-14', time: '10:00 AM', type: 'meeting', projectId: 'proj-existing-1', clientName: 'Randa Hatem', location: 'Studio A' },
+    ],
   },
   {
     id: 'proj-existing-2',
@@ -168,6 +185,9 @@ const defaultActiveProjects: ProjectData[] = [
     escrow: { total: '5,200 EGP', deposited: '2,600 EGP', held: '2,600 EGP', fee: '260 EGP' },
     timeline: [],
     createdAt: 'March 10, 2026',
+    meetings: [
+      { id: 'meet-2', title: 'Rough Cut Review Call', date: '2026-03-21', time: '2:00 PM', type: 'call', projectId: 'proj-existing-2', clientName: 'Ahmed Karim' },
+    ],
   },
   {
     id: 'proj-existing-3',
@@ -191,6 +211,7 @@ const defaultActiveProjects: ProjectData[] = [
     escrow: { total: '4,800 EGP', deposited: '2,400 EGP', held: '2,400 EGP', fee: '240 EGP' },
     timeline: [],
     createdAt: 'March 20, 2026',
+    meetings: [],
   },
 ];
 
@@ -252,6 +273,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         { label: 'Proposal in Progress', date: dateStr, status: 'active' },
       ],
       createdAt: dateStr,
+      meetings: [],
     };
 
     setPendingBriefs(prev => prev.filter(b => b.id !== briefId));
@@ -301,12 +323,28 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setActiveProjects(prev => prev.map(p => p.id === projectId ? { ...p, ...updates } : p));
   }, []);
 
+  const addMeeting = useCallback((projectId: string, meeting: Omit<MeetingData, 'id'>) => {
+    const newMeeting: MeetingData = { ...meeting, id: `meet-${Date.now()}` };
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        meetings: [...p.meetings, newMeeting],
+        timeline: [...p.timeline, { label: `📅 ${meeting.title}`, date: meeting.date, status: 'upcoming' as const }],
+      };
+    }));
+  }, []);
+
+  const allMeetings = useMemo(() => {
+    return activeProjects.flatMap(p => p.meetings.map(m => ({ ...m, projectId: p.id })));
+  }, [activeProjects]);
+
   const getProject = useCallback((id: string): ProjectData | undefined => {
     return activeProjects.find(p => p.id === id);
   }, [activeProjects]);
 
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject }}>
+    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject, addMeeting, allMeetings }}>
       {children}
     </ProjectContext.Provider>
   );
