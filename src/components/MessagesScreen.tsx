@@ -31,7 +31,8 @@ interface MessagesScreenProps {
 }
 
 export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter }) => {
-  const { addMeeting, activeProjects } = useProjects();
+  const { addMeeting, addAttachment, activeProjects } = useProjects();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeThread, setActiveThread] = useState('randa');
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState('');
@@ -113,8 +114,41 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
   };
 
   const handleAddAttachment = () => {
-    showToast('📎 Attachment added to project profile');
     setShowPlusMenu(false);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    const projectId = currentThread?.projectId;
+    if (!projectId) return;
+
+    Array.from(files).forEach(file => {
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+      const iconMap: Record<string, string> = {
+        pdf: '📄', doc: '📄', docx: '📄',
+        jpg: '🌆', jpeg: '🌆', png: '🌆', gif: '🌆', webp: '🌆',
+        mp4: '🎥', mov: '🎥',
+        psd: '🎨', ai: '🎨', fig: '🎨',
+      };
+      const icon = iconMap[ext] || '📎';
+      const sizeKB = file.size / 1024;
+      const size = sizeKB > 1024 ? `${(sizeKB / 1024).toFixed(1)} MB` : `${Math.round(sizeKB)} KB`;
+      const url = URL.createObjectURL(file);
+
+      addAttachment(projectId, {
+        name: file.name,
+        size,
+        type: file.type,
+        url,
+        uploadedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        icon,
+      });
+    });
+
+    showToast(`📎 ${files.length} file${files.length > 1 ? 's' : ''} added to project`);
+    e.target.value = '';
   };
 
   const openZoomPicker = () => {
@@ -158,6 +192,8 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
 
   return (
     <div className={`grid h-[calc(100vh-52px)] transition-all duration-200 ${showCollabPanel ? 'grid-cols-[280px_1fr_320px]' : 'grid-cols-[280px_1fr]'}`}>
+      {/* Hidden file input */}
+      <input ref={fileInputRef} type="file" multiple accept="image/*,.pdf,.doc,.docx,.psd,.ai,.fig,.mp4,.mov,.zip" className="hidden" onChange={handleFileSelected} />
       {/* Thread list */}
       <div className="bg-card border-r border-border overflow-y-auto">
         <div className="p-4 border-b border-border text-sm font-extrabold tracking-[-0.03em]">Messages</div>

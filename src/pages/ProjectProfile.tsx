@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
-import { useProjects, PhaseData, PaymentMilestone, PaymentMethod, MeetingData } from '../context/ProjectContext';
+import { useProjects, PhaseData, PaymentMilestone, PaymentMethod, MeetingData, AttachmentData } from '../context/ProjectContext';
 import { ProposalBuilder } from '../components/ProposalBuilder';
 
 const tabs = ['Phases & Tasks', 'Brief', 'Schedule', 'Attachments', 'Deliverables', 'Payments', 'Timeline', 'Team'];
@@ -11,9 +11,25 @@ const tabs = ['Phases & Tasks', 'Brief', 'Schedule', 'Attachments', 'Deliverable
 const ProjectProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { getProject, submitProposal, addMeeting } = useProjects();
+  const { getProject, submitProposal, addMeeting, addAttachment } = useProjects();
   const [activeTab, setActiveTab] = useState(0);
   const [expandedPhase, setExpandedPhase] = useState(0);
+  const attachFileRef = useRef<HTMLInputElement>(null);
+
+  const handleAttachFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || !id) return;
+    Array.from(files).forEach(file => {
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+      const iconMap: Record<string, string> = { pdf: '📄', doc: '📄', docx: '📄', jpg: '🌆', jpeg: '🌆', png: '🌆', gif: '🌆', webp: '🌆', mp4: '🎥', mov: '🎥', psd: '🎨', ai: '🎨', fig: '🎨' };
+      const icon = iconMap[ext] || '📎';
+      const sizeKB = file.size / 1024;
+      const size = sizeKB > 1024 ? `${(sizeKB / 1024).toFixed(1)} MB` : `${Math.round(sizeKB)} KB`;
+      addAttachment(id, { name: file.name, size, type: file.type, url: URL.createObjectURL(file), uploadedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), icon });
+    });
+    showToast(`📎 ${files.length} file${files.length > 1 ? 's' : ''} uploaded`);
+    e.target.value = '';
+  };
 
   const project = getProject(id || '');
 
@@ -65,6 +81,7 @@ const ProjectProfile = () => {
     ],
     createdAt: 'March 5, 2026',
     meetings: [] as MeetingData[],
+    attachments: [] as AttachmentData[],
   };
 
   const isProposal = proj.status === 'proposal';
@@ -317,17 +334,52 @@ const ProjectProfile = () => {
 
               {activeTab === 3 && (
                 <div className="animate-fade-up">
+                  <input ref={attachFileRef} type="file" multiple accept="image/*,.pdf,.doc,.docx,.psd,.ai,.fig,.mp4,.mov,.zip" className="hidden" onChange={handleAttachFiles} />
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-lg font-extrabold tracking-[-0.04em]">Attachments</div>
-                    <button onClick={() => showToast('Upload coming soon')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-card cursor-pointer hover:border-foreground">+ Upload</button>
+                    <button onClick={() => attachFileRef.current?.click()} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-card cursor-pointer hover:border-foreground">+ Upload</button>
                   </div>
+
+                  {/* Drop zone */}
+                  <div
+                    onClick={() => attachFileRef.current?.click()}
+                    onDragOver={e => { e.preventDefault(); e.currentTarget.classList.add('border-otj-blue'); }}
+                    onDragLeave={e => { e.currentTarget.classList.remove('border-otj-blue'); }}
+                    onDrop={e => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove('border-otj-blue');
+                      const dt = e.dataTransfer;
+                      if (dt.files.length && id) {
+                        const fakeEvent = { target: { files: dt.files, value: '' } } as unknown as React.ChangeEvent<HTMLInputElement>;
+                        handleAttachFiles(fakeEvent);
+                      }
+                    }}
+                    className="border-2 border-dashed border-border rounded-[14px] p-6 text-center cursor-pointer mb-4 transition-all duration-150 hover:border-otj-blue hover:bg-otj-blue-bg/30"
+                  >
+                    <div className="text-2xl mb-1">📎</div>
+                    <div className="text-[12px] font-semibold text-otj-text">Drop files here or click to browse</div>
+                    <div className="text-[10px] text-otj-muted mt-0.5">Images, PDFs, PSD, AI, Videos up to 20MB</div>
+                  </div>
+
                   <div className="grid grid-cols-4 gap-2.5">
-                    {['🌆 Mood Board 1', '👗 Reference Shot', '📄 Shot List.pdf', '🎨 Brand Colors'].map((f, i) => (
-                      <div key={i} className="bg-card border border-border rounded-xl overflow-hidden cursor-pointer transition-all duration-150 hover:border-foreground">
-                        <div className="h-[90px] bg-otj-off flex items-center justify-center text-3xl">{f.split(' ')[0]}</div>
-                        <div className="p-2 px-2.5 text-[11px] font-bold tracking-[-0.01em]">{f.substring(2)}</div>
+                    {(proj.attachments || []).map((att, i) => (
+                      <div key={att.id || i} className="bg-card border border-border rounded-xl overflow-hidden cursor-pointer transition-all duration-150 hover:border-foreground group">
+                        <div className="h-[90px] bg-otj-off flex items-center justify-center text-3xl relative">
+                          {att.type?.startsWith('image/') && att.url ? (
+                            <img src={att.url} alt={att.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span>{att.icon}</span>
+                          )}
+                        </div>
+                        <div className="p-2 px-2.5">
+                          <div className="text-[11px] font-bold tracking-[-0.01em] truncate">{att.name}</div>
+                          <div className="text-[9px] text-otj-muted">{att.size} · {att.uploadedAt}</div>
+                        </div>
                       </div>
                     ))}
+                    {(proj.attachments || []).length === 0 && (
+                      <div className="col-span-4 text-center py-6 text-[12px] text-otj-muted">No attachments yet — upload files above</div>
+                    )}
                   </div>
                 </div>
               )}
