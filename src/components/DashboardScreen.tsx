@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { format, parseISO, isAfter, isBefore, addDays } from 'date-fns';
+import { format, parseISO, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, getWeek } from 'date-fns';
 import { showToast } from './Toast';
 import { useProjects, MeetingData } from '../context/ProjectContext';
 
@@ -186,7 +186,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
   );
 };
 
-// Calendar schedule section
+// Weekly time-grid schedule
 type ScheduleItem = {
   label: string;
   sublabel: string;
@@ -194,18 +194,28 @@ type ScheduleItem = {
   deadline: Date;
   type: 'phase' | 'task' | 'meeting' | 'call';
   status: string;
+  hour: number; // 0-23
+  duration: number; // hours
 };
 
-const typeConfig: Record<string, { dot: string; bg: string; text: string; label: string }> = {
-  phase: { dot: 'bg-otj-blue', bg: 'bg-otj-blue-bg', text: 'text-otj-blue', label: 'Phase' },
-  task: { dot: 'bg-otj-yellow', bg: 'bg-otj-yellow-bg', text: 'text-otj-yellow', label: 'Task' },
-  meeting: { dot: 'bg-otj-green', bg: 'bg-otj-green-bg', text: 'text-otj-green', label: 'Meeting' },
-  call: { dot: 'bg-otj-orange', bg: 'bg-otj-off', text: 'text-otj-orange', label: 'Call' },
+const typeConfig: Record<string, { bg: string; border: string; text: string; dot: string; label: string; icon: string }> = {
+  meeting: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Meeting', icon: '👥' },
+  task: { bg: 'bg-otj-green-bg', border: 'border-otj-green-border', text: 'text-otj-green', dot: 'bg-otj-green', label: 'Task', icon: '✅' },
+  phase: { bg: 'bg-otj-yellow-bg', border: 'border-otj-yellow-border', text: 'text-otj-yellow', dot: 'bg-otj-yellow', label: 'Due', icon: '⏰' },
+  call: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Call', icon: '📞' },
 };
+
+const HOURS = [9, 10, 11, 12, 13, 14, 15, 16, 17];
+const DAY_LABELS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
 const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['activeProjects']; navigate: ReturnType<typeof useNavigate>; allMeetings: MeetingData[] }> = ({ projects, navigate }) => {
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [calMonth, setCalMonth] = useState(() => new Date());
+  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const today = new Date();
+  const weekNum = getWeek(weekStart, { weekStartsOn: 1 });
+
+  const weekDays = useMemo(() => {
+    return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  }, [weekStart]);
 
   const scheduleItems = useMemo(() => {
     const items: ScheduleItem[] = [];
@@ -213,7 +223,8 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
       proj.phases.forEach(phase => {
         if (phase.deadline) {
           try {
-            items.push({ label: `Phase ${phase.num} — ${phase.title}`, sublabel: proj.name, projectId: proj.id, deadline: parseISO(phase.deadline), type: 'phase', status: phase.status });
+            const d = parseISO(phase.deadline);
+            items.push({ label: `${proj.name.substring(0, 12)}…`, sublabel: `Phase ${phase.num} — ${phase.title}`, projectId: proj.id, deadline: d, type: 'phase', status: phase.status, hour: 11, duration: 1 });
           } catch {}
         }
         phase.tasks.forEach(task => {
@@ -221,7 +232,7 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
             try {
               const parsed = new Date(`${task.due}, ${new Date().getFullYear()}`);
               if (!isNaN(parsed.getTime())) {
-                items.push({ label: task.text, sublabel: `${proj.name} · Phase ${phase.num}`, projectId: proj.id, deadline: parsed, type: 'task', status: 'active' });
+                items.push({ label: task.text, sublabel: `${proj.name} · Phase ${phase.num}`, projectId: proj.id, deadline: parsed, type: 'task', status: 'active', hour: 11, duration: 1 });
               }
             } catch {}
           }
@@ -229,139 +240,158 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
       });
       proj.meetings.forEach(meeting => {
         try {
-          items.push({ label: meeting.title, sublabel: `${proj.name} · ${meeting.time}`, projectId: proj.id, deadline: parseISO(meeting.date), type: meeting.type === 'call' ? 'call' : 'meeting', status: 'upcoming' });
+          const d = parseISO(meeting.date);
+          const hourMatch = meeting.time?.match(/(\d+)/);
+          const isPM = meeting.time?.toLowerCase().includes('pm');
+          let hour = hourMatch ? parseInt(hourMatch[1]) : 9;
+          if (isPM && hour < 12) hour += 12;
+          if (!isPM && hour === 12) hour = 0;
+          items.push({ label: meeting.title, sublabel: `${proj.name}`, projectId: proj.id, deadline: d, type: meeting.type === 'call' ? 'call' : 'meeting', status: 'upcoming', hour, duration: meeting.type === 'call' ? 1 : 2 });
         } catch {}
       });
     });
-    return items.sort((a, b) => a.deadline.getTime() - b.deadline.getTime());
+    return items;
   }, [projects]);
 
-  const itemsByDate = useMemo(() => {
+  // Group items by day-key and hour
+  const itemsByDayHour = useMemo(() => {
     const map: Record<string, ScheduleItem[]> = {};
     scheduleItems.forEach(item => {
-      const key = format(item.deadline, 'yyyy-MM-dd');
-      if (!map[key]) map[key] = [];
-      map[key].push(item);
+      weekDays.forEach(day => {
+        if (isSameDay(item.deadline, day)) {
+          const key = `${format(day, 'yyyy-MM-dd')}-${item.hour}`;
+          if (!map[key]) map[key] = [];
+          map[key].push(item);
+        }
+      });
     });
     return map;
-  }, [scheduleItems]);
+  }, [scheduleItems, weekDays]);
 
-  const year = calMonth.getFullYear();
-  const month = calMonth.getMonth();
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const startPad = (firstDay.getDay() + 6) % 7;
-  const totalDays = lastDay.getDate();
-  const todayKey = format(new Date(), 'yyyy-MM-dd');
-
-  const calDays: { day: number; key: string; isCurrentMonth: boolean }[] = [];
-  const prevMonthLast = new Date(year, month, 0).getDate();
-  for (let i = startPad - 1; i >= 0; i--) {
-    const d = prevMonthLast - i;
-    calDays.push({ day: d, key: format(new Date(year, month - 1, d), 'yyyy-MM-dd'), isCurrentMonth: false });
-  }
-  for (let d = 1; d <= totalDays; d++) {
-    calDays.push({ day: d, key: format(new Date(year, month, d), 'yyyy-MM-dd'), isCurrentMonth: true });
-  }
-  const remaining = 42 - calDays.length;
-  for (let d = 1; d <= remaining; d++) {
-    calDays.push({ day: d, key: format(new Date(year, month + 1, d), 'yyyy-MM-dd'), isCurrentMonth: false });
-  }
-
-  const selectedItems = selectedDate ? (itemsByDate[selectedDate] || []) : scheduleItems.slice(0, 6);
-  const now = new Date();
+  // Summary counts
+  const weekItems = scheduleItems.filter(item => weekDays.some(d => isSameDay(item.deadline, d)));
+  const meetingCount = weekItems.filter(i => i.type === 'meeting' || i.type === 'call').length;
+  const taskCount = weekItems.filter(i => i.type === 'task').length;
+  const dueCount = weekItems.filter(i => i.type === 'phase').length;
 
   return (
     <div className="mb-5">
-      <div className="flex items-center justify-between mb-3">
-        <div className="text-lg font-extrabold tracking-[-0.04em]">📅 Schedule</div>
-        <div className="flex items-center gap-2.5">
-          {Object.entries(typeConfig).map(([key, cfg]) => (
-            <div key={key} className="flex items-center gap-1">
-              <div className={`w-2 h-2 rounded-full ${cfg.dot}`} />
-              <span className="text-[10px] font-semibold text-otj-text">{cfg.label}</span>
+      {/* Header */}
+      <div className="bg-card border border-border rounded-[16px] overflow-hidden">
+        <div className="flex items-center justify-between p-4 px-5">
+          <div className="flex items-center gap-3">
+            <span className="text-lg">📅</span>
+            <span className="text-[17px] font-extrabold tracking-[-0.04em]">Schedule</span>
+            <div className="flex items-center gap-3 ml-4">
+              {[
+                { key: 'meeting', color: 'bg-otj-blue', label: 'Meeting' },
+                { key: 'task', color: 'bg-otj-green', label: 'Task' },
+                { key: 'phase', color: 'bg-otj-yellow', label: 'Due' },
+              ].map(l => (
+                <div key={l.key} className="flex items-center gap-1.5">
+                  <div className={`w-[7px] h-[7px] rounded-full ${l.color}`} />
+                  <span className="text-[11px] font-semibold text-otj-text">{l.label}</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-[1fr_300px] gap-3">
-        {/* Calendar grid */}
-        <div className="bg-card border border-border rounded-[14px] overflow-hidden">
-          <div className="flex items-center justify-between p-3 px-4 border-b border-border">
-            <button onClick={() => setCalMonth(new Date(year, month - 1, 1))} className="w-7 h-7 rounded-lg flex items-center justify-center text-otj-text cursor-pointer hover:bg-otj-off transition-colors">‹</button>
-            <div className="text-[13px] font-extrabold tracking-[-0.02em]">{format(calMonth, 'MMMM yyyy')}</div>
-            <button onClick={() => setCalMonth(new Date(year, month + 1, 1))} className="w-7 h-7 rounded-lg flex items-center justify-center text-otj-text cursor-pointer hover:bg-otj-off transition-colors">›</button>
           </div>
-
-          <div className="grid grid-cols-7 border-b border-border">
-            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => (
-              <div key={d} className="p-2 text-center text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted">{d}</div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-7">
-            {calDays.map((cell, i) => {
-              const events = itemsByDate[cell.key] || [];
-              const isToday = cell.key === todayKey;
-              const isSelected = cell.key === selectedDate;
-
-              return (
-                <div
-                  key={i}
-                  onClick={() => setSelectedDate(isSelected ? null : cell.key)}
-                  className={`min-h-[56px] p-1 border-b border-r border-border cursor-pointer transition-all duration-100 ${
-                    !cell.isCurrentMonth ? 'opacity-30' : ''
-                  } ${isSelected ? 'bg-otj-blue-bg' : isToday ? 'bg-otj-off' : 'hover:bg-otj-off'}`}
-                >
-                  <div className={`text-[11px] font-bold mb-0.5 px-0.5 ${isToday ? 'text-otj-blue' : 'text-foreground'}`}>{cell.day}</div>
-                  {events.length > 0 && (
-                    <div className="flex flex-col gap-[2px] px-0.5">
-                      {events.slice(0, 3).map((ev, j) => (
-                        <div key={j} className={`rounded-[3px] px-1 py-[1px] text-[8px] font-bold truncate ${typeConfig[ev.type]?.bg} ${typeConfig[ev.type]?.text}`}>
-                          {ev.label.length > 14 ? ev.label.substring(0, 14) + '…' : ev.label}
-                        </div>
-                      ))}
-                      {events.length > 3 && (
-                        <div className="text-[8px] font-bold text-otj-muted px-0.5">+{events.length - 3}</div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+          <div className="flex items-center gap-2">
+            <button onClick={() => setWeekStart(subWeeks(weekStart, 1))} className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150 text-sm">‹</button>
+            <span className="text-[13px] font-extrabold tracking-[-0.02em] min-w-[160px] text-center">{format(weekStart, 'MMMM yyyy')} · Week {weekNum}</span>
+            <button onClick={() => setWeekStart(addWeeks(weekStart, 1))} className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150 text-sm">›</button>
+            <span onClick={() => showToast('Opening full calendar…')} className="text-[12px] font-semibold text-otj-blue cursor-pointer ml-2 hover:underline">See all</span>
           </div>
         </div>
 
-        {/* Side list */}
-        <div className="flex flex-col gap-2">
-          <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-1">
-            {selectedDate ? format(new Date(selectedDate + 'T12:00:00'), 'EEEE, MMM d') : 'Upcoming'}
-          </div>
-          {selectedItems.length === 0 && (
-            <div className="bg-card border border-border rounded-[12px] p-4 text-center text-[12px] text-otj-muted">No events on this day</div>
-          )}
-          {selectedItems.map((item, i) => {
-            const daysLeft = Math.ceil((item.deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-            const isOverdue = daysLeft < 0;
-            const cfg = typeConfig[item.type];
-
+        {/* Day headers */}
+        <div className="grid grid-cols-[60px_repeat(7,1fr)] border-t border-border">
+          <div className="border-r border-border" />
+          {weekDays.map((day, i) => {
+            const isToday = isSameDay(day, today);
             return (
-              <div key={i} onClick={() => navigate(`/project/${item.projectId}`)} className="bg-card border border-border rounded-[12px] p-3 px-3.5 cursor-pointer transition-all duration-150 hover:shadow-sm hover:border-otj-muted flex items-start gap-2.5">
-                <div className={`w-1 self-stretch rounded-full shrink-0 ${cfg.dot}`} />
-                <div className="flex-1 min-w-0">
-                  <div className="text-[12px] font-extrabold tracking-[-0.02em] truncate mb-0.5">{item.label}</div>
-                  <div className="text-[10px] text-otj-text truncate">{item.sublabel}</div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className={`text-[9px] font-bold px-1.5 py-[1px] rounded ${cfg.bg} ${cfg.text}`}>{cfg.label}</span>
-                    <span className={`text-[9px] font-bold ${isOverdue ? 'text-destructive' : 'text-otj-muted'}`}>
-                      {isOverdue ? `${Math.abs(daysLeft)}d overdue` : daysLeft === 0 ? 'Today' : `in ${daysLeft}d`}
-                    </span>
-                  </div>
-                </div>
+              <div key={i} className={`text-center py-2.5 border-r border-border last:border-r-0 ${isToday ? 'bg-otj-blue-bg' : ''}`}>
+                <div className={`text-[10px] font-bold uppercase tracking-[0.1em] ${isToday ? 'text-otj-blue' : 'text-otj-muted'}`}>{DAY_LABELS[i]}</div>
+                <div className={`text-[18px] font-extrabold tracking-[-0.04em] mt-0.5 ${isToday ? 'text-otj-blue' : 'text-foreground'}`}>{format(day, 'd')}</div>
               </div>
             );
           })}
+        </div>
+
+        {/* Time grid */}
+        <div className="grid grid-cols-[60px_repeat(7,1fr)]">
+          {HOURS.map(hour => (
+            <React.Fragment key={hour}>
+              {/* Time label */}
+              <div className="border-r border-t border-border h-[72px] flex items-start justify-end pr-2 pt-1">
+                <span className="text-[10px] font-bold text-otj-muted">{hour <= 12 ? `${hour}AM` : `${hour - 12}PM`}</span>
+              </div>
+              {/* Day cells */}
+              {weekDays.map((day, di) => {
+                const key = `${format(day, 'yyyy-MM-dd')}-${hour}`;
+                const events = itemsByDayHour[key] || [];
+                const isToday = isSameDay(day, today);
+
+                return (
+                  <div key={di} className={`border-r border-t border-border last:border-r-0 h-[72px] p-[3px] relative ${isToday ? 'bg-otj-blue-bg/30' : ''}`}>
+                    {events.length > 0 && (
+                      <div className="flex flex-col gap-[2px] h-full">
+                        {events.slice(0, 2).map((ev, j) => {
+                          const cfg = typeConfig[ev.type];
+                          return (
+                            <div
+                              key={j}
+                              onClick={() => navigate(`/project/${ev.projectId}`)}
+                              className={`${cfg.bg} border ${cfg.border} rounded-[8px] p-1.5 px-2 cursor-pointer flex-1 min-h-0 overflow-hidden transition-all duration-150 hover:shadow-sm`}
+                            >
+                              <div className="flex items-center gap-1 mb-0.5">
+                                <span className="text-[9px]">{cfg.icon}</span>
+                                <span className={`text-[8px] font-bold uppercase tracking-[0.05em] ${cfg.text} truncate`}>
+                                  {ev.sublabel.length > 10 ? ev.sublabel.substring(0, 10) + '…' : ev.sublabel}
+                                </span>
+                                {ev.type === 'meeting' && <div className="w-[5px] h-[5px] rounded-full bg-destructive ml-auto shrink-0" />}
+                              </div>
+                              <div className="text-[10px] font-extrabold text-foreground leading-tight truncate">{ev.label}</div>
+                              {ev.duration > 1 && (
+                                <div className={`text-[8px] font-semibold ${cfg.text} mt-0.5`}>{hour <= 12 ? hour : hour - 12}:00 - {(hour + ev.duration) <= 12 ? hour + ev.duration : (hour + ev.duration) - 12}:00</div>
+                              )}
+                            </div>
+                          );
+                        })}
+                        {events.length > 2 && (
+                          <div className="text-[8px] font-bold text-otj-muted text-center">+{events.length - 2}</div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* Summary footer */}
+        <div className="flex items-center gap-8 p-4 px-5 border-t border-border">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">👥</span>
+            <div>
+              <div className="text-[14px] font-extrabold tracking-[-0.02em]">{meetingCount} Meeting{meetingCount !== 1 ? 's' : ''}</div>
+              <div className="text-[10px] text-otj-text font-semibold">This week</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg">✅</span>
+            <div>
+              <div className="text-[14px] font-extrabold tracking-[-0.02em]">{taskCount} Task{taskCount !== 1 ? 's' : ''}</div>
+              <div className="text-[10px] text-otj-text font-semibold">Scheduled</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg">⏰</span>
+            <div>
+              <div className="text-[14px] font-extrabold tracking-[-0.02em]">{dueCount} Due Date{dueCount !== 1 ? 's' : ''}</div>
+              <div className="text-[10px] text-otj-text font-semibold">Coming up</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
