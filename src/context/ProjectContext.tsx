@@ -23,6 +23,20 @@ export interface PhaseData {
   tasks: { text: string; done: boolean; due: string }[];
 }
 
+export interface PaymentMilestone {
+  label: string;
+  percentage: number;
+  status: 'pending' | 'paid' | 'held';
+}
+
+export interface PaymentMethod {
+  type: 'instapay' | 'bank';
+  accountName?: string;
+  accountNumber?: string;
+  bankName?: string;
+  instapayHandle?: string;
+}
+
 export interface ProjectData {
   id: string;
   icon: string;
@@ -40,6 +54,8 @@ export interface ProjectData {
   phases: PhaseData[];
   proposalDeliverables: string[];
   proposalPrice: string;
+  paymentMilestones: PaymentMilestone[];
+  paymentMethod?: PaymentMethod;
   escrow: { total: string; deposited: string; held: string; fee: string };
   timeline: { label: string; date: string; status: 'complete' | 'active' | 'upcoming' | 'locked' }[];
   createdAt: string;
@@ -51,7 +67,7 @@ interface ProjectContextType {
   completedProjects: { icon: string; name: string; client: string; earned: string }[];
   acceptBrief: (briefId: string) => string;
   getProject: (id: string) => ProjectData | undefined;
-  submitProposal: (projectId: string, phases: PhaseData[], deliverables: string[], price: string) => void;
+  submitProposal: (projectId: string, phases: PhaseData[], deliverables: string[], price: string, milestones: PaymentMilestone[], paymentMethod: PaymentMethod) => void;
   updateProject: (projectId: string, updates: Partial<ProjectData>) => void;
 }
 
@@ -119,6 +135,7 @@ const defaultActiveProjects: ProjectData[] = [
         { text: 'Client sign-off', done: false, due: 'Mar 20' },
       ]},
     ],
+    paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'held' }],
     escrow: { total: '3,500 EGP', deposited: '1,750 EGP', held: '1,750 EGP', fee: '175 EGP' },
     timeline: [
       { label: 'Brief Created', date: 'Mar 5', status: 'complete' },
@@ -146,6 +163,7 @@ const defaultActiveProjects: ProjectData[] = [
       ]},
       { num: 4, title: 'Final Delivery', status: 'locked', tasks: [] },
     ],
+    paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'held' }],
     escrow: { total: '5,200 EGP', deposited: '2,600 EGP', held: '2,600 EGP', fee: '260 EGP' },
     timeline: [],
     createdAt: 'March 10, 2026',
@@ -168,6 +186,7 @@ const defaultActiveProjects: ProjectData[] = [
       { num: 3, title: 'Editing', status: 'locked', tasks: [] },
       { num: 4, title: 'Final Delivery', status: 'locked', tasks: [] },
     ],
+    paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'held' }],
     escrow: { total: '4,800 EGP', deposited: '2,400 EGP', held: '2,400 EGP', fee: '240 EGP' },
     timeline: [],
     createdAt: 'March 20, 2026',
@@ -220,6 +239,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       phases: [],
       proposalDeliverables: [],
       proposalPrice: brief.budget,
+      paymentMilestones: [],
       escrow: {
         total: brief.budget,
         deposited: '0 EGP',
@@ -238,14 +258,14 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return projectId;
   }, [pendingBriefs]);
 
-  const submitProposal = useCallback((projectId: string, phases: PhaseData[], deliverables: string[], price: string) => {
+  const submitProposal = useCallback((projectId: string, phases: PhaseData[], deliverables: string[], price: string, milestones: PaymentMilestone[], paymentMethod: PaymentMethod) => {
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
       const numericPrice = parseInt(price.replace(/[^0-9]/g, ''));
       const fee = isNaN(numericPrice) ? 'TBD' : `${Math.round(numericPrice * 0.05)} EGP`;
-      const half = isNaN(numericPrice) ? '0 EGP' : `${Math.round(numericPrice / 2).toLocaleString()} EGP`;
       const formattedPrice = isNaN(numericPrice) ? price : `${numericPrice.toLocaleString()} EGP`;
       const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      const firstMilestoneLabel = milestones.length > 0 ? milestones[0].label : 'First Payment';
 
       return {
         ...p,
@@ -257,6 +277,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         proposalDeliverables: deliverables,
         proposalPrice: formattedPrice,
         budget: formattedPrice,
+        paymentMilestones: milestones,
+        paymentMethod,
         escrow: {
           total: formattedPrice,
           deposited: '0 EGP',
@@ -265,9 +287,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         },
         timeline: [
           ...p.timeline.map(t => ({ ...t, status: 'complete' as const })),
-          { label: 'Proposal Submitted', date: today, status: 'complete' as const },
+          { label: 'Proposal Sent to Client', date: today, status: 'complete' as const },
           { label: 'Awaiting Client Approval', date: today, status: 'active' as const },
-          { label: 'Awaiting 50% Deposit', date: '', status: 'locked' as const },
+          { label: `Awaiting ${firstMilestoneLabel}`, date: '', status: 'locked' as const },
           ...phases.map(ph => ({ label: `Phase ${ph.num} — ${ph.title}`, date: '', status: 'locked' as const })),
         ],
       };
