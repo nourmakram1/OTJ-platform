@@ -77,7 +77,7 @@ const Onboarding = () => {
   return (
     <>
       <TopNavOnboarding currentStep={currentStep} totalSteps={7} isReady={isReady} onSkip={handleSkip} onGoLive={handleGoLive} />
-      <div className="grid grid-cols-[260px_1fr] min-h-screen pt-[52px]">
+      <div className="min-h-screen pt-[52px]">
         <OnboardingSidebar currentStep={currentStep} doneSteps={doneSteps} isReady={isReady} onStepClick={goToStep} onGoLive={handleGoLive} />
         <main className="ml-[260px] px-12 py-10 max-w-[900px]">
           {currentStep === 1 && <Step1Panel onNext={() => nextStep(1)} />}
