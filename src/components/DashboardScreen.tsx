@@ -9,6 +9,11 @@ interface DashboardScreenProps {
   onSwitchToMessages: () => void;
 }
 
+const pendingBriefs = [
+  { icon: '📸', name: 'Ramadan Campaign Shoot', client: 'From: Randa Hatem · Edita Group', tags: ['Full Day', '3,500 EGP', 'Mar 15'], time: '3m ago' },
+  { icon: '📸', name: 'Product Launch Photography', client: 'From: Tarek Saad · Vodafone Egypt', tags: ['3 Days', 'Negotiable', 'Mar 22–24'], time: '1h ago' },
+];
+
 const activeProjects = [
   { icon: '📸', name: 'Edita Re-Branding', client: 'Client: Randa Hatem · Edita Group', phases: [true, false, false, false], status: 'Phase 2 · Shoot Day', statusClass: 'bg-otj-blue-bg text-otj-blue', due: 'Due Mar 20', pct: '60%', value: '3,500 EGP' },
   { icon: '🎥', name: 'CIB Campaign Assets', client: 'Client: Ahmed Karim · CIB', phases: [true, true, false, false], status: 'Phase 3 · Pending Approval', statusClass: 'bg-otj-yellow-bg text-otj-yellow', due: 'Due Mar 25', pct: '75%', value: '5,200 EGP' },
@@ -25,7 +30,7 @@ const completedProjects = [
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, onAcceptBrief, onOpenCounter, onSwitchToMessages }) => {
   const navigate = useNavigate();
-  const [projectTab, setProjectTab] = useState<'active' | 'complete'>('active');
+  const [projectTab, setProjectTab] = useState<'pending' | 'active' | 'complete'>('pending');
 
   return (
     <div className="max-w-[1100px] mx-auto p-6">
@@ -58,56 +63,51 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
         ))}
       </div>
 
-      {/* Brief Inbox */}
-      <div className="bg-card border border-border rounded-[14px] mb-5 overflow-hidden">
-        <div className="p-3 px-4 border-b border-border flex items-center justify-between">
-          <div className="text-[13px] font-extrabold tracking-[-0.02em] flex items-center gap-2">
-            Brief Inbox <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-otj-yellow-bg text-otj-yellow border border-otj-yellow-border">2 new</span>
-          </div>
-          <div className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer">View all</div>
-        </div>
-        {[
-          { emoji: '👩‍💼', from: 'Randa Hatem · Edita Group', brief: 'Full day campaign shoot for Ramadan collection. 40 product + lifestyle shots. March 15, Cairo studio.', tags: ['📸 Photography', 'Full Day', '3,500 EGP', 'Mar 15'], time: '3m ago' },
-          { emoji: '👨‍💼', from: 'Tarek Saad · Vodafone Egypt', brief: 'Product launch event photography — 3 days, 120 shots minimum. Budget negotiable.', tags: ['📸 Photography', '3 Days', 'Negotiable', 'Mar 22–24'], time: '1h ago' },
-        ].map((item, i) => (
-          <div key={i} onClick={onSwitchToMessages} className="p-3 px-4 border-b border-border flex gap-3 items-start cursor-pointer transition-colors duration-150 hover:bg-otj-off last:border-b-0">
-            <div className="w-[38px] h-[38px] rounded-full bg-otj-off flex items-center justify-center text-xl shrink-0">{item.emoji}</div>
-            <div className="flex-1">
-              <div className="text-xs font-bold mb-px">{item.from}</div>
-              <div className="text-xs text-otj-text mb-1.5 leading-snug">{item.brief}</div>
-              <div className="flex gap-[5px] flex-wrap">
-                {item.tags.map((t, j) => <span key={j} className="text-[10.5px] font-semibold px-2 py-0.5 rounded-full bg-otj-off border border-border text-otj-text">{t}</span>)}
-              </div>
-              <div className="flex gap-[5px] mt-2">
-                <button onClick={(e) => { e.stopPropagation(); onAcceptBrief(); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer transition-all duration-150">✓ Accept</button>
-                <button onClick={(e) => { e.stopPropagation(); onOpenCounter(); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-otj-yellow text-otj-yellow bg-card cursor-pointer transition-all duration-150">↕ Counter</button>
-                <button onClick={(e) => { e.stopPropagation(); onSwitchToMessages(); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">View Brief</button>
-              </div>
-            </div>
-            <div className="text-[10.5px] text-otj-muted whitespace-nowrap shrink-0">{item.time}</div>
-          </div>
-        ))}
-      </div>
-
       {/* Projects with tabs */}
       <div className="mb-5">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="text-lg font-extrabold tracking-[-0.04em]">Projects</div>
             <div className="flex gap-1 ml-3">
-              <button onClick={() => setProjectTab('active')} className={`text-[12px] font-semibold px-3.5 py-[5px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 ${
-                projectTab === 'active' ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-foreground'
-              }`}>Active (3)</button>
-              <button onClick={() => setProjectTab('complete')} className={`text-[12px] font-semibold px-3.5 py-[5px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 ${
-                projectTab === 'complete' ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-foreground'
-              }`}>Complete (20)</button>
+              {[
+                { key: 'pending' as const, label: `Pending (${pendingBriefs.length})` },
+                { key: 'active' as const, label: `Active (${activeProjects.length})` },
+                { key: 'complete' as const, label: 'Complete (20)' },
+              ].map((tab) => (
+                <button key={tab.key} onClick={() => setProjectTab(tab.key)} className={`text-[12px] font-semibold px-3.5 py-[5px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 ${
+                  projectTab === tab.key ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-foreground'
+                }`}>{tab.label}</button>
+              ))}
             </div>
           </div>
           <div className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer">View all</div>
         </div>
 
-        {projectTab === 'active' ? (
-          <div className="flex flex-col gap-2">
+        {projectTab === 'pending' && (
+          <div className="flex flex-col gap-2 animate-fade-up">
+            {pendingBriefs.map((brief, i) => (
+              <div key={i} onClick={onSwitchToMessages} className="bg-card border border-border rounded-[14px] p-3.5 px-4 cursor-pointer transition-all duration-150 flex gap-3 items-start hover:shadow-md hover:border-otj-muted">
+                <div className="w-10 h-10 rounded-[10px] bg-otj-yellow-bg flex items-center justify-center text-xl shrink-0">{brief.icon}</div>
+                <div className="flex-1">
+                  <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5">{brief.name}</div>
+                  <div className="text-[11.5px] text-otj-text mb-1.5">{brief.client}</div>
+                  <div className="flex gap-[5px] flex-wrap mb-2">
+                    {brief.tags.map((t, j) => <span key={j} className="text-[10.5px] font-semibold px-2 py-0.5 rounded-full bg-otj-off border border-border text-otj-text">{t}</span>)}
+                  </div>
+                  <div className="flex gap-[5px]">
+                    <button onClick={(e) => { e.stopPropagation(); onAcceptBrief(); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer transition-all duration-150">✓ Accept</button>
+                    <button onClick={(e) => { e.stopPropagation(); onOpenCounter(); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-otj-yellow text-otj-yellow bg-card cursor-pointer transition-all duration-150">↕ Counter</button>
+                    <button onClick={(e) => { e.stopPropagation(); onSwitchToMessages(); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">View Brief</button>
+                  </div>
+                </div>
+                <div className="text-[10.5px] text-otj-muted whitespace-nowrap shrink-0">{brief.time}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {projectTab === 'active' && (
+          <div className="flex flex-col gap-2 animate-fade-up">
             {activeProjects.map((proj, i) => (
               <div key={i} onClick={() => navigate('/project/1')} className="bg-card border border-border rounded-[14px] p-3.5 px-4 cursor-pointer transition-all duration-150 flex gap-3 items-start hover:shadow-md hover:border-otj-muted">
                 <div className="w-10 h-10 rounded-[10px] bg-otj-off flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
@@ -134,7 +134,9 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
               </div>
             ))}
           </div>
-        ) : (
+        )}
+
+        {projectTab === 'complete' && (
           <div className="flex flex-col gap-2 animate-fade-up">
             {completedProjects.map((proj, i) => (
               <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex gap-3 items-center cursor-pointer transition-all duration-150 hover:shadow-md hover:border-otj-muted">
