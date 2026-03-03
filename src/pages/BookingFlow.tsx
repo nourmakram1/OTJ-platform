@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { ExploreScreen } from '../components/ExploreScreen';
 import { MessagesScreen } from '../components/MessagesScreen';
@@ -7,9 +7,13 @@ import { DashboardScreen } from '../components/DashboardScreen';
 import { QuickBriefPopup, CounterOfferModal } from '../components/BookingModals';
 import { CalendarConfirmModal } from '../components/CalendarConfirmModal';
 import { Toast, showToast } from '../components/Toast';
+import { useProjects } from '../context/ProjectContext';
 
 const BookingFlow = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { acceptBrief } = useProjects();
+
   const getTabFromPath = () => {
     if (location.pathname === '/messages') return 'messages';
     if (location.pathname === '/dashboard') return 'dashboard';
@@ -22,7 +26,6 @@ const BookingFlow = () => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [briefCreative, setBriefCreative] = useState<string | null>(null);
 
-  // Sync tab with route
   React.useEffect(() => {
     setActiveTab(getTabFromPath());
   }, [location.pathname]);
@@ -32,15 +35,20 @@ const BookingFlow = () => {
     setShowBrief(true);
   }, []);
 
-  const acceptBrief = useCallback(() => {
-    showToast('✓ Brief accepted! Project created → Dashboard');
-    setTimeout(() => showToast('📅 March 15 added to your calendar'), 1500);
-  }, []);
+  const handleAcceptBrief = useCallback((briefId: string) => {
+    const projectId = acceptBrief(briefId);
+    if (projectId) {
+      showToast('✓ Brief accepted! Project created');
+      setTimeout(() => {
+        navigate(`/project/${projectId}`);
+      }, 800);
+    }
+  }, [acceptBrief, navigate]);
 
   return (
     <>
       <NavBar
-        onAcceptBrief={acceptBrief}
+        onAcceptBrief={() => {}}
         onOpenCounter={() => setShowCounter(true)}
       />
 
@@ -50,7 +58,7 @@ const BookingFlow = () => {
         {activeTab === 'dashboard' && (
           <DashboardScreen
             onOpenBrief={() => { setBriefCreative(null); setShowBrief(true); }}
-            onAcceptBrief={acceptBrief}
+            onAcceptBrief={handleAcceptBrief}
             onOpenCounter={() => setShowCounter(true)}
             onSwitchToMessages={() => setActiveTab('messages')}
           />
