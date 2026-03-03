@@ -1,6 +1,36 @@
 import React, { useState } from 'react';
 import { showToast } from './Toast';
 
+// Reusable links section for adding multiple hyperlinks
+const LinksSection: React.FC = () => {
+  const [links, setLinks] = useState([{ label: '', url: '' }]);
+  return (
+    <div className="flex flex-col gap-2.5">
+      <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Website / Links</div>
+      {links.map((link, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <input
+            value={link.label} onChange={e => { const n = [...links]; n[i].label = e.target.value; setLinks(n); }}
+            className="px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-[140px] focus:border-foreground focus:bg-card placeholder:text-otj-muted"
+            placeholder="Label"
+          />
+          <input
+            value={link.url} onChange={e => { const n = [...links]; n[i].url = e.target.value; setLinks(n); }}
+            className="px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 flex-1 focus:border-foreground focus:bg-card placeholder:text-otj-muted"
+            placeholder="https://..."
+          />
+          {links.length > 1 && (
+            <span onClick={() => setLinks(links.filter((_, j) => j !== i))} className="text-[11px] text-otj-muted cursor-pointer px-2 py-0.5 rounded-md border border-border transition-all duration-150 hover:text-destructive hover:border-destructive">✕</span>
+          )}
+        </div>
+      ))}
+      <button onClick={() => setLinks([...links, { label: '', url: '' }])}
+        className="text-[12px] font-semibold text-otj-blue cursor-pointer bg-transparent border-none text-left hover:underline">
+        ＋ Add another link
+      </button>
+    </div>
+  );
+};
 const professions = [
   { icon: '📸', name: 'Photographer', type: 'Visual', visual: true },
   { icon: '🎥', name: 'Videographer', type: 'Visual', visual: true },
@@ -27,10 +57,32 @@ interface StepPanelProps {
   onBack?: () => void;
 }
 
+interface Step1PanelProps extends StepPanelProps {
+  onSelectionsChange?: (profession: string, niches: string[]) => void;
+}
+
+interface Step2PanelProps extends StepPanelProps {
+  selectedProfession?: string;
+  selectedNiches?: string[];
+}
+
 // STEP 1
-export const Step1Panel: React.FC<StepPanelProps> = ({ onNext }) => {
+export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChange }) => {
   const [selectedProf, setSelectedProf] = useState('Photographer');
   const [selectedNiches, setSelectedNiches] = useState(new Set(['Fashion Editorial', 'E-Commerce']));
+
+  const handleProfChange = (name: string) => {
+    setSelectedProf(name);
+    showToast('Profession set: ' + name);
+    onSelectionsChange?.(name, Array.from(selectedNiches));
+  };
+
+  const handleNicheToggle = (n: string) => {
+    const next = new Set(selectedNiches);
+    next.has(n) ? next.delete(n) : next.add(n);
+    setSelectedNiches(next);
+    onSelectionsChange?.(selectedProf, Array.from(next));
+  };
 
   return (
     <div className="animate-fade-up">
@@ -44,7 +96,7 @@ export const Step1Panel: React.FC<StepPanelProps> = ({ onNext }) => {
           {professions.map(p => (
             <div
               key={p.name}
-              onClick={() => { setSelectedProf(p.name); showToast('Profession set: ' + p.name); }}
+              onClick={() => handleProfChange(p.name)}
               className={`p-[16px_14px] rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center ${
                 selectedProf === p.name ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
               }`}
@@ -65,11 +117,7 @@ export const Step1Panel: React.FC<StepPanelProps> = ({ onNext }) => {
           {niches.map(n => (
             <div
               key={n}
-              onClick={() => {
-                const next = new Set(selectedNiches);
-                next.has(n) ? next.delete(n) : next.add(n);
-                setSelectedNiches(next);
-              }}
+              onClick={() => handleNicheToggle(n)}
               className={`text-[12.5px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all duration-150 tracking-[-0.01em] select-none flex items-center gap-1.5 ${
                 selectedNiches.has(n)
                   ? 'bg-primary border-primary text-primary-foreground'
@@ -112,10 +160,21 @@ export const Step1Panel: React.FC<StepPanelProps> = ({ onNext }) => {
 };
 
 // STEP 2
-export const Step2Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
+export const Step2Panel: React.FC<Step2PanelProps> = ({ onNext, onBack, selectedProfession, selectedNiches }) => {
   const [avatarUploaded, setAvatarUploaded] = useState(false);
+  const autoTagline = React.useMemo(() => {
+    const prof = selectedProfession || 'Photographer';
+    const nicheList = (selectedNiches && selectedNiches.length > 0) ? selectedNiches : ['Fashion Editorial', 'E-Commerce'];
+    const formattedNiches = nicheList.map(n => n.toLowerCase()).join(' · ');
+    return `${prof} · ${formattedNiches}`;
+  }, [selectedProfession, selectedNiches]);
   const [tagline, setTagline] = useState('');
   const [bio, setBio] = useState('');
+
+  // Update tagline when auto-tagline changes
+  React.useEffect(() => {
+    setTagline(autoTagline);
+  }, [autoTagline]);
 
   return (
     <div className="animate-fade-up">
@@ -149,7 +208,10 @@ export const Step2Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
       <div className="mb-7">
         <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">✍️ Your Tagline & Bio</div>
         <div className="flex flex-col gap-1.5 mb-3.5">
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Tagline <span className="text-destructive">*</span></div>
+          <div className="flex items-center justify-between">
+            <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Tagline <span className="text-destructive">*</span></div>
+            <div className="text-[10px] text-otj-blue font-semibold cursor-pointer" onClick={() => setTagline(autoTagline)}>↻ Reset to auto</div>
+          </div>
           <input
             value={tagline} onChange={e => setTagline(e.target.value)} maxLength={80}
             className="px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card placeholder:text-otj-muted"
@@ -169,21 +231,12 @@ export const Step2Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
       </div>
 
       <div className="mb-7">
-        <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">🔗 Social Links</div>
-        <div className="grid grid-cols-2 gap-3.5">
-          <div className="flex flex-col gap-1.5">
-            <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Instagram</div>
-            <input className="px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card placeholder:text-otj-muted" placeholder="@yourusername" />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">LinkedIn</div>
-            <input className="px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card placeholder:text-otj-muted" placeholder="linkedin.com/in/you" />
-          </div>
+        <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">🔗 Links</div>
+        <div className="flex flex-col gap-1.5 mb-3.5">
+          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Instagram</div>
+          <input className="px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card placeholder:text-otj-muted" placeholder="@yourusername" />
         </div>
-        <div className="flex flex-col gap-1.5 mt-3.5">
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Portfolio Website</div>
-          <input className="px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card placeholder:text-otj-muted" placeholder="yourwebsite.com" />
-        </div>
+        <LinksSection />
       </div>
 
       <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
@@ -279,9 +332,27 @@ export const Step3Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
 // STEP 4
 export const Step4Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
   const [packages, setPackages] = useState([
-    { name: 'Starter Package', price: '2000', duration: 'Half day (4hrs)', deliverables: '', revisions: '2 rounds' },
-    { name: 'Full Day Campaign', price: '3500', duration: 'Full day (8hrs)', deliverables: '40 edited photos', revisions: '3 rounds' },
+    { name: 'Starter Package', price: '2000', duration: 'Half day (4hrs)', deliverables: ['20 edited photos', 'Online gallery'], revisions: '2 rounds', hidePrice: false },
+    { name: 'Full Day Campaign', price: '3500', duration: 'Full day (8hrs)', deliverables: ['40 edited photos', 'Color correction', 'Online gallery'], revisions: '3 rounds', hidePrice: false },
   ]);
+
+  const updateDeliverable = (pkgIdx: number, delIdx: number, value: string) => {
+    const next = [...packages];
+    next[pkgIdx].deliverables[delIdx] = value;
+    setPackages(next);
+  };
+
+  const addDeliverable = (pkgIdx: number) => {
+    const next = [...packages];
+    next[pkgIdx].deliverables.push('');
+    setPackages(next);
+  };
+
+  const removeDeliverable = (pkgIdx: number, delIdx: number) => {
+    const next = [...packages];
+    next[pkgIdx].deliverables = next[pkgIdx].deliverables.filter((_, j) => j !== delIdx);
+    setPackages(next);
+  };
 
   return (
     <div className="animate-fade-up">
@@ -306,20 +377,23 @@ export const Step4Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
                   <input defaultValue={pkg.name} className="px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card" />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Price (EGP) <span className="text-destructive">*</span></div>
-                  <input defaultValue={pkg.price} type="number" className="px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card" />
+                  <div className="flex items-center justify-between">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Price (EGP) <span className="text-destructive">*</span></div>
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input type="checkbox" checked={pkg.hidePrice} onChange={() => { const next = [...packages]; next[i].hidePrice = !next[i].hidePrice; setPackages(next); }} className="w-3.5 h-3.5 rounded border-border accent-primary cursor-pointer" />
+                      <span className="text-[10px] text-otj-muted font-semibold">Hide price</span>
+                    </label>
+                  </div>
+                  <input defaultValue={pkg.price} type="number" disabled={pkg.hidePrice} className={`px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card ${pkg.hidePrice ? 'opacity-40' : ''}`} />
+                  {pkg.hidePrice && <div className="text-[10.5px] text-otj-muted">Clients will see "Contact for pricing"</div>}
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-2 gap-2.5 mb-2.5">
                 <div className="flex flex-col gap-1.5">
                   <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Duration</div>
                   <select defaultValue={pkg.duration} className="px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card appearance-none cursor-pointer">
                     <option>Half day (4hrs)</option><option>Full day (8hrs)</option><option>2 hours</option><option>Custom</option>
                   </select>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Deliverables</div>
-                  <input defaultValue={pkg.deliverables} className="px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card placeholder:text-otj-muted" placeholder="e.g. 20 edited photos" />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Revisions</div>
@@ -328,10 +402,31 @@ export const Step4Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
                   </select>
                 </div>
               </div>
+              {/* Deliverables list */}
+              <div className="flex flex-col gap-1.5">
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Deliverables</div>
+                <div className="flex flex-col gap-1.5">
+                  {pkg.deliverables.map((d, di) => (
+                    <div key={di} className="flex items-center gap-2">
+                      <span className="text-otj-muted text-xs">•</span>
+                      <input
+                        value={d} onChange={e => updateDeliverable(i, di, e.target.value)}
+                        className="px-3 py-2 rounded-lg border border-border bg-otj-off text-[13px] text-foreground outline-none transition-all duration-150 flex-1 focus:border-foreground focus:bg-card placeholder:text-otj-muted"
+                        placeholder="e.g. 20 edited photos"
+                      />
+                      <span onClick={() => removeDeliverable(i, di)} className="text-[11px] text-otj-muted cursor-pointer hover:text-destructive">✕</span>
+                    </div>
+                  ))}
+                  <button onClick={() => addDeliverable(i)}
+                    className="text-[11.5px] font-semibold text-otj-blue cursor-pointer bg-transparent border-none text-left hover:underline mt-0.5">
+                    ＋ Add deliverable
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
         </div>
-        <button onClick={() => { setPackages([...packages, { name: '', price: '', duration: 'Half day (4hrs)', deliverables: '', revisions: '1 round' }]); showToast('Package added ✓'); }}
+        <button onClick={() => { setPackages([...packages, { name: '', price: '', duration: 'Half day (4hrs)', deliverables: [''], revisions: '1 round', hidePrice: false }]); showToast('Package added ✓'); }}
           className="w-full p-3 rounded-[10px] border-[1.5px] border-dashed border-border bg-transparent text-[13px] font-semibold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2 mt-2.5 hover:border-foreground hover:text-foreground hover:bg-otj-off">
           ＋ Add Another Package
         </button>
@@ -389,10 +484,15 @@ export const Step5Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
         </div>
         <div className="flex flex-col gap-2">
           {questions.map((q, i) => (
-            <div key={i} className="flex items-center gap-3 px-4 py-3 bg-card border-[1.5px] border-border rounded-[10px] cursor-grab transition-all duration-150 hover:border-otj-muted hover:shadow-sm">
+            <div key={i} className="flex items-center gap-3 px-4 py-3 bg-card border-[1.5px] border-border rounded-[10px] transition-all duration-150 hover:border-otj-muted hover:shadow-sm">
               <span className="text-otj-muted text-sm cursor-grab">⠿</span>
               <div className="w-[22px] h-[22px] rounded-md bg-otj-off border border-border flex items-center justify-center text-[10px] font-bold text-otj-muted shrink-0">{i + 1}</div>
-              <div className="flex-1 text-[13px] text-foreground font-medium">{q}</div>
+              <input
+                value={q}
+                onChange={e => { const next = [...questions]; next[i] = e.target.value; setQuestions(next); }}
+                className="flex-1 text-[13px] text-foreground font-medium bg-transparent border-none outline-none placeholder:text-otj-muted"
+                placeholder="Type your question…"
+              />
               <span onClick={() => { setQuestions(questions.filter((_, j) => j !== i)); showToast('Question removed'); }}
                 className="text-[11px] text-otj-muted cursor-pointer px-2 py-0.5 rounded-md border border-border transition-all duration-150 hover:text-destructive hover:border-destructive">Remove</span>
             </div>
