@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format, parseISO, isAfter, isBefore, addDays } from 'date-fns';
 import { showToast } from './Toast';
-import { useProjects } from '../context/ProjectContext';
+import { useProjects, MeetingData } from '../context/ProjectContext';
 
 interface DashboardScreenProps {
   onOpenBrief: () => void;
@@ -13,7 +13,7 @@ interface DashboardScreenProps {
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, onAcceptBrief, onOpenCounter, onSwitchToMessages }) => {
   const navigate = useNavigate();
-  const { pendingBriefs, activeProjects, completedProjects } = useProjects();
+  const { pendingBriefs, activeProjects, completedProjects, allMeetings } = useProjects();
   const [projectTab, setProjectTab] = useState<'pending' | 'active' | 'complete'>('pending');
 
   return (
@@ -152,7 +152,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
       </div>
 
       {/* Schedule */}
-      <ScheduleSection projects={activeProjects} navigate={navigate} />
+      <ScheduleSection projects={activeProjects} navigate={navigate} allMeetings={allMeetings} />
 
       {/* Collections */}
       <div className="mb-5">
@@ -186,66 +186,141 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
   );
 };
 
-// Schedule section showing all phase deadlines across projects
-const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['activeProjects']; navigate: ReturnType<typeof useNavigate> }> = ({ projects, navigate }) => {
+// Schedule section showing all deadlines, meetings, and task due dates
+type ScheduleItem = {
+  label: string;
+  sublabel: string;
+  projectId: string;
+  icon: string;
+  deadline: Date;
+  type: 'phase' | 'task' | 'meeting' | 'call';
+  status: string;
+};
+
+const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['activeProjects']; navigate: ReturnType<typeof useNavigate>; allMeetings: MeetingData[] }> = ({ projects, navigate, allMeetings }) => {
   const scheduleItems = useMemo(() => {
-    const items: { projectName: string; projectId: string; icon: string; phaseTitle: string; phaseNum: number; deadline: Date; status: string }[] = [];
+    const items: ScheduleItem[] = [];
+
     projects.forEach(proj => {
+      // Phase deadlines
       proj.phases.forEach(phase => {
         if (phase.deadline) {
           try {
             const date = parseISO(phase.deadline);
             items.push({
-              projectName: proj.name,
+              label: `Phase ${phase.num} — ${phase.title}`,
+              sublabel: proj.name,
               projectId: proj.id,
               icon: proj.icon,
-              phaseTitle: phase.title,
-              phaseNum: phase.num,
               deadline: date,
+              type: 'phase',
               status: phase.status,
             });
-          } catch { /* skip invalid dates */ }
+          } catch { /* skip */ }
         }
+        // Task due dates
+        phase.tasks.forEach(task => {
+          if (task.due && !task.done) {
+            try {
+              // Try parsing "Mar 15" style dates
+              const year = new Date().getFullYear();
+              const parsed = new Date(`${task.due}, ${year}`);
+              if (!isNaN(parsed.getTime())) {
+                items.push({
+                  label: task.text,
+                  sublabel: `${proj.name} · Phase ${phase.num}`,
+                  projectId: proj.id,
+                  icon: '📋',
+                  deadline: parsed,
+                  type: 'task',
+                  status: 'active',
+                });
+              }
+            } catch { /* skip */ }
+          }
+        });
+      });
+
+      // Meetings
+      proj.meetings.forEach(meeting => {
+        try {
+          const date = parseISO(meeting.date);
+          items.push({
+            label: meeting.title,
+            sublabel: `${proj.name} · ${meeting.time}`,
+            projectId: proj.id,
+            icon: meeting.type === 'call' ? '📞' : meeting.type === 'shoot' ? '📸' : '🤝',
+            deadline: date,
+            type: meeting.type === 'call' ? 'call' : 'meeting',
+            status: 'upcoming',
+          });
+        } catch { /* skip */ }
       });
     });
+
     return items.sort((a, b) => a.deadline.getTime() - b.deadline.getTime());
   }, [projects]);
+
+  const [filter, setFilter] = useState<'all' | 'phase' | 'task' | 'meeting'>('all');
+  const filtered = filter === 'all' ? scheduleItems : scheduleItems.filter(i => filter === 'meeting' ? (i.type === 'meeting' || i.type === 'call') : i.type === filter);
 
   if (scheduleItems.length === 0) return null;
 
   const now = new Date();
 
+  const typeColor: Record<string, string> = {
+    phase: 'bg-otj-blue',
+    task: 'bg-otj-yellow',
+    meeting: 'bg-otj-green',
+    call: 'bg-otj-orange',
+  };
+
+  const typeLabel: Record<string, string> = {
+    phase: 'Phase',
+    task: 'Task',
+    meeting: 'Meeting',
+    call: 'Call',
+  };
+
   return (
     <div className="mb-5">
-      <div className="flex items-baseline justify-between mb-3">
+      <div className="flex items-center justify-between mb-3">
         <div className="text-lg font-extrabold tracking-[-0.04em]">📅 Schedule</div>
-        <div className="text-xs font-semibold text-otj-text">{scheduleItems.length} upcoming deadlines</div>
+        <div className="flex gap-1">
+          {(['all', 'phase', 'task', 'meeting'] as const).map(f => (
+            <button key={f} onClick={() => setFilter(f)} className={`text-[11px] font-semibold px-3 py-[4px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 ${
+              filter === f ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-foreground'
+            }`}>{f === 'all' ? `All (${scheduleItems.length})` : f === 'meeting' ? 'Meetings' : f === 'phase' ? 'Phases' : 'Tasks'}</button>
+          ))}
+        </div>
       </div>
       <div className="grid grid-cols-1 gap-2">
-        {scheduleItems.map((item, i) => {
+        {filtered.map((item, i) => {
           const daysLeft = Math.ceil((item.deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
           const isOverdue = daysLeft < 0;
           const isUrgent = daysLeft >= 0 && daysLeft <= 3;
-          const statusColor = item.status === 'complete' ? 'bg-otj-green' : item.status === 'active' ? 'bg-otj-blue' : 'bg-otj-off';
           const urgencyClass = isOverdue ? 'text-destructive' : isUrgent ? 'text-otj-yellow' : 'text-otj-text';
 
           return (
             <div key={i} onClick={() => navigate(`/project/${item.projectId}`)} className="bg-card border border-border rounded-[14px] p-3.5 px-4 cursor-pointer transition-all duration-150 hover:shadow-md hover:border-otj-muted flex items-center gap-3">
               <div className="w-10 h-10 rounded-[10px] bg-otj-off flex items-center justify-center text-xl shrink-0">{item.icon}</div>
               <div className="flex-1 min-w-0">
-                <div className="text-[13px] font-extrabold tracking-[-0.02em] truncate">Phase {item.phaseNum} — {item.phaseTitle}</div>
-                <div className="text-[11px] text-otj-text truncate">{item.projectName}</div>
+                <div className="text-[13px] font-extrabold tracking-[-0.02em] truncate">{item.label}</div>
+                <div className="text-[11px] text-otj-text truncate">{item.sublabel}</div>
               </div>
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full text-primary-foreground shrink-0 ${typeColor[item.type]}`}>{typeLabel[item.type]}</span>
               <div className="text-right shrink-0">
                 <div className="text-[12px] font-bold">{format(item.deadline, 'MMM d')}</div>
                 <div className={`text-[10px] font-bold ${urgencyClass}`}>
                   {isOverdue ? `${Math.abs(daysLeft)}d overdue` : daysLeft === 0 ? 'Today' : `${daysLeft}d left`}
                 </div>
               </div>
-              <div className={`w-2 h-2 rounded-full shrink-0 ${statusColor}`} />
             </div>
           );
         })}
+        {filtered.length === 0 && (
+          <div className="bg-card border border-border rounded-[14px] p-6 text-center text-otj-muted text-[13px]">No {filter === 'all' ? 'scheduled items' : filter + 's'} found</div>
+        )}
       </div>
     </div>
   );
