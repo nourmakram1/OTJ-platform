@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
-import { useProjects, PhaseData } from '../context/ProjectContext';
+import { useProjects, PhaseData, PaymentMilestone, PaymentMethod } from '../context/ProjectContext';
 import { ProposalBuilder } from '../components/ProposalBuilder';
 
 const tabs = ['Phases & Tasks', 'Brief', 'Attachments', 'Deliverables', 'Payments', 'Timeline', 'Team'];
@@ -33,6 +33,7 @@ const ProjectProfile = () => {
     usageRights: 'Social media + print ads · 12 months',
     status: 'active' as const,
     proposalDeliverables: [] as string[],
+    paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' as const }, { label: '50% On Completion', percentage: 50, status: 'held' as const }],
     proposalPrice: '3,500 EGP',
     phases: [
       { num: 1, title: 'Pre-Production', status: 'complete' as const, tasks: [
@@ -71,6 +72,7 @@ const ProjectProfile = () => {
   const pctComplete = Math.round((phaseDone / phaseTotal) * 100);
   const currentPhase = proj.phases.find(p => p.status === 'active');
   const daysLeft = 18;
+  const numericPrice = parseInt(proj.budget.replace(/[^0-9]/g, '')) || 0;
 
   const statusLabel = isProposal ? 'Proposal Draft' :
     proj.status === 'pending-deposit' ? 'Awaiting Deposit' :
@@ -87,9 +89,9 @@ const ProjectProfile = () => {
     }
   }, [proj.id, isProposal]);
 
-  const handleSubmitProposal = (phases: PhaseData[], deliverables: string[], price: string) => {
-    submitProposal(proj.id, phases, deliverables, price);
-    showToast('✓ Proposal submitted to client for approval!');
+  const handleSubmitProposal = (phases: PhaseData[], deliverables: string[], price: string, milestones: PaymentMilestone[], paymentMethod: PaymentMethod) => {
+    submitProposal(proj.id, phases, deliverables, price, milestones, paymentMethod);
+    showToast('✓ Proposal sent to client for review!');
   };
 
   return (
@@ -298,18 +300,31 @@ const ProjectProfile = () => {
                       <div><div className="text-[10px] text-otj-text mb-0.5">OTJ Fee (5%)</div><div className="text-[16px] font-extrabold text-otj-muted">{proj.escrow.fee}</div></div>
                     </div>
                   </div>
-                  {[
-                    { label: '50% Deposit', amount: proj.escrow.deposited, status: proj.status === 'pending-deposit' ? 'Awaiting Payment' : 'Received', statusClass: proj.status === 'pending-deposit' ? 'text-otj-yellow' : 'text-otj-green', icon: proj.status === 'pending-deposit' ? '⏳' : '✓' },
-                    { label: '50% Final Payment', amount: proj.escrow.held, status: 'In Escrow · Held', statusClass: 'text-otj-muted', icon: '🔒' },
-                  ].map((p, i) => (
-                    <div key={i} className="bg-card border border-border rounded-[10px] p-3.5 px-4 mb-2 flex items-center justify-between">
-                      <div>
-                        <div className="text-[13px] font-bold">{p.label}</div>
-                        <div className={`text-[11px] font-bold ${p.statusClass}`}>{p.icon} {p.status}</div>
+                  {proj.paymentMilestones.map((m, i) => {
+                    const amount = numericPrice > 0 ? `${Math.round(numericPrice * m.percentage / 100).toLocaleString()} EGP` : '—';
+                    const statusLabel = m.status === 'paid' ? 'Received' : m.status === 'held' ? 'In Escrow · Held' : 'Awaiting Payment';
+                    const statusClass = m.status === 'paid' ? 'text-otj-green' : m.status === 'pending' ? 'text-otj-yellow' : 'text-otj-muted';
+                    const icon = m.status === 'paid' ? '✓' : m.status === 'pending' ? '⏳' : '🔒';
+                    return (
+                      <div key={i} className="bg-card border border-border rounded-[10px] p-3.5 px-4 mb-2 flex items-center justify-between">
+                        <div>
+                          <div className="text-[13px] font-bold">{m.label} ({m.percentage}%)</div>
+                          <div className={`text-[11px] font-bold ${statusClass}`}>{icon} {statusLabel}</div>
+                        </div>
+                        <div className="text-[14px] font-extrabold">{amount}</div>
                       </div>
-                      <div className="text-[14px] font-extrabold">{p.amount}</div>
+                    );
+                  })}
+                  {proj.paymentMethod && (
+                    <div className="bg-otj-off rounded-[10px] p-3.5 px-4 mt-3">
+                      <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Payment Method</div>
+                      {proj.paymentMethod.type === 'instapay' ? (
+                        <div className="text-[13px] font-bold">📱 InstaPay — {proj.paymentMethod.instapayHandle}</div>
+                      ) : (
+                        <div className="text-[13px] font-bold">🏦 {proj.paymentMethod.bankName} — {proj.paymentMethod.accountName} · {proj.paymentMethod.accountNumber}</div>
+                      )}
                     </div>
-                  ))}
+                  )}
                   <button onClick={() => showToast('Fund release requested')} className="mt-3 text-[12px] font-bold px-4 py-2 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer hover:border-foreground hover:text-foreground">Request Fund Release →</button>
                 </div>
               )}
