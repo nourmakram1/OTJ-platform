@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
 import { showToast } from './Toast';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+const portfolioImages = [
+  'from-[#2a2a2a] to-[#444]',
+  'from-[#3a2a1a] to-[#5a4a3a]',
+  'from-[#1a2a3a] to-[#3a4a5a]',
+  'from-[#2a1a3a] to-[#4a3a5a]',
+  'from-[#3a3a1a] to-[#5a5a3a]',
+];
 
 const creatives = [
-  { id: 'nour', emoji: '👩‍🎨', name: 'Nour Makram', role: 'Fashion & E-commerce Photographer', price: 'from 2,000 EGP', unit: '/ half day', rating: '4.9', jobs: '127 jobs', avail: 'Available now', bg: 'from-[#2a2a2a] to-[#555]' },
+  { id: 'nour', emoji: '👩‍🎨', name: 'Nour Makram', role: 'Photographer . Space Photographer. E-commercial', price: 'from 2,000 EGP', unit: '/ half day', rating: '4.9', jobs: '127 jobs', avail: 'Available now', bg: 'from-[#2a2a2a] to-[#555]' },
   { id: 'karim', emoji: '✏️', name: 'Karim Samy', role: 'Script Writer & Copywriter', price: 'from 1,500 EGP', unit: '/ project', rating: '4.8', jobs: '89 jobs', avail: 'Available now', bg: 'from-[#1a3a5c] to-[#2d5a8c]' },
   { id: 'sara', emoji: '🎨', name: 'Sara Ahmed', role: 'Brand Designer', price: 'from 3,000 EGP', unit: '/ project', rating: '5.0', jobs: '54 jobs', avail: 'Next week', bg: 'from-[#5c1a3a] to-[#8c2d5a]' },
   { id: 'omar', emoji: '🎥', name: 'Omar Hassan', role: 'Cinematographer & Editor', price: 'from 4,000 EGP', unit: '/ day', rating: '4.7', jobs: '203 jobs', avail: 'Available now', bg: 'from-[#3a1a5c] to-[#5a2d8c]' },
@@ -21,6 +30,65 @@ interface ExploreScreenProps {
   onOpenBrief: (creativeId: string) => void;
 }
 
+const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
+  const [current, setCurrent] = useState(0);
+  const slides = [bg, ...portfolioImages.slice(0, 4)];
+
+  const prev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrent(i => (i === 0 ? slides.length - 1 : i - 1));
+  };
+  const next = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrent(i => (i === slides.length - 1 ? 0 : i + 1));
+  };
+
+  return (
+    <div className="h-[220px] relative overflow-hidden group/carousel">
+      <div
+        className="flex h-full transition-transform duration-300 ease-out"
+        style={{ transform: `translateX(-${current * 100}%)` }}
+      >
+        {slides.map((gradient, i) => (
+          <div
+            key={i}
+            className={`min-w-full h-full flex items-center justify-center text-[56px] bg-gradient-to-br ${gradient}`}
+          >
+            {i === 0 && <span>{emoji}</span>}
+          </div>
+        ))}
+      </div>
+
+      {/* Navigation arrows - visible on hover */}
+      <button
+        onClick={prev}
+        className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 z-[2] hover:bg-card"
+      >
+        <ChevronLeft className="w-4 h-4 text-foreground" />
+      </button>
+      <button
+        onClick={next}
+        className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 z-[2] hover:bg-card"
+      >
+        <ChevronRight className="w-4 h-4 text-foreground" />
+      </button>
+
+      {/* Dot indicators */}
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-[2]">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
+            className={`w-1.5 h-1.5 rounded-full transition-all duration-200 ${
+              i === current ? 'bg-card w-3' : 'bg-card/50'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief }) => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [saved, setSaved] = useState<Set<string>>(new Set());
@@ -34,37 +102,38 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief }) => 
   };
 
   const CreativeCard = ({ c }: { c: typeof creatives[0] }) => (
-    <div onClick={() => onOpenBrief(c.id)} className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 relative group hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-0.5">
-      <div className={`h-[180px] flex items-center justify-center text-[56px] relative bg-gradient-to-br ${c.bg}`}>
-        <span>{c.emoji}</span>
+    <div onClick={() => onOpenBrief(c.id)} className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 relative hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-0.5">
+      <div className="relative">
+        <ImageCarousel bg={c.bg} emoji={c.emoji} />
+
+        {/* Availability badge - top left */}
+        <div className={`absolute top-2.5 left-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full z-[2] ${
+          c.avail.includes('now') ? 'bg-otj-green-bg text-otj-green border border-otj-green-border' : 'bg-otj-orange-bg text-otj-orange'
+        }`}>{c.avail}</div>
+
+        {/* Save button - top right */}
         <button onClick={(e) => toggleSave(e, c.id)} className="absolute top-2.5 right-2.5 w-[30px] h-[30px] rounded-full bg-card/90 border-none cursor-pointer text-sm flex items-center justify-center transition-all duration-150 z-[2] hover:bg-card hover:scale-110">
           {saved.has(c.id) ? '♥' : '♡'}
         </button>
-        {/* Hover preview */}
-        <div className="absolute inset-0 rounded-[18px] bg-foreground/92 backdrop-blur-lg flex flex-col justify-end p-3.5 opacity-0 transition-opacity duration-200 z-[3] pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto">
-          <div className="text-[15px] font-extrabold text-primary-foreground tracking-[-0.03em] mb-0.5">{c.name}</div>
-          <div className="text-[11px] text-primary-foreground/50 mb-2">{c.role}</div>
-          <div className="text-[13px] font-bold text-primary-foreground mb-2.5">{c.price} <span className="text-[10px] text-primary-foreground/40 font-medium">{c.unit}</span></div>
-          <div className="flex gap-1.5">
-            <button onClick={(e) => { e.stopPropagation(); showToast('Opening full profile…'); }} className="flex-1 py-2 rounded-full text-[11.5px] font-bold cursor-pointer transition-all duration-150 border-[1.5px] border-primary-foreground/20 bg-transparent text-primary-foreground hover:bg-primary-foreground/10">View Profile</button>
-            <button onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }} className="flex-1 py-2 rounded-full text-[11.5px] font-bold cursor-pointer transition-all duration-150 border-[1.5px] border-primary-foreground bg-primary-foreground text-foreground hover:bg-otj-off">Quick Brief</button>
+      </div>
+
+      <div className="p-3">
+        <div className="flex items-center justify-between mb-0.5">
+          <div className="text-sm font-extrabold tracking-[-0.03em]">{c.name}</div>
+          <div className="flex items-center gap-1">
+            <span className="text-[11px] font-bold text-foreground">⭐ {c.rating}</span>
+            <span className="text-[11px] text-otj-text">({c.jobs.replace(' jobs', '')})</span>
           </div>
         </div>
-      </div>
-      <div className="p-3">
-        <div className="text-sm font-extrabold tracking-[-0.03em] mb-0.5">{c.name}</div>
         <div className="text-[11px] text-otj-text mb-1.5">{c.role}</div>
-        <div className="flex items-center gap-1.5 mb-2.5">
-          <span className="text-[11px] font-bold text-foreground">⭐ {c.rating}</span>
+        <div className="flex items-center gap-2 text-[11px] text-otj-text mb-2.5">
+          <span className="flex items-center gap-1">👥 {c.jobs}</span>
           <span className="w-[3px] h-[3px] rounded-full bg-otj-muted" />
-          <span className="text-[11px] text-otj-text">{c.jobs}</span>
+          <span className="flex items-center gap-1">📍 Cairo, EG</span>
         </div>
-        <div className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-block ${
-          c.avail.includes('now') ? 'bg-otj-green-bg text-otj-green border border-otj-green-border' : 'bg-otj-orange-bg text-otj-orange'
-        }`}>{c.avail}</div>
-        <div className="flex gap-1.5 mt-2.5">
-          <button onClick={(e) => { e.stopPropagation(); showToast('Opening full profile…'); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-border bg-transparent text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">View</button>
-          <button onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-primary bg-primary text-primary-foreground text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:bg-primary/90">Book</button>
+        <div className="flex gap-1.5">
+          <button onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-primary bg-primary text-primary-foreground text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:bg-primary/90">Book Now</button>
+          <button onClick={(e) => { e.stopPropagation(); showToast('Opening full profile…'); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-border bg-transparent text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">View Profile</button>
         </div>
       </div>
     </div>
