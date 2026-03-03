@@ -20,6 +20,7 @@ export interface PhaseData {
   num: number;
   title: string;
   status: 'complete' | 'active' | 'locked';
+  deadline?: string; // ISO date string
   tasks: { text: string; done: boolean; due: string }[];
 }
 

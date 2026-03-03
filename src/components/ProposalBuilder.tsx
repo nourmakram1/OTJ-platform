@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { PhaseData, ProjectData, PaymentMilestone, PaymentMethod } from '../context/ProjectContext';
 
 interface ProposalBuilderProps {
@@ -9,7 +15,7 @@ interface ProposalBuilderProps {
 interface DraftPhase {
   title: string;
   tasks: string[];
-  deadline: string;
+  deadline?: Date;
 }
 
 interface DraftMilestone {
@@ -26,7 +32,7 @@ const PRESET_SPLITS = [
 
 export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSubmit }) => {
   const [phases, setPhases] = useState<DraftPhase[]>([
-    { title: 'Pre-Production', tasks: [''], deadline: '' },
+    { title: 'Pre-Production', tasks: [''], deadline: undefined },
   ]);
   const [deliverables, setDeliverables] = useState<string[]>(['']);
   const [price, setPrice] = useState(project.budget.replace(/[^0-9]/g, ''));
@@ -40,10 +46,10 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
   const [accountNumber, setAccountNumber] = useState('');
 
   // Phase helpers
-  const addPhase = () => setPhases(prev => [...prev, { title: '', tasks: [''], deadline: '' }]);
+  const addPhase = () => setPhases(prev => [...prev, { title: '', tasks: [''], deadline: undefined }]);
   const removePhase = (idx: number) => { if (phases.length > 1) setPhases(prev => prev.filter((_, i) => i !== idx)); };
   const updatePhaseTitle = (idx: number, title: string) => setPhases(prev => prev.map((p, i) => i === idx ? { ...p, title } : p));
-  const updatePhaseDeadline = (idx: number, deadline: string) => setPhases(prev => prev.map((p, i) => i === idx ? { ...p, deadline } : p));
+  const updatePhaseDeadline = (idx: number, date: Date | undefined) => setPhases(prev => prev.map((p, i) => i === idx ? { ...p, deadline: date } : p));
   const addTask = (pi: number) => setPhases(prev => prev.map((p, i) => i === pi ? { ...p, tasks: [...p.tasks, ''] } : p));
   const removeTask = (pi: number, ti: number) => setPhases(prev => prev.map((p, i) => { if (i !== pi || p.tasks.length <= 1) return p; return { ...p, tasks: p.tasks.filter((_, j) => j !== ti) }; }));
   const updateTask = (pi: number, ti: number, text: string) => setPhases(prev => prev.map((p, i) => { if (i !== pi) return p; return { ...p, tasks: p.tasks.map((t, j) => j === ti ? text : t) }; }));
@@ -56,9 +62,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
   // Milestone helpers
   const selectPreset = (idx: number) => {
     setSelectedSplit(idx);
-    if (idx < PRESET_SPLITS.length - 1) {
-      setMilestones([...PRESET_SPLITS[idx].milestones]);
-    }
+    if (idx < PRESET_SPLITS.length - 1) setMilestones([...PRESET_SPLITS[idx].milestones]);
   };
   const addMilestone = () => setMilestones(prev => [...prev, { label: '', percentage: '' }]);
   const removeMilestone = (idx: number) => { if (milestones.length > 1) setMilestones(prev => prev.filter((_, i) => i !== idx)); };
@@ -66,9 +70,19 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
     setMilestones(prev => prev.map((m, i) => i === idx ? { ...m, [field]: field === 'percentage' ? val.replace(/[^0-9]/g, '') : val } : m));
   };
 
+  // Move phase up/down for reordering
+  const movePhase = (idx: number, dir: -1 | 1) => {
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= phases.length) return;
+    setPhases(prev => {
+      const arr = [...prev];
+      [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+      return arr;
+    });
+  };
+
   const totalPercentage = milestones.reduce((sum, m) => sum + (parseInt(m.percentage) || 0), 0);
   const numericPrice = parseInt(price) || 0;
-
   const paymentMethodValid = paymentType === 'instapay' ? instapayHandle.trim().length > 0 : (bankName.trim() && accountName.trim() && accountNumber.trim());
 
   const canSubmit = phases.every(p => p.title.trim() && p.tasks.some(t => t.trim())) &&
@@ -84,7 +98,12 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
       num: i + 1,
       title: p.title,
       status: 'locked' as const,
-      tasks: p.tasks.filter(t => t.trim()).map(t => ({ text: t, done: false, due: p.deadline || project.deadline })),
+      deadline: p.deadline ? p.deadline.toISOString() : undefined,
+      tasks: p.tasks.filter(t => t.trim()).map(t => ({
+        text: t,
+        done: false,
+        due: p.deadline ? format(p.deadline, 'MMM d') : project.deadline,
+      })),
     }));
     const cleanDeliverables = deliverables.filter(d => d.trim());
     const paymentMilestones: PaymentMilestone[] = milestones.map(m => ({
@@ -106,7 +125,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
         <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[14px] p-4">
           <div className="text-[14px] font-extrabold text-otj-yellow mb-1">📝 Write Your Proposal</div>
           <div className="text-[12px] text-otj-text leading-relaxed">
-            Define phases, tasks, deliverables and pricing based on the client's brief. Once sent, the client will review and approve before the project begins.
+            Define phases, tasks, deliverables and pricing. Deadlines sync to your dashboard schedule. Drag phases to reorder.
           </div>
         </div>
 
@@ -120,9 +139,31 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
             {phases.map((phase, pi) => (
               <div key={pi} className="bg-card border-[1.5px] border-border rounded-[14px] overflow-hidden">
                 <div className="p-3.5 px-4 flex items-center gap-3 border-b border-border bg-otj-off/50">
+                  {/* Reorder buttons */}
+                  <div className="flex flex-col gap-0.5 shrink-0">
+                    <button onClick={() => movePhase(pi, -1)} disabled={pi === 0} className={`text-[10px] leading-none cursor-pointer ${pi === 0 ? 'text-otj-light' : 'text-otj-muted hover:text-foreground'}`}>▲</button>
+                    <button onClick={() => movePhase(pi, 1)} disabled={pi === phases.length - 1} className={`text-[10px] leading-none cursor-pointer ${pi === phases.length - 1 ? 'text-otj-light' : 'text-otj-muted hover:text-foreground'}`}>▼</button>
+                  </div>
                   <div className="w-8 h-8 rounded-lg bg-otj-blue text-primary-foreground flex items-center justify-center text-sm font-bold shrink-0">{pi + 1}</div>
                   <input type="text" value={phase.title} onChange={e => updatePhaseTitle(pi, e.target.value)} placeholder="Phase title (e.g. Pre-Production)" className="flex-1 text-[13.5px] font-extrabold tracking-[-0.02em] bg-transparent border-none outline-none placeholder:text-otj-muted" />
-                  <input type="text" value={phase.deadline} onChange={e => updatePhaseDeadline(pi, e.target.value)} placeholder="Deadline" className="w-[100px] text-[11px] font-bold text-otj-text bg-transparent border border-border rounded-lg px-2.5 py-1.5 outline-none placeholder:text-otj-muted text-center" />
+                  {/* Date picker */}
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className={cn("h-8 px-2.5 text-[11px] font-bold rounded-lg gap-1.5 border-border", !phase.deadline && "text-otj-muted")}>
+                        <CalendarIcon className="h-3 w-3" />
+                        {phase.deadline ? format(phase.deadline, 'MMM d, yyyy') : 'Set deadline'}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="end">
+                      <Calendar
+                        mode="single"
+                        selected={phase.deadline}
+                        onSelect={(date) => updatePhaseDeadline(pi, date)}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
                   {phases.length > 1 && (
                     <button onClick={() => removePhase(pi)} className="text-otj-muted hover:text-foreground text-sm cursor-pointer">✕</button>
                   )}
@@ -167,7 +208,6 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
         <div>
           <div className="text-[16px] font-extrabold tracking-[-0.03em] mb-3">Pricing & Payment Schedule</div>
           <div className="bg-card border border-border rounded-[14px] p-4">
-            {/* Total price */}
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Total Price</div>
@@ -181,8 +221,6 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
                 <div className="text-[16px] font-extrabold text-otj-text">{project.budget}</div>
               </div>
             </div>
-
-            {/* Split presets */}
             <div className="border-t border-border pt-4">
               <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">Payment Split</div>
               <div className="flex gap-2 mb-3">
@@ -192,8 +230,6 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
                   }`}>{preset.label}</button>
                 ))}
               </div>
-
-              {/* Milestone rows */}
               <div className="flex flex-col gap-2">
                 {milestones.map((m, i) => (
                   <div key={i} className="flex items-center gap-2.5 bg-otj-off/50 rounded-lg p-2.5 px-3">
@@ -216,16 +252,12 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
                 <button onClick={addMilestone} className="text-[11.5px] font-semibold text-otj-blue cursor-pointer text-left mt-2 hover:underline">+ Add milestone</button>
               )}
               {totalPercentage !== 100 && (
-                <div className={`text-[11px] font-bold mt-2 ${totalPercentage > 100 ? 'text-destructive' : 'text-otj-yellow'}`}>
-                  Total: {totalPercentage}% — must equal 100%
-                </div>
+                <div className={`text-[11px] font-bold mt-2 ${totalPercentage > 100 ? 'text-destructive' : 'text-otj-yellow'}`}>Total: {totalPercentage}% — must equal 100%</div>
               )}
               {totalPercentage === 100 && (
                 <div className="text-[11px] font-bold mt-2 text-otj-green">✓ Total: 100%</div>
               )}
             </div>
-
-            {/* OTJ Fee */}
             {numericPrice > 0 && (
               <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
                 <div className="text-[10px] text-otj-text">OTJ Fee (5%)</div>
@@ -248,7 +280,6 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
                 paymentType === 'bank' ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border text-otj-text hover:border-foreground'
               }`}>🏦 Bank Transfer</button>
             </div>
-
             {paymentType === 'instapay' ? (
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">InstaPay Handle / Phone</div>
@@ -290,7 +321,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
         </div>
       </div>
 
-      {/* Right sidebar — Brief summary */}
+      {/* Right sidebar — Brief summary + Schedule preview */}
       <div className="flex flex-col gap-4">
         <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4">
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-blue mb-3">Client's Brief</div>
@@ -309,6 +340,33 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
           ))}
         </div>
 
+        {/* Schedule preview */}
+        <div className="bg-card border border-border rounded-[14px] p-4">
+          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">📅 Schedule Preview</div>
+          {phases.filter(p => p.title.trim()).length === 0 ? (
+            <div className="text-[12px] text-otj-muted text-center py-2">Add phases to see schedule</div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {phases.map((p, i) => p.title.trim() && (
+                <div key={i} className="flex items-center gap-2.5 p-2 rounded-lg bg-otj-off/50">
+                  <div className="w-6 h-6 rounded-md bg-otj-blue text-primary-foreground flex items-center justify-center text-[10px] font-bold shrink-0">{i + 1}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[11px] font-bold truncate">{p.title}</div>
+                    <div className="text-[10px] text-otj-muted">
+                      {p.deadline ? format(p.deadline, 'MMM d, yyyy') : 'No deadline set'}
+                    </div>
+                  </div>
+                  {p.deadline && (
+                    <div className="text-[10px] font-bold text-otj-blue shrink-0">
+                      {Math.max(0, Math.ceil((p.deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24)))}d
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         <div className="bg-card border border-border rounded-[14px] p-4">
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">Project Info</div>
           {[
@@ -325,30 +383,19 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
 
         <div className="bg-card border border-border rounded-[14px] p-4">
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">Proposal Summary</div>
-          <div className="flex items-center justify-between py-1.5 border-b border-border">
-            <div className="text-[11px] text-otj-text">Phases</div>
-            <div className="text-[12px] font-bold">{phases.filter(p => p.title.trim()).length}</div>
-          </div>
-          <div className="flex items-center justify-between py-1.5 border-b border-border">
-            <div className="text-[11px] text-otj-text">Total Tasks</div>
-            <div className="text-[12px] font-bold">{phases.reduce((acc, p) => acc + p.tasks.filter(t => t.trim()).length, 0)}</div>
-          </div>
-          <div className="flex items-center justify-between py-1.5 border-b border-border">
-            <div className="text-[11px] text-otj-text">Deliverables</div>
-            <div className="text-[12px] font-bold">{deliverables.filter(d => d.trim()).length}</div>
-          </div>
-          <div className="flex items-center justify-between py-1.5 border-b border-border">
-            <div className="text-[11px] text-otj-text">Payment Split</div>
-            <div className="text-[12px] font-bold">{milestones.map(m => `${m.percentage}%`).join(' / ')}</div>
-          </div>
-          <div className="flex items-center justify-between py-1.5 border-b border-border">
-            <div className="text-[11px] text-otj-text">Payment Method</div>
-            <div className="text-[12px] font-bold">{paymentType === 'instapay' ? '📱 InstaPay' : '🏦 Bank'}</div>
-          </div>
-          <div className="flex items-center justify-between py-1.5">
-            <div className="text-[11px] text-otj-text">Price</div>
-            <div className="text-[12px] font-extrabold">{numericPrice ? `${numericPrice.toLocaleString()} EGP` : '—'}</div>
-          </div>
+          {[
+            { label: 'Phases', val: String(phases.filter(p => p.title.trim()).length) },
+            { label: 'Total Tasks', val: String(phases.reduce((acc, p) => acc + p.tasks.filter(t => t.trim()).length, 0)) },
+            { label: 'Deliverables', val: String(deliverables.filter(d => d.trim()).length) },
+            { label: 'Payment Split', val: milestones.map(m => `${m.percentage}%`).join(' / ') },
+            { label: 'Payment Method', val: paymentType === 'instapay' ? '📱 InstaPay' : '🏦 Bank' },
+            { label: 'Price', val: numericPrice ? `${numericPrice.toLocaleString()} EGP` : '—' },
+          ].map((f, i) => (
+            <div key={i} className={`flex items-center justify-between py-1.5 ${i < 5 ? 'border-b border-border' : ''}`}>
+              <div className="text-[11px] text-otj-text">{f.label}</div>
+              <div className={`text-[12px] ${i === 5 ? 'font-extrabold' : 'font-bold'}`}>{f.val}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
