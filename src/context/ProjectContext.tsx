@@ -49,6 +49,16 @@ export interface MeetingData {
   location?: string;
 }
 
+export interface AttachmentData {
+  id: string;
+  name: string;
+  size: string;
+  type: string;
+  url: string;
+  uploadedAt: string;
+  icon: string;
+}
+
 export interface ProjectData {
   id: string;
   icon: string;
@@ -72,6 +82,7 @@ export interface ProjectData {
   timeline: { label: string; date: string; status: 'complete' | 'active' | 'upcoming' | 'locked' }[];
   createdAt: string;
   meetings: MeetingData[];
+  attachments: AttachmentData[];
 }
 
 interface ProjectContextType {
@@ -83,6 +94,7 @@ interface ProjectContextType {
   submitProposal: (projectId: string, phases: PhaseData[], deliverables: string[], price: string, milestones: PaymentMilestone[], paymentMethod: PaymentMethod) => void;
   updateProject: (projectId: string, updates: Partial<ProjectData>) => void;
   addMeeting: (projectId: string, meeting: Omit<MeetingData, 'id'>) => void;
+  addAttachment: (projectId: string, attachment: Omit<AttachmentData, 'id'>) => void;
   allMeetings: MeetingData[];
 }
 
@@ -162,6 +174,10 @@ const defaultActiveProjects: ProjectData[] = [
     meetings: [
       { id: 'meet-1', title: 'Shoot Day Briefing', date: '2026-03-14', time: '10:00 AM', type: 'meeting', projectId: 'proj-existing-1', clientName: 'Randa Hatem', location: 'Studio A' },
     ],
+    attachments: [
+      { id: 'att-1', name: 'Mood Board v1.jpg', size: '2.4 MB', type: 'image/jpeg', url: '', uploadedAt: 'Mar 5', icon: '🌆' },
+      { id: 'att-2', name: 'Shot List.pdf', size: '340 KB', type: 'application/pdf', url: '', uploadedAt: 'Mar 6', icon: '📄' },
+    ],
   },
   {
     id: 'proj-existing-2',
@@ -188,6 +204,7 @@ const defaultActiveProjects: ProjectData[] = [
     meetings: [
       { id: 'meet-2', title: 'Rough Cut Review Call', date: '2026-03-21', time: '2:00 PM', type: 'call', projectId: 'proj-existing-2', clientName: 'Ahmed Karim' },
     ],
+    attachments: [],
   },
   {
     id: 'proj-existing-3',
@@ -212,6 +229,7 @@ const defaultActiveProjects: ProjectData[] = [
     timeline: [],
     createdAt: 'March 20, 2026',
     meetings: [],
+    attachments: [],
   },
 ];
 
@@ -274,6 +292,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       ],
       createdAt: dateStr,
       meetings: [],
+      attachments: [],
     };
 
     setPendingBriefs(prev => prev.filter(b => b.id !== briefId));
@@ -339,12 +358,20 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return activeProjects.flatMap(p => p.meetings.map(m => ({ ...m, projectId: p.id })));
   }, [activeProjects]);
 
+  const addAttachment = useCallback((projectId: string, attachment: Omit<AttachmentData, 'id'>) => {
+    const newAtt: AttachmentData = { ...attachment, id: `att-${Date.now()}` };
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      return { ...p, attachments: [...p.attachments, newAtt] };
+    }));
+  }, []);
+
   const getProject = useCallback((id: string): ProjectData | undefined => {
     return activeProjects.find(p => p.id === id);
   }, [activeProjects]);
 
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject, addMeeting, allMeetings }}>
+    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, allMeetings }}>
       {children}
     </ProjectContext.Provider>
   );
