@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { showToast } from './Toast';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { categoryNiches } from '../data/niches';
 
 const portfolioImages = [
   'from-[#2a2a2a] to-[#444]',
@@ -11,23 +12,26 @@ const portfolioImages = [
 ];
 
 const creatives = [
-  { id: 'nour', emoji: '👩‍🎨', name: 'Nour Makram', role: 'Photographer . Space Photographer. E-commercial', price: 'from 2,000 EGP', unit: '/ half day', rating: '4.9', jobs: '127 jobs', avail: 'Available now', bg: 'from-[#2a2a2a] to-[#555]' },
-  { id: 'karim', emoji: '✏️', name: 'Karim Samy', role: 'Script Writer & Copywriter', price: 'from 1,500 EGP', unit: '/ project', rating: '4.8', jobs: '89 jobs', avail: 'Available now', bg: 'from-[#1a3a5c] to-[#2d5a8c]' },
-  { id: 'sara', emoji: '🎨', name: 'Sara Ahmed', role: 'Brand Designer', price: 'from 3,000 EGP', unit: '/ project', rating: '5.0', jobs: '54 jobs', avail: 'Next week', bg: 'from-[#5c1a3a] to-[#8c2d5a]' },
-  { id: 'omar', emoji: '🎥', name: 'Omar Hassan', role: 'Cinematographer & Editor', price: 'from 4,000 EGP', unit: '/ day', rating: '4.7', jobs: '203 jobs', avail: 'Available now', bg: 'from-[#3a1a5c] to-[#5a2d8c]' },
+  { id: 'nour', emoji: '👩‍🎨', name: 'Nour Makram', role: 'Photographer . Space Photographer. E-commercial', niche: 'E-commerce Photographer', category: '📸 Photography', price: 'from 2,000 EGP', unit: '/ half day', rating: '4.9', jobs: '127 jobs', avail: 'Available now', bg: 'from-[#2a2a2a] to-[#555]' },
+  { id: 'karim', emoji: '✏️', name: 'Karim Samy', role: 'Script Writer & Copywriter', niche: 'Script Writer', category: '✏️ Writing', price: 'from 1,500 EGP', unit: '/ project', rating: '4.8', jobs: '89 jobs', avail: 'Available now', bg: 'from-[#1a3a5c] to-[#2d5a8c]' },
+  { id: 'sara', emoji: '🎨', name: 'Sara Ahmed', role: 'Brand Designer', niche: 'Brand Designer', category: '🎨 Design & Branding', price: 'from 3,000 EGP', unit: '/ project', rating: '5.0', jobs: '54 jobs', avail: 'Next week', bg: 'from-[#5c1a3a] to-[#8c2d5a]' },
+  { id: 'omar', emoji: '🎥', name: 'Omar Hassan', role: 'Cinematographer & Editor', niche: 'Commercial Videographer', category: '🎥 Videography', price: 'from 4,000 EGP', unit: '/ day', rating: '4.7', jobs: '203 jobs', avail: 'Available now', bg: 'from-[#3a1a5c] to-[#5a2d8c]' },
 ];
 
 const moreCreatives = [
-  { id: 'layla', emoji: '💄', name: 'Layla Nabil', role: 'MUA & Stylist', price: 'from 1,200 EGP', unit: '/ session', rating: '4.6', jobs: '78 jobs', avail: 'Available now', bg: 'from-[#5c3a1a] to-[#8c5a2d]' },
-  { id: 'ahmed', emoji: '📱', name: 'Ahmed Karim', role: 'Social Media Manager', price: 'from 2,500 EGP', unit: '/ month', rating: '4.5', jobs: '45 jobs', avail: 'Available now', bg: 'from-[#1a5c3a] to-[#2d8c5a]' },
-  { id: 'dina', emoji: '🎬', name: 'Dina Youssef', role: 'Creative Director', price: 'from 5,000 EGP', unit: '/ project', rating: '4.9', jobs: '112 jobs', avail: 'Next week', bg: 'from-[#4a2a1a] to-[#6a4a2a]' },
-  { id: 'tarek', emoji: '🎪', name: 'Tarek Saad', role: 'Event Producer', price: 'from 6,000 EGP', unit: '/ event', rating: '4.8', jobs: '67 jobs', avail: 'Available now', bg: 'from-[#2a2a4a] to-[#3a3a6a]' },
+  { id: 'layla', emoji: '💄', name: 'Layla Nabil', role: 'MUA & Stylist', niche: 'Makeup Artist', category: '👗 Fashion & Style', price: 'from 1,200 EGP', unit: '/ session', rating: '4.6', jobs: '78 jobs', avail: 'Available now', bg: 'from-[#5c3a1a] to-[#8c5a2d]' },
+  { id: 'ahmed', emoji: '📱', name: 'Ahmed Karim', role: 'Social Media Manager', niche: 'Social Media Manager', category: '📊 Marketing', price: 'from 2,500 EGP', unit: '/ month', rating: '4.5', jobs: '45 jobs', avail: 'Available now', bg: 'from-[#1a5c3a] to-[#2d8c5a]' },
+  { id: 'dina', emoji: '🎬', name: 'Dina Youssef', role: 'Creative Director', niche: 'Commercial Videographer', category: '🎥 Videography', price: 'from 5,000 EGP', unit: '/ project', rating: '4.9', jobs: '112 jobs', avail: 'Next week', bg: 'from-[#4a2a1a] to-[#6a4a2a]' },
+  { id: 'tarek', emoji: '🎪', name: 'Tarek Saad', role: 'Event Producer', niche: 'Event Photographer', category: '📸 Photography', price: 'from 6,000 EGP', unit: '/ event', rating: '4.8', jobs: '67 jobs', avail: 'Available now', bg: 'from-[#2a2a4a] to-[#3a3a6a]' },
 ];
+
+const allCreatives = [...creatives, ...moreCreatives];
 
 const filters = ['All', '📸 Photography', '🎥 Videography', '🎨 Design & Branding', '✏️ Writing', '📊 Marketing', '👗 Fashion & Style', '💻 Tech & Digital'];
 
 interface ExploreScreenProps {
   onOpenBrief: (creativeId: string) => void;
+  searchQuery?: string;
 }
 
 const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
@@ -59,7 +63,6 @@ const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
         ))}
       </div>
 
-      {/* Navigation arrows - visible on hover */}
       <button
         onClick={prev}
         className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 z-[2] hover:bg-card"
@@ -73,7 +76,6 @@ const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
         <ChevronRight className="w-4 h-4 text-foreground" />
       </button>
 
-      {/* Dot indicators */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-[2]">
         {slides.map((_, i) => (
           <button
@@ -89,9 +91,43 @@ const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
   );
 };
 
-export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief }) => {
+export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searchQuery = '' }) => {
   const [activeFilter, setActiveFilter] = useState('All');
+  const [activeNiche, setActiveNiche] = useState<string | null>(null);
   const [saved, setSaved] = useState<Set<string>>(new Set());
+
+  // Get niches for the selected category
+  const niches = activeFilter !== 'All' ? categoryNiches[activeFilter] || [] : [];
+
+  // Filter creatives based on category, niche, and search
+  const filteredCreatives = useMemo(() => {
+    let result = allCreatives;
+
+    if (activeFilter !== 'All') {
+      result = result.filter(c => c.category === activeFilter);
+    }
+
+    if (activeNiche) {
+      result = result.filter(c => c.niche === activeNiche);
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(c =>
+        c.name.toLowerCase().includes(q) ||
+        c.role.toLowerCase().includes(q) ||
+        c.niche.toLowerCase().includes(q) ||
+        c.category.toLowerCase().includes(q)
+      );
+    }
+
+    return result;
+  }, [activeFilter, activeNiche, searchQuery]);
+
+  const handleFilterChange = (f: string) => {
+    setActiveFilter(f);
+    setActiveNiche(null); // reset niche when switching category
+  };
 
   const toggleSave = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -101,17 +137,17 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief }) => 
     showToast(next.has(id) ? '♥ Saved to Collections' : 'Removed from Collections');
   };
 
-  const CreativeCard = ({ c }: { c: typeof creatives[0] }) => (
+  const selectedNicheData = niches.find(n => n.label === activeNiche);
+
+  const CreativeCard = ({ c }: { c: typeof allCreatives[0] }) => (
     <div onClick={() => onOpenBrief(c.id)} className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 relative hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-0.5">
       <div className="relative">
         <ImageCarousel bg={c.bg} emoji={c.emoji} />
 
-        {/* Availability badge - top left */}
         <div className={`absolute top-2.5 left-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full z-[2] ${
           c.avail.includes('now') ? 'bg-otj-green-bg text-otj-green border border-otj-green-border' : 'bg-otj-orange-bg text-otj-orange'
         }`}>{c.avail}</div>
 
-        {/* Save button - top right */}
         <button onClick={(e) => toggleSave(e, c.id)} className="absolute top-2.5 right-2.5 w-[30px] h-[30px] rounded-full bg-card/90 border-none cursor-pointer text-sm flex items-center justify-center transition-all duration-150 z-[2] hover:bg-card hover:scale-110">
           {saved.has(c.id) ? '♥' : '♡'}
         </button>
@@ -141,11 +177,12 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief }) => 
 
   return (
     <div className="p-[16px_16px_80px] md:p-[20px_24px_80px]">
-      <div className="flex gap-1.5 mb-5 overflow-x-auto pb-1 hide-scrollbar">
+      {/* Category filters */}
+      <div className="flex gap-1.5 mb-3 overflow-x-auto pb-1 hide-scrollbar">
         {filters.map(f => (
           <div
             key={f}
-            onClick={() => setActiveFilter(f)}
+            onClick={() => handleFilterChange(f)}
             className={`text-[12.5px] font-semibold px-4 py-[7px] rounded-full border-[1.5px] cursor-pointer whitespace-nowrap transition-all duration-150 shrink-0 ${
               activeFilter === f
                 ? 'bg-primary border-primary text-primary-foreground'
@@ -157,21 +194,80 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief }) => 
         ))}
       </div>
 
-      <div className="flex items-baseline justify-between mb-3">
-        <div className="text-lg font-extrabold tracking-[-0.04em]">Featured This Week</div>
-        <div className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer">View all →</div>
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2 md:gap-2.5 mb-7">
-        {creatives.map(c => <CreativeCard key={c.id} c={c} />)}
-      </div>
+      {/* Niche sub-filters (when a category is selected) */}
+      {niches.length > 0 && (
+        <div className="animate-fade-up mb-4">
+          <div className="flex gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
+            <div
+              onClick={() => setActiveNiche(null)}
+              className={`text-[11.5px] font-semibold px-3.5 py-[6px] rounded-full border-[1.5px] cursor-pointer whitespace-nowrap transition-all duration-150 shrink-0 ${
+                !activeNiche
+                  ? 'bg-otj-blue-bg border-otj-blue-border text-otj-blue'
+                  : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
+              }`}
+            >
+              All {activeFilter.replace(/^.\s/, '')}
+            </div>
+            {niches.map(n => (
+              <div
+                key={n.label}
+                onClick={() => setActiveNiche(activeNiche === n.label ? null : n.label)}
+                className={`text-[11.5px] font-semibold px-3.5 py-[6px] rounded-full border-[1.5px] cursor-pointer whitespace-nowrap transition-all duration-150 shrink-0 ${
+                  activeNiche === n.label
+                    ? 'bg-otj-blue-bg border-otj-blue-border text-otj-blue'
+                    : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
+                }`}
+              >
+                {n.label}
+              </div>
+            ))}
+          </div>
 
-      <div className="flex items-baseline justify-between mb-3">
-        <div className="text-lg font-extrabold tracking-[-0.04em]">Recently Active</div>
-        <div className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer">View all →</div>
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2 md:gap-2.5 mb-7">
-        {moreCreatives.map(c => <CreativeCard key={c.id} c={c} />)}
-      </div>
+          {/* Skill tags for selected niche */}
+          {selectedNicheData && (
+            <div className="animate-fade-up mt-3 p-3.5 bg-card border border-border rounded-[14px]">
+              <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Skill Tags</div>
+              <div className="flex flex-wrap gap-1.5">
+                {selectedNicheData.skills.map(skill => (
+                  <span
+                    key={skill}
+                    className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-otj-off border border-border text-otj-text"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Search results info */}
+      {searchQuery.trim() && (
+        <div className="text-[12px] text-otj-muted mb-3">
+          {filteredCreatives.length} result{filteredCreatives.length !== 1 ? 's' : ''} for "<span className="text-foreground font-semibold">{searchQuery}</span>"
+        </div>
+      )}
+
+      {filteredCreatives.length === 0 ? (
+        <div className="text-center py-16">
+          <div className="text-4xl mb-3">🔍</div>
+          <div className="text-sm font-bold text-foreground mb-1">No creatives found</div>
+          <div className="text-[12px] text-otj-text">Try adjusting your filters or search query</div>
+        </div>
+      ) : (
+        <>
+          <div className="flex items-baseline justify-between mb-3">
+            <div className="text-lg font-extrabold tracking-[-0.04em]">
+              {activeNiche || (activeFilter !== 'All' ? activeFilter.replace(/^.\s/, '') : 'Featured This Week')}
+            </div>
+            <div className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer">View all →</div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2 md:gap-2.5 mb-7">
+            {filteredCreatives.map(c => <CreativeCard key={c.id} c={c} />)}
+          </div>
+        </>
+      )}
     </div>
   );
 };

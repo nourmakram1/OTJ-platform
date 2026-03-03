@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { NotifPopup } from './BookingModals';
 import { showToast } from './Toast';
+import { Search, X } from 'lucide-react';
 
 interface NavBarProps {
   onAcceptBrief?: () => void;
   onOpenCounter?: () => void;
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
 }
 
-export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter }) => {
+export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, searchQuery = '', onSearchChange }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showNotif, setShowNotif] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const isExplore = location.pathname === '/explore';
+
+  useEffect(() => {
+    if (showSearch && searchInputRef.current) searchInputRef.current.focus();
+  }, [showSearch]);
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -49,7 +59,37 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter }) 
           )}
         </div>
 
+        {/* Desktop search bar (explore only) */}
+        {isExplore && (
+          <div className="hidden md:flex items-center flex-1 max-w-[320px] ml-2">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-otj-muted" />
+              <input
+                ref={searchInputRef}
+                value={searchQuery}
+                onChange={e => onSearchChange?.(e.target.value)}
+                placeholder="Search creatives, skills…"
+                className="w-full pl-8 pr-8 py-[7px] rounded-full border-[1.5px] border-border bg-otj-off text-[12.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card placeholder:text-otj-muted"
+              />
+              {searchQuery && (
+                <button onClick={() => onSearchChange?.('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-otj-muted hover:text-foreground">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="ml-auto flex items-center gap-2 md:gap-2.5">
+          {/* Mobile search toggle (explore only) */}
+          {isExplore && (
+            <button
+              onClick={() => setShowSearch(prev => !prev)}
+              className="md:hidden p-1.5 rounded-lg transition-all duration-150 hover:bg-otj-off"
+            >
+              <Search className="w-[18px] h-[18px] text-otj-text" />
+            </button>
+          )}
           {/* Messages icon */}
           <div onClick={() => navigate('/messages')} className="relative cursor-pointer p-1.5 rounded-lg transition-all duration-150 hover:bg-otj-off">
             <span className="text-lg">💬</span>
@@ -82,6 +122,31 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter }) 
           >☰</button>
         </div>
       </nav>
+
+      {/* Mobile search bar dropdown */}
+      {showSearch && isExplore && (
+        <div className="md:hidden fixed top-[52px] left-0 right-0 bg-card border-b border-border z-[99] p-3 animate-fade-up">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-otj-muted" />
+            <input
+              autoFocus
+              value={searchQuery}
+              onChange={e => onSearchChange?.(e.target.value)}
+              placeholder="Search creatives, skills…"
+              className="w-full pl-8 pr-8 py-2.5 rounded-full border-[1.5px] border-border bg-otj-off text-[13px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card placeholder:text-otj-muted"
+            />
+            {searchQuery ? (
+              <button onClick={() => onSearchChange?.('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-otj-muted hover:text-foreground">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            ) : (
+              <button onClick={() => setShowSearch(false)} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-otj-muted hover:text-foreground">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Mobile bottom nav */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-[100] h-[56px] bg-card border-t border-border flex items-center justify-around px-2">

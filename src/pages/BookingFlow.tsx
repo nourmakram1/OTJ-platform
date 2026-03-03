@@ -25,6 +25,7 @@ const BookingFlow = () => {
   const [showCounter, setShowCounter] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [briefCreative, setBriefCreative] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   React.useEffect(() => {
     setActiveTab(getTabFromPath());
@@ -50,10 +51,12 @@ const BookingFlow = () => {
       <NavBar
         onAcceptBrief={() => {}}
         onOpenCounter={() => setShowCounter(true)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
 
       <div className="min-h-screen pt-[52px]">
-        {activeTab === 'explore' && <ExploreScreen onOpenBrief={openBrief} />}
+        {activeTab === 'explore' && <ExploreScreen onOpenBrief={openBrief} searchQuery={searchQuery} />}
         {activeTab === 'messages' && <MessagesScreen onOpenCounter={() => setShowCounter(true)} />}
         {activeTab === 'dashboard' && (
           <DashboardScreen
