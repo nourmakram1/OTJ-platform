@@ -12,6 +12,8 @@ const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [doneSteps, setDoneSteps] = useState<Set<number>>(new Set());
   const [showComplete, setShowComplete] = useState(false);
+  const [selectedProfession, setSelectedProfession] = useState('Photographer');
+  const [selectedNiches, setSelectedNiches] = useState<string[]>(['Fashion Editorial', 'E-Commerce']);
 
   const isReady = REQUIRED_STEPS.every(s => doneSteps.has(s));
 
@@ -80,8 +82,8 @@ const Onboarding = () => {
       <div className="min-h-screen pt-[52px]">
         <OnboardingSidebar currentStep={currentStep} doneSteps={doneSteps} isReady={isReady} onStepClick={goToStep} onGoLive={handleGoLive} />
         <main className="ml-[260px] px-12 py-10 max-w-[900px]">
-          {currentStep === 1 && <Step1Panel onNext={() => nextStep(1)} />}
-          {currentStep === 2 && <Step2Panel onNext={() => nextStep(2)} onBack={() => prevStep(2)} />}
+          {currentStep === 1 && <Step1Panel onNext={() => nextStep(1)} onSelectionsChange={(prof, niches) => { setSelectedProfession(prof); setSelectedNiches(niches); }} />}
+          {currentStep === 2 && <Step2Panel onNext={() => nextStep(2)} onBack={() => prevStep(2)} selectedProfession={selectedProfession} selectedNiches={selectedNiches} />}
           {currentStep === 3 && <Step3Panel onNext={() => nextStep(3)} onBack={() => prevStep(3)} />}
           {currentStep === 4 && <Step4Panel onNext={() => nextStep(4)} onBack={() => prevStep(4)} />}
           {currentStep === 5 && <Step5Panel onNext={() => nextStep(5)} onBack={() => prevStep(5)} />}
