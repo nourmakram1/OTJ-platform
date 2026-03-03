@@ -36,28 +36,27 @@ const ProjectProfile = () => {
     <>
       <NavBar />
       {/* Hero */}
-      <div className="bg-primary text-primary-foreground">
+      <div className="bg-card border-b border-border">
         <div className="max-w-[1100px] mx-auto px-8 py-6 pt-[72px]">
-          <div className="flex items-center gap-2 text-[12px] text-primary-foreground/50 mb-4 cursor-pointer" onClick={() => navigate('/dashboard')}>
+          <div className="flex items-center gap-2 text-[12px] text-otj-text mb-4 cursor-pointer" onClick={() => navigate('/dashboard')}>
             ← Dashboard / Projects
           </div>
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-[14px] bg-primary-foreground/10 flex items-center justify-center text-[28px] shrink-0">📸</div>
+            <div className="w-14 h-14 rounded-[14px] bg-otj-off flex items-center justify-center text-[28px] shrink-0">📸</div>
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-1">
-                <div className="text-[22px] font-extrabold tracking-[-0.04em]">Edita Re-Branding</div>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-otj-blue text-primary-foreground">Phase 2 · Active</span>
+                <div className="text-[22px] font-extrabold tracking-[-0.04em] text-foreground">Edita Re-Branding</div>
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-otj-blue-bg text-otj-blue border border-otj-blue-border">Phase 2 · Active</span>
               </div>
-              <div className="text-[13px] text-primary-foreground/60">Client: Randa Hatem · Edita Group</div>
+              <div className="text-[13px] text-otj-text">Client: Randa Hatem · Edita Group</div>
             </div>
             <div className="flex gap-2 shrink-0">
-              <button onClick={() => navigate('/messages')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-primary-foreground/20 bg-transparent text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary-foreground/10">💬 Message</button>
-              <button onClick={() => showToast('Opening deliverables…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-primary-foreground/20 bg-transparent text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary-foreground/10">📦 Deliverables</button>
-              <button onClick={() => showToast('Marking phase done…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary-foreground text-primary cursor-pointer transition-all duration-150 hover:opacity-90">✓ Mark Phase Done</button>
+              <button onClick={() => navigate('/messages')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">💬 Message</button>
+              <button onClick={() => showToast('Opening deliverables…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">📦 Deliverables</button>
+              <button onClick={() => showToast('Marking phase done…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">✓ Mark Phase Done</button>
             </div>
           </div>
-          {/* Stats strip */}
-          <div className="grid grid-cols-6 gap-3 mt-5 pt-4 border-t border-primary-foreground/10">
+          <div className="grid grid-cols-6 gap-3 mt-5 pt-4 border-t border-border">
             {[
               { label: '% Complete', val: '60%' },
               { label: 'Days Left', val: '18' },
@@ -67,8 +66,8 @@ const ProjectProfile = () => {
               { label: 'In Escrow', val: '1,750 EGP' },
             ].map((s, i) => (
               <div key={i}>
-                <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-primary-foreground/40 mb-0.5">{s.label}</div>
-                <div className="text-[14px] font-extrabold tracking-[-0.02em]">{s.val}</div>
+                <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-0.5">{s.label}</div>
+                <div className="text-[14px] font-extrabold tracking-[-0.02em] text-foreground">{s.val}</div>
               </div>
             ))}
           </div>
