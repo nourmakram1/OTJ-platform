@@ -61,7 +61,7 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
 
         {/* Desktop search bar (explore only) */}
         {isExplore && (
-          <div className="hidden md:flex items-center flex-1 max-w-[320px] ml-2">
+          <div className="hidden md:flex items-center flex-1 ml-2">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-otj-muted" />
               <input
