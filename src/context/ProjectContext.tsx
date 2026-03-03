@@ -16,6 +16,13 @@ export interface BriefData {
   usageRights: string;
 }
 
+export interface PhaseData {
+  num: number;
+  title: string;
+  status: 'complete' | 'active' | 'locked';
+  tasks: { text: string; done: boolean; due: string }[];
+}
+
 export interface ProjectData {
   id: string;
   icon: string;
@@ -29,13 +36,10 @@ export interface ProjectData {
   deadline: string;
   moodAesthetic: string;
   usageRights: string;
-  status: 'pending-deposit' | 'active' | 'complete';
-  phases: {
-    num: number;
-    title: string;
-    status: 'complete' | 'active' | 'locked';
-    tasks: { text: string; done: boolean; due: string }[];
-  }[];
+  status: 'proposal' | 'pending-deposit' | 'active' | 'complete';
+  phases: PhaseData[];
+  proposalDeliverables: string[];
+  proposalPrice: string;
   escrow: { total: string; deposited: string; held: string; fee: string };
   timeline: { label: string; date: string; status: 'complete' | 'active' | 'upcoming' | 'locked' }[];
   createdAt: string;
@@ -45,8 +49,10 @@ interface ProjectContextType {
   pendingBriefs: BriefData[];
   activeProjects: ProjectData[];
   completedProjects: { icon: string; name: string; client: string; earned: string }[];
-  acceptBrief: (briefId: string) => string; // returns new project ID
+  acceptBrief: (briefId: string) => string;
   getProject: (id: string) => ProjectData | undefined;
+  submitProposal: (projectId: string, phases: PhaseData[], deliverables: string[], price: string) => void;
+  updateProject: (projectId: string, updates: Partial<ProjectData>) => void;
 }
 
 const defaultBriefs: BriefData[] = [
@@ -91,6 +97,8 @@ const defaultActiveProjects: ProjectData[] = [
     deliverables: '40 edited photos', date: 'Mar 5', deadline: 'Mar 20',
     moodAesthetic: '', usageRights: '',
     status: 'active',
+    proposalDeliverables: ['40 edited photos', '10 lifestyle shots', '10 BTS shots'],
+    proposalPrice: '3,500 EGP',
     phases: [
       { num: 1, title: 'Pre-Production', status: 'complete', tasks: [
         { text: 'Confirm shoot location', done: true, due: 'Mar 5' },
@@ -128,6 +136,8 @@ const defaultActiveProjects: ProjectData[] = [
     deliverables: 'Campaign video assets', date: 'Mar 10', deadline: 'Mar 25',
     moodAesthetic: '', usageRights: '',
     status: 'active',
+    proposalDeliverables: ['Campaign video assets'],
+    proposalPrice: '5,200 EGP',
     phases: [
       { num: 1, title: 'Pre-Production', status: 'complete', tasks: [] },
       { num: 2, title: 'Production', status: 'complete', tasks: [] },
@@ -148,6 +158,8 @@ const defaultActiveProjects: ProjectData[] = [
     deliverables: 'Brand refresh photos', date: 'Mar 20', deadline: 'Apr 5',
     moodAesthetic: '', usageRights: '',
     status: 'active',
+    proposalDeliverables: ['Brand refresh photos'],
+    proposalPrice: '4,800 EGP',
     phases: [
       { num: 1, title: 'Pre-Production', status: 'active', tasks: [
         { text: 'Creative brief review', done: false, due: 'Mar 22' },
@@ -204,36 +216,19 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       deadline: brief.date,
       moodAesthetic: brief.moodAesthetic,
       usageRights: brief.usageRights,
-      status: 'pending-deposit',
-      phases: [
-        { num: 1, title: 'Pre-Production', status: 'active', tasks: [
-          { text: 'Review brief & requirements', done: false, due: brief.date },
-          { text: 'Prepare equipment & logistics', done: false, due: brief.date },
-          { text: 'Confirm location & schedule', done: false, due: brief.date },
-        ]},
-        { num: 2, title: 'Production', status: 'locked', tasks: [
-          { text: brief.deliverables, done: false, due: brief.date },
-        ]},
-        { num: 3, title: 'Editing & Delivery', status: 'locked', tasks: [
-          { text: 'Edit and retouch selects', done: false, due: brief.date },
-        ]},
-        { num: 4, title: 'Final Delivery', status: 'locked', tasks: [
-          { text: 'Upload final files', done: false, due: brief.date },
-          { text: 'Client sign-off', done: false, due: brief.date },
-        ]},
-      ],
+      status: 'proposal',
+      phases: [],
+      proposalDeliverables: [],
+      proposalPrice: brief.budget,
       escrow: {
         total: brief.budget,
         deposited: '0 EGP',
         held: '0 EGP',
-        fee: brief.budget !== 'Negotiable' ? `${Math.round(parseInt(brief.budget.replace(/[^0-9]/g, '')) * 0.05)} EGP` : 'TBD',
+        fee: 'TBD',
       },
       timeline: [
         { label: 'Brief Accepted', date: dateStr, status: 'complete' },
-        { label: 'Awaiting Deposit', date: dateStr, status: 'active' },
-        { label: 'Phase 1 — Pre-Production', date: brief.date, status: 'upcoming' },
-        { label: 'Production', date: brief.date, status: 'locked' },
-        { label: 'Final Delivery', date: brief.date, status: 'locked' },
+        { label: 'Proposal in Progress', date: dateStr, status: 'active' },
       ],
       createdAt: dateStr,
     };
@@ -243,12 +238,52 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return projectId;
   }, [pendingBriefs]);
 
+  const submitProposal = useCallback((projectId: string, phases: PhaseData[], deliverables: string[], price: string) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const numericPrice = parseInt(price.replace(/[^0-9]/g, ''));
+      const fee = isNaN(numericPrice) ? 'TBD' : `${Math.round(numericPrice * 0.05)} EGP`;
+      const half = isNaN(numericPrice) ? '0 EGP' : `${Math.round(numericPrice / 2).toLocaleString()} EGP`;
+      const formattedPrice = isNaN(numericPrice) ? price : `${numericPrice.toLocaleString()} EGP`;
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+      return {
+        ...p,
+        status: 'pending-deposit' as const,
+        phases: phases.map((ph, i) => ({
+          ...ph,
+          status: (i === 0 ? 'active' : 'locked') as 'active' | 'locked',
+        })),
+        proposalDeliverables: deliverables,
+        proposalPrice: formattedPrice,
+        budget: formattedPrice,
+        escrow: {
+          total: formattedPrice,
+          deposited: '0 EGP',
+          held: '0 EGP',
+          fee,
+        },
+        timeline: [
+          ...p.timeline.map(t => ({ ...t, status: 'complete' as const })),
+          { label: 'Proposal Submitted', date: today, status: 'complete' as const },
+          { label: 'Awaiting Client Approval', date: today, status: 'active' as const },
+          { label: 'Awaiting 50% Deposit', date: '', status: 'locked' as const },
+          ...phases.map(ph => ({ label: `Phase ${ph.num} — ${ph.title}`, date: '', status: 'locked' as const })),
+        ],
+      };
+    }));
+  }, []);
+
+  const updateProject = useCallback((projectId: string, updates: Partial<ProjectData>) => {
+    setActiveProjects(prev => prev.map(p => p.id === projectId ? { ...p, ...updates } : p));
+  }, []);
+
   const getProject = useCallback((id: string): ProjectData | undefined => {
     return activeProjects.find(p => p.id === id);
   }, [activeProjects]);
 
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject }}>
+    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject }}>
       {children}
     </ProjectContext.Provider>
   );
