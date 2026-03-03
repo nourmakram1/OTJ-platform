@@ -171,15 +171,17 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
         {/* Messages */}
         <div ref={threadRef} className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2.5">
           {messages.map((msg, i) => msg.type === 'calendar' ? (
-            <div key={i} className="bg-otj-blue-bg border border-otj-blue-border rounded-[10px] p-2.5 px-3 max-w-[340px] self-start">
-              <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue mb-1">📅 Schedule Detected</div>
-              <div className="text-[12.5px] font-bold text-foreground mb-1">{msg.text}</div>
-              {msg.meetingData && (
-                <div className="text-[11px] text-otj-text mb-[7px]">{msg.meetingData.date} · {msg.meetingData.time}</div>
-              )}
-              <div className="flex gap-1.5">
-                <button onClick={() => msg.meetingData && handleAddMeeting(msg.meetingData)} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full cursor-pointer transition-all duration-150 bg-otj-blue text-primary-foreground border-[1.5px] border-otj-blue">+ Add to Project Schedule</button>
-                <button className="text-[11.5px] font-bold px-3 py-[5px] rounded-full cursor-pointer transition-all duration-150 border-[1.5px] border-otj-blue-border text-otj-blue bg-card">Dismiss</button>
+            <div key={i} className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-3 px-4 max-w-[320px] self-start">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <span className="text-[14px]">📅</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue">Calendar Mention Detected</span>
+              </div>
+              <div className="text-[14px] font-extrabold tracking-[-0.02em] text-foreground mb-2">
+                {msg.meetingData ? `${msg.meetingData.title} · ${msg.meetingData.date}, ${msg.meetingData.time}` : msg.text}
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => msg.meetingData && handleAddMeeting(msg.meetingData)} className="flex-1 text-[12px] font-bold py-[7px] rounded-full cursor-pointer transition-all duration-150 bg-otj-blue text-primary-foreground">+ Add to Calendar</button>
+                <button className="flex-1 text-[12px] font-bold py-[7px] rounded-full cursor-pointer transition-all duration-150 border-[1.5px] border-otj-blue-border text-otj-blue bg-card">Dismiss</button>
               </div>
             </div>
           ) : (
