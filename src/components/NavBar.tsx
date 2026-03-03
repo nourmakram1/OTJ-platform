@@ -23,7 +23,7 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter }) 
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[100] h-[52px] backdrop-blur-[12px] border-b border-border flex items-center px-6 gap-4 bg-card-foreground">
+      <nav className="fixed top-0 left-0 right-0 z-[100] h-[52px] backdrop-blur-[12px] border-b border-border flex items-center px-6 gap-4 bg-card">
         {/* Logo */}
         <div onClick={() => navigate('/explore')} className="text-[17px] font-extrabold tracking-[-0.05em] text-foreground cursor-pointer">
           OTJ<sup className="text-[7px] align-super">™</sup>
