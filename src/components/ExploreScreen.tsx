@@ -1,91 +1,70 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { showToast } from './Toast';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { categoryNiches } from '../data/niches';
-
-const portfolioImages = [
-  'from-[#2a2a2a] to-[#444]',
-  'from-[#3a2a1a] to-[#5a4a3a]',
-  'from-[#1a2a3a] to-[#3a4a5a]',
-  'from-[#2a1a3a] to-[#4a3a5a]',
-  'from-[#3a3a1a] to-[#5a5a3a]',
-];
-
-const creatives = [
-  { id: 'nour', emoji: '👩‍🎨', name: 'Nour Makram', role: 'Photographer . Space Photographer. E-commercial', niche: 'E-commerce Photographer', category: '📸 Photography', price: 'from 2,000 EGP', unit: '/ half day', rating: '4.9', jobs: '127 jobs', avail: 'Available now', bg: 'from-[#2a2a2a] to-[#555]' },
-  { id: 'karim', emoji: '✏️', name: 'Karim Samy', role: 'Script Writer & Copywriter', niche: 'Script Writer', category: '✏️ Writing', price: 'from 1,500 EGP', unit: '/ project', rating: '4.8', jobs: '89 jobs', avail: 'Available now', bg: 'from-[#1a3a5c] to-[#2d5a8c]' },
-  { id: 'sara', emoji: '🎨', name: 'Sara Ahmed', role: 'Brand Designer', niche: 'Brand Designer', category: '🎨 Design & Branding', price: 'from 3,000 EGP', unit: '/ project', rating: '5.0', jobs: '54 jobs', avail: 'Next week', bg: 'from-[#5c1a3a] to-[#8c2d5a]' },
-  { id: 'omar', emoji: '🎥', name: 'Omar Hassan', role: 'Cinematographer & Editor', niche: 'Commercial Videographer', category: '🎥 Videography', price: 'from 4,000 EGP', unit: '/ day', rating: '4.7', jobs: '203 jobs', avail: 'Available now', bg: 'from-[#3a1a5c] to-[#5a2d8c]' },
-];
-
-const moreCreatives = [
-  { id: 'layla', emoji: '💄', name: 'Layla Nabil', role: 'MUA & Stylist', niche: 'Makeup Artist', category: '👗 Fashion & Style', price: 'from 1,200 EGP', unit: '/ session', rating: '4.6', jobs: '78 jobs', avail: 'Available now', bg: 'from-[#5c3a1a] to-[#8c5a2d]' },
-  { id: 'ahmed', emoji: '📱', name: 'Ahmed Karim', role: 'Social Media Manager', niche: 'Social Media Manager', category: '📊 Marketing', price: 'from 2,500 EGP', unit: '/ month', rating: '4.5', jobs: '45 jobs', avail: 'Available now', bg: 'from-[#1a5c3a] to-[#2d8c5a]' },
-  { id: 'dina', emoji: '🎬', name: 'Dina Youssef', role: 'Creative Director', niche: 'Commercial Videographer', category: '🎥 Videography', price: 'from 5,000 EGP', unit: '/ project', rating: '4.9', jobs: '112 jobs', avail: 'Next week', bg: 'from-[#4a2a1a] to-[#6a4a2a]' },
-  { id: 'tarek', emoji: '🎪', name: 'Tarek Saad', role: 'Event Producer', niche: 'Event Photographer', category: '📸 Photography', price: 'from 6,000 EGP', unit: '/ event', rating: '4.8', jobs: '67 jobs', avail: 'Available now', bg: 'from-[#2a2a4a] to-[#3a3a6a]' },
-];
-
-const allCreatives = [...creatives, ...moreCreatives];
-
-const filters = ['All', '📸 Photography', '🎥 Videography', '🎨 Design & Branding', '✏️ Writing', '📊 Marketing', '👗 Fashion & Style', '💻 Tech & Digital'];
+import { allCreatives, categories, getFeaturedCreatives, getCreativesByNiche } from '../data/creatives';
+import { CreativeCard } from './CreativeCard';
+import type { Creative } from '../data/creatives';
 
 interface ExploreScreenProps {
   onOpenBrief: (creativeId: string) => void;
   searchQuery?: string;
 }
 
-const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
-  const [current, setCurrent] = useState(0);
-  const slides = [bg, ...portfolioImages.slice(0, 4)];
+/** Horizontal scrollable row — Netflix-style */
+const CreativeRow: React.FC<{
+  title: string;
+  creatives: Creative[];
+  onOpenBrief: (id: string) => void;
+  saved: Set<string>;
+  onToggleSave: (e: React.MouseEvent, id: string) => void;
+}> = ({ title, creatives, onOpenBrief, saved, onToggleSave }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const prev = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrent(i => (i === 0 ? slides.length - 1 : i - 1));
+  const scroll = (dir: 'left' | 'right') => {
+    if (!scrollRef.current) return;
+    const amount = scrollRef.current.clientWidth * 0.75;
+    scrollRef.current.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
   };
-  const next = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrent(i => (i === slides.length - 1 ? 0 : i + 1));
-  };
+
+  if (creatives.length === 0) return null;
 
   return (
-    <div className="h-[220px] relative overflow-hidden group/carousel">
-      <div
-        className="flex h-full transition-transform duration-300 ease-out"
-        style={{ transform: `translateX(-${current * 100}%)` }}
-      >
-        {slides.map((gradient, i) => (
-          <div
-            key={i}
-            className={`min-w-full h-full flex items-center justify-center text-[56px] bg-gradient-to-br ${gradient}`}
-          >
-            {i === 0 && <span>{emoji}</span>}
-          </div>
-        ))}
+    <div className="mb-6">
+      <div className="flex items-baseline justify-between mb-2.5 px-1">
+        <h3 className="text-[15px] md:text-lg font-extrabold tracking-[-0.04em]">{title}</h3>
+        <span className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer">View all →</span>
       </div>
+      <div className="relative group/row">
+        {/* Scroll buttons — desktop only */}
+        <button
+          onClick={() => scroll('left')}
+          className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-card border border-border shadow-md items-center justify-center opacity-0 group-hover/row:opacity-100 transition-opacity hover:bg-accent"
+        >
+          <ChevronLeft className="w-5 h-5 text-foreground" />
+        </button>
+        <button
+          onClick={() => scroll('right')}
+          className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-card border border-border shadow-md items-center justify-center opacity-0 group-hover/row:opacity-100 transition-opacity hover:bg-accent"
+        >
+          <ChevronRight className="w-5 h-5 text-foreground" />
+        </button>
 
-      <button
-        onClick={prev}
-        className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 z-[2] hover:bg-card"
-      >
-        <ChevronLeft className="w-4 h-4 text-foreground" />
-      </button>
-      <button
-        onClick={next}
-        className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 z-[2] hover:bg-card"
-      >
-        <ChevronRight className="w-4 h-4 text-foreground" />
-      </button>
-
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-[2]">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
-            className={`w-1.5 h-1.5 rounded-full transition-all duration-200 ${
-              i === current ? 'bg-card w-3' : 'bg-card/50'
-            }`}
-          />
-        ))}
+        <div
+          ref={scrollRef}
+          className="flex gap-2 md:gap-2.5 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-1"
+        >
+          {creatives.map(c => (
+            <div key={c.id} className="w-[170px] md:w-[210px] shrink-0">
+              <CreativeCard
+                creative={c}
+                onOpenBrief={onOpenBrief}
+                saved={saved.has(c.id)}
+                onToggleSave={onToggleSave}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -93,41 +72,7 @@ const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
 
 export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searchQuery = '' }) => {
   const [activeFilter, setActiveFilter] = useState('All');
-  const [activeNiche, setActiveNiche] = useState<string | null>(null);
   const [saved, setSaved] = useState<Set<string>>(new Set());
-
-  // Get niches for the selected category
-  const niches = activeFilter !== 'All' ? categoryNiches[activeFilter] || [] : [];
-
-  // Filter creatives based on category, niche, and search
-  const filteredCreatives = useMemo(() => {
-    let result = allCreatives;
-
-    if (activeFilter !== 'All') {
-      result = result.filter(c => c.category === activeFilter);
-    }
-
-    if (activeNiche) {
-      result = result.filter(c => c.niche === activeNiche);
-    }
-
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(c =>
-        c.name.toLowerCase().includes(q) ||
-        c.role.toLowerCase().includes(q) ||
-        c.niche.toLowerCase().includes(q) ||
-        c.category.toLowerCase().includes(q)
-      );
-    }
-
-    return result;
-  }, [activeFilter, activeNiche, searchQuery]);
-
-  const handleFilterChange = (f: string) => {
-    setActiveFilter(f);
-    setActiveNiche(null); // reset niche when switching category
-  };
 
   const toggleSave = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -137,49 +82,35 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
     showToast(next.has(id) ? '♥ Saved to Collections' : 'Removed from Collections');
   };
 
-  const selectedNicheData = niches.find(n => n.label === activeNiche);
+  const handleFilterChange = (f: string) => {
+    setActiveFilter(f);
+  };
 
-  const CreativeCard = ({ c }: { c: typeof allCreatives[0] }) => (
-    <div onClick={() => onOpenBrief(c.id)} className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 relative hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-0.5">
-      <div className="relative">
-        <ImageCarousel bg={c.bg} emoji={c.emoji} />
+  // Search results — flat grid when searching
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return null;
+    const q = searchQuery.toLowerCase();
+    return allCreatives.filter(c =>
+      c.name.toLowerCase().includes(q) ||
+      c.role.toLowerCase().includes(q) ||
+      c.niche.toLowerCase().includes(q) ||
+      c.category.toLowerCase().includes(q)
+    );
+  }, [searchQuery]);
 
-        <div className={`absolute top-2.5 left-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full z-[2] ${
-          c.avail.includes('now') ? 'bg-otj-green-bg text-otj-green border border-otj-green-border' : 'bg-otj-orange-bg text-otj-orange'
-        }`}>{c.avail}</div>
+  // Build niche rows for selected category
+  const nicheRows = useMemo(() => {
+    if (activeFilter === 'All') return null;
+    return getCreativesByNiche(activeFilter);
+  }, [activeFilter]);
 
-        <button onClick={(e) => toggleSave(e, c.id)} className="absolute top-2.5 right-2.5 w-[30px] h-[30px] rounded-full bg-card/90 border-none cursor-pointer text-sm flex items-center justify-center transition-all duration-150 z-[2] hover:bg-card hover:scale-110">
-          {saved.has(c.id) ? '♥' : '♡'}
-        </button>
-      </div>
-
-      <div className="p-3">
-        <div className="flex items-center justify-between mb-0.5">
-          <div className="text-sm font-extrabold tracking-[-0.03em]">{c.name}</div>
-          <div className="flex items-center gap-1">
-            <span className="text-[11px] font-bold text-foreground">⭐ {c.rating}</span>
-            <span className="text-[11px] text-otj-text">({c.jobs.replace(' jobs', '')})</span>
-          </div>
-        </div>
-        <div className="text-[11px] text-otj-text mb-1.5">{c.role}</div>
-        <div className="flex items-center gap-2 text-[11px] text-otj-text mb-2.5">
-          <span className="flex items-center gap-1">👥 {c.jobs}</span>
-          <span className="w-[3px] h-[3px] rounded-full bg-otj-muted" />
-          <span className="flex items-center gap-1">📍 Cairo, EG</span>
-        </div>
-        <div className="flex gap-1.5">
-          <button onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-primary bg-primary text-primary-foreground text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:bg-primary/90">Book Now</button>
-          <button onClick={(e) => { e.stopPropagation(); showToast('Opening full profile…'); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-border bg-transparent text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">View Profile</button>
-        </div>
-      </div>
-    </div>
-  );
+  const featured = useMemo(() => getFeaturedCreatives(), []);
 
   return (
     <div className="p-[16px_16px_80px] md:p-[20px_24px_80px]">
       {/* Category filters */}
-      <div className="flex gap-1.5 mb-3 overflow-x-auto pb-1 hide-scrollbar">
-        {filters.map(f => (
+      <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1 hide-scrollbar">
+        {categories.map(f => (
           <div
             key={f}
             onClick={() => handleFilterChange(f)}
@@ -194,78 +125,95 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
         ))}
       </div>
 
-      {/* Niche sub-filters (when a category is selected) */}
-      {niches.length > 0 && (
-        <div className="animate-fade-up mb-4">
-          <div className="flex gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
-            <div
-              onClick={() => setActiveNiche(null)}
-              className={`text-[11.5px] font-semibold px-3.5 py-[6px] rounded-full border-[1.5px] cursor-pointer whitespace-nowrap transition-all duration-150 shrink-0 ${
-                !activeNiche
-                  ? 'bg-otj-blue-bg border-otj-blue-border text-otj-blue'
-                  : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
-              }`}
-            >
-              All {activeFilter.replace(/^.\s/, '')}
-            </div>
-            {niches.map(n => (
-              <div
-                key={n.label}
-                onClick={() => setActiveNiche(activeNiche === n.label ? null : n.label)}
-                className={`text-[11.5px] font-semibold px-3.5 py-[6px] rounded-full border-[1.5px] cursor-pointer whitespace-nowrap transition-all duration-150 shrink-0 ${
-                  activeNiche === n.label
-                    ? 'bg-otj-blue-bg border-otj-blue-border text-otj-blue'
-                    : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
-                }`}
-              >
-                {n.label}
-              </div>
-            ))}
+      {/* Search mode — flat grid */}
+      {searchResults ? (
+        <>
+          <div className="text-[12px] text-otj-muted mb-3">
+            {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} for "<span className="text-foreground font-semibold">{searchQuery}</span>"
           </div>
-
-          {/* Skill tags for selected niche */}
-          {selectedNicheData && (
-            <div className="animate-fade-up mt-3 p-3.5 bg-card border border-border rounded-[14px]">
-              <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Skill Tags</div>
-              <div className="flex flex-wrap gap-1.5">
-                {selectedNicheData.skills.map(skill => (
-                  <span
-                    key={skill}
-                    className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-otj-off border border-border text-otj-text"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
+          {searchResults.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-4xl mb-3">🔍</div>
+              <div className="text-sm font-bold text-foreground mb-1">No creatives found</div>
+              <div className="text-[12px] text-otj-text">Try adjusting your search query</div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2 md:gap-2.5">
+              {searchResults.map(c => (
+                <CreativeCard
+                  key={c.id}
+                  creative={c}
+                  onOpenBrief={onOpenBrief}
+                  saved={saved.has(c.id)}
+                  onToggleSave={toggleSave}
+                />
+              ))}
             </div>
           )}
-        </div>
-      )}
-
-      {/* Search results info */}
-      {searchQuery.trim() && (
-        <div className="text-[12px] text-otj-muted mb-3">
-          {filteredCreatives.length} result{filteredCreatives.length !== 1 ? 's' : ''} for "<span className="text-foreground font-semibold">{searchQuery}</span>"
-        </div>
-      )}
-
-      {filteredCreatives.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="text-4xl mb-3">🔍</div>
-          <div className="text-sm font-bold text-foreground mb-1">No creatives found</div>
-          <div className="text-[12px] text-otj-text">Try adjusting your filters or search query</div>
-        </div>
-      ) : (
+        </>
+      ) : activeFilter === 'All' ? (
+        /* ALL tab — Featured + one row per category */
         <>
-          <div className="flex items-baseline justify-between mb-3">
-            <div className="text-lg font-extrabold tracking-[-0.04em]">
-              {activeNiche || (activeFilter !== 'All' ? activeFilter.replace(/^.\s/, '') : 'Featured This Week')}
+          <CreativeRow
+            title="⭐ Featured This Week"
+            creatives={featured}
+            onOpenBrief={onOpenBrief}
+            saved={saved}
+            onToggleSave={toggleSave}
+          />
+          {categories.filter(c => c !== 'All').map(cat => {
+            const catCreatives = allCreatives.filter(c => c.category === cat);
+            return (
+              <CreativeRow
+                key={cat}
+                title={cat}
+                creatives={catCreatives}
+                onOpenBrief={onOpenBrief}
+                saved={saved}
+                onToggleSave={toggleSave}
+              />
+            );
+          })}
+        </>
+      ) : (
+        /* Category tab — one row per niche */
+        <>
+          {nicheRows && Object.entries(nicheRows).map(([niche, creatives]) => {
+            const nicheData = (categoryNiches[activeFilter] || []).find(n => n.label === niche);
+            return (
+              <div key={niche}>
+                <CreativeRow
+                  title={niche}
+                  creatives={creatives}
+                  onOpenBrief={onOpenBrief}
+                  saved={saved}
+                  onToggleSave={toggleSave}
+                />
+                {/* Skill tags under each niche */}
+                {nicheData && (
+                  <div className="mb-5 -mt-3 px-1">
+                    <div className="flex flex-wrap gap-1.5">
+                      {nicheData.skills.map(skill => (
+                        <span
+                          key={skill}
+                          className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-otj-off border border-border text-otj-text"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+          {nicheRows && Object.keys(nicheRows).length === 0 && (
+            <div className="text-center py-16">
+              <div className="text-4xl mb-3">🔍</div>
+              <div className="text-sm font-bold text-foreground mb-1">No creatives in this category yet</div>
+              <div className="text-[12px] text-otj-text">Check back soon!</div>
             </div>
-            <div className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer">View all →</div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2 md:gap-2.5 mb-7">
-            {filteredCreatives.map(c => <CreativeCard key={c.id} c={c} />)}
-          </div>
+          )}
         </>
       )}
     </div>
