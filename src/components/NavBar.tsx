@@ -31,13 +31,6 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter }) 
 
         <div className="w-px h-[18px] bg-border" />
 
-        {/* Messages icon */}
-        <div onClick={() => navigate('/messages')} className="relative cursor-pointer p-1.5 rounded-lg transition-all duration-150 hover:bg-otj-off">
-          <span className="text-lg">💬</span>
-          <div className="absolute top-0.5 right-0.5 w-[8px] h-[8px] rounded-full bg-destructive border-2 border-card" />
-        </div>
-
-        <div className="w-px h-[18px] bg-border" />
 
         {/* Nav tabs */}
         <div className="flex gap-1">
@@ -57,6 +50,12 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter }) 
         </div>
 
         <div className="ml-auto flex items-center gap-2.5">
+          {/* Messages icon */}
+          <div onClick={() => navigate('/messages')} className="relative cursor-pointer p-1.5 rounded-lg transition-all duration-150 hover:bg-otj-off">
+            <span className="text-lg">💬</span>
+            <div className="absolute top-0.5 right-0.5 w-[8px] h-[8px] rounded-full bg-destructive border-2 border-card" />
+          </div>
+
           {/* Notifications */}
           <div onClick={() => setShowNotif(prev => !prev)} className="relative cursor-pointer p-1.5 rounded-lg transition-all duration-150 hover:bg-otj-off">
             <span className="text-lg">🔔</span>
