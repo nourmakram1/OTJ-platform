@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { showToast } from './Toast';
 import { useProjects } from '../context/ProjectContext';
 
@@ -32,9 +33,13 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState('');
   const [offerLocked, setOfferLocked] = useState(false);
+  const [showPlusMenu, setShowPlusMenu] = useState(false);
+  const [showContactPanel, setShowContactPanel] = useState(false);
   const threadRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const currentThread = threads.find(t => t.id === activeThread);
+  const linkedProj = activeProjects.find(p => p.id === currentThread?.projectId);
 
   useEffect(() => {
     if (threadRef.current) threadRef.current.scrollTop = threadRef.current.scrollHeight;
@@ -46,10 +51,8 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
     const text = input;
     setInput('');
 
-    // Detect date/meeting mentions
     const dateWords = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday','tomorrow','march','april','next week','pm','am','meeting','call','schedule'];
     if (dateWords.some(w => text.toLowerCase().includes(w))) {
-      // Extract a rough meeting title
       const meetingTitle = text.length > 40 ? text.substring(0, 40) + '…' : text;
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -97,19 +100,43 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
         projectId,
         clientName: currentThread?.name,
       });
-      showToast('📞 Call scheduled & added to project');
+      showToast('📞 Call scheduled & synced to calendar');
     }
+    setShowPlusMenu(false);
+  };
+
+  const handleAddAttachment = () => {
+    showToast('📎 Attachment added to project profile');
+    setShowPlusMenu(false);
+  };
+
+  const handleScheduleZoom = () => {
+    const projectId = currentThread?.projectId;
+    if (projectId) {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      addMeeting(projectId, {
+        title: `Zoom with ${currentThread?.name}`,
+        date: tomorrow.toISOString().split('T')[0],
+        time: '2:00 PM',
+        type: 'call',
+        projectId,
+        clientName: currentThread?.name,
+      });
+      showToast('🎥 Zoom call scheduled & synced to calendar');
+    }
+    setShowPlusMenu(false);
   };
 
   return (
-    <div className="grid grid-cols-[280px_1fr_300px] h-[calc(100vh-52px)]">
+    <div className="grid grid-cols-[280px_1fr] h-[calc(100vh-52px)] relative">
       {/* Thread list */}
       <div className="bg-card border-r border-border overflow-y-auto">
         <div className="p-4 border-b border-border text-sm font-extrabold tracking-[-0.03em]">Messages</div>
         {threads.map(t => (
           <div
             key={t.id}
-            onClick={() => { setActiveThread(t.id); showToast('Opening conversation with ' + t.name + '…'); }}
+            onClick={() => { setActiveThread(t.id); setShowContactPanel(false); }}
             className={`p-3 px-4 border-b border-border cursor-pointer transition-colors duration-150 flex gap-2.5 items-start ${
               activeThread === t.id ? 'bg-otj-blue-bg' : 'hover:bg-otj-off'
             }`}
@@ -128,17 +155,46 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
       </div>
 
       {/* Message area */}
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full relative">
+        {/* Simplified header: clickable name + View Project + plus button */}
         <div className="p-3.5 px-[18px] border-b border-border bg-card flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg">{currentThread?.emoji || '👩‍💼'}</div>
-          <div>
+          <div
+            onClick={() => setShowContactPanel(prev => !prev)}
+            className="cursor-pointer hover:opacity-70 transition-opacity"
+          >
             <div className="text-sm font-extrabold tracking-[-0.03em]">{currentThread?.name || 'Randa Hatem'}</div>
             <div className="text-[11px] text-otj-green">Online</div>
           </div>
-          <div className="ml-auto flex gap-1.5">
-            <button onClick={() => showToast('Opening profile…')} className="text-[11.5px] font-semibold px-3 py-[5px] rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">View Profile</button>
-            <button onClick={handleScheduleCall} className="text-[11.5px] font-semibold px-3 py-[5px] rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">📞 Schedule Call</button>
-            <button onClick={() => showToast('Creating brief…')} className="text-[11.5px] font-semibold px-3 py-[5px] rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">New Brief</button>
+          <div className="ml-auto flex items-center gap-2">
+            {/* Plus button */}
+            <div className="relative">
+              <button
+                onClick={() => setShowPlusMenu(prev => !prev)}
+                className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-base text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150"
+              >+</button>
+              {showPlusMenu && (
+                <div className="absolute top-10 right-0 w-[200px] bg-card border border-border rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.1)] py-1.5 z-[200] animate-fade-up">
+                  <div onClick={handleScheduleZoom} className="px-3.5 py-2.5 text-[12px] font-semibold text-foreground cursor-pointer hover:bg-otj-off flex items-center gap-2">
+                    🎥 Schedule Zoom Call
+                  </div>
+                  <div onClick={handleScheduleCall} className="px-3.5 py-2.5 text-[12px] font-semibold text-foreground cursor-pointer hover:bg-otj-off flex items-center gap-2">
+                    📞 Schedule Phone Call
+                  </div>
+                  <div className="h-px bg-border mx-2 my-1" />
+                  <div onClick={handleAddAttachment} className="px-3.5 py-2.5 text-[12px] font-semibold text-foreground cursor-pointer hover:bg-otj-off flex items-center gap-2">
+                    📎 Add Attachment to Project
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* View Project */}
+            {linkedProj && (
+              <button
+                onClick={() => navigate(`/project/${linkedProj.id}`)}
+                className="text-[11.5px] font-semibold px-3 py-[5px] rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground"
+              >View Project</button>
+            )}
           </div>
         </div>
 
@@ -208,68 +264,88 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
           />
           <button onClick={sendMessage} className="w-9 h-9 rounded-full border-none bg-primary text-primary-foreground cursor-pointer text-base flex items-center justify-center shrink-0 transition-all duration-150 hover:bg-primary/90">↑</button>
         </div>
-      </div>
 
-      {/* Right sidebar */}
-      <div className="bg-card border-l border-border overflow-y-auto p-4">
-        <div className="mb-5">
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">Linked Project</div>
-          {(() => {
-            const linkedProj = activeProjects.find(p => p.id === currentThread?.projectId);
-            if (!linkedProj) return <div className="text-[12px] text-otj-muted">No linked project</div>;
-            const activePhase = linkedProj.phases.find(ph => ph.status === 'active');
-            const phaseDone = linkedProj.phases.filter(p => p.status === 'complete').length;
-            const pct = linkedProj.phases.length ? Math.round((phaseDone / linkedProj.phases.length) * 100) : 0;
-            return (
-              <div className="p-3 rounded-xl border border-border bg-otj-off cursor-pointer transition-all duration-150 hover:border-foreground">
-                <div className="text-[13px] font-bold tracking-[-0.02em] mb-0.5">{linkedProj.name}</div>
-                <div className="text-[11px] text-otj-blue mb-1.5">{activePhase ? `Phase ${activePhase.num} · ${activePhase.title}` : 'Awaiting Start'}</div>
-                <div className="h-1 rounded-full bg-otj-light overflow-hidden"><div className="h-full rounded-full bg-otj-blue" style={{ width: `${pct}%` }} /></div>
+        {/* Contact side panel - slides in from the left of the chat area when clicking name */}
+        {showContactPanel && (
+          <div className="absolute top-0 left-0 w-[300px] h-full bg-card border-r border-border z-[50] shadow-[4px_0_24px_rgba(0,0,0,0.08)] animate-fade-up overflow-y-auto">
+            <div className="p-5">
+              {/* Close */}
+              <div className="flex justify-end mb-3">
+                <button onClick={() => setShowContactPanel(false)} className="w-7 h-7 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-otj-text hover:border-foreground text-xs">✕</button>
               </div>
-            );
-          })()}
-        </div>
 
-        {/* Upcoming schedule for linked project */}
-        <div className="mb-5">
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">Project Schedule</div>
-          {(() => {
-            const linkedProj = activeProjects.find(p => p.id === currentThread?.projectId);
-            const meetings = linkedProj?.meetings || [];
-            const tasks = linkedProj?.phases.flatMap(ph => ph.tasks.filter(t => !t.done).map(t => ({ text: t.text, due: t.due, phase: ph.num }))) || [];
+              {/* Avatar & name */}
+              <div className="flex flex-col items-center text-center mb-5">
+                <div className="w-16 h-16 rounded-full bg-otj-off flex items-center justify-center text-3xl mb-2.5">{currentThread?.emoji}</div>
+                <div className="text-[16px] font-extrabold tracking-[-0.03em]">{currentThread?.name}</div>
+                <div className="text-[11px] text-otj-green font-semibold mt-0.5">Online</div>
+              </div>
 
-            return (
-              <div className="flex flex-col gap-[5px]">
-                {meetings.map((m, i) => (
-                  <div key={`m-${i}`} className="flex items-center gap-2 p-[7px_10px] rounded-[9px] cursor-pointer transition-all duration-150 hover:bg-otj-off">
-                    <div className={`w-2 h-2 rounded-full shrink-0 ${m.type === 'call' ? 'bg-otj-orange' : 'bg-otj-green'}`} />
-                    <div className="flex-1">
-                      <div className="text-[11.5px] font-bold tracking-[-0.01em]">{m.title}</div>
-                      <div className="text-[10.5px] text-otj-text">{m.date} · {m.time}</div>
+              {/* Linked project */}
+              {linkedProj && (
+                <div className="mb-5">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Linked Project</div>
+                  <div
+                    onClick={() => navigate(`/project/${linkedProj.id}`)}
+                    className="p-3 rounded-xl border border-border bg-otj-off cursor-pointer transition-all duration-150 hover:border-foreground"
+                  >
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="text-lg">{linkedProj.icon}</span>
+                      <div className="text-[13px] font-bold tracking-[-0.02em]">{linkedProj.name}</div>
+                    </div>
+                    <div className="text-[11px] text-otj-text mb-1.5">{linkedProj.clientName} · {linkedProj.clientCompany}</div>
+                    <div className="flex gap-[3px]">
+                      {linkedProj.phases.map((phase) => (
+                        <div key={phase.num} className={`h-1 flex-1 rounded-full ${
+                          phase.status === 'complete' ? 'bg-otj-green' :
+                          phase.status === 'active' ? 'bg-otj-blue' : 'bg-otj-light'
+                        }`} />
+                      ))}
                     </div>
                   </div>
-                ))}
-                {tasks.slice(0, 3).map((t, i) => (
-                  <div key={`t-${i}`} className="flex items-center gap-2 p-[7px_10px] rounded-[9px] cursor-pointer transition-all duration-150 hover:bg-otj-off">
-                    <div className="w-2 h-2 rounded-full shrink-0 bg-otj-yellow" />
-                    <div className="flex-1">
-                      <div className="text-[11.5px] font-bold tracking-[-0.01em]">{t.text}</div>
-                      <div className="text-[10.5px] text-otj-text">Due {t.due} · Phase {t.phase}</div>
-                    </div>
-                  </div>
-                ))}
-                {meetings.length === 0 && tasks.length === 0 && (
-                  <div className="text-[12px] text-otj-muted text-center py-2">No upcoming items</div>
-                )}
-              </div>
-            );
-          })()}
-        </div>
+                </div>
+              )}
 
-        <div className="flex flex-col gap-1.5">
-          <button onClick={handleScheduleCall} className="text-[11.5px] font-bold w-full py-2 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">📞 Schedule Call</button>
-          <button onClick={() => showToast('Attachment upload coming soon')} className="text-[11.5px] font-bold w-full py-2 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">📎 Add Attachment to Project</button>
-        </div>
+              {/* Upcoming schedule */}
+              <div className="mb-5">
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Upcoming</div>
+                {(() => {
+                  const meetings = linkedProj?.meetings || [];
+                  const tasks = linkedProj?.phases.flatMap(ph => ph.tasks.filter(t => !t.done).map(t => ({ text: t.text, due: t.due, phase: ph.num }))) || [];
+                  if (meetings.length === 0 && tasks.length === 0) return <div className="text-[12px] text-otj-muted py-2">No upcoming items</div>;
+                  return (
+                    <div className="flex flex-col gap-[5px]">
+                      {meetings.map((m, i) => (
+                        <div key={`m-${i}`} className="flex items-center gap-2 p-[7px_10px] rounded-[9px] hover:bg-otj-off transition-colors">
+                          <div className={`w-2 h-2 rounded-full shrink-0 ${m.type === 'call' ? 'bg-otj-blue' : 'bg-otj-green'}`} />
+                          <div className="flex-1">
+                            <div className="text-[11.5px] font-bold tracking-[-0.01em]">{m.title}</div>
+                            <div className="text-[10.5px] text-otj-text">{m.date} · {m.time}</div>
+                          </div>
+                        </div>
+                      ))}
+                      {tasks.slice(0, 3).map((t, i) => (
+                        <div key={`t-${i}`} className="flex items-center gap-2 p-[7px_10px] rounded-[9px] hover:bg-otj-off transition-colors">
+                          <div className="w-2 h-2 rounded-full shrink-0 bg-otj-yellow" />
+                          <div className="flex-1">
+                            <div className="text-[11.5px] font-bold tracking-[-0.01em]">{t.text}</div>
+                            <div className="text-[10.5px] text-otj-text">Due {t.due} · Phase {t.phase}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Quick actions */}
+              <div className="flex flex-col gap-1.5">
+                <button onClick={handleScheduleZoom} className="text-[11.5px] font-bold w-full py-2 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">🎥 Schedule Zoom</button>
+                <button onClick={handleAddAttachment} className="text-[11.5px] font-bold w-full py-2 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">📎 Add Attachment</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
