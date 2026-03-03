@@ -17,12 +17,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
   const [projectTab, setProjectTab] = useState<'pending' | 'active' | 'complete'>('pending');
 
   return (
-    <div className="max-w-[1100px] mx-auto p-6">
+    <div className="max-w-[1100px] mx-auto p-4 md:p-6 pb-20 md:pb-6">
       {/* Welcome header */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-5 gap-3">
         <div>
-          <div className="text-[22px] font-extrabold tracking-[-0.04em]">Good morning, Nour 👋</div>
-          <div className="text-[13px] text-otj-text mt-0.5">Monday, March 2 · {pendingBriefs.length > 0 ? `${pendingBriefs.length} briefs need your attention` : 'All caught up!'}</div>
+          <div className="text-[20px] md:text-[22px] font-extrabold tracking-[-0.04em]">Good morning, Nour 👋</div>
+          <div className="text-[12px] md:text-[13px] text-otj-text mt-0.5">Monday, March 2 · {pendingBriefs.length > 0 ? `${pendingBriefs.length} briefs need your attention` : 'All caught up!'}</div>
         </div>
         <div className="flex gap-2">
           <button onClick={() => showToast('Opening export…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-[1.5px] border-border bg-transparent text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">↓ Export</button>
@@ -31,7 +31,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
       </div>
 
       {/* Stats — 5 cards */}
-      <div className="grid grid-cols-5 gap-2 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-5">
         {[
           { label: 'Active Projects', val: String(activeProjects.length), color: 'text-otj-blue', delta: '↑ 1 this week', deltaClass: 'text-otj-green' },
           { label: 'Pending Briefs', val: String(pendingBriefs.length), color: 'text-otj-yellow', delta: pendingBriefs.length > 0 ? 'Need response' : 'All clear', deltaClass: 'text-otj-text' },
@@ -50,9 +50,9 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
       {/* Projects with tabs */}
       <div className="mb-5">
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <div className="text-lg font-extrabold tracking-[-0.04em]">Projects</div>
-            <div className="flex gap-1 ml-3">
+            <div className="flex gap-1 ml-0 md:ml-3 overflow-x-auto hide-scrollbar">
               {[
                 { key: 'pending' as const, label: `Pending (${pendingBriefs.length})` },
                 { key: 'active' as const, label: `Active (${activeProjects.length})` },
@@ -160,7 +160,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
           <div className="text-lg font-extrabold tracking-[-0.04em]">My Collections</div>
           <div className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer" onClick={() => showToast('Opening all boards…')}>View all</div>
         </div>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {[
             { name: 'Ramadan Campaign', count: '4 creatives saved', icons: ['👩‍🎨', '✏️', '🎥', '🎨'] },
             { name: 'Product Launch', count: '2 creatives saved', icons: ['🎥', '🎨', '', ''] },
@@ -278,11 +278,11 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
     <div className="mb-5">
       {/* Header */}
       <div className="bg-card border border-border rounded-[16px] overflow-hidden">
-        <div className="flex items-center justify-between p-4 px-5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between p-3 md:p-4 px-4 md:px-5 gap-2">
           <div className="flex items-center gap-3">
             <span className="text-lg">📅</span>
             <span className="text-[17px] font-extrabold tracking-[-0.04em]">Schedule</span>
-            <div className="flex items-center gap-3 ml-4">
+            <div className="hidden md:flex items-center gap-3 ml-4">
               {[
                 { key: 'meeting', color: 'bg-otj-blue', label: 'Meeting' },
                 { key: 'task', color: 'bg-otj-green', label: 'Task' },
@@ -303,92 +303,124 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
           </div>
         </div>
 
-        {/* Day headers */}
-        <div className="grid grid-cols-[60px_repeat(7,1fr)] border-t border-border">
-          <div className="border-r border-border" />
-          {weekDays.map((day, i) => {
-            const isToday = isSameDay(day, today);
-            return (
-              <div key={i} className={`text-center py-2.5 border-r border-border last:border-r-0 ${isToday ? 'bg-otj-blue-bg' : ''}`}>
-                <div className={`text-[10px] font-bold uppercase tracking-[0.1em] ${isToday ? 'text-otj-blue' : 'text-otj-muted'}`}>{DAY_LABELS[i]}</div>
-                <div className={`text-[18px] font-extrabold tracking-[-0.04em] mt-0.5 ${isToday ? 'text-otj-blue' : 'text-foreground'}`}>{format(day, 'd')}</div>
-              </div>
-            );
-          })}
+        {/* Desktop: Day headers + Time grid */}
+        <div className="hidden md:block">
+          <div className="grid grid-cols-[60px_repeat(7,1fr)] border-t border-border">
+            <div className="border-r border-border" />
+            {weekDays.map((day, i) => {
+              const isToday = isSameDay(day, today);
+              return (
+                <div key={i} className={`text-center py-2.5 border-r border-border last:border-r-0 ${isToday ? 'bg-otj-blue-bg' : ''}`}>
+                  <div className={`text-[10px] font-bold uppercase tracking-[0.1em] ${isToday ? 'text-otj-blue' : 'text-otj-muted'}`}>{DAY_LABELS[i]}</div>
+                  <div className={`text-[18px] font-extrabold tracking-[-0.04em] mt-0.5 ${isToday ? 'text-otj-blue' : 'text-foreground'}`}>{format(day, 'd')}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="grid grid-cols-[60px_repeat(7,1fr)]">
+            {HOURS.map(hour => (
+              <React.Fragment key={hour}>
+                <div className="border-r border-t border-border h-[72px] flex items-start justify-end pr-2 pt-1">
+                  <span className="text-[10px] font-bold text-otj-muted">{hour <= 12 ? `${hour}AM` : `${hour - 12}PM`}</span>
+                </div>
+                {weekDays.map((day, di) => {
+                  const key = `${format(day, 'yyyy-MM-dd')}-${hour}`;
+                  const events = itemsByDayHour[key] || [];
+                  const isToday = isSameDay(day, today);
+
+                  return (
+                    <div key={di} className={`border-r border-t border-border last:border-r-0 h-[72px] p-[3px] relative ${isToday ? 'bg-otj-blue-bg/30' : ''}`}>
+                      {events.length > 0 && (
+                        <div className="flex flex-col gap-[2px] h-full">
+                          {events.slice(0, 2).map((ev, j) => {
+                            const cfg = typeConfig[ev.type];
+                            return (
+                              <div
+                                key={j}
+                                onClick={() => navigate(`/project/${ev.projectId}`)}
+                                className={`${cfg.bg} border ${cfg.border} rounded-[8px] p-1.5 px-2 cursor-pointer flex-1 min-h-0 overflow-hidden transition-all duration-150 hover:shadow-sm`}
+                              >
+                                <div className="flex items-center gap-1 mb-0.5">
+                                  <span className="text-[9px]">{cfg.icon}</span>
+                                  <span className={`text-[8px] font-bold uppercase tracking-[0.05em] ${cfg.text} truncate`}>
+                                    {ev.sublabel.length > 10 ? ev.sublabel.substring(0, 10) + '…' : ev.sublabel}
+                                  </span>
+                                  {ev.type === 'meeting' && <div className="w-[5px] h-[5px] rounded-full bg-destructive ml-auto shrink-0" />}
+                                </div>
+                                <div className="text-[10px] font-extrabold text-foreground leading-tight truncate">{ev.label}</div>
+                                {ev.duration > 1 && (
+                                  <div className={`text-[8px] font-semibold ${cfg.text} mt-0.5`}>{hour <= 12 ? hour : hour - 12}:00 - {(hour + ev.duration) <= 12 ? hour + ev.duration : (hour + ev.duration) - 12}:00</div>
+                                )}
+                              </div>
+                            );
+                          })}
+                          {events.length > 2 && (
+                            <div className="text-[8px] font-bold text-otj-muted text-center">+{events.length - 2}</div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
 
-        {/* Time grid */}
-        <div className="grid grid-cols-[60px_repeat(7,1fr)]">
-          {HOURS.map(hour => (
-            <React.Fragment key={hour}>
-              {/* Time label */}
-              <div className="border-r border-t border-border h-[72px] flex items-start justify-end pr-2 pt-1">
-                <span className="text-[10px] font-bold text-otj-muted">{hour <= 12 ? `${hour}AM` : `${hour - 12}PM`}</span>
-              </div>
-              {/* Day cells */}
-              {weekDays.map((day, di) => {
-                const key = `${format(day, 'yyyy-MM-dd')}-${hour}`;
-                const events = itemsByDayHour[key] || [];
-                const isToday = isSameDay(day, today);
-
-                return (
-                  <div key={di} className={`border-r border-t border-border last:border-r-0 h-[72px] p-[3px] relative ${isToday ? 'bg-otj-blue-bg/30' : ''}`}>
-                    {events.length > 0 && (
-                      <div className="flex flex-col gap-[2px] h-full">
-                        {events.slice(0, 2).map((ev, j) => {
-                          const cfg = typeConfig[ev.type];
-                          return (
-                            <div
-                              key={j}
-                              onClick={() => navigate(`/project/${ev.projectId}`)}
-                              className={`${cfg.bg} border ${cfg.border} rounded-[8px] p-1.5 px-2 cursor-pointer flex-1 min-h-0 overflow-hidden transition-all duration-150 hover:shadow-sm`}
-                            >
-                              <div className="flex items-center gap-1 mb-0.5">
-                                <span className="text-[9px]">{cfg.icon}</span>
-                                <span className={`text-[8px] font-bold uppercase tracking-[0.05em] ${cfg.text} truncate`}>
-                                  {ev.sublabel.length > 10 ? ev.sublabel.substring(0, 10) + '…' : ev.sublabel}
-                                </span>
-                                {ev.type === 'meeting' && <div className="w-[5px] h-[5px] rounded-full bg-destructive ml-auto shrink-0" />}
-                              </div>
-                              <div className="text-[10px] font-extrabold text-foreground leading-tight truncate">{ev.label}</div>
-                              {ev.duration > 1 && (
-                                <div className={`text-[8px] font-semibold ${cfg.text} mt-0.5`}>{hour <= 12 ? hour : hour - 12}:00 - {(hour + ev.duration) <= 12 ? hour + ev.duration : (hour + ev.duration) - 12}:00</div>
-                              )}
-                            </div>
-                          );
-                        })}
-                        {events.length > 2 && (
-                          <div className="text-[8px] font-bold text-otj-muted text-center">+{events.length - 2}</div>
-                        )}
-                      </div>
-                    )}
+        {/* Mobile: List view */}
+        <div className="md:hidden border-t border-border">
+          <div className="flex overflow-x-auto hide-scrollbar border-b border-border">
+            {weekDays.map((day, i) => {
+              const isToday = isSameDay(day, today);
+              const dayEvents = scheduleItems.filter(item => isSameDay(item.deadline, day));
+              return (
+                <div key={i} className={`flex-1 min-w-[48px] text-center py-2.5 border-r border-border last:border-r-0 ${isToday ? 'bg-otj-blue-bg' : ''}`}>
+                  <div className={`text-[9px] font-bold uppercase ${isToday ? 'text-otj-blue' : 'text-otj-muted'}`}>{DAY_LABELS[i]}</div>
+                  <div className={`text-[15px] font-extrabold mt-0.5 ${isToday ? 'text-otj-blue' : 'text-foreground'}`}>{format(day, 'd')}</div>
+                  {dayEvents.length > 0 && <div className="flex justify-center mt-1 gap-[2px]">{dayEvents.slice(0, 3).map((ev, j) => <div key={j} className={`w-[5px] h-[5px] rounded-full ${typeConfig[ev.type]?.dot}`} />)}</div>}
+                </div>
+              );
+            })}
+          </div>
+          <div className="p-3 flex flex-col gap-2 max-h-[300px] overflow-y-auto">
+            {weekItems.length === 0 && <div className="text-center text-[12px] text-otj-muted py-4">No events this week</div>}
+            {weekItems.slice(0, 8).map((item, i) => {
+              const cfg = typeConfig[item.type];
+              return (
+                <div key={i} onClick={() => navigate(`/project/${item.projectId}`)} className="flex items-center gap-2.5 p-2.5 rounded-[10px] border border-border bg-card cursor-pointer hover:border-otj-muted transition-all">
+                  <div className={`w-1.5 self-stretch rounded-full shrink-0 ${cfg.dot}`} />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[12px] font-extrabold tracking-[-0.02em] truncate">{item.label}</div>
+                    <div className="text-[10px] text-otj-text truncate">{item.sublabel} · {format(item.deadline, 'EEE, MMM d')}</div>
                   </div>
-                );
-              })}
-            </React.Fragment>
-          ))}
+                  <span className={`text-[9px] font-bold px-1.5 py-[1px] rounded ${cfg.bg} ${cfg.text} shrink-0`}>{cfg.label}</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Summary footer */}
-        <div className="flex items-center gap-8 p-4 px-5 border-t border-border">
+        <div className="flex items-center gap-4 md:gap-8 p-3 md:p-4 px-4 md:px-5 border-t border-border flex-wrap">
           <div className="flex items-center gap-2">
             <span className="text-lg">👥</span>
             <div>
-              <div className="text-[14px] font-extrabold tracking-[-0.02em]">{meetingCount} Meeting{meetingCount !== 1 ? 's' : ''}</div>
+              <div className="text-[13px] md:text-[14px] font-extrabold tracking-[-0.02em]">{meetingCount} Meeting{meetingCount !== 1 ? 's' : ''}</div>
               <div className="text-[10px] text-otj-text font-semibold">This week</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-lg">✅</span>
             <div>
-              <div className="text-[14px] font-extrabold tracking-[-0.02em]">{taskCount} Task{taskCount !== 1 ? 's' : ''}</div>
+              <div className="text-[13px] md:text-[14px] font-extrabold tracking-[-0.02em]">{taskCount} Task{taskCount !== 1 ? 's' : ''}</div>
               <div className="text-[10px] text-otj-text font-semibold">Scheduled</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-lg">⏰</span>
             <div>
-              <div className="text-[14px] font-extrabold tracking-[-0.02em]">{dueCount} Due Date{dueCount !== 1 ? 's' : ''}</div>
+              <div className="text-[13px] md:text-[14px] font-extrabold tracking-[-0.02em]">{dueCount} Due Date{dueCount !== 1 ? 's' : ''}</div>
               <div className="text-[10px] text-otj-text font-semibold">Coming up</div>
             </div>
           </div>
