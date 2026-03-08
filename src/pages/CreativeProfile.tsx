@@ -6,7 +6,7 @@ import { Toast } from '../components/Toast';
 
 const CreativeProfile = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'portfolio' | 'reviews' | 'packages'>('portfolio');
+  const [activeTab, setActiveTab] = useState<'portfolio' | 'reviews'>('portfolio');
 
   return (
     <>
