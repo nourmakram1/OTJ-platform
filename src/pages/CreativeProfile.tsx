@@ -16,7 +16,7 @@ const CreativeProfile = () => {
         <div className="text-[12px] text-otj-text mb-6 cursor-pointer hover:text-foreground" onClick={() => navigate(-1)}>← Back to Explore</div>
 
         {/* Profile header */}
-        <div className="flex gap-6 mb-8">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
           <div className="w-[120px] h-[120px] rounded-[20px] bg-gradient-to-br from-[#2a2a2a] to-[#555] flex items-center justify-center text-[52px] shrink-0">👩‍🎨</div>
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-1">
