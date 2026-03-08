@@ -86,20 +86,7 @@ const Auth = () => {
                   </div>
                 </div>
 
-                {/* Primary skill (creative only) */}
-                {userType === 'creative' && (
-                  <div className="animate-fade-up">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Primary Skill <span className="text-destructive">*</span></div>
-                    <select
-                      value={primarySkill}
-                      onChange={e => setPrimarySkill(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card appearance-none cursor-pointer"
-                    >
-                      <option value="">Select your skill…</option>
-                      {skills.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                  </div>
-                )}
+
 
                 {/* Terms */}
                 <label className="flex items-start gap-2.5 cursor-pointer">
