@@ -103,7 +103,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
         <span className="w-[3px] h-[3px] rounded-full bg-otj-muted" />
         <span className="flex items-center gap-1">📍 Cairo, EG</span>
         <span className="w-[3px] h-[3px] rounded-full bg-otj-muted" />
-        <span className="flex items-center gap-1">🏅 {c.experience}yr{c.experience !== 1 ? 's' : ''}</span>
+        <span className="flex items-center gap-1">🏅 {c.experience >= 10 ? 'Veteran 10+' : c.experience >= 5 ? 'Expert 5+' : 'Beginner 1-3'}</span>
       </div>
       <div className="flex gap-1.5">
         <button onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-primary bg-primary text-primary-foreground text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:bg-primary/90">Book Now</button>
