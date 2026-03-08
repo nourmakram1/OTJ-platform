@@ -280,9 +280,9 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
             <div><div className="text-[9.5px] uppercase tracking-[0.08em] text-otj-text mb-0.5">Timeline</div><div className="text-[13px] font-extrabold tracking-[-0.02em]">5 days</div></div>
           </div>
           {offerLocked ? (
-            <div className="flex items-center justify-between">
-              <div className="text-xs font-bold text-otj-green flex items-center gap-1.5">✓ Both parties agreed · 3,500 EGP · 5 days · 40 photos</div>
-              <button onClick={() => showToast('Opening payment… 50% deposit: 1,750 EGP')} className="px-3 py-[7px] rounded-full bg-primary border-primary text-primary-foreground text-xs font-bold cursor-pointer">Pay 50% Deposit →</button>
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+              <div className="text-xs font-bold text-otj-green flex items-center gap-1.5 flex-wrap">✓ Both parties agreed · 3,500 EGP · 5 days · 40 photos</div>
+              <button onClick={() => showToast('Opening payment… 50% deposit: 1,750 EGP')} className="px-3 py-[7px] rounded-full bg-primary border-primary text-primary-foreground text-xs font-bold cursor-pointer whitespace-nowrap shrink-0">Pay 50% Deposit →</button>
             </div>
           ) : (
             <div className="flex gap-1.5">
