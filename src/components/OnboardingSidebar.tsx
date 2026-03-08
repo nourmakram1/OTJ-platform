@@ -34,7 +34,7 @@ export const OnboardingSidebar: React.FC<OnboardingSidebarProps> = ({
   const missing = requiredSteps.filter(s => !doneSteps.has(s));
 
   return (
-    <aside className="bg-card border-r border-border p-[28px_20px_24px] fixed top-[52px] left-0 bottom-0 w-[260px] overflow-y-auto flex flex-col gap-0">
+    <aside className="hidden md:flex bg-card border-r border-border p-[28px_20px_24px] fixed top-[52px] left-0 bottom-0 w-[260px] overflow-y-auto flex-col gap-0">
       <div className="text-base font-extrabold tracking-[-0.04em] text-foreground mb-1">Build Your Profile</div>
       <div className="text-[11.5px] text-otj-text leading-relaxed mb-5">Complete at your own pace. Go live whenever you're ready.</div>
 

@@ -81,7 +81,25 @@ const Onboarding = () => {
       <TopNavOnboarding currentStep={currentStep} totalSteps={6} isReady={isReady} onSkip={handleSkip} onGoLive={handleGoLive} />
       <div className="min-h-screen pt-[52px]">
         <OnboardingSidebar currentStep={currentStep} doneSteps={doneSteps} isReady={isReady} onStepClick={goToStep} onGoLive={handleGoLive} />
-        <main className="ml-[260px] px-12 py-10 max-w-[900px]">
+        {/* Mobile step indicator */}
+        <div className="md:hidden px-4 py-3 flex gap-1.5 overflow-x-auto hide-scrollbar">
+          {[1,2,3,4,5,6].map(s => (
+            <button
+              key={s}
+              onClick={() => goToStep(s)}
+              className={`shrink-0 w-8 h-8 rounded-full text-[11px] font-bold border-[1.5px] transition-all duration-150 ${
+                doneSteps.has(s)
+                  ? 'border-otj-green bg-otj-green-bg text-otj-green'
+                  : currentStep === s
+                    ? 'border-foreground bg-otj-off text-foreground'
+                    : 'border-border bg-card text-otj-muted'
+              }`}
+            >
+              {doneSteps.has(s) ? '✓' : s}
+            </button>
+          ))}
+        </div>
+        <main className="md:ml-[260px] px-4 md:px-12 py-6 md:py-10 max-w-[900px]">
           {currentStep === 1 && <Step1Panel onNext={() => nextStep(1)} onSelectionsChange={(prof, niches) => { setSelectedProfession(prof); setSelectedNiches(niches); }} />}
           {currentStep === 2 && <Step2Panel onNext={() => nextStep(2)} onBack={() => prevStep(2)} selectedProfession={selectedProfession} selectedNiches={selectedNiches} />}
           {currentStep === 3 && <Step3Panel onNext={() => nextStep(3)} onBack={() => prevStep(3)} />}
