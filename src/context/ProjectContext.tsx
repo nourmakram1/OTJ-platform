@@ -315,6 +315,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       createdAt: dateStr,
       meetings: [],
       attachments: [],
+      reviews: [],
     };
 
     setPendingBriefs(prev => prev.filter(b => b.id !== briefId));
