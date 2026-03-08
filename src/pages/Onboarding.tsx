@@ -2,10 +2,10 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TopNavOnboarding } from '../components/TopNavOnboarding';
 import { OnboardingSidebar } from '../components/OnboardingSidebar';
-import { Step1Panel, Step2Panel, Step3Panel, Step4Panel, Step5Panel, Step6Panel, Step7Panel } from '../components/OnboardingSteps';
+import { Step1Panel, Step2Panel, Step3Panel, Step5Panel, Step6Panel, Step7Panel } from '../components/OnboardingSteps';
 import { Toast, showToast } from '../components/Toast';
 
-const REQUIRED_STEPS = [1, 2, 4, 6];
+const REQUIRED_STEPS = [1, 2, 5];
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const Onboarding = () => {
 
   const nextStep = useCallback((from: number) => {
     markDone(from);
-    if (from < 7) {
+    if (from < 6) {
       setCurrentStep(from + 1);
       showToast(`Step ${from} saved ✓`);
     }
@@ -50,14 +50,14 @@ const Onboarding = () => {
   }, []);
 
   const handleFinish = useCallback(() => {
-    markDone(7);
+    markDone(6);
     setShowComplete(true);
   }, [markDone]);
 
   if (showComplete) {
     return (
       <>
-        <TopNavOnboarding currentStep={7} totalSteps={7} isReady={isReady} onSkip={handleSkip} onGoLive={handleGoLive} />
+        <TopNavOnboarding currentStep={6} totalSteps={6} isReady={isReady} onSkip={handleSkip} onGoLive={handleGoLive} />
         <div className="min-h-screen flex flex-col items-center justify-center pt-[52px] text-center animate-fade-up">
           <div className="w-20 h-20 rounded-full bg-otj-green-bg border-2 border-otj-green-border flex items-center justify-center text-4xl mb-6">✓</div>
           <div className="text-5xl font-extrabold tracking-[-0.05em] text-foreground leading-[0.9] mb-3">PROFILE<br/>COMPLETE.</div>
@@ -78,17 +78,16 @@ const Onboarding = () => {
 
   return (
     <>
-      <TopNavOnboarding currentStep={currentStep} totalSteps={7} isReady={isReady} onSkip={handleSkip} onGoLive={handleGoLive} />
+      <TopNavOnboarding currentStep={currentStep} totalSteps={6} isReady={isReady} onSkip={handleSkip} onGoLive={handleGoLive} />
       <div className="min-h-screen pt-[52px]">
         <OnboardingSidebar currentStep={currentStep} doneSteps={doneSteps} isReady={isReady} onStepClick={goToStep} onGoLive={handleGoLive} />
         <main className="ml-[260px] px-12 py-10 max-w-[900px]">
           {currentStep === 1 && <Step1Panel onNext={() => nextStep(1)} onSelectionsChange={(prof, niches) => { setSelectedProfession(prof); setSelectedNiches(niches); }} />}
           {currentStep === 2 && <Step2Panel onNext={() => nextStep(2)} onBack={() => prevStep(2)} selectedProfession={selectedProfession} selectedNiches={selectedNiches} />}
           {currentStep === 3 && <Step3Panel onNext={() => nextStep(3)} onBack={() => prevStep(3)} />}
-          {currentStep === 4 && <Step4Panel onNext={() => nextStep(4)} onBack={() => prevStep(4)} />}
-          {currentStep === 5 && <Step5Panel onNext={() => nextStep(5)} onBack={() => prevStep(5)} />}
-          {currentStep === 6 && <Step6Panel onNext={() => nextStep(6)} onBack={() => prevStep(6)} />}
-          {currentStep === 7 && <Step7Panel onBack={() => prevStep(7)} onNext={() => {}} onFinish={handleFinish} />}
+          {currentStep === 4 && <Step5Panel onNext={() => nextStep(4)} onBack={() => prevStep(4)} />}
+          {currentStep === 5 && <Step6Panel onNext={() => nextStep(5)} onBack={() => prevStep(5)} />}
+          {currentStep === 6 && <Step7Panel onBack={() => prevStep(6)} onNext={() => {}} onFinish={handleFinish} />}
         </main>
       </div>
       <Toast />
