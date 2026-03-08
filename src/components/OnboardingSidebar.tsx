@@ -27,10 +27,10 @@ interface OnboardingSidebarProps {
 export const OnboardingSidebar: React.FC<OnboardingSidebarProps> = ({
   currentStep, doneSteps, isReady, onStepClick, onGoLive
 }) => {
-  const pct = Math.round((doneSteps.size / 7) * 100);
+  const pct = Math.round((doneSteps.size / 6) * 100);
   const circumference = 163;
   const offset = circumference - (circumference * pct / 100);
-  const requiredSteps = [1, 2, 4, 6];
+  const requiredSteps = [1, 2, 5];
   const missing = requiredSteps.filter(s => !doneSteps.has(s));
 
   return (
