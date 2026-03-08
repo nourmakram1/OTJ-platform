@@ -32,24 +32,24 @@ const LinksSection: React.FC = () => {
   );
 };
 const professions = [
-  { icon: '📸', name: 'Photographer', type: 'Visual', visual: true },
-  { icon: '🎥', name: 'Videographer', type: 'Visual', visual: true },
-  { icon: '🎨', name: 'Graphic Designer', type: 'Visual', visual: true },
-  { icon: '✨', name: 'Motion Designer', type: 'Visual', visual: true },
-  { icon: '💼', name: 'Business & Marketing', type: 'Non-Visual', visual: false },
-  { icon: '🏗️', name: 'Space Design', type: 'Visual', visual: true },
-  { icon: '💻', name: 'Tech Development', type: 'Non-Visual', visual: false },
-  { icon: '🤖', name: 'AI Creator', type: 'Visual', visual: true },
-  { icon: '📱', name: 'Content Creator', type: 'Visual', visual: true },
-  { icon: '🎤', name: 'Talent', type: 'Any', visual: true },
-  { icon: '✏️', name: 'Script Writer', type: 'Non-Visual', visual: false },
-  { icon: '📝', name: 'Copywriter', type: 'Non-Visual', visual: false },
-  { icon: '🎯', name: 'Brand Strategist', type: 'Non-Visual', visual: false },
-  { icon: '📱', name: 'Social Media', type: 'Non-Visual', visual: false },
-  { icon: '💄', name: 'MUA & Stylist', type: 'Visual', visual: false },
-  { icon: '🎬', name: 'Creative Director', type: 'Non-Visual', visual: false },
-  { icon: '🎪', name: 'Event Producer', type: 'Non-Visual', visual: false },
-  { icon: '➕', name: 'Other', type: 'Any', visual: false },
+  { icon: '📸', name: 'Photographer' },
+  { icon: '🎥', name: 'Videographer' },
+  { icon: '🎨', name: 'Graphic Designer' },
+  { icon: '✨', name: 'Motion Designer' },
+  { icon: '💼', name: 'Business & Marketing' },
+  { icon: '🏗️', name: 'Space Design' },
+  { icon: '💻', name: 'Tech Development' },
+  { icon: '🤖', name: 'AI Creator' },
+  { icon: '📱', name: 'Content Creator' },
+  { icon: '🎤', name: 'Talent' },
+  { icon: '✏️', name: 'Script Writer' },
+  { icon: '📝', name: 'Copywriter' },
+  { icon: '🎯', name: 'Brand Strategist' },
+  { icon: '📱', name: 'Social Media' },
+  { icon: '💄', name: 'MUA & Stylist' },
+  { icon: '🎬', name: 'Creative Director' },
+  { icon: '🎪', name: 'Event Producer' },
+  { icon: '➕', name: 'Other' },
 ];
 
 const nicheMap: Record<string, string[]> = {
@@ -96,7 +96,7 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
   const availableNiches = nicheMap[selectedProf] || [];
   
   const q = search.toLowerCase();
-  const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q) || p.type.toLowerCase().includes(q)) : professions;
+  const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q)) : professions;
   const filteredNiches = q ? availableNiches.filter(n => n.toLowerCase().includes(q)) : availableNiches;
 
   const handleProfChange = (name: string) => {
@@ -145,9 +145,8 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
                   selectedProf === p.name ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
                 }`}
               >
-                <div className="text-2xl mb-2">{p.icon}</div>
-                <div className="text-[12px] font-bold tracking-[-0.02em] text-foreground leading-tight mb-0.5">{p.name}</div>
-                <div className="text-[9px] font-medium uppercase tracking-[0.08em] text-otj-muted">{p.type}</div>
+                <div className="text-2xl mb-1">{p.icon}</div>
+                <div className="text-[12px] font-bold tracking-[-0.02em] text-foreground leading-tight">{p.name}</div>
               </div>
             ))}
           </div>
