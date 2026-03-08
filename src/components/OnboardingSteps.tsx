@@ -103,7 +103,7 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
             >
               <div className="text-2xl mb-2">{p.icon}</div>
               <div className="text-[12px] font-bold tracking-[-0.02em] text-foreground leading-tight mb-0.5">{p.name}</div>
-              <div className={`text-[9px] font-semibold uppercase tracking-[0.06em] ${p.visual ? 'text-otj-blue' : 'text-otj-orange'}`}>{p.type}</div>
+              <div className="text-[9px] font-medium uppercase tracking-[0.08em] text-otj-muted">{p.type}</div>
             </div>
           ))}
         </div>
