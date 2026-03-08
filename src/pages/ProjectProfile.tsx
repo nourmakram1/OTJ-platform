@@ -98,11 +98,42 @@ const ProjectProfile = () => {
 
   const statusLabel = isProposal ? 'Proposal Draft' :
     proj.status === 'pending-deposit' ? 'Awaiting Deposit' :
+    proj.status === 'complete' ? 'Completed ✓' :
     currentPhase ? `Phase ${currentPhase.num} · Active` : 'Active';
 
   const statusClass = isProposal ? 'bg-otj-yellow-bg text-otj-yellow border border-otj-yellow-border' :
     proj.status === 'pending-deposit' ? 'bg-otj-yellow-bg text-otj-yellow border border-otj-yellow-border' :
+    proj.status === 'complete' ? 'bg-otj-green-bg text-otj-green border border-otj-green-border' :
     'bg-otj-blue-bg text-otj-blue border border-otj-blue-border';
+
+  const handleCompleteProject = () => {
+    completeProject(proj.id);
+    showToast('🎉 Project completed!');
+    setReviewType('client');
+    setShowReviewModal(true);
+  };
+
+  const handleReviewSubmit = (review: ReviewPayload) => {
+    addReview(proj.id, {
+      projectId: proj.id,
+      projectName: proj.name,
+      reviewerName: reviewType === 'client' ? 'You' : proj.clientName,
+      targetName: reviewType === 'client' ? proj.clientName : 'You',
+      reviewType: review.reviewType,
+      rating: review.rating,
+      tags: review.tags,
+      text: review.text,
+    });
+    setShowReviewModal(false);
+    if (reviewType === 'client') {
+      // After reviewing client, prompt to review as creative
+      showToast('✓ Review submitted! Now leave a review as the creative.');
+      setReviewType('creative');
+      setTimeout(() => setShowReviewModal(true), 500);
+    } else {
+      showToast('✓ All reviews submitted! Thank you.');
+    }
+  };
 
   React.useEffect(() => {
     if (!isProposal) {
