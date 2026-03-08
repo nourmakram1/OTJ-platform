@@ -70,6 +70,11 @@ interface Step2PanelProps extends StepPanelProps {
 export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChange }) => {
   const [selectedProf, setSelectedProf] = useState('Photographer');
   const [selectedNiches, setSelectedNiches] = useState(new Set(['Fashion Editorial', 'E-Commerce']));
+  const [search, setSearch] = useState('');
+
+  const q = search.toLowerCase();
+  const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q) || p.type.toLowerCase().includes(q)) : professions;
+  const filteredNiches = q ? niches.filter(n => n.toLowerCase().includes(q)) : niches;
 
   const handleProfChange = (name: string) => {
     setSelectedProf(name);
@@ -88,47 +93,69 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
     <div className="animate-fade-up">
       <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-otj-blue mb-2.5">Step 1 of 7</div>
       <div className="text-[clamp(40px,5vw,60px)] font-extrabold tracking-[-0.05em] leading-[0.9] text-foreground mb-2.5">WHO<br/>ARE YOU?</div>
-      <div className="text-sm text-otj-text leading-relaxed max-w-[560px] mb-8">Pick your primary profession and the niches you specialise in. This shapes how clients find you.</div>
+      <div className="text-sm text-otj-text leading-relaxed max-w-[560px] mb-6">Pick your primary profession and the niches you specialise in. This shapes how clients find you.</div>
+
+      {/* Search bar */}
+      <div className="relative mb-7">
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-otj-muted text-[14px] pointer-events-none">🔍</span>
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search profession or niche…"
+          className="w-full pl-9 pr-9 py-2.5 rounded-[12px] border-[1.5px] border-border bg-card text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground placeholder:text-otj-muted"
+        />
+        {search && (
+          <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-otj-muted hover:text-foreground transition-colors duration-150">✕</button>
+        )}
+      </div>
 
       <div className="mb-7">
         <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">🎯 Your Profession</div>
-        <div className="grid grid-cols-3 gap-2.5 mb-7">
-          {professions.map(p => (
-            <div
-              key={p.name}
-              onClick={() => handleProfChange(p.name)}
-              className={`p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center ${
-                selectedProf === p.name ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
-              }`}
-            >
-              <div className="text-2xl mb-2">{p.icon}</div>
-              <div className="text-[12px] font-bold tracking-[-0.02em] text-foreground leading-tight mb-0.5">{p.name}</div>
-              <div className="text-[9px] font-medium uppercase tracking-[0.08em] text-otj-muted">{p.type}</div>
-            </div>
-          ))}
-        </div>
+        {filteredProfessions.length > 0 ? (
+          <div className="grid grid-cols-3 gap-2.5 mb-7">
+            {filteredProfessions.map(p => (
+              <div
+                key={p.name}
+                onClick={() => handleProfChange(p.name)}
+                className={`p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center ${
+                  selectedProf === p.name ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
+                }`}
+              >
+                <div className="text-2xl mb-2">{p.icon}</div>
+                <div className="text-[12px] font-bold tracking-[-0.02em] text-foreground leading-tight mb-0.5">{p.name}</div>
+                <div className="text-[9px] font-medium uppercase tracking-[0.08em] text-otj-muted">{p.type}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-[12.5px] text-otj-muted py-4 mb-7">No professions match "{search}"</div>
+        )}
       </div>
 
       <div className="mb-7">
         <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">
           🏷️ Your Niches <span className="text-[11px] font-medium text-otj-text">— pick all that apply</span>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {niches.map(n => (
-            <div
-              key={n}
-              onClick={() => handleNicheToggle(n)}
-              className={`text-[12.5px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all duration-150 tracking-[-0.01em] select-none flex items-center gap-1.5 ${
-                selectedNiches.has(n)
-                  ? 'bg-primary border-primary text-primary-foreground'
-                  : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground hover:bg-otj-off'
-              }`}
-            >
-              {n}
-              {selectedNiches.has(n) && <span className="w-[5px] h-[5px] rounded-full bg-primary-foreground/50" />}
-            </div>
-          ))}
-        </div>
+        {filteredNiches.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {filteredNiches.map(n => (
+              <div
+                key={n}
+                onClick={() => handleNicheToggle(n)}
+                className={`text-[12.5px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all duration-150 tracking-[-0.01em] select-none flex items-center gap-1.5 ${
+                  selectedNiches.has(n)
+                    ? 'bg-primary border-primary text-primary-foreground'
+                    : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground hover:bg-otj-off'
+                }`}
+              >
+                {n}
+                {selectedNiches.has(n) && <span className="w-[5px] h-[5px] rounded-full bg-primary-foreground/50" />}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-[12.5px] text-otj-muted py-4">No niches match "{search}"</div>
+        )}
       </div>
 
       <div className="mb-7">
