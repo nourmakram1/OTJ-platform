@@ -3,19 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
 
-const skills = ['Photography', 'Videography', 'Design', 'Writing', 'Marketing', 'Fashion', 'Tech', 'Other'];
+
 
 const Auth = () => {
   const navigate = useNavigate();
   const [mode, setMode] = useState<'signup' | 'login'>('signup');
   const [userType, setUserType] = useState<'client' | 'creative' | null>(null);
-  const [primarySkill, setPrimarySkill] = useState('');
   const [agreed, setAgreed] = useState(false);
 
   const handleSubmit = () => {
     if (mode === 'signup') {
       if (!userType) { showToast('Select Client or Creative'); return; }
-      if (userType === 'creative' && !primarySkill) { showToast('Select your primary skill'); return; }
       if (!agreed) { showToast('Accept the terms to continue'); return; }
       showToast('✓ Account created!');
       setTimeout(() => navigate(userType === 'creative' ? '/onboarding' : '/explore'), 600);
@@ -88,20 +86,7 @@ const Auth = () => {
                   </div>
                 </div>
 
-                {/* Primary skill (creative only) */}
-                {userType === 'creative' && (
-                  <div className="animate-fade-up">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Primary Skill <span className="text-destructive">*</span></div>
-                    <select
-                      value={primarySkill}
-                      onChange={e => setPrimarySkill(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card appearance-none cursor-pointer"
-                    >
-                      <option value="">Select your skill…</option>
-                      {skills.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                  </div>
-                )}
+
 
                 {/* Terms */}
                 <label className="flex items-start gap-2.5 cursor-pointer">
@@ -111,6 +96,16 @@ const Auth = () => {
 
                 <button onClick={handleSubmit} className="w-full py-3 rounded-full border-none bg-primary text-primary-foreground text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-2 hover:bg-primary/90 group mt-1">
                   Create Account <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
+                </button>
+
+                <div className="flex items-center gap-3 my-1">
+                  <div className="flex-1 h-px bg-border" />
+                  <span className="text-[11px] text-otj-muted font-semibold">or</span>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+
+                <button onClick={() => showToast('Google sign-in…')} className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2 hover:border-foreground hover:text-foreground">
+                  🔵 Continue with Google
                 </button>
               </div>
             ) : (
