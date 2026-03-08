@@ -129,6 +129,7 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
   const [saved, setSaved] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [showFilters, setShowFilters] = useState(false);
+  const [sortBy, setSortBy] = useState<'' | 'rating' | 'experience' | 'price-low' | 'price-high'>('');
 
   const toggleSave = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
