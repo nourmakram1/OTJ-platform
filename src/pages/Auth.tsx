@@ -97,6 +97,16 @@ const Auth = () => {
                 <button onClick={handleSubmit} className="w-full py-3 rounded-full border-none bg-primary text-primary-foreground text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-2 hover:bg-primary/90 group mt-1">
                   Create Account <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
                 </button>
+
+                <div className="flex items-center gap-3 my-1">
+                  <div className="flex-1 h-px bg-border" />
+                  <span className="text-[11px] text-otj-muted font-semibold">or</span>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+
+                <button onClick={() => showToast('Google sign-in…')} className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2 hover:border-foreground hover:text-foreground">
+                  🔵 Continue with Google
+                </button>
               </div>
             ) : (
               <div className="animate-fade-up flex flex-col gap-4">
