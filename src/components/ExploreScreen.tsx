@@ -150,7 +150,22 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
     (filters.minRating > 0 ? 1 : 0) +
     (filters.minExperience > 0 ? 1 : 0);
 
-  const clearFilters = () => setFilters(defaultFilters);
+  const clearFilters = () => { setFilters(defaultFilters); setSortBy(''); };
+
+  const sortLabel = sortBy === 'rating' ? 'Rating' : sortBy === 'experience' ? 'Experience' : sortBy === 'price-low' ? 'Price ↑' : sortBy === 'price-high' ? 'Price ↓' : 'Sort by';
+
+  const applySort = (list: Creative[]): Creative[] => {
+    if (!sortBy) return list;
+    const sorted = [...list];
+    const parsePrice = (p: string) => parseInt(p.replace(/[^0-9]/g, '')) || 0;
+    switch (sortBy) {
+      case 'rating': return sorted.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+      case 'experience': return sorted.sort((a, b) => b.experience - a.experience);
+      case 'price-low': return sorted.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
+      case 'price-high': return sorted.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+      default: return sorted;
+    }
+  };
 
   // Available niches based on active category
   const availableNiches = useMemo(() => getNichesForCategory(activeFilter), [activeFilter]);
