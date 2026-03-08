@@ -72,10 +72,10 @@ const CreativeProfile = () => {
 
         {/* Tabs */}
         <div className="flex gap-1 mb-5 overflow-x-auto hide-scrollbar pb-1">
-          {(['portfolio', 'reviews', 'packages'] as const).map(t => (
+          {(['portfolio', 'reviews'] as const).map(t => (
             <button key={t} onClick={() => setActiveTab(t)} className={`text-[12.5px] font-semibold px-4 py-[7px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 capitalize whitespace-nowrap shrink-0 ${
               activeTab === t ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-otj-muted'
-            }`}>{t === 'portfolio' ? `📸 Portfolio` : t === 'reviews' ? `⭐ Reviews (127)` : `📦 Packages`}</button>
+            }`}>{t === 'portfolio' ? `📸 Portfolio` : `⭐ Reviews (127)`}</button>
           ))}
         </div>
 
