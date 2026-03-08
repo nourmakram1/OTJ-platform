@@ -40,6 +40,8 @@ const professions = [
   { icon: '🏗️', name: 'Space Design', type: 'Visual', visual: true },
   { icon: '💻', name: 'Tech Development', type: 'Non-Visual', visual: false },
   { icon: '🤖', name: 'AI Creator', type: 'Visual', visual: true },
+  { icon: '📱', name: 'Content Creator', type: 'Visual', visual: true },
+  { icon: '🎤', name: 'Talent', type: 'Any', visual: true },
   { icon: '✏️', name: 'Script Writer', type: 'Non-Visual', visual: false },
   { icon: '📝', name: 'Copywriter', type: 'Non-Visual', visual: false },
   { icon: '🎯', name: 'Brand Strategist', type: 'Non-Visual', visual: false },
