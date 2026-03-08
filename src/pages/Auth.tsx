@@ -9,7 +9,6 @@ const Auth = () => {
   const navigate = useNavigate();
   const [mode, setMode] = useState<'signup' | 'login'>('signup');
   const [userType, setUserType] = useState<'client' | 'creative' | null>(null);
-  const [primarySkill, setPrimarySkill] = useState('');
   const [agreed, setAgreed] = useState(false);
 
   const handleSubmit = () => {
