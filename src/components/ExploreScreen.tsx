@@ -333,8 +333,34 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
           </div>
         </FilterChip>
 
+        {/* Sort by */}
+        <FilterChip label={sortLabel} active={!!sortBy}>
+          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Sort by</div>
+          <div className="flex flex-col gap-1">
+            {([
+              { key: '' as const, label: 'Default' },
+              { key: 'rating' as const, label: '⭐ Highest Rating' },
+              { key: 'experience' as const, label: '🏅 Most Experience' },
+              { key: 'price-low' as const, label: '💰 Price: Low → High' },
+              { key: 'price-high' as const, label: '💰 Price: High → Low' },
+            ]).map(opt => (
+              <button
+                key={opt.key}
+                onClick={() => setSortBy(opt.key)}
+                className={`text-left px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
+                  sortBy === opt.key
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-foreground hover:bg-otj-off'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </FilterChip>
+
         {/* Clear all */}
-        {activeFilterCount > 0 && (
+        {(activeFilterCount > 0 || !!sortBy) && (
           <button
             onClick={clearFilters}
             className="flex items-center gap-1 text-[11px] font-semibold text-otj-text hover:text-foreground cursor-pointer whitespace-nowrap transition-colors"
