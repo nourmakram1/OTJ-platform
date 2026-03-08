@@ -251,6 +251,7 @@ const defaultActiveProjects: ProjectData[] = [
     createdAt: 'March 20, 2026',
     meetings: [],
     attachments: [],
+    reviews: [],
   },
 ];
 
