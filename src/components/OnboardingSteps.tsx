@@ -96,7 +96,7 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
   const availableNiches = nicheMap[selectedProf] || [];
   
   const q = search.toLowerCase();
-  const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q) || p.type.toLowerCase().includes(q)) : professions;
+  const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q)) : professions;
   const filteredNiches = q ? availableNiches.filter(n => n.toLowerCase().includes(q)) : availableNiches;
 
   const handleProfChange = (name: string) => {
