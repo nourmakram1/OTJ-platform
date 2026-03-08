@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { showToast } from './Toast';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import { categoryNiches } from '../data/niches';
-import { allCreatives, categories, getFeaturedCreatives, getCreativesByNiche } from '../data/creatives';
+import { allCreatives, categories, getFeaturedCreatives, getCreativesByNiche, getNichesForCategory } from '../data/creatives';
 import { CreativeCard } from './CreativeCard';
 import type { Creative } from '../data/creatives';
 
@@ -10,6 +10,20 @@ interface ExploreScreenProps {
   onOpenBrief: (creativeId: string) => void;
   searchQuery?: string;
 }
+
+interface Filters {
+  niches: Set<string>;
+  availability: string; // '' | 'Available now' | 'Next week'
+  minRating: number; // 0 means no filter
+  minExperience: number; // 0 means no filter
+}
+
+const defaultFilters: Filters = {
+  niches: new Set(),
+  availability: '',
+  minRating: 0,
+  minExperience: 0,
+};
 
 /** Horizontal scrollable row — Netflix-style */
 const CreativeRow: React.FC<{
@@ -36,7 +50,6 @@ const CreativeRow: React.FC<{
         <span className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer">View all →</span>
       </div>
       <div className="relative group/row">
-        {/* Scroll buttons — desktop only */}
         <button
           onClick={() => scroll('left')}
           className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-card border border-border shadow-md items-center justify-center opacity-0 group-hover/row:opacity-100 transition-opacity hover:bg-accent"
@@ -70,9 +83,52 @@ const CreativeRow: React.FC<{
   );
 };
 
+/** Filter dropdown chip */
+const FilterChip: React.FC<{
+  label: string;
+  active: boolean;
+  children: React.ReactNode;
+}> = ({ label, active, children }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className={`flex items-center gap-1.5 text-[12px] font-semibold px-3 py-[6px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 whitespace-nowrap ${
+          active
+            ? 'bg-primary border-primary text-primary-foreground'
+            : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
+        }`}
+      >
+        {label}
+        <ChevronDown className={`w-3 h-3 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 mt-1.5 z-[50] min-w-[200px] bg-card border border-border rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.12)] p-3 animate-fade-up">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searchQuery = '' }) => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [saved, setSaved] = useState<Set<string>>(new Set());
+  const [filters, setFilters] = useState<Filters>(defaultFilters);
+  const [showFilters, setShowFilters] = useState(false);
 
   const toggleSave = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -84,32 +140,71 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
 
   const handleFilterChange = (f: string) => {
     setActiveFilter(f);
+    // Reset niche filter when category changes
+    setFilters(prev => ({ ...prev, niches: new Set() }));
   };
 
-  // Search results — flat grid when searching
+  const activeFilterCount = (filters.niches.size > 0 ? 1 : 0) +
+    (filters.availability ? 1 : 0) +
+    (filters.minRating > 0 ? 1 : 0) +
+    (filters.minExperience > 0 ? 1 : 0);
+
+  const clearFilters = () => setFilters(defaultFilters);
+
+  // Available niches based on active category
+  const availableNiches = useMemo(() => getNichesForCategory(activeFilter), [activeFilter]);
+
+  // Apply all filters to a creative list
+  const applyFilters = (list: Creative[]): Creative[] => {
+    return list.filter(c => {
+      if (filters.niches.size > 0 && !filters.niches.has(c.niche)) return false;
+      if (filters.availability && c.avail !== filters.availability) return false;
+      if (filters.minRating > 0 && parseFloat(c.rating) < filters.minRating) return false;
+      if (filters.minExperience > 0 && c.experience < filters.minExperience) return false;
+      return true;
+    });
+  };
+
+  // Search results
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return null;
     const q = searchQuery.toLowerCase();
-    return allCreatives.filter(c =>
+    const results = allCreatives.filter(c =>
       c.name.toLowerCase().includes(q) ||
       c.role.toLowerCase().includes(q) ||
       c.niche.toLowerCase().includes(q) ||
       c.category.toLowerCase().includes(q)
     );
-  }, [searchQuery]);
+    return applyFilters(results);
+  }, [searchQuery, filters]);
 
   // Build niche rows for selected category
   const nicheRows = useMemo(() => {
     if (activeFilter === 'All') return null;
-    return getCreativesByNiche(activeFilter);
-  }, [activeFilter]);
+    const rows = getCreativesByNiche(activeFilter);
+    // Apply filters to each row
+    const filtered: Record<string, Creative[]> = {};
+    Object.entries(rows).forEach(([niche, creatives]) => {
+      const result = applyFilters(creatives);
+      if (result.length > 0) filtered[niche] = result;
+    });
+    return filtered;
+  }, [activeFilter, filters]);
 
-  const featured = useMemo(() => getFeaturedCreatives(), []);
+  const featured = useMemo(() => applyFilters(getFeaturedCreatives()), [filters]);
+
+  const toggleNiche = (niche: string) => {
+    setFilters(prev => {
+      const next = new Set(prev.niches);
+      next.has(niche) ? next.delete(niche) : next.add(niche);
+      return { ...prev, niches: next };
+    });
+  };
 
   return (
     <div className="p-[16px_16px_80px] md:p-[20px_24px_80px]">
       {/* Category filters */}
-      <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1 hide-scrollbar">
+      <div className="flex gap-1.5 mb-3 overflow-x-auto pb-1 hide-scrollbar">
         {categories.map(f => (
           <div
             key={f}
@@ -125,6 +220,115 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
         ))}
       </div>
 
+      {/* Filter bar */}
+      <div className="flex items-center gap-2 mb-4 overflow-x-auto hide-scrollbar pb-1">
+        <button
+          onClick={() => setShowFilters(s => !s)}
+          className={`flex items-center gap-1.5 text-[12px] font-bold px-3 py-[6px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 whitespace-nowrap ${
+            activeFilterCount > 0
+              ? 'bg-primary border-primary text-primary-foreground'
+              : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
+          }`}
+        >
+          <SlidersHorizontal className="w-3.5 h-3.5" />
+          Filters
+          {activeFilterCount > 0 && (
+            <span className="w-4 h-4 rounded-full bg-primary-foreground text-primary text-[10px] font-bold flex items-center justify-center">
+              {activeFilterCount}
+            </span>
+          )}
+        </button>
+
+        {/* Niche filter */}
+        <FilterChip label="Profession" active={filters.niches.size > 0}>
+          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Select professions</div>
+          <div className="flex flex-col gap-1 max-h-[220px] overflow-y-auto">
+            {availableNiches.map(niche => (
+              <label key={niche} className="flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-otj-off transition-colors">
+                <input
+                  type="checkbox"
+                  checked={filters.niches.has(niche)}
+                  onChange={() => toggleNiche(niche)}
+                  className="w-3.5 h-3.5 rounded accent-primary cursor-pointer"
+                />
+                <span className="text-[12px] font-medium text-foreground">{niche}</span>
+              </label>
+            ))}
+          </div>
+        </FilterChip>
+
+        {/* Availability filter */}
+        <FilterChip label="Availability" active={!!filters.availability}>
+          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Availability</div>
+          <div className="flex flex-col gap-1">
+            {['', 'Available now', 'Next week'].map(opt => (
+              <button
+                key={opt}
+                onClick={() => setFilters(prev => ({ ...prev, availability: opt }))}
+                className={`text-left px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
+                  filters.availability === opt
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-foreground hover:bg-otj-off'
+                }`}
+              >
+                {opt || 'Any'}
+              </button>
+            ))}
+          </div>
+        </FilterChip>
+
+        {/* Rating filter */}
+        <FilterChip label="Rating" active={filters.minRating > 0}>
+          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Minimum rating</div>
+          <div className="flex flex-col gap-1">
+            {[0, 4.5, 4.7, 4.8, 4.9, 5.0].map(r => (
+              <button
+                key={r}
+                onClick={() => setFilters(prev => ({ ...prev, minRating: r }))}
+                className={`text-left px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
+                  filters.minRating === r
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-foreground hover:bg-otj-off'
+                }`}
+              >
+                {r === 0 ? 'Any' : `⭐ ${r}+`}
+              </button>
+            ))}
+          </div>
+        </FilterChip>
+
+        {/* Experience filter */}
+        <FilterChip label="Experience" active={filters.minExperience > 0}>
+          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Years of experience</div>
+          <div className="flex flex-col gap-1">
+            {[0, 2, 3, 5, 7, 10].map(y => (
+              <button
+                key={y}
+                onClick={() => setFilters(prev => ({ ...prev, minExperience: y }))}
+                className={`text-left px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
+                  filters.minExperience === y
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-foreground hover:bg-otj-off'
+                }`}
+              >
+                {y === 0 ? 'Any' : `${y}+ years`}
+              </button>
+            ))}
+          </div>
+        </FilterChip>
+
+        {/* Clear all */}
+        {activeFilterCount > 0 && (
+          <button
+            onClick={clearFilters}
+            className="flex items-center gap-1 text-[11px] font-semibold text-otj-text hover:text-foreground cursor-pointer whitespace-nowrap transition-colors"
+          >
+            <X className="w-3 h-3" />
+            Clear all
+          </button>
+        )}
+      </div>
+
       {/* Search mode — flat grid */}
       {searchResults ? (
         <>
@@ -135,7 +339,7 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
             <div className="text-center py-16">
               <div className="text-4xl mb-3">🔍</div>
               <div className="text-sm font-bold text-foreground mb-1">No creatives found</div>
-              <div className="text-[12px] text-otj-text">Try adjusting your search query</div>
+              <div className="text-[12px] text-otj-text">Try adjusting your search or filters</div>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2 md:gap-2.5">
@@ -162,7 +366,8 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
             onToggleSave={toggleSave}
           />
           {categories.filter(c => c !== 'All').map(cat => {
-            const catCreatives = allCreatives.filter(c => c.category === cat);
+            const catCreatives = applyFilters(allCreatives.filter(c => c.category === cat));
+            if (catCreatives.length === 0) return null;
             return (
               <CreativeRow
                 key={cat}
@@ -189,7 +394,6 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
                   saved={saved}
                   onToggleSave={toggleSave}
                 />
-                {/* Skill tags under each niche */}
                 {nicheData && (
                   <div className="mb-5 -mt-3 px-1">
                     <div className="flex flex-wrap gap-1.5">
@@ -210,8 +414,8 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
           {nicheRows && Object.keys(nicheRows).length === 0 && (
             <div className="text-center py-16">
               <div className="text-4xl mb-3">🔍</div>
-              <div className="text-sm font-bold text-foreground mb-1">No creatives in this category yet</div>
-              <div className="text-[12px] text-otj-text">Check back soon!</div>
+              <div className="text-sm font-bold text-foreground mb-1">No creatives match your filters</div>
+              <div className="text-[12px] text-otj-text">Try adjusting your filters</div>
             </div>
           )}
         </>
