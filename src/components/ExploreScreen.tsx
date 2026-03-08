@@ -315,19 +315,24 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
 
         {/* Experience filter */}
         <FilterChip label="Experience" active={filters.minExperience > 0}>
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Years of experience</div>
+          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Experience level</div>
           <div className="flex flex-col gap-1">
-            {[0, 2, 3, 5, 7, 10].map(y => (
+            {([
+              { value: 0, label: 'Any' },
+              { value: 1, label: '🌱 Beginner (1-3 yrs)' },
+              { value: 5, label: '⚡ Expert (5+ yrs)' },
+              { value: 10, label: '🏅 Veteran (10+ yrs)' },
+            ]).map(opt => (
               <button
-                key={y}
-                onClick={() => setFilters(prev => ({ ...prev, minExperience: y }))}
+                key={opt.value}
+                onClick={() => setFilters(prev => ({ ...prev, minExperience: opt.value }))}
                 className={`text-left px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
-                  filters.minExperience === y
+                  filters.minExperience === opt.value
                     ? 'bg-primary text-primary-foreground'
                     : 'text-foreground hover:bg-otj-off'
                 }`}
               >
-                {y === 0 ? 'Any' : `${y}+ years`}
+                {opt.label}
               </button>
             ))}
           </div>
