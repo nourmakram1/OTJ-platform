@@ -36,6 +36,10 @@ const professions = [
   { icon: '🎥', name: 'Videographer', type: 'Visual', visual: true },
   { icon: '🎨', name: 'Graphic Designer', type: 'Visual', visual: true },
   { icon: '✨', name: 'Motion Designer', type: 'Visual', visual: true },
+  { icon: '💼', name: 'Business & Marketing', type: 'Non-Visual', visual: false },
+  { icon: '🏗️', name: 'Space Design', type: 'Visual', visual: true },
+  { icon: '💻', name: 'Tech Development', type: 'Non-Visual', visual: false },
+  { icon: '🤖', name: 'AI Creator', type: 'Visual', visual: true },
   { icon: '✏️', name: 'Script Writer', type: 'Non-Visual', visual: false },
   { icon: '📝', name: 'Copywriter', type: 'Non-Visual', visual: false },
   { icon: '🎯', name: 'Brand Strategist', type: 'Non-Visual', visual: false },
@@ -46,11 +50,24 @@ const professions = [
   { icon: '➕', name: 'Other', type: 'Any', visual: false },
 ];
 
-const niches = [
-  'Fashion Editorial', 'E-Commerce', 'Product Photography', 'Architecture',
-  'Lifestyle', 'Sports & Action', 'Food & Beverage', 'Corporate & Events',
-  'Weddings', 'Portraits', 'Street & Documentary', 'Beauty & Cosmetics',
-];
+const nicheMap: Record<string, string[]> = {
+  'Photographer': ['Fashion Editorial', 'E-Commerce', 'Product Photography', 'Architecture', 'Lifestyle', 'Sports & Action', 'Food & Beverage', 'Corporate & Events', 'Weddings', 'Portraits', 'Street & Documentary', 'Beauty & Cosmetics'],
+  'Videographer': ['Music Videos', 'Commercials', 'Documentary', 'Weddings', 'Corporate', 'Events', 'Social Media'],
+  'Graphic Designer': ['Branding', 'Print Design', 'Digital Design', 'Packaging', 'Illustration', 'Typography'],
+  'Motion Designer': ['2D Animation', '3D Animation', 'VFX', 'UI/UX Animation', 'Explainer Videos'],
+  'Business & Marketing': ['Digital Marketing', 'SEO', 'Content Strategy', 'Growth Hacking', 'Email Marketing', 'Market Research', 'PR'],
+  'Space Design': ['Interior Design', 'Architecture', 'Visual Merchandising', 'Exhibition Design', 'Set Design'],
+  'Tech Development': ['Frontend', 'Backend', 'Full Stack', 'Mobile Apps', 'Web3/Crypto', 'DevOps'],
+  'AI Creator': ['Prompt Engineering', 'AI Video', 'AI Image Generation', 'Custom Models', 'AI Avatars'],
+  'Script Writer': ['Film/TV', 'Commercials', 'Video Games', 'YouTube', 'Podcasts'],
+  'Copywriter': ['Ad Copy', 'Website Copy', 'Email Copy', 'Product Descriptions', 'SEO Copywriting'],
+  'Brand Strategist': ['Brand Identity', 'Market Positioning', 'Consumer Insights', 'Tone of Voice'],
+  'Social Media': ['Instagram', 'TikTok', 'LinkedIn', 'Community Management', 'Content Calendar'],
+  'MUA & Stylist': ['Bridal', 'Editorial', 'Special FX', 'Personal Styling', 'Wardrobe'],
+  'Creative Director': ['Art Direction', 'Campaigns', 'Brand Vision', 'Team Leadership'],
+  'Event Producer': ['Corporate Events', 'Festivals', 'Exhibitions', 'Weddings', 'Live Shows'],
+  'Other': ['General'],
+};
 
 interface StepPanelProps {
   onNext: () => void;
@@ -69,17 +86,20 @@ interface Step2PanelProps extends StepPanelProps {
 // STEP 1
 export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChange }) => {
   const [selectedProf, setSelectedProf] = useState('Photographer');
-  const [selectedNiches, setSelectedNiches] = useState(new Set(['Fashion Editorial', 'E-Commerce']));
+  const [selectedNiches, setSelectedNiches] = useState(new Set<string>());
   const [search, setSearch] = useState('');
 
+  const availableNiches = nicheMap[selectedProf] || [];
+  
   const q = search.toLowerCase();
   const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q) || p.type.toLowerCase().includes(q)) : professions;
-  const filteredNiches = q ? niches.filter(n => n.toLowerCase().includes(q)) : niches;
+  const filteredNiches = q ? availableNiches.filter(n => n.toLowerCase().includes(q)) : availableNiches;
 
   const handleProfChange = (name: string) => {
     setSelectedProf(name);
+    setSelectedNiches(new Set()); // Reset niches when profession changes
     showToast('Profession set: ' + name);
-    onSelectionsChange?.(name, Array.from(selectedNiches));
+    onSelectionsChange?.(name, []);
   };
 
   const handleNicheToggle = (n: string) => {
@@ -112,12 +132,12 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
       <div className="mb-7">
         <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">🎯 Your Profession</div>
         {filteredProfessions.length > 0 ? (
-          <div className="grid grid-cols-3 gap-2.5 mb-7">
+          <div className="flex overflow-x-auto gap-2.5 mb-7 pb-4 hide-scrollbar snap-x">
             {filteredProfessions.map(p => (
               <div
                 key={p.name}
                 onClick={() => handleProfChange(p.name)}
-                className={`p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center ${
+                className={`snap-start shrink-0 w-[140px] p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center flex flex-col items-center justify-center ${
                   selectedProf === p.name ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
                 }`}
               >
