@@ -135,15 +135,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
         {projectTab === 'complete' && (
           <div className="flex flex-col gap-2 animate-fade-up">
             {completedProjects.map((proj, i) => (
-              <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex gap-3 items-center cursor-pointer transition-all duration-150 hover:shadow-md hover:border-otj-muted">
-                <div className="w-10 h-10 rounded-[10px] bg-otj-green-bg flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
-                <div className="flex-1">
-                  <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5">{proj.name}</div>
-                  <div className="text-[11.5px] text-otj-text">{proj.client}</div>
+              <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex flex-col md:flex-row gap-2 md:gap-3 md:items-center cursor-pointer transition-all duration-150 hover:shadow-md hover:border-otj-muted">
+                <div className="flex gap-3 items-center flex-1">
+                  <div className="w-10 h-10 rounded-[10px] bg-otj-green-bg flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5 truncate">{proj.name}</div>
+                    <div className="text-[11.5px] text-otj-text">{proj.client}</div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border">✓ Complete</span>
-                  <div className="text-[13px] font-extrabold text-otj-green">Earned {proj.earned}</div>
+                <div className="flex items-center gap-3 ml-13 md:ml-0">
+                  <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border whitespace-nowrap">✓ Complete</span>
+                  <div className="text-[13px] font-extrabold text-otj-green whitespace-nowrap">Earned {proj.earned}</div>
                 </div>
               </div>
             ))}

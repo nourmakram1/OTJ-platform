@@ -192,7 +192,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
   });
 
   return (
-    <div className={`h-[calc(100vh-52px)] pb-14 md:pb-0 transition-all duration-200 ${showCollabPanel ? 'md:grid md:grid-cols-[280px_1fr_320px]' : 'md:grid md:grid-cols-[280px_1fr]'}`}>
+    <div className={`h-[calc(100vh-52px)] pb-14 md:pb-0 transition-all duration-200 ${showCollabPanel ? 'md:grid md:grid-cols-[280px_1fr_320px]' : 'md:grid md:grid-cols-[280px_1fr]'} flex flex-col md:flex`}>
       {/* Hidden file input */}
       <input ref={fileInputRef} type="file" multiple accept="image/*,.pdf,.doc,.docx,.psd,.ai,.fig,.mp4,.mov,.zip" className="hidden" onChange={handleFileSelected} />
       {/* Thread list — hidden on mobile when chat is open */}
@@ -274,15 +274,15 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
           <div className={`text-[10px] font-bold uppercase tracking-[0.1em] mb-2 flex items-center gap-1.5 ${offerLocked ? 'text-otj-green' : 'text-otj-yellow'}`}>
             {offerLocked ? '🔒 OFFER LOCKED · READY TO PAY' : '📋 ACTIVE BRIEF · NEGOTIATING'}
           </div>
-          <div className="grid grid-cols-3 gap-2 mb-2.5">
+          <div className="grid grid-cols-3 gap-2 mb-2.5 text-center md:text-left">
             <div><div className="text-[9.5px] uppercase tracking-[0.08em] text-otj-text mb-0.5">Package</div><div className="text-[13px] font-extrabold tracking-[-0.02em]">Full Day</div></div>
             <div><div className="text-[9.5px] uppercase tracking-[0.08em] text-otj-text mb-0.5">Price</div><div className="text-[13px] font-extrabold tracking-[-0.02em]">3,500 EGP</div></div>
             <div><div className="text-[9.5px] uppercase tracking-[0.08em] text-otj-text mb-0.5">Timeline</div><div className="text-[13px] font-extrabold tracking-[-0.02em]">5 days</div></div>
           </div>
           {offerLocked ? (
-            <div className="flex items-center justify-between">
-              <div className="text-xs font-bold text-otj-green flex items-center gap-1.5">✓ Both parties agreed · 3,500 EGP · 5 days · 40 photos</div>
-              <button onClick={() => showToast('Opening payment… 50% deposit: 1,750 EGP')} className="px-3 py-[7px] rounded-full bg-primary border-primary text-primary-foreground text-xs font-bold cursor-pointer">Pay 50% Deposit →</button>
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+              <div className="text-xs font-bold text-otj-green flex items-center gap-1.5 flex-wrap">✓ Both parties agreed · 3,500 EGP · 5 days · 40 photos</div>
+              <button onClick={() => showToast('Opening payment… 50% deposit: 1,750 EGP')} className="px-3 py-[7px] rounded-full bg-primary border-primary text-primary-foreground text-xs font-bold cursor-pointer whitespace-nowrap shrink-0">Pay 50% Deposit →</button>
             </div>
           ) : (
             <div className="flex gap-1.5">
@@ -341,7 +341,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
                 className="w-full px-3 py-2 rounded-lg border border-otj-blue-border bg-card text-[13px] text-foreground outline-none mb-3 font-semibold"
               />
 
-              <div className="flex gap-3">
+              <div className="flex flex-col md:flex-row gap-3">
                 {/* Calendar */}
                 <div className="bg-card rounded-xl border border-border overflow-hidden">
                   <Calendar
