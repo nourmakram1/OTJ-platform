@@ -403,12 +403,40 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const completeProject = useCallback((projectId: string) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      return {
+        ...p,
+        status: 'complete' as const,
+        phases: p.phases.map(ph => ({ ...ph, status: 'complete' as const, tasks: ph.tasks.map(t => ({ ...t, done: true })) })),
+        timeline: [...p.timeline.map(t => ({ ...t, status: 'complete' as const })), { label: 'Project Completed', date: today, status: 'complete' as const }],
+      };
+    }));
+  }, []);
+
+  const [allReviews, setAllReviews] = useState<ReviewData[]>([]);
+
+  const addReview = useCallback((projectId: string, review: Omit<ReviewData, 'id' | 'createdAt'>) => {
+    const newReview: ReviewData = {
+      ...review,
+      id: `rev-${Date.now()}`,
+      createdAt: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+    };
+    setAllReviews(prev => [...prev, newReview]);
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      return { ...p, reviews: [...p.reviews, newReview] };
+    }));
+  }, []);
+
   const getProject = useCallback((id: string): ProjectData | undefined => {
     return activeProjects.find(p => p.id === id);
   }, [activeProjects]);
 
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings }}>
+    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews }}>
       {children}
     </ProjectContext.Provider>
   );
