@@ -136,12 +136,12 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
       <div className="mb-7">
         <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">🎯 Your Profession</div>
         {filteredProfessions.length > 0 ? (
-          <div className="flex overflow-x-auto gap-2.5 mb-7 pb-4 hide-scrollbar snap-x">
+          <div className="grid grid-rows-3 grid-flow-col auto-cols-[140px] gap-2.5 mb-7 pb-4 overflow-x-auto hide-scrollbar snap-x">
             {filteredProfessions.map(p => (
               <div
                 key={p.name}
                 onClick={() => handleProfChange(p.name)}
-                className={`snap-start shrink-0 w-[140px] p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center flex flex-col items-center justify-center ${
+                className={`snap-start w-full p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center flex flex-col items-center justify-center ${
                   selectedProf === p.name ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
                 }`}
               >
