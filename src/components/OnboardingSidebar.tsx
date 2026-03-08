@@ -11,7 +11,6 @@ const steps: Step[] = [
   { icon: '🎯', name: 'Profession & Niche', sub: 'Who you are', required: true },
   { icon: '👤', name: 'Profile & Bio', sub: 'Your story', required: true },
   { icon: '🖼️', name: 'Portfolio / Samples', sub: 'Show your work', required: false },
-  { icon: '📦', name: 'Packages & Pricing', sub: 'What you charge', required: true },
   { icon: '📋', name: 'Brief Questions', sub: 'What you need to know', required: false },
   { icon: '📅', name: 'Availability', sub: 'When you work', required: true },
   { icon: '⚙️', name: 'Settings', sub: 'Preferences', required: false },
