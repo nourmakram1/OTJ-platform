@@ -6,7 +6,7 @@ import { Toast } from '../components/Toast';
 
 const CreativeProfile = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'portfolio' | 'reviews' | 'packages'>('portfolio');
+  const [activeTab, setActiveTab] = useState<'portfolio' | 'reviews'>('portfolio');
 
   return (
     <>
@@ -72,10 +72,10 @@ const CreativeProfile = () => {
 
         {/* Tabs */}
         <div className="flex gap-1 mb-5 overflow-x-auto hide-scrollbar pb-1">
-          {(['portfolio', 'reviews', 'packages'] as const).map(t => (
+          {(['portfolio', 'reviews'] as const).map(t => (
             <button key={t} onClick={() => setActiveTab(t)} className={`text-[12.5px] font-semibold px-4 py-[7px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 capitalize whitespace-nowrap shrink-0 ${
               activeTab === t ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-otj-muted'
-            }`}>{t === 'portfolio' ? `📸 Portfolio` : t === 'reviews' ? `⭐ Reviews (127)` : `📦 Packages`}</button>
+            }`}>{t === 'portfolio' ? `📸 Portfolio` : `⭐ Reviews (127)`}</button>
           ))}
         </div>
 
@@ -112,27 +112,6 @@ const CreativeProfile = () => {
           </div>
         )}
 
-        {activeTab === 'packages' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 animate-fade-up">
-            {[
-              { name: 'Starter · Half Day', price: '2,000 EGP', items: ['4 hours', '20 edited photos', '2 revisions'], popular: false },
-              { name: 'Full Day Campaign', price: '3,500 EGP', items: ['8 hours', '40 edited photos', '3 revisions'], popular: true },
-              { name: 'Premium Multi-Day', price: '6,500 EGP', items: ['2–3 days', '80+ photos', 'Unlimited revisions'], popular: false },
-            ].map((pkg, i) => (
-              <div key={i} className={`bg-card border-[1.5px] rounded-[14px] p-4 relative ${pkg.popular ? 'border-primary' : 'border-border'}`}>
-                {pkg.popular && <div className="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary text-primary-foreground">Popular</div>}
-                <div className="text-[13px] font-extrabold tracking-[-0.02em] mb-1">{pkg.name}</div>
-                <div className="text-[20px] font-extrabold tracking-[-0.03em] mb-3">{pkg.price}</div>
-                <div className="flex flex-col gap-1.5 mb-4">
-                  {pkg.items.map((item, j) => (
-                    <div key={j} className="text-[12px] text-otj-text flex items-center gap-1.5"><span className="text-otj-green text-[10px]">✓</span> {item}</div>
-                  ))}
-                </div>
-                <button onClick={() => showToast('Opening Quick Brief…')} className="w-full py-2.5 rounded-full border-none bg-primary text-primary-foreground text-[12px] font-bold cursor-pointer hover:bg-primary/90">Book This Package</button>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
       <Toast />
     </>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { showToast } from './Toast';
 import type { Creative } from '../data/creatives';
@@ -75,7 +76,9 @@ interface CreativeCardProps {
   onToggleSave: (e: React.MouseEvent, id: string) => void;
 }
 
-export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenBrief, saved, onToggleSave }) => (
+export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenBrief, saved, onToggleSave }) => {
+  const navigate = useNavigate();
+  return (
   <div
     onClick={() => onOpenBrief(c.id)}
     className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 relative hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 min-w-[170px] md:min-w-[200px] snap-start"
@@ -107,8 +110,9 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
       </div>
       <div className="flex gap-1.5">
         <button onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-primary bg-primary text-primary-foreground text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:bg-primary/90">Book Now</button>
-        <button onClick={(e) => { e.stopPropagation(); showToast('Opening full profile…'); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-border bg-transparent text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">View Profile</button>
+        <button onClick={(e) => { e.stopPropagation(); navigate(`/creative/${c.id}`); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-border bg-transparent text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">View Profile</button>
       </div>
     </div>
   </div>
-);
+  );
+};
