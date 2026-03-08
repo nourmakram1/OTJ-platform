@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { showToast } from './Toast';
-import { ChevronLeft, ChevronRight, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight, SlidersHorizontal, X, ChevronDown, ArrowUpDown } from 'lucide-react';
 import { categoryNiches } from '../data/niches';
 import { allCreatives, categories, getFeaturedCreatives, getCreativesByNiche, getNichesForCategory } from '../data/creatives';
 import { CreativeCard } from './CreativeCard';
@@ -129,6 +129,7 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
   const [saved, setSaved] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [showFilters, setShowFilters] = useState(false);
+  const [sortBy, setSortBy] = useState<'' | 'rating' | 'experience' | 'price-low' | 'price-high'>('');
 
   const toggleSave = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -149,7 +150,22 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
     (filters.minRating > 0 ? 1 : 0) +
     (filters.minExperience > 0 ? 1 : 0);
 
-  const clearFilters = () => setFilters(defaultFilters);
+  const clearFilters = () => { setFilters(defaultFilters); setSortBy(''); };
+
+  const sortLabel = sortBy === 'rating' ? 'Rating' : sortBy === 'experience' ? 'Experience' : sortBy === 'price-low' ? 'Price ↑' : sortBy === 'price-high' ? 'Price ↓' : 'Sort by';
+
+  const applySort = (list: Creative[]): Creative[] => {
+    if (!sortBy) return list;
+    const sorted = [...list];
+    const parsePrice = (p: string) => parseInt(p.replace(/[^0-9]/g, '')) || 0;
+    switch (sortBy) {
+      case 'rating': return sorted.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+      case 'experience': return sorted.sort((a, b) => b.experience - a.experience);
+      case 'price-low': return sorted.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
+      case 'price-high': return sorted.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+      default: return sorted;
+    }
+  };
 
   // Available niches based on active category
   const availableNiches = useMemo(() => getNichesForCategory(activeFilter), [activeFilter]);
@@ -175,8 +191,8 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
       c.niche.toLowerCase().includes(q) ||
       c.category.toLowerCase().includes(q)
     );
-    return applyFilters(results);
-  }, [searchQuery, filters]);
+    return applySort(applyFilters(results));
+  }, [searchQuery, filters, sortBy]);
 
   // Build niche rows for selected category
   const nicheRows = useMemo(() => {
@@ -185,13 +201,13 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
     // Apply filters to each row
     const filtered: Record<string, Creative[]> = {};
     Object.entries(rows).forEach(([niche, creatives]) => {
-      const result = applyFilters(creatives);
+      const result = applySort(applyFilters(creatives));
       if (result.length > 0) filtered[niche] = result;
     });
     return filtered;
-  }, [activeFilter, filters]);
+  }, [activeFilter, filters, sortBy]);
 
-  const featured = useMemo(() => applyFilters(getFeaturedCreatives()), [filters]);
+  const featured = useMemo(() => applySort(applyFilters(getFeaturedCreatives())), [filters, sortBy]);
 
   const toggleNiche = (niche: string) => {
     setFilters(prev => {
@@ -317,8 +333,34 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
           </div>
         </FilterChip>
 
+        {/* Sort by */}
+        <FilterChip label={sortLabel} active={!!sortBy}>
+          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Sort by</div>
+          <div className="flex flex-col gap-1">
+            {([
+              { key: '' as const, label: 'Default' },
+              { key: 'rating' as const, label: '⭐ Highest Rating' },
+              { key: 'experience' as const, label: '🏅 Most Experience' },
+              { key: 'price-low' as const, label: '💰 Price: Low → High' },
+              { key: 'price-high' as const, label: '💰 Price: High → Low' },
+            ]).map(opt => (
+              <button
+                key={opt.key}
+                onClick={() => setSortBy(opt.key)}
+                className={`text-left px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
+                  sortBy === opt.key
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-foreground hover:bg-otj-off'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </FilterChip>
+
         {/* Clear all */}
-        {activeFilterCount > 0 && (
+        {(activeFilterCount > 0 || !!sortBy) && (
           <button
             onClick={clearFilters}
             className="flex items-center gap-1 text-[11px] font-semibold text-otj-text hover:text-foreground cursor-pointer whitespace-nowrap transition-colors"
@@ -366,7 +408,7 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
             onToggleSave={toggleSave}
           />
           {categories.filter(c => c !== 'All').map(cat => {
-            const catCreatives = applyFilters(allCreatives.filter(c => c.category === cat));
+            const catCreatives = applySort(applyFilters(allCreatives.filter(c => c.category === cat)));
             if (catCreatives.length === 0) return null;
             return (
               <CreativeRow
