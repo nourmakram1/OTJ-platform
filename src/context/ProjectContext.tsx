@@ -112,6 +112,9 @@ interface ProjectContextType {
   removeAttachment: (projectId: string, attachmentId: string) => void;
   renameAttachment: (projectId: string, attachmentId: string, newName: string) => void;
   allMeetings: MeetingData[];
+  completeProject: (projectId: string) => void;
+  addReview: (projectId: string, review: Omit<ReviewData, 'id' | 'createdAt'>) => void;
+  reviews: ReviewData[];
 }
 
 const defaultBriefs: BriefData[] = [
