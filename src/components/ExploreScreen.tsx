@@ -116,7 +116,7 @@ const FilterChip: React.FC<{
         <ChevronDown className={`w-3 h-3 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-1.5 z-[50] min-w-[200px] bg-card border border-border rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.12)] p-3 animate-fade-up">
+        <div className="absolute top-full left-0 md:left-0 mt-1.5 z-[50] min-w-[200px] max-w-[calc(100vw-32px)] bg-card border border-border rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.12)] p-3 animate-fade-up">
           {children}
         </div>
       )}
