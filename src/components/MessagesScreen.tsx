@@ -341,7 +341,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
                 className="w-full px-3 py-2 rounded-lg border border-otj-blue-border bg-card text-[13px] text-foreground outline-none mb-3 font-semibold"
               />
 
-              <div className="flex gap-3">
+              <div className="flex flex-col md:flex-row gap-3">
                 {/* Calendar */}
                 <div className="bg-card rounded-xl border border-border overflow-hidden">
                   <Calendar
