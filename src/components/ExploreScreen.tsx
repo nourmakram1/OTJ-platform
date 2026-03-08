@@ -192,7 +192,7 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
       c.category.toLowerCase().includes(q)
     );
     return applySort(applyFilters(results));
-  }, [searchQuery, filters]);
+  }, [searchQuery, filters, sortBy]);
 
   // Build niche rows for selected category
   const nicheRows = useMemo(() => {
