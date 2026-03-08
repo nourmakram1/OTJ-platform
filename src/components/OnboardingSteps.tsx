@@ -61,6 +61,8 @@ const nicheMap: Record<string, string[]> = {
   'Space Design': ['Interior Design', 'Architecture', 'Visual Merchandising', 'Exhibition Design', 'Set Design'],
   'Tech Development': ['Frontend', 'Backend', 'Full Stack', 'Mobile Apps', 'Web3/Crypto', 'DevOps'],
   'AI Creator': ['Prompt Engineering', 'AI Video', 'AI Image Generation', 'Custom Models', 'AI Avatars'],
+  'Content Creator': ['YouTube', 'TikTok', 'Instagram Reels', 'Podcasting', 'Live Streaming', 'Gaming Content'],
+  'Talent': ['Models', 'UGC Creator', 'Singer', 'Musician', 'Voice Over', 'Dancer'],
   'Script Writer': ['Film/TV', 'Commercials', 'Video Games', 'YouTube', 'Podcasts'],
   'Copywriter': ['Ad Copy', 'Website Copy', 'Email Copy', 'Product Descriptions', 'SEO Copywriting'],
   'Brand Strategist': ['Brand Identity', 'Market Positioning', 'Consumer Insights', 'Tone of Voice'],
