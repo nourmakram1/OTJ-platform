@@ -113,7 +113,7 @@ const CreativeProfile = () => {
         )}
 
         {activeTab === 'packages' && (
-          <div className="grid grid-cols-3 gap-3 animate-fade-up">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 animate-fade-up">
             {[
               { name: 'Starter · Half Day', price: '2,000 EGP', items: ['4 hours', '20 edited photos', '2 revisions'], popular: false },
               { name: 'Full Day Campaign', price: '3,500 EGP', items: ['8 hours', '40 edited photos', '3 revisions'], popular: true },
