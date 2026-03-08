@@ -191,7 +191,7 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
       c.niche.toLowerCase().includes(q) ||
       c.category.toLowerCase().includes(q)
     );
-    return applyFilters(results);
+    return applySort(applyFilters(results));
   }, [searchQuery, filters]);
 
   // Build niche rows for selected category
