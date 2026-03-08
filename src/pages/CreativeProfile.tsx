@@ -24,7 +24,7 @@ const CreativeProfile = () => {
               <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border">✓ Verified</span>
             </div>
             <div className="text-[14px] text-otj-text mb-2">Fashion & E-commerce Photographer · Cairo</div>
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center gap-3 mb-3 flex-wrap">
               <span className="text-[13px] font-bold">⭐ 4.9</span>
               <span className="w-1 h-1 rounded-full bg-otj-muted" />
               <span className="text-[13px] text-otj-text">127 jobs completed</span>
