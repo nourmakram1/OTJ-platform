@@ -201,7 +201,7 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
     // Apply filters to each row
     const filtered: Record<string, Creative[]> = {};
     Object.entries(rows).forEach(([niche, creatives]) => {
-      const result = applyFilters(creatives);
+      const result = applySort(applyFilters(creatives));
       if (result.length > 0) filtered[niche] = result;
     });
     return filtered;
