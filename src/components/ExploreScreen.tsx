@@ -205,9 +205,9 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
       if (result.length > 0) filtered[niche] = result;
     });
     return filtered;
-  }, [activeFilter, filters]);
+  }, [activeFilter, filters, sortBy]);
 
-  const featured = useMemo(() => applyFilters(getFeaturedCreatives()), [filters]);
+  const featured = useMemo(() => applySort(applyFilters(getFeaturedCreatives())), [filters, sortBy]);
 
   const toggleNiche = (niche: string) => {
     setFilters(prev => {
