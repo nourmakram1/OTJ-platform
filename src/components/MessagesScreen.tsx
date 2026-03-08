@@ -192,7 +192,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
   });
 
   return (
-    <div className={`h-[calc(100vh-52px)] pb-14 md:pb-0 transition-all duration-200 ${showCollabPanel ? 'md:grid md:grid-cols-[280px_1fr_320px]' : 'md:grid md:grid-cols-[280px_1fr]'}`}>
+    <div className={`h-[calc(100vh-52px)] pb-14 md:pb-0 transition-all duration-200 ${showCollabPanel ? 'md:grid md:grid-cols-[280px_1fr_320px]' : 'md:grid md:grid-cols-[280px_1fr]'} flex flex-col md:flex`}>
       {/* Hidden file input */}
       <input ref={fileInputRef} type="file" multiple accept="image/*,.pdf,.doc,.docx,.psd,.ai,.fig,.mp4,.mov,.zip" className="hidden" onChange={handleFileSelected} />
       {/* Thread list — hidden on mobile when chat is open */}
