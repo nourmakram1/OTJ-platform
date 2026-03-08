@@ -408,7 +408,7 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
             onToggleSave={toggleSave}
           />
           {categories.filter(c => c !== 'All').map(cat => {
-            const catCreatives = applyFilters(allCreatives.filter(c => c.category === cat));
+            const catCreatives = applySort(applyFilters(allCreatives.filter(c => c.category === cat)));
             if (catCreatives.length === 0) return null;
             return (
               <CreativeRow
