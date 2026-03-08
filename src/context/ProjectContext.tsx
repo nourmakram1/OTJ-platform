@@ -59,6 +59,19 @@ export interface AttachmentData {
   icon: string;
 }
 
+export interface ReviewData {
+  id: string;
+  projectId: string;
+  projectName: string;
+  reviewerName: string;
+  targetName: string;
+  reviewType: 'creative' | 'client'; // who is being reviewed
+  rating: number;
+  tags: string[];
+  text: string;
+  createdAt: string;
+}
+
 export interface ProjectData {
   id: string;
   icon: string;
@@ -83,6 +96,7 @@ export interface ProjectData {
   createdAt: string;
   meetings: MeetingData[];
   attachments: AttachmentData[];
+  reviews: ReviewData[];
 }
 
 interface ProjectContextType {
@@ -98,6 +112,9 @@ interface ProjectContextType {
   removeAttachment: (projectId: string, attachmentId: string) => void;
   renameAttachment: (projectId: string, attachmentId: string, newName: string) => void;
   allMeetings: MeetingData[];
+  completeProject: (projectId: string) => void;
+  addReview: (projectId: string, review: Omit<ReviewData, 'id' | 'createdAt'>) => void;
+  reviews: ReviewData[];
 }
 
 const defaultBriefs: BriefData[] = [
@@ -180,6 +197,7 @@ const defaultActiveProjects: ProjectData[] = [
       { id: 'att-1', name: 'Mood Board v1.jpg', size: '2.4 MB', type: 'image/jpeg', url: '', uploadedAt: 'Mar 5', icon: '🌆' },
       { id: 'att-2', name: 'Shot List.pdf', size: '340 KB', type: 'application/pdf', url: '', uploadedAt: 'Mar 6', icon: '📄' },
     ],
+    reviews: [],
   },
   {
     id: 'proj-existing-2',
@@ -207,6 +225,7 @@ const defaultActiveProjects: ProjectData[] = [
       { id: 'meet-2', title: 'Rough Cut Review Call', date: '2026-03-21', time: '2:00 PM', type: 'call', projectId: 'proj-existing-2', clientName: 'Ahmed Karim' },
     ],
     attachments: [],
+    reviews: [],
   },
   {
     id: 'proj-existing-3',
@@ -232,6 +251,7 @@ const defaultActiveProjects: ProjectData[] = [
     createdAt: 'March 20, 2026',
     meetings: [],
     attachments: [],
+    reviews: [],
   },
 ];
 
@@ -295,6 +315,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       createdAt: dateStr,
       meetings: [],
       attachments: [],
+      reviews: [],
     };
 
     setPendingBriefs(prev => prev.filter(b => b.id !== briefId));
@@ -382,12 +403,40 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const completeProject = useCallback((projectId: string) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      return {
+        ...p,
+        status: 'complete' as const,
+        phases: p.phases.map(ph => ({ ...ph, status: 'complete' as const, tasks: ph.tasks.map(t => ({ ...t, done: true })) })),
+        timeline: [...p.timeline.map(t => ({ ...t, status: 'complete' as const })), { label: 'Project Completed', date: today, status: 'complete' as const }],
+      };
+    }));
+  }, []);
+
+  const [allReviews, setAllReviews] = useState<ReviewData[]>([]);
+
+  const addReview = useCallback((projectId: string, review: Omit<ReviewData, 'id' | 'createdAt'>) => {
+    const newReview: ReviewData = {
+      ...review,
+      id: `rev-${Date.now()}`,
+      createdAt: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+    };
+    setAllReviews(prev => [...prev, newReview]);
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      return { ...p, reviews: [...p.reviews, newReview] };
+    }));
+  }, []);
+
   const getProject = useCallback((id: string): ProjectData | undefined => {
     return activeProjects.find(p => p.id === id);
   }, [activeProjects]);
 
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings }}>
+    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews }}>
       {children}
     </ProjectContext.Provider>
   );

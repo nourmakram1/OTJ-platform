@@ -5,16 +5,19 @@ import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
 import { useProjects, PhaseData, PaymentMilestone, PaymentMethod, MeetingData, AttachmentData } from '../context/ProjectContext';
 import { ProposalBuilder } from '../components/ProposalBuilder';
+import { ReviewModal, ReviewPayload } from '../components/ReviewModal';
 
 const tabs = ['Phases & Tasks', 'Brief', 'Schedule', 'Attachments', 'Deliverables', 'Payments', 'Timeline', 'Team'];
 
 const ProjectProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment } = useProjects();
+  const { getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview } = useProjects();
   const [activeTab, setActiveTab] = useState(0);
   const [expandedPhase, setExpandedPhase] = useState(0);
   const attachFileRef = useRef<HTMLInputElement>(null);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewType, setReviewType] = useState<'creative' | 'client'>('client');
 
   const handleAttachFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -95,11 +98,42 @@ const ProjectProfile = () => {
 
   const statusLabel = isProposal ? 'Proposal Draft' :
     proj.status === 'pending-deposit' ? 'Awaiting Deposit' :
+    proj.status === 'complete' ? 'Completed ✓' :
     currentPhase ? `Phase ${currentPhase.num} · Active` : 'Active';
 
   const statusClass = isProposal ? 'bg-otj-yellow-bg text-otj-yellow border border-otj-yellow-border' :
     proj.status === 'pending-deposit' ? 'bg-otj-yellow-bg text-otj-yellow border border-otj-yellow-border' :
+    proj.status === 'complete' ? 'bg-otj-green-bg text-otj-green border border-otj-green-border' :
     'bg-otj-blue-bg text-otj-blue border border-otj-blue-border';
+
+  const handleCompleteProject = () => {
+    completeProject(proj.id);
+    showToast('🎉 Project completed!');
+    setReviewType('client');
+    setShowReviewModal(true);
+  };
+
+  const handleReviewSubmit = (review: ReviewPayload) => {
+    addReview(proj.id, {
+      projectId: proj.id,
+      projectName: proj.name,
+      reviewerName: reviewType === 'client' ? 'You' : proj.clientName,
+      targetName: reviewType === 'client' ? proj.clientName : 'You',
+      reviewType: review.reviewType,
+      rating: review.rating,
+      tags: review.tags,
+      text: review.text,
+    });
+    setShowReviewModal(false);
+    if (reviewType === 'client') {
+      // After reviewing client, prompt to review as creative
+      showToast('✓ Review submitted! Now leave a review as the creative.');
+      setReviewType('creative');
+      setTimeout(() => setShowReviewModal(true), 500);
+    } else {
+      showToast('✓ All reviews submitted! Thank you.');
+    }
+  };
 
   React.useEffect(() => {
     if (!isProposal) {
@@ -131,11 +165,16 @@ const ProjectProfile = () => {
               </div>
               <div className="text-[12px] md:text-[13px] text-otj-text">Client: {proj.clientName} · {proj.clientCompany}</div>
             </div>
-            {!isProposal && (
+            {!isProposal && proj.status !== 'complete' && (
               <div className="flex gap-2 shrink-0 flex-wrap">
                 <button onClick={() => navigate('/messages')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">💬 Message</button>
                 <button onClick={() => showToast('Opening deliverables…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">📦 Deliverables</button>
-                <button onClick={() => showToast('Marking phase done…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">✓ Mark Phase Done</button>
+                <button onClick={handleCompleteProject} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90">✓ Complete Project</button>
+              </div>
+            )}
+            {proj.status === 'complete' && (
+              <div className="flex gap-2 shrink-0 flex-wrap">
+                <button onClick={() => { setReviewType('client'); setShowReviewModal(true); }} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">⭐ Leave Review</button>
               </div>
             )}
           </div>
@@ -518,6 +557,14 @@ const ProjectProfile = () => {
         </>
       )}
       <Toast />
+      <ReviewModal
+        open={showReviewModal}
+        onClose={() => setShowReviewModal(false)}
+        onSubmit={handleReviewSubmit}
+        projectName={proj.name}
+        targetName={reviewType === 'client' ? proj.clientName : 'You'}
+        reviewType={reviewType}
+      />
     </>
   );
 };
