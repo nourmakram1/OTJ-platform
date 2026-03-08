@@ -14,7 +14,6 @@ const Auth = () => {
   const handleSubmit = () => {
     if (mode === 'signup') {
       if (!userType) { showToast('Select Client or Creative'); return; }
-      if (userType === 'creative' && !primarySkill) { showToast('Select your primary skill'); return; }
       if (!agreed) { showToast('Accept the terms to continue'); return; }
       showToast('✓ Account created!');
       setTimeout(() => navigate(userType === 'creative' ? '/onboarding' : '/explore'), 600);
