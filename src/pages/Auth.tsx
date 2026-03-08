@@ -53,6 +53,16 @@ const Auth = () => {
           <div className="bg-card border border-border rounded-[18px] p-6">
             {mode === 'signup' ? (
               <div className="animate-fade-up flex flex-col gap-4">
+                <button onClick={() => showToast('Google sign-in…')} className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2 hover:border-foreground hover:text-foreground">
+                  🔵 Continue with Google
+                </button>
+
+                <div className="flex items-center gap-3 my-1">
+                  <div className="flex-1 h-px bg-border" />
+                  <span className="text-[11px] text-otj-muted font-semibold">or sign up with email</span>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+
                 <div>
                   <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Full Name</div>
                   <input placeholder="Your full name" className="w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card placeholder:text-otj-muted" />
@@ -86,8 +96,6 @@ const Auth = () => {
                   </div>
                 </div>
 
-
-
                 {/* Terms */}
                 <label className="flex items-start gap-2.5 cursor-pointer">
                   <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 rounded border-border accent-primary cursor-pointer" />
@@ -96,16 +104,6 @@ const Auth = () => {
 
                 <button onClick={handleSubmit} className="w-full py-3 rounded-full border-none bg-primary text-primary-foreground text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-2 hover:bg-primary/90 group mt-1">
                   Create Account <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
-                </button>
-
-                <div className="flex items-center gap-3 my-1">
-                  <div className="flex-1 h-px bg-border" />
-                  <span className="text-[11px] text-otj-muted font-semibold">or</span>
-                  <div className="flex-1 h-px bg-border" />
-                </div>
-
-                <button onClick={() => showToast('Google sign-in…')} className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2 hover:border-foreground hover:text-foreground">
-                  🔵 Continue with Google
                 </button>
               </div>
             ) : (
