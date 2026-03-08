@@ -80,7 +80,7 @@ const CreativeProfile = () => {
         </div>
 
         {activeTab === 'portfolio' && (
-          <div className="grid grid-cols-3 gap-2.5 animate-fade-up">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 animate-fade-up">
             {['🌆', '👗', '🎭', '🌸', '🔥', '⚡'].map((e, i) => (
               <div key={i} className="aspect-[4/3] rounded-xl bg-gradient-to-br from-[#2a2a2a] to-[#555] flex items-center justify-center text-[48px] cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5">{e}</div>
             ))}
