@@ -76,7 +76,9 @@ interface CreativeCardProps {
   onToggleSave: (e: React.MouseEvent, id: string) => void;
 }
 
-export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenBrief, saved, onToggleSave }) => (
+export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenBrief, saved, onToggleSave }) => {
+  const navigate = useNavigate();
+  return (
   <div
     onClick={() => onOpenBrief(c.id)}
     className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 relative hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 min-w-[170px] md:min-w-[200px] snap-start"
