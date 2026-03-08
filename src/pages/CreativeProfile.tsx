@@ -43,7 +43,7 @@ const CreativeProfile = () => {
         </div>
 
         {/* Skills & info */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
           <div className="bg-card border border-border rounded-[14px] p-3.5">
             <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Skills</div>
             <div className="flex flex-wrap gap-1.5">
