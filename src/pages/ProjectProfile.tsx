@@ -557,6 +557,14 @@ const ProjectProfile = () => {
         </>
       )}
       <Toast />
+      <ReviewModal
+        open={showReviewModal}
+        onClose={() => setShowReviewModal(false)}
+        onSubmit={handleReviewSubmit}
+        projectName={proj.name}
+        targetName={reviewType === 'client' ? proj.clientName : 'You'}
+        reviewType={reviewType}
+      />
     </>
   );
 };
