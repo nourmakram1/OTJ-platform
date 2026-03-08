@@ -59,6 +59,19 @@ export interface AttachmentData {
   icon: string;
 }
 
+export interface ReviewData {
+  id: string;
+  projectId: string;
+  projectName: string;
+  reviewerName: string;
+  targetName: string;
+  reviewType: 'creative' | 'client'; // who is being reviewed
+  rating: number;
+  tags: string[];
+  text: string;
+  createdAt: string;
+}
+
 export interface ProjectData {
   id: string;
   icon: string;
