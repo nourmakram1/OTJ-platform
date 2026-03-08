@@ -225,6 +225,7 @@ const defaultActiveProjects: ProjectData[] = [
       { id: 'meet-2', title: 'Rough Cut Review Call', date: '2026-03-21', time: '2:00 PM', type: 'call', projectId: 'proj-existing-2', clientName: 'Ahmed Karim' },
     ],
     attachments: [],
+    reviews: [],
   },
   {
     id: 'proj-existing-3',
