@@ -165,11 +165,16 @@ const ProjectProfile = () => {
               </div>
               <div className="text-[12px] md:text-[13px] text-otj-text">Client: {proj.clientName} · {proj.clientCompany}</div>
             </div>
-            {!isProposal && (
+            {!isProposal && proj.status !== 'complete' && (
               <div className="flex gap-2 shrink-0 flex-wrap">
                 <button onClick={() => navigate('/messages')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">💬 Message</button>
                 <button onClick={() => showToast('Opening deliverables…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">📦 Deliverables</button>
-                <button onClick={() => showToast('Marking phase done…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">✓ Mark Phase Done</button>
+                <button onClick={handleCompleteProject} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90">✓ Complete Project</button>
+              </div>
+            )}
+            {proj.status === 'complete' && (
+              <div className="flex gap-2 shrink-0 flex-wrap">
+                <button onClick={() => { setReviewType('client'); setShowReviewModal(true); }} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">⭐ Leave Review</button>
               </div>
             )}
           </div>
