@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
 
-const skills = ['Photography', 'Videography', 'Design', 'Writing', 'Marketing', 'Fashion', 'Tech', 'Other'];
+
 
 const Auth = () => {
   const navigate = useNavigate();
