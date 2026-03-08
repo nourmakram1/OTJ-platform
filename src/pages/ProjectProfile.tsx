@@ -12,10 +12,12 @@ const tabs = ['Phases & Tasks', 'Brief', 'Schedule', 'Attachments', 'Deliverable
 const ProjectProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment } = useProjects();
+  const { getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview } = useProjects();
   const [activeTab, setActiveTab] = useState(0);
   const [expandedPhase, setExpandedPhase] = useState(0);
   const attachFileRef = useRef<HTMLInputElement>(null);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewType, setReviewType] = useState<'creative' | 'client'>('client');
 
   const handleAttachFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
