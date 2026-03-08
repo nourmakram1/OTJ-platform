@@ -92,18 +92,18 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
 
       <div className="mb-7">
         <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">🎯 Your Profession</div>
-        <div className="grid grid-cols-4 gap-2.5 mb-7">
+        <div className="grid grid-cols-3 gap-2.5 mb-7">
           {professions.map(p => (
             <div
               key={p.name}
               onClick={() => handleProfChange(p.name)}
-              className={`p-[16px_14px] rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center ${
+              className={`p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center ${
                 selectedProf === p.name ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
               }`}
             >
               <div className="text-2xl mb-2">{p.icon}</div>
-              <div className="text-xs font-bold tracking-[-0.02em] text-foreground mb-0.5">{p.name}</div>
-              <div className={`text-[10px] font-semibold uppercase tracking-[0.06em] ${p.visual ? 'text-otj-blue' : 'text-otj-orange'}`}>{p.type}</div>
+              <div className="text-[12px] font-bold tracking-[-0.02em] text-foreground leading-tight mb-0.5">{p.name}</div>
+              <div className={`text-[9px] font-semibold uppercase tracking-[0.06em] ${p.visual ? 'text-otj-blue' : 'text-otj-orange'}`}>{p.type}</div>
             </div>
           ))}
         </div>
