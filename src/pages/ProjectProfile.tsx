@@ -5,6 +5,7 @@ import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
 import { useProjects, PhaseData, PaymentMilestone, PaymentMethod, MeetingData, AttachmentData } from '../context/ProjectContext';
 import { ProposalBuilder } from '../components/ProposalBuilder';
+import { ReviewModal, ReviewPayload } from '../components/ReviewModal';
 
 const tabs = ['Phases & Tasks', 'Brief', 'Schedule', 'Attachments', 'Deliverables', 'Payments', 'Timeline', 'Team'];
 
