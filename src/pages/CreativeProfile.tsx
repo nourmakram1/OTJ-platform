@@ -34,7 +34,7 @@ const CreativeProfile = () => {
             <div className="text-[13px] text-otj-text leading-relaxed max-w-[560px] mb-4">
               Cairo-based fashion and e-commerce photographer with 7+ years of experience. Specializing in product photography, lifestyle campaigns, and brand content for leading Egyptian and MENA brands.
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <button onClick={() => showToast('Opening Quick Brief…')} className="text-[13px] font-bold px-6 py-2.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">Book Now →</button>
               <button onClick={() => navigate('/messages')} className="text-[13px] font-bold px-5 py-2.5 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">💬 Message</button>
               <button onClick={() => showToast('♥ Saved to Collections')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center text-sm transition-all duration-150 hover:border-foreground">♡</button>
