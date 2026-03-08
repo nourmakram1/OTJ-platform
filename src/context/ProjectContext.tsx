@@ -96,6 +96,7 @@ export interface ProjectData {
   createdAt: string;
   meetings: MeetingData[];
   attachments: AttachmentData[];
+  reviews: ReviewData[];
 }
 
 interface ProjectContextType {
