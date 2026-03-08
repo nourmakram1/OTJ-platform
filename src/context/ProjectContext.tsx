@@ -197,6 +197,7 @@ const defaultActiveProjects: ProjectData[] = [
       { id: 'att-1', name: 'Mood Board v1.jpg', size: '2.4 MB', type: 'image/jpeg', url: '', uploadedAt: 'Mar 5', icon: '🌆' },
       { id: 'att-2', name: 'Shot List.pdf', size: '340 KB', type: 'application/pdf', url: '', uploadedAt: 'Mar 6', icon: '📄' },
     ],
+    reviews: [],
   },
   {
     id: 'proj-existing-2',
