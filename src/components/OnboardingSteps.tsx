@@ -346,29 +346,6 @@ export const Step3Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
         <div className="text-[11.5px] text-otj-text">First image becomes your card cover on Explore. Drag to reorder.</div>
       </div>
 
-      <div className="mb-7">
-        <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">🎴 How Your Card Looks on Explore</div>
-        <div className="text-[12.5px] text-otj-text mb-3">Choose how non-visual work is displayed. Visual creatives use their portfolio automatically.</div>
-        <div className="grid grid-cols-4 gap-2.5 mt-3">
-          {[
-            { preview: <span className="text-xs font-bold">📸 Portfolio</span>, label: 'Visual (Photo)', bg: 'bg-gradient-to-br from-[#2a2a2a] to-[#444] text-primary-foreground' },
-            { preview: <span className="text-lg font-extrabold tracking-[-0.04em]">NOUR M.</span>, label: 'Typographic', bg: 'bg-primary text-primary-foreground' },
-            { preview: <div className="flex flex-wrap gap-1 p-2 items-center justify-center"><span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-card border border-border text-otj-text">Edita</span><span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-card border border-border text-otj-text">Vodafone</span><span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-card border border-border text-otj-text">CIB</span><span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-card border border-border text-otj-text">OPPO</span></div>, label: 'Brand Logos', bg: 'bg-otj-off' },
-            { preview: <div className="flex flex-col items-center gap-0.5"><span className="text-sm font-extrabold text-otj-blue">4.9</span><small className="text-[9px] text-otj-muted">Rating</small></div>, label: 'Metrics', bg: 'bg-card' },
-          ].map((style, i) => (
-            <div
-              key={i}
-              onClick={() => setSelectedStyle(i)}
-              className={`rounded-xl border-[1.5px] overflow-hidden cursor-pointer transition-all duration-150 ${
-                selectedStyle === i ? 'border-foreground border-2' : 'border-border hover:border-otj-muted'
-              }`}
-            >
-              <div className={`h-20 flex items-center justify-center ${style.bg}`}>{style.preview}</div>
-              <div className="px-2.5 py-2 text-[11px] font-bold text-foreground text-center tracking-[-0.01em] border-t border-border bg-card">{style.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
 
       <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
         <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">← Back</button>
