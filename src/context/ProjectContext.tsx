@@ -104,6 +104,7 @@ interface ProjectContextType {
   activeProjects: ProjectData[];
   completedProjects: { icon: string; name: string; client: string; earned: string }[];
   acceptBrief: (briefId: string) => string;
+  getBrief: (id: string) => BriefData | undefined;
   getProject: (id: string) => ProjectData | undefined;
   submitProposal: (projectId: string, phases: PhaseData[], deliverables: string[], price: string, milestones: PaymentMilestone[], paymentMethod: PaymentMethod) => void;
   updateProject: (projectId: string, updates: Partial<ProjectData>) => void;
