@@ -17,8 +17,9 @@ const Auth = () => {
     if (mode === 'signup') {
       if (!userType) { showToast('Select Client or Creative'); return; }
       if (!agreed) { showToast('Accept the terms to continue'); return; }
+      setUserRole(userType);
       showToast('✓ Account created!');
-      setTimeout(() => navigate(userType === 'creative' ? '/onboarding' : '/explore'), 600);
+      setTimeout(() => navigate(userType === 'creative' ? '/onboarding' : '/dashboard'), 600);
     } else {
       showToast('✓ Welcome back!');
       setTimeout(() => navigate('/dashboard'), 600);

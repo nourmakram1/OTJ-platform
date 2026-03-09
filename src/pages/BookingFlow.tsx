@@ -4,6 +4,7 @@ import { NavBar } from '../components/NavBar';
 import { ExploreScreen } from '../components/ExploreScreen';
 import { MessagesScreen } from '../components/MessagesScreen';
 import { DashboardScreen } from '../components/DashboardScreen';
+import { ClientDashboardScreen } from '../components/ClientDashboardScreen';
 import { QuickBriefPopup, CounterOfferModal } from '../components/BookingModals';
 import { CalendarConfirmModal } from '../components/CalendarConfirmModal';
 import { Toast, showToast } from '../components/Toast';
@@ -12,7 +13,7 @@ import { useProjects } from '../context/ProjectContext';
 const BookingFlow = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { acceptBrief } = useProjects();
+  const { acceptBrief, userRole } = useProjects();
 
   const getTabFromPath = () => {
     if (location.pathname === '/messages') return 'messages';
@@ -46,6 +47,8 @@ const BookingFlow = () => {
     }
   }, [acceptBrief, navigate]);
 
+  const isClient = userRole === 'client';
+
   return (
     <>
       <NavBar
@@ -59,12 +62,16 @@ const BookingFlow = () => {
         {activeTab === 'explore' && <ExploreScreen onOpenBrief={openBrief} searchQuery={searchQuery} />}
         {activeTab === 'messages' && <MessagesScreen onOpenCounter={() => setShowCounter(true)} />}
         {activeTab === 'dashboard' && (
-          <DashboardScreen
-            onOpenBrief={() => { setBriefCreative(null); setShowBrief(true); }}
-            onAcceptBrief={handleAcceptBrief}
-            onOpenCounter={() => setShowCounter(true)}
-            onSwitchToMessages={() => setActiveTab('messages')}
-          />
+          isClient ? (
+            <ClientDashboardScreen onOpenBrief={openBrief} />
+          ) : (
+            <DashboardScreen
+              onOpenBrief={() => { setBriefCreative(null); setShowBrief(true); }}
+              onAcceptBrief={handleAcceptBrief}
+              onOpenCounter={() => setShowCounter(true)}
+              onSwitchToMessages={() => setActiveTab('messages')}
+            />
+          )
         )}
       </div>
 
