@@ -59,6 +59,7 @@ const ProjectProfile = () => {
     clientCompany: 'Edita Group',
     clientEmail: 'randa.hatem@editagroup.com',
     clientPhone: '+20 100 123 4567',
+    projectType: 'Full Day Campaign Shoot',
     budget: '3,500 EGP',
     deliverables: '40 edited photos (20 product, 10 lifestyle, 10 BTS)',
     date: 'March 5, 2026',
