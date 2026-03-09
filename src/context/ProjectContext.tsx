@@ -299,6 +299,7 @@ const defaultActiveProjects: ProjectData[] = [
       { id: 'att-2', name: 'Shot List.pdf', size: '340 KB', type: 'application/pdf', url: '', uploadedAt: 'Mar 6', icon: '📄' },
     ],
     reviews: [],
+    myRole: 'as-creative',
   },
   {
     id: 'proj-existing-2',
