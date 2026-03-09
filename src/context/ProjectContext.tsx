@@ -277,6 +277,7 @@ const defaultActiveProjects: ProjectData[] = [
     id: 'proj-existing-2',
     icon: '🎥', name: 'CIB Campaign Assets',
     clientName: 'Ahmed Karim', clientCompany: 'CIB',
+    clientEmail: 'ahmed.karim@cib.com.eg', clientPhone: '+20 102 555 7890',
     projectType: 'Campaign Video', budget: '5,200 EGP',
     deliverables: 'Campaign video assets', date: 'Mar 10', deadline: 'Mar 25',
     moodAesthetic: '', usageRights: '',
