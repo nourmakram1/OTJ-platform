@@ -67,8 +67,6 @@ const ClientProfile = () => {
     setReviewComment('');
   };
 
-  // Find projects associated with this client
-  const clientProjects = activeProjects.filter(p => p.clientName === client.name);
 
   return (
     <>
