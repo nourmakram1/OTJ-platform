@@ -437,6 +437,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       name: brief.name,
       clientName: brief.clientName,
       clientCompany: brief.clientCompany,
+      clientEmail: brief.clientEmail,
+      clientPhone: brief.clientPhone,
       projectType: brief.projectType,
       budget: brief.budget,
       deliverables: brief.deliverables,
