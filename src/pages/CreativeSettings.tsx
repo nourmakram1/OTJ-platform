@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { Toast, showToast } from '../components/Toast';
+import { Camera, LayoutGrid, Star, Bell, Settings, Shield, HelpCircle, LogOut, Trash2, ChevronRight } from 'lucide-react';
 
 const professions = [
   { icon: '📸', name: 'Photographer' },
@@ -45,312 +46,331 @@ const nicheMap: Record<string, string[]> = {
   'Other': ['General'],
 };
 
-const sections = [
-  { icon: '🎯', name: 'Profession & Niche', key: 'profession' },
-  { icon: '👤', name: 'Profile & Bio', key: 'profile' },
-  { icon: '🖼️', name: 'Portfolio', key: 'portfolio' },
-  { icon: '🔗', name: 'Links & Socials', key: 'links' },
-];
+const inputClass = "px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-background text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card placeholder:text-muted-foreground";
 
-const inputClass = "px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card placeholder:text-otj-muted";
+type Section = 'hub' | 'profile' | 'portfolio' | 'reviews' | 'notifications' | 'account' | 'privacy' | 'help';
 
 const CreativeSettings = () => {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState('profession');
+  const [activeSection, setActiveSection] = useState<Section>('hub');
 
-  // Pre-filled with existing profile data
+  // Profile state
   const [profession, setProfession] = useState('Photographer');
   const [selectedNiches, setSelectedNiches] = useState<Set<string>>(new Set(['Fashion Editorial', 'E-Commerce']));
   const [city, setCity] = useState('Cairo');
   const [experience, setExperience] = useState('5–8 years');
   const [name, setName] = useState('Nour Makram');
   const [tagline, setTagline] = useState('Fashion & E-commerce Photographer · Cairo');
-  const [bio, setBio] = useState('Cairo-based fashion and e-commerce photographer with 7+ years of experience. Specializing in product photography, lifestyle campaigns, and brand content for leading Egyptian and MENA brands.');
+  const [bio, setBio] = useState('Cairo-based fashion and e-commerce photographer with 7+ years of experience.');
   const [avatarUploaded, setAvatarUploaded] = useState(true);
   const [instagram, setInstagram] = useState('@nourmakram');
   const [links, setLinks] = useState([{ label: 'Portfolio', url: 'https://nourmakram.com' }]);
   const [filledSlots, setFilledSlots] = useState(new Set([0, 1, 2, 3]));
   const [profSearch, setProfSearch] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   const availableNiches = nicheMap[profession] || [];
   const q = profSearch.toLowerCase();
   const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q)) : professions;
   const filteredNiches = q ? availableNiches.filter(n => n.toLowerCase().includes(q)) : availableNiches;
-
   const autoTagline = `${profession} · ${Array.from(selectedNiches).map(n => n.toLowerCase()).join(' · ') || 'specialist'}`;
 
-  const handleSave = () => {
-    showToast('✓ Profile updated successfully!');
-  };
+  const handleSave = () => showToast('✓ Changes saved successfully!');
+  const handleSignOut = () => { showToast('Signed out'); navigate('/auth'); };
+  const handleDeleteAccount = () => setDeleteConfirm(true);
+
+  const menuItems = [
+    { key: 'profile' as Section, icon: Camera, title: 'Edit Profile', subtitle: 'Name, bio, photo, profession, niche' },
+    { key: 'portfolio' as Section, icon: LayoutGrid, title: 'Portfolio', subtitle: 'Manage your work samples' },
+    { key: 'reviews' as Section, icon: Star, title: 'Reviews', subtitle: '10 reviews · 4.9 avg' },
+    { key: 'notifications' as Section, icon: Bell, title: 'Notifications', subtitle: 'Manage preferences' },
+  ];
+
+  const menuItems2 = [
+    { key: 'account' as Section, icon: Settings, title: 'Account Settings', subtitle: 'Email, password, payments' },
+    { key: 'privacy' as Section, icon: Shield, title: 'Privacy', subtitle: 'Visibility and data' },
+    { key: 'help' as Section, icon: HelpCircle, title: 'Help & Support', subtitle: 'FAQs, contact us' },
+  ];
+
+  // Hub view
+  if (activeSection === 'hub') {
+    return (
+      <>
+        <NavBar />
+        <div className="min-h-screen pt-[52px] bg-background">
+          <div className="max-w-[600px] mx-auto px-4 py-8">
+            <div className="text-lg font-extrabold tracking-[-0.03em] text-foreground mb-6">Settings</div>
+
+            {/* Group 1 */}
+            <div className="bg-card rounded-2xl border border-border overflow-hidden mb-4">
+              {menuItems.map((item, i) => (
+                <div
+                  key={item.key}
+                  onClick={() => setActiveSection(item.key)}
+                  className={`flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-accent ${i < menuItems.length - 1 ? 'border-b border-border' : ''}`}
+                >
+                  <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shrink-0">
+                    <item.icon className="w-[18px] h-[18px] text-muted-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[14px] font-bold text-foreground">{item.title}</div>
+                    <div className="text-[12.5px] text-muted-foreground">{item.subtitle}</div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                </div>
+              ))}
+            </div>
+
+            {/* Group 2 */}
+            <div className="bg-card rounded-2xl border border-border overflow-hidden mb-4">
+              {menuItems2.map((item, i) => (
+                <div
+                  key={item.key}
+                  onClick={() => setActiveSection(item.key)}
+                  className={`flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-accent ${i < menuItems2.length - 1 ? 'border-b border-border' : ''}`}
+                >
+                  <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shrink-0">
+                    <item.icon className="w-[18px] h-[18px] text-muted-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[14px] font-bold text-foreground">{item.title}</div>
+                    <div className="text-[12.5px] text-muted-foreground">{item.subtitle}</div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                </div>
+              ))}
+            </div>
+
+            {/* Sign Out & Delete */}
+            <div className="bg-card rounded-2xl border border-border overflow-hidden mb-4">
+              <div
+                onClick={handleSignOut}
+                className="flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-accent border-b border-border"
+              >
+                <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shrink-0">
+                  <LogOut className="w-[18px] h-[18px] text-muted-foreground" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-bold text-foreground">Sign Out</div>
+                </div>
+              </div>
+              <div
+                onClick={handleDeleteAccount}
+                className="flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-destructive/5"
+              >
+                <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
+                  <Trash2 className="w-[18px] h-[18px] text-destructive" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-bold text-destructive">Delete My Account</div>
+                  <div className="text-[12.5px] text-muted-foreground">Permanently remove your data</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Delete confirmation */}
+            {deleteConfirm && (
+              <div className="bg-destructive/5 border border-destructive/20 rounded-2xl p-5 mb-4">
+                <div className="text-[14px] font-bold text-destructive mb-1">Are you sure?</div>
+                <div className="text-[12.5px] text-muted-foreground mb-4">This action is permanent and cannot be undone. All your data, projects, and reviews will be deleted.</div>
+                <div className="flex gap-2">
+                  <button onClick={() => setDeleteConfirm(false)} className="text-[12.5px] font-bold px-5 py-2 rounded-full border border-border bg-card text-foreground cursor-pointer hover:bg-accent transition-colors">Cancel</button>
+                  <button onClick={() => { showToast('Account deleted'); navigate('/auth'); }} className="text-[12.5px] font-bold px-5 py-2 rounded-full border-none bg-destructive text-destructive-foreground cursor-pointer hover:bg-destructive/90 transition-colors">Delete Account</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        <Toast />
+      </>
+    );
+  }
+
+  // Sub-section header with back button
+  const SectionHeader = ({ title }: { title: string }) => (
+    <div className="flex items-center gap-3 mb-6">
+      <button onClick={() => setActiveSection('hub')} className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer hover:bg-accent transition-colors text-foreground text-sm">←</button>
+      <div className="text-lg font-extrabold tracking-[-0.03em] text-foreground">{title}</div>
+    </div>
+  );
 
   return (
     <>
       <NavBar />
-      <div className="min-h-screen pt-[52px]">
-        {/* Sidebar */}
-        <aside className="hidden md:flex bg-card border-r border-border p-[28px_20px_24px] fixed top-[52px] left-0 bottom-0 w-[260px] overflow-y-auto flex-col gap-0">
-          <div className="text-base font-extrabold tracking-[-0.04em] text-foreground mb-1">Edit Profile</div>
-          <div className="text-[11.5px] text-otj-text leading-relaxed mb-5">Update your profile details. Changes are saved per section.</div>
+      <div className="min-h-screen pt-[52px] bg-background">
+        <div className="max-w-[600px] mx-auto px-4 py-8">
 
-          <div className="flex flex-col gap-0.5 flex-1">
-            {sections.map(s => (
-              <div
-                key={s.key}
-                onClick={() => setActiveSection(s.key)}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-[10px] cursor-pointer transition-all duration-150 ${
-                  activeSection === s.key ? 'bg-otj-off' : 'hover:bg-otj-off'
-                }`}
-              >
-                <div className={`w-7 h-7 rounded-[7px] border-[1.5px] flex items-center justify-center text-[13px] shrink-0 transition-all duration-200 ${
-                  activeSection === s.key ? 'border-foreground bg-otj-off' : 'border-border bg-card'
-                }`}>{s.icon}</div>
-                <div className="flex-1 min-w-0">
-                  <div className={`text-[12.5px] font-bold tracking-[-0.01em] ${activeSection === s.key ? 'text-foreground' : 'text-otj-text'}`}>{s.name}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-auto pt-4 border-t border-border flex flex-col gap-2">
-            <button onClick={() => navigate('/creative/nour')} className="w-full text-[12px] font-bold py-2.5 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">
-              👁 View Profile
-            </button>
-          </div>
-        </aside>
-
-        {/* Mobile section picker */}
-        <div className="md:hidden px-4 py-3 flex gap-1.5 overflow-x-auto hide-scrollbar">
-          {sections.map(s => (
-            <button
-              key={s.key}
-              onClick={() => setActiveSection(s.key)}
-              className={`shrink-0 text-[12px] font-semibold px-4 py-[7px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 whitespace-nowrap ${
-                activeSection === s.key
-                  ? 'bg-primary border-primary text-primary-foreground'
-                  : 'bg-card border-border text-otj-text hover:border-otj-muted'
-              }`}
-            >{s.icon} {s.name}</button>
-          ))}
-        </div>
-
-        {/* Main content */}
-        <main className="md:ml-[260px] px-4 md:px-12 py-6 md:py-10 max-w-[900px]">
-          {/* Profession & Niche */}
-          {activeSection === 'profession' && (
+          {/* Edit Profile */}
+          {activeSection === 'profile' && (
             <div className="animate-fade-up">
-              <div className="text-[clamp(32px,4vw,48px)] font-extrabold tracking-[-0.05em] leading-[0.9] text-foreground mb-2.5">PROFESSION<br/>& NICHE</div>
-              <div className="text-sm text-otj-text leading-relaxed max-w-[560px] mb-6">Update your primary profession, niches, and location.</div>
+              <SectionHeader title="Edit Profile" />
 
-              {/* Search */}
-              <div className="relative mb-7">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-otj-muted text-[14px] pointer-events-none">🔍</span>
-                <input value={profSearch} onChange={e => setProfSearch(e.target.value)} placeholder="Search profession or niche…"
-                  className="w-full pl-9 pr-9 py-2.5 rounded-[12px] border-[1.5px] border-border bg-card text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground placeholder:text-otj-muted"
-                />
-                {profSearch && <button onClick={() => setProfSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-otj-muted hover:text-foreground">✕</button>}
-              </div>
-
-              <div className="mb-7">
-                <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border">🎯 Your Profession</div>
-                <div className="grid grid-rows-3 grid-flow-col auto-cols-[140px] gap-2.5 mb-7 pb-4 overflow-x-auto hide-scrollbar snap-x">
+              {/* Profession */}
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="text-[13px] font-bold text-foreground mb-3">Profession</div>
+                <div className="relative mb-4">
+                  <input value={profSearch} onChange={e => setProfSearch(e.target.value)} placeholder="Search profession or niche…"
+                    className={inputClass} />
+                  {profSearch && <button onClick={() => setProfSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-muted-foreground hover:text-foreground">✕</button>}
+                </div>
+                <div className="grid grid-cols-3 gap-2 mb-4">
                   {filteredProfessions.map(p => (
                     <div key={p.name} onClick={() => { setProfession(p.name); setSelectedNiches(new Set()); }}
-                      className={`snap-start w-full p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center flex flex-col items-center justify-center ${
-                        profession === p.name ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
+                      className={`p-3 rounded-xl border-[1.5px] cursor-pointer transition-all text-center ${
+                        profession === p.name ? 'border-foreground bg-accent' : 'border-border hover:border-muted-foreground'
                       }`}>
-                      <div className="text-2xl mb-1">{p.icon}</div>
-                      <div className="text-[12px] font-bold tracking-[-0.02em] text-foreground leading-tight">{p.name}</div>
+                      <div className="text-xl mb-0.5">{p.icon}</div>
+                      <div className="text-[11px] font-bold text-foreground leading-tight">{p.name}</div>
                     </div>
                   ))}
                 </div>
-              </div>
 
-              <div className="mb-7">
-                <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border">
-                  🏷️ Your Niches <span className="text-[11px] font-medium text-otj-text">— pick all that apply</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="text-[13px] font-bold text-foreground mb-2">Niches</div>
+                <div className="flex flex-wrap gap-1.5">
                   {filteredNiches.map(n => (
                     <div key={n} onClick={() => { const next = new Set(selectedNiches); next.has(n) ? next.delete(n) : next.add(n); setSelectedNiches(next); }}
-                      className={`text-[12.5px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all duration-150 select-none flex items-center gap-1.5 ${
-                        selectedNiches.has(n)
-                          ? 'bg-primary border-primary text-primary-foreground'
-                          : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground hover:bg-otj-off'
-                      }`}>
-                      {n} {selectedNiches.has(n) && <span className="w-[5px] h-[5px] rounded-full bg-primary-foreground/50" />}
-                    </div>
+                      className={`text-[12px] font-semibold px-3.5 py-1.5 rounded-full border-[1.5px] cursor-pointer transition-all select-none ${
+                        selectedNiches.has(n) ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-muted-foreground hover:border-muted-foreground'
+                      }`}>{n}</div>
                   ))}
                 </div>
               </div>
 
-              <div className="mb-7">
-                <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border">📍 Location & Experience</div>
-                <div className="grid grid-cols-2 gap-3.5">
+              {/* Location */}
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="text-[13px] font-bold text-foreground mb-3">Location & Experience</div>
+                <div className="grid grid-cols-2 gap-3">
                   <div className="flex flex-col gap-1.5">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">City</div>
-                    <select value={city} onChange={e => setCity(e.target.value)} className={`${inputClass} appearance-none cursor-pointer pr-9`}>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">City</div>
+                    <select value={city} onChange={e => setCity(e.target.value)} className={`${inputClass} appearance-none cursor-pointer`}>
                       <option>Cairo</option><option>Alexandria</option><option>Giza</option><option>Hurghada</option><option>Sharm El Sheikh</option><option>Other</option>
                     </select>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Years of Experience</div>
-                    <select value={experience} onChange={e => setExperience(e.target.value)} className={`${inputClass} appearance-none cursor-pointer pr-9`}>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Experience</div>
+                    <select value={experience} onChange={e => setExperience(e.target.value)} className={`${inputClass} appearance-none cursor-pointer`}>
                       <option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>5–8 years</option><option>8+ years</option>
                     </select>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-end pt-6 border-t border-border">
-                <button onClick={handleSave} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">
-                  ✓ Save Changes
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Profile & Bio */}
-          {activeSection === 'profile' && (
-            <div className="animate-fade-up">
-              <div className="text-[clamp(32px,4vw,48px)] font-extrabold tracking-[-0.05em] leading-[0.9] text-foreground mb-2.5">YOUR<br/>STORY.</div>
-              <div className="text-sm text-otj-text leading-relaxed max-w-[560px] mb-8">Update your profile photo, name, tagline, and bio.</div>
-
-              <div className="mb-7">
-                <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border">👤 Profile Photo</div>
-                <div className="flex items-center gap-5 mb-2">
+              {/* Name, tagline, bio, photo */}
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="text-[13px] font-bold text-foreground mb-3">Profile Photo</div>
+                <div className="flex items-center gap-4 mb-5">
                   <div onClick={() => { setAvatarUploaded(true); showToast('Photo updated ✓'); }}
-                    className="w-24 h-24 rounded-full border-2 border-dashed border-border bg-otj-off flex flex-col items-center justify-center cursor-pointer transition-all duration-200 shrink-0 relative overflow-hidden hover:border-foreground hover:bg-otj-light">
+                    className="w-20 h-20 rounded-full border-2 border-dashed border-border bg-accent flex items-center justify-center cursor-pointer transition-all shrink-0 relative overflow-hidden hover:border-foreground">
                     {avatarUploaded ? (
-                      <div className="absolute inset-0 bg-otj-light flex items-center justify-center text-5xl">👩‍🎨</div>
+                      <div className="absolute inset-0 bg-accent flex items-center justify-center text-4xl">👩‍🎨</div>
                     ) : (
-                      <><div className="text-2xl mb-1">📷</div><div className="text-[9.5px] font-bold text-otj-muted uppercase tracking-[0.08em]">Upload</div></>
+                      <div className="text-2xl">📷</div>
                     )}
                   </div>
-                  <div>
-                    <div className="text-[13px] font-bold text-foreground mb-1">Profile photo</div>
-                    <div className="text-xs text-otj-text leading-relaxed">Square photo works best. Minimum 400×400px.</div>
+                  <div className="text-xs text-muted-foreground">Square photo, min 400×400px</div>
+                </div>
+
+                <div className="flex flex-col gap-3.5">
+                  <div className="flex flex-col gap-1.5">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Full Name</div>
+                    <input value={name} onChange={e => setName(e.target.value)} className={inputClass} placeholder="Your full name" />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Tagline</div>
+                      <button className="text-[10px] text-primary font-semibold cursor-pointer bg-transparent border-none" onClick={() => setTagline(autoTagline)}>↻ Auto</button>
+                    </div>
+                    <input value={tagline} onChange={e => setTagline(e.target.value)} maxLength={80} className={inputClass} />
+                    <div className="text-[10px] text-muted-foreground text-right">{tagline.length}/80</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Bio</div>
+                    <textarea value={bio} onChange={e => setBio(e.target.value)} maxLength={500} rows={4}
+                      className={`${inputClass} resize-y leading-relaxed min-h-[90px]`} />
+                    <div className="text-[10px] text-muted-foreground text-right">{bio.length}/500</div>
                   </div>
                 </div>
               </div>
 
-              <div className="mb-7">
-                <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border">✍️ Name & Bio</div>
-                <div className="flex flex-col gap-1.5 mb-3.5">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Full Name</div>
-                  <input value={name} onChange={e => setName(e.target.value)} className={inputClass} placeholder="Your full name" />
-                </div>
-                <div className="flex flex-col gap-1.5 mb-3.5">
-                  <div className="flex items-center justify-between">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Tagline</div>
-                    <div className="text-[10px] text-otj-blue font-semibold cursor-pointer" onClick={() => setTagline(autoTagline)}>↻ Reset to auto</div>
+              {/* Links & Socials */}
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="text-[13px] font-bold text-foreground mb-3">Links & Socials</div>
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1.5">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Instagram</div>
+                    <input value={instagram} onChange={e => setInstagram(e.target.value)} className={inputClass} placeholder="@yourusername" />
                   </div>
-                  <input value={tagline} onChange={e => setTagline(e.target.value)} maxLength={80} className={inputClass} placeholder="e.g. Fashion & E-commerce photographer based in Cairo" />
-                  <div className="text-[10.5px] text-otj-muted text-right mt-0.5">{tagline.length}/80</div>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Bio</div>
-                  <textarea value={bio} onChange={e => setBio(e.target.value)} maxLength={500} rows={5}
-                    className={`${inputClass} resize-y leading-relaxed min-h-[100px]`}
-                    placeholder="Tell clients about yourself — your experience, what makes your work unique…" />
-                  <div className="text-[10.5px] text-otj-muted text-right mt-0.5">{bio.length}/500</div>
+                  {links.map((link, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <input value={link.label} onChange={e => { const n = [...links]; n[i].label = e.target.value; setLinks(n); }}
+                        className={`${inputClass} w-[120px]`} placeholder="Label" />
+                      <input value={link.url} onChange={e => { const n = [...links]; n[i].url = e.target.value; setLinks(n); }}
+                        className={`${inputClass} flex-1`} placeholder="https://..." />
+                      {links.length > 1 && (
+                        <button onClick={() => setLinks(links.filter((_, j) => j !== i))}
+                          className="text-[11px] text-muted-foreground cursor-pointer px-2 py-0.5 rounded-md border border-border hover:text-destructive hover:border-destructive transition-colors">✕</button>
+                      )}
+                    </div>
+                  ))}
+                  <button onClick={() => setLinks([...links, { label: '', url: '' }])}
+                    className="text-[12px] font-semibold text-primary cursor-pointer bg-transparent border-none text-left hover:underline">
+                    ＋ Add link
+                  </button>
                 </div>
               </div>
 
-              <div className="flex items-center justify-end pt-6 border-t border-border">
-                <button onClick={handleSave} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">
-                  ✓ Save Changes
-                </button>
-              </div>
+              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none">
+                Save Changes
+              </button>
             </div>
           )}
 
           {/* Portfolio */}
           {activeSection === 'portfolio' && (
             <div className="animate-fade-up">
-              <div className="text-[clamp(32px,4vw,48px)] font-extrabold tracking-[-0.05em] leading-[0.9] text-foreground mb-2.5">YOUR<br/>PORTFOLIO.</div>
-              <div className="text-sm text-otj-text leading-relaxed max-w-[560px] mb-8">Manage your portfolio images. First image becomes your card cover on Explore.</div>
-
-              <div className="mb-7">
-                <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border">
-                  🖼️ Portfolio Images <span className="text-[11px] font-medium text-otj-text">— up to 12 photos</span>
-                </div>
-                <div className="grid grid-cols-3 gap-2.5 mb-4">
-                  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(i => {
-                    const emojis = ['🌆', '👗', '🎭', '🌸', '🔥', '⚡', '📸', '🎨', '🌊', '🏙️', '🌿', '✨'];
+              <SectionHeader title="Portfolio" />
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="text-[13px] font-bold text-foreground mb-1">Your work samples</div>
+                <div className="text-[12px] text-muted-foreground mb-4">First image becomes your cover on Explore.</div>
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  {[0,1,2,3,4,5,6,7,8,9,10,11].map(i => {
+                    const emojis = ['🌆','👗','🎭','🌸','🔥','⚡','📸','🎨','🌊','🏙️','🌿','✨'];
                     return (
-                      <div key={i} onClick={() => { const next = new Set(filledSlots); if (next.has(i)) { next.delete(i); showToast('Photo removed'); } else { next.add(i); showToast('Photo added ✓'); } setFilledSlots(next); }}
-                        className={`aspect-[4/3] rounded-xl border-[1.5px] flex flex-col items-center justify-center cursor-pointer transition-all duration-200 relative overflow-hidden ${
-                          filledSlots.has(i) ? 'border-solid border-border' : 'border-dashed border-border hover:border-foreground hover:bg-otj-light'
-                        } bg-otj-off`}>
+                      <div key={i} onClick={() => { const next = new Set(filledSlots); next.has(i) ? next.delete(i) : next.add(i); setFilledSlots(next); }}
+                        className={`aspect-[4/3] rounded-xl border-[1.5px] flex items-center justify-center cursor-pointer transition-all relative overflow-hidden ${
+                          filledSlots.has(i) ? 'border-border' : 'border-dashed border-border hover:border-foreground'
+                        } bg-accent`}>
                         {filledSlots.has(i) ? (
-                          <div className="absolute inset-0 flex items-center justify-center text-[40px] bg-otj-light">
-                            {emojis[i]}
-                            <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-card border border-border flex items-center justify-center text-[10px] text-otj-muted hover:text-destructive hover:border-destructive transition-all">✕</div>
-                          </div>
+                          <div className="text-[32px]">{emojis[i]}</div>
                         ) : (
-                          <><div className="text-2xl mb-1.5">➕</div><div className="text-[10px] font-semibold text-otj-muted">Add photo</div></>
+                          <div className="text-xl text-muted-foreground">+</div>
                         )}
                       </div>
                     );
                   })}
                 </div>
-                <div className="text-[11.5px] text-otj-text">Drag to reorder. First image is your cover.</div>
               </div>
-
-              <div className="flex items-center justify-end pt-6 border-t border-border">
-                <button onClick={handleSave} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">
-                  ✓ Save Changes
-                </button>
-              </div>
+              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none">
+                Save Changes
+              </button>
             </div>
           )}
 
-          {/* Links & Socials */}
-          {activeSection === 'links' && (
+          {/* Placeholder sections */}
+          {['reviews', 'notifications', 'account', 'privacy', 'help'].includes(activeSection) && (
             <div className="animate-fade-up">
-              <div className="text-[clamp(32px,4vw,48px)] font-extrabold tracking-[-0.05em] leading-[0.9] text-foreground mb-2.5">LINKS &<br/>SOCIALS.</div>
-              <div className="text-sm text-otj-text leading-relaxed max-w-[560px] mb-8">Add your social profiles and website links so clients can find you everywhere.</div>
-
-              <div className="mb-7">
-                <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border">📱 Social Accounts</div>
-                <div className="flex flex-col gap-3.5">
-                  <div className="flex flex-col gap-1.5">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Instagram</div>
-                    <input value={instagram} onChange={e => setInstagram(e.target.value)} className={inputClass} placeholder="@yourusername" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-7">
-                <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border">🔗 Website / Links</div>
-                <div className="flex flex-col gap-2.5">
-                  {links.map((link, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <input value={link.label} onChange={e => { const n = [...links]; n[i].label = e.target.value; setLinks(n); }}
-                        className={`${inputClass} w-[140px]`} placeholder="Label" />
-                      <input value={link.url} onChange={e => { const n = [...links]; n[i].url = e.target.value; setLinks(n); }}
-                        className={`${inputClass} flex-1`} placeholder="https://..." />
-                      {links.length > 1 && (
-                        <span onClick={() => setLinks(links.filter((_, j) => j !== i))}
-                          className="text-[11px] text-otj-muted cursor-pointer px-2 py-0.5 rounded-md border border-border transition-all duration-150 hover:text-destructive hover:border-destructive">✕</span>
-                      )}
-                    </div>
-                  ))}
-                  <button onClick={() => setLinks([...links, { label: '', url: '' }])}
-                    className="text-[12px] font-semibold text-otj-blue cursor-pointer bg-transparent border-none text-left hover:underline">
-                    ＋ Add another link
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end pt-6 border-t border-border">
-                <button onClick={handleSave} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">
-                  ✓ Save Changes
-                </button>
+              <SectionHeader title={
+                activeSection === 'reviews' ? 'Reviews' :
+                activeSection === 'notifications' ? 'Notifications' :
+                activeSection === 'account' ? 'Account Settings' :
+                activeSection === 'privacy' ? 'Privacy' : 'Help & Support'
+              } />
+              <div className="bg-card rounded-2xl border border-border p-8 text-center">
+                <div className="text-muted-foreground text-sm">Coming soon</div>
               </div>
             </div>
           )}
-        </main>
+        </div>
       </div>
       <Toast />
     </>
