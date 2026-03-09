@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { Toast, showToast } from '../components/Toast';
+import { useCreativeProfile } from '../context/CreativeProfileContext';
 import { Camera, LayoutGrid, Star, Bell, Settings, Shield, HelpCircle, LogOut, Trash2, ChevronRight, Crown, Check, X } from 'lucide-react';
 
 const professions = [
