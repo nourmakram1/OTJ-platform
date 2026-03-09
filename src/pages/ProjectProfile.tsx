@@ -540,34 +540,7 @@ const ProjectProfile = () => {
                 <ClientPaymentTab project={proj} />
               )}
               {activeTab === 4 && !isClient && (
-                <div className="animate-fade-up">
-                  <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">💰 Payment Milestones</div>
-                  {proj.paymentMilestones.map((m, i) => {
-                    const amount = numericPrice > 0 ? `${Math.round(numericPrice * m.percentage / 100).toLocaleString()} EGP` : '—';
-                    const statusLabel = m.status === 'paid' ? 'Paid ✓' : m.status === 'held' ? 'Awaiting Payment' : 'Pending';
-                    const statusClass = m.status === 'paid' ? 'text-otj-green' : m.status === 'pending' ? 'text-otj-yellow' : 'text-otj-muted';
-                    const icon = m.status === 'paid' ? '✓' : m.status === 'pending' ? '⏳' : '🔒';
-                    return (
-                      <div key={i} className="bg-card border border-border rounded-[10px] p-3.5 px-4 mb-2 flex items-center justify-between">
-                        <div>
-                          <div className="text-[13px] font-bold">{m.label} ({m.percentage}%)</div>
-                          <div className={`text-[11px] font-bold ${statusClass}`}>{icon} {statusLabel}</div>
-                        </div>
-                        <div className="text-[14px] font-extrabold">{amount}</div>
-                      </div>
-                    );
-                  })}
-                  {proj.paymentMethod && (
-                    <div className="bg-otj-off rounded-[10px] p-3.5 px-4 mt-3">
-                      <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Payment Method</div>
-                      {proj.paymentMethod.type === 'instapay' ? (
-                        <div className="text-[13px] font-bold">📱 InstaPay — {proj.paymentMethod.instapayHandle}</div>
-                      ) : (
-                        <div className="text-[13px] font-bold">🏦 {proj.paymentMethod.bankName} — {proj.paymentMethod.accountName} · {proj.paymentMethod.accountNumber}</div>
-                      )}
-                    </div>
-                  )}
-                </div>
+                <CreativePaymentView project={proj} numericPrice={numericPrice} confirmPaymentReceipt={confirmPaymentReceipt} />
               )}
             </div>
 
