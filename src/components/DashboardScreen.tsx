@@ -67,7 +67,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
               ))}
             </div>
           </div>
-          <div className="text-xs font-semibold text-otj-text underline underline-offset-[3px] cursor-pointer">View all</div>
+          
         </div>
 
         {projectTab === 'pending' && (
