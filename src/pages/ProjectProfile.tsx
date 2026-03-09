@@ -549,7 +549,10 @@ const ProjectProfile = () => {
                 </div>
               )}
 
-              {activeTab === 5 && (
+              {activeTab === 5 && isClient && (
+                <ClientPaymentTab project={proj} />
+              )}
+              {activeTab === 5 && !isClient && (
                 <div className="animate-fade-up">
                   <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4 mb-4">
                     <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-blue mb-2">Escrow Summary</div>
