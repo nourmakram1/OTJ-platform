@@ -407,6 +407,8 @@ const defaultClients: ClientData[] = [
     name: 'Sara M.',
     avatar: '🎨',
     company: 'Studio Noir',
+    email: 'sara@studionoir.eg',
+    phone: '+20 111 222 3344',
     industry: 'Fashion / Retail',
     location: 'Alexandria, Egypt',
     bio: 'Creative Director at Studio Noir, a luxury fashion brand. Looking for photographers and videographers for seasonal lookbooks and social content.',
