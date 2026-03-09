@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
+import { useProjects } from '../context/ProjectContext';
 
 
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { setUserRole } = useProjects();
   const [mode, setMode] = useState<'signup' | 'login'>('signup');
   const [userType, setUserType] = useState<'client' | 'creative' | null>(null);
   const [agreed, setAgreed] = useState(false);
@@ -15,8 +17,9 @@ const Auth = () => {
     if (mode === 'signup') {
       if (!userType) { showToast('Select Client or Creative'); return; }
       if (!agreed) { showToast('Accept the terms to continue'); return; }
+      setUserRole(userType);
       showToast('✓ Account created!');
-      setTimeout(() => navigate(userType === 'creative' ? '/onboarding' : '/explore'), 600);
+      setTimeout(() => navigate(userType === 'creative' ? '/onboarding' : '/dashboard'), 600);
     } else {
       showToast('✓ Welcome back!');
       setTimeout(() => navigate('/dashboard'), 600);

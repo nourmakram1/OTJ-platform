@@ -142,7 +142,11 @@ export interface ClientData {
   reviews: ClientReviewData[];
 }
 
+export type UserRole = 'client' | 'creative';
+
 interface ProjectContextType {
+  userRole: UserRole;
+  setUserRole: (role: UserRole) => void;
   pendingBriefs: BriefData[];
   activeProjects: ProjectData[];
   completedProjects: { icon: string; name: string; client: string; earned: string }[];
@@ -392,6 +396,7 @@ const defaultClients: ClientData[] = [
 ];
 
 export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [userRole, setUserRole] = useState<UserRole>('creative');
   const [pendingBriefs, setPendingBriefs] = useState<BriefData[]>(defaultBriefs);
   const [activeProjects, setActiveProjects] = useState<ProjectData[]>(defaultActiveProjects);
   const [completedProjects] = useState(defaultCompleted);
@@ -606,7 +611,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, addClientReview }}>
+    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, addClientReview }}>
       {children}
     </ProjectContext.Provider>
   );

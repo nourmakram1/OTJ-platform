@@ -13,7 +13,7 @@ interface NavBarProps {
 }
 
 const NotifBell = ({ onClick }: { onClick: () => void }) => {
-  const { unreadCount } = useProjects();
+  const { unreadCount, userRole } = useProjects();
   return (
     <div onClick={onClick} className="relative cursor-pointer p-2 rounded-lg transition-all duration-150 hover:bg-muted">
       <Bell className="w-[18px] h-[18px] text-foreground" />
@@ -29,6 +29,7 @@ const NotifBell = ({ onClick }: { onClick: () => void }) => {
 export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, searchQuery = '', onSearchChange }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { userRole } = useProjects();
   const [showNotif, setShowNotif] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -116,7 +117,7 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
 
           {/* Profile avatar */}
           <div onClick={() => setShowProfileMenu((prev) => !prev)} className="relative">
-            <div className="w-8 h-8 rounded-full bg-otj-off flex items-center justify-center text-sm cursor-pointer border-2 border-border hover:border-foreground transition-all duration-150">👩‍🎨</div>
+            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-sm cursor-pointer border-2 border-border hover:border-foreground transition-all duration-150">{userRole === 'client' ? '🏢' : '👩‍🎨'}</div>
             {showProfileMenu && (
               <div className="absolute top-10 right-0 w-[180px] bg-card border border-border rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.1)] py-1.5 z-[200]">
                 <div onClick={() => { setShowProfileMenu(false); navigate('/creative/nour'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-foreground cursor-pointer hover:bg-otj-off">👤 My Profile</div>
