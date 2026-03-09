@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { Toast, showToast } from '../components/Toast';
-import { Camera, LayoutGrid, Star, Bell, Settings, Shield, HelpCircle, LogOut, Trash2, ChevronRight } from 'lucide-react';
+import { Camera, LayoutGrid, Star, Bell, Settings, Shield, HelpCircle, LogOut, Trash2, ChevronRight, Crown, Check, X } from 'lucide-react';
 
 const professions = [
   { icon: '📸', name: 'Photographer' },
@@ -48,7 +48,7 @@ const nicheMap: Record<string, string[]> = {
 
 const inputClass = "px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-background text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card placeholder:text-muted-foreground";
 
-type Section = 'hub' | 'profile' | 'portfolio' | 'reviews' | 'notifications' | 'account' | 'privacy' | 'help';
+type Section = 'hub' | 'profile' | 'portfolio' | 'reviews' | 'notifications' | 'account' | 'privacy' | 'help' | 'subscription';
 
 const CreativeSettings = () => {
   const navigate = useNavigate();
@@ -81,6 +81,7 @@ const CreativeSettings = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('instapay');
   const [paymentDetails, setPaymentDetails] = useState('nour.makram@instapay');
+  const [currentPlan, setCurrentPlan] = useState<'free' | 'pro'>('free');
 
   const availableNiches = nicheMap[profession] || [];
   const q = profSearch.toLowerCase();
@@ -100,6 +101,7 @@ const CreativeSettings = () => {
   ];
 
   const menuItems2 = [
+    { key: 'subscription' as Section, icon: Crown, title: 'Subscription', subtitle: currentPlan === 'pro' ? 'Pro plan · Active' : 'Free plan' },
     { key: 'account' as Section, icon: Settings, title: 'Account Settings', subtitle: 'Email, password, payments' },
     { key: 'privacy' as Section, icon: Shield, title: 'Privacy', subtitle: 'Visibility and data' },
     { key: 'help' as Section, icon: HelpCircle, title: 'Help & Support', subtitle: 'FAQs, contact us' },
@@ -500,6 +502,102 @@ const CreativeSettings = () => {
               <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none">
                 Save Changes
               </button>
+            </div>
+          )}
+
+          {/* Subscription */}
+          {activeSection === 'subscription' && (
+            <div className="animate-fade-up">
+              <SectionHeader title="Subscription" />
+
+              {/* Current plan badge */}
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="flex items-center gap-3 mb-1">
+                  <div className={`text-[11px] font-bold uppercase tracking-[0.08em] px-3 py-1 rounded-full ${
+                    currentPlan === 'pro' ? 'bg-primary text-primary-foreground' : 'bg-accent text-muted-foreground'
+                  }`}>
+                    {currentPlan === 'pro' ? '⭐ Pro' : 'Free'}
+                  </div>
+                </div>
+                <div className="text-[13px] text-muted-foreground mt-2">
+                  {currentPlan === 'pro' ? 'You\'re on the Pro plan. Enjoy all premium features.' : 'Upgrade to Pro to unlock premium features and grow faster.'}
+                </div>
+              </div>
+
+              {/* Plan comparison */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                {/* Free */}
+                <div className={`bg-card rounded-2xl border-[1.5px] p-5 transition-all ${currentPlan === 'free' ? 'border-foreground' : 'border-border'}`}>
+                  <div className="text-[13px] font-bold text-foreground mb-1">Free</div>
+                  <div className="text-[22px] font-extrabold tracking-[-0.03em] text-foreground mb-3">$0<span className="text-[12px] font-medium text-muted-foreground">/mo</span></div>
+                  <div className="flex flex-col gap-2.5">
+                    {[
+                      { text: 'Basic profile', included: true },
+                      { text: '4 portfolio slots', included: true },
+                      { text: '3 bookings/month', included: true },
+                      { text: 'Priority in search', included: false },
+                      { text: 'Verified badge', included: false },
+                      { text: '10 bookings/month', included: false },
+                    ].map((f, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        {f.included ? (
+                          <Check className="w-3.5 h-3.5 text-foreground shrink-0" />
+                        ) : (
+                          <X className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0" />
+                        )}
+                        <span className={`text-[12px] ${f.included ? 'text-foreground' : 'text-muted-foreground/50'}`}>{f.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {currentPlan === 'free' && (
+                    <div className="mt-4 text-[11px] font-bold text-center text-muted-foreground uppercase tracking-[0.08em]">Current plan</div>
+                  )}
+                </div>
+
+                {/* Pro */}
+                <div className={`bg-card rounded-2xl border-[1.5px] p-5 transition-all relative ${currentPlan === 'pro' ? 'border-foreground' : 'border-border'}`}>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Crown className="w-3.5 h-3.5 text-foreground" />
+                    <div className="text-[13px] font-bold text-foreground">Pro</div>
+                  </div>
+                  <div className="text-[22px] font-extrabold tracking-[-0.03em] text-foreground mb-3">$9<span className="text-[12px] font-medium text-muted-foreground">/mo</span></div>
+                  <div className="flex flex-col gap-2.5">
+                    {[
+                      'Full profile customization',
+                      '12 portfolio slots',
+                      '10 bookings/month',
+                      'Priority in search',
+                      'Verified badge',
+                      'Analytics & insights',
+                    ].map((f, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <Check className="w-3.5 h-3.5 text-foreground shrink-0" />
+                        <span className="text-[12px] text-foreground">{f}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {currentPlan === 'pro' ? (
+                    <div className="mt-4 text-[11px] font-bold text-center text-muted-foreground uppercase tracking-[0.08em]">Current plan</div>
+                  ) : (
+                    <button onClick={() => { setCurrentPlan('pro'); showToast('🎉 Upgraded to Pro!'); }}
+                      className="mt-4 w-full text-[12.5px] font-bold py-2.5 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none">
+                      Upgrade to Pro
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Manage */}
+              {currentPlan === 'pro' && (
+                <div className="bg-card rounded-2xl border border-border p-5">
+                  <div className="text-[13px] font-bold text-foreground mb-1">Manage Subscription</div>
+                  <div className="text-[12px] text-muted-foreground mb-3">Next billing date: April 9, 2026</div>
+                  <button onClick={() => { setCurrentPlan('free'); showToast('Subscription cancelled'); }}
+                    className="text-[12px] font-semibold text-destructive cursor-pointer bg-transparent border-none hover:underline">
+                    Cancel subscription
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
