@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { NotifPopup } from './BookingModals';
 import { showToast } from './Toast';
 import { Search, X, Bell, MessageCircle } from 'lucide-react';
+import { useProjects } from '../context/ProjectContext';
 
 interface NavBarProps {
   onAcceptBrief?: () => void;
