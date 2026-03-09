@@ -268,9 +268,14 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
       {/* Header */}
       <div className="bg-card border border-border rounded-[16px] overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between p-3 md:p-4 px-4 md:px-5 gap-2">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
             <span className="text-lg">📅</span>
             <span className="text-[17px] font-extrabold tracking-[-0.04em]">Schedule</span>
+            <div className="flex items-center gap-1 md:gap-2 ml-1 md:ml-3">
+              <button onClick={() => setWeekStart(subWeeks(weekStart, 1))} className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150 text-sm">‹</button>
+              <span className="text-[11px] md:text-[13px] font-extrabold tracking-[-0.02em] min-w-[120px] md:min-w-[160px] text-center">{format(weekStart, 'MMMM yyyy')} · Week {weekNum}</span>
+              <button onClick={() => setWeekStart(addWeeks(weekStart, 1))} className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150 text-sm">›</button>
+            </div>
             <div className="hidden md:flex items-center gap-3 ml-4">
               {[
                 { key: 'meeting', color: 'bg-otj-blue', label: 'Meeting' },
@@ -284,11 +289,9 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
               ))}
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button onClick={() => setWeekStart(subWeeks(weekStart, 1))} className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150 text-sm">‹</button>
-            <span className="text-[13px] font-extrabold tracking-[-0.02em] min-w-[160px] text-center">{format(weekStart, 'MMMM yyyy')} · Week {weekNum}</span>
-            <button onClick={() => setWeekStart(addWeeks(weekStart, 1))} className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150 text-sm">›</button>
-            
+          <div className="flex items-center gap-1">
+            <button className="text-[10px] md:text-[11px] font-bold px-2.5 md:px-3 py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer">Weekly</button>
+            <button onClick={() => showToast('Monthly view coming soon!')} className="text-[10px] md:text-[11px] font-bold px-2.5 md:px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer hover:border-foreground transition-all">Monthly</button>
           </div>
         </div>
 
