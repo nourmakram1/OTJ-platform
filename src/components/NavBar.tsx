@@ -29,7 +29,7 @@ const NotifBell = ({ onClick }: { onClick: () => void }) => {
 export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, searchQuery = '', onSearchChange }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userRole } = useProjects();
+  const { userRole, setUserRole } = useProjects();
   const [showNotif, setShowNotif] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
