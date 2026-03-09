@@ -324,7 +324,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
       </div>
 
       {/* Right sidebar — Brief summary + Schedule preview */}
-      <div className="flex flex-col gap-4 order-2">
+      <div className="flex flex-col gap-4 order-1 md:order-2">
         <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4">
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-blue mb-3">Client's Brief</div>
           {[
