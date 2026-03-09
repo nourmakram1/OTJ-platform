@@ -6,7 +6,8 @@ import { useProjects } from '../context/ProjectContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import { Star, Shield, ExternalLink, MapPin, Building2, Calendar } from 'lucide-react';
+import { Input } from '../components/ui/input';
+import { Star, Shield, ExternalLink, MapPin, Building2, Calendar, Pencil, Mail, Phone } from 'lucide-react';
 
 const tabs = ['About', 'Reviews'];
 
