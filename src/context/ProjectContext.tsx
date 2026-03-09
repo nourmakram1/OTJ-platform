@@ -357,6 +357,36 @@ const defaultActiveProjects: ProjectData[] = [
     meetings: [],
     attachments: [],
     reviews: [],
+    myRole: 'as-creative',
+  },
+  {
+    id: 'proj-booked-1',
+    icon: '🎨', name: 'My Portfolio Redesign',
+    clientName: 'Yara Mansour', clientCompany: 'Freelance',
+    clientEmail: 'yara.mansour@gmail.com', clientPhone: '+20 112 345 6789',
+    projectType: 'UI/UX Design', budget: '6,000 EGP',
+    deliverables: 'Full portfolio website redesign', date: 'Mar 8', deadline: 'Apr 1',
+    moodAesthetic: '', usageRights: '',
+    status: 'active',
+    proposalDeliverables: ['Portfolio website redesign', 'Mobile responsive design'],
+    proposalPrice: '6,000 EGP',
+    phases: [
+      { num: 1, title: 'Discovery', status: 'complete', tasks: [
+        { text: 'Review current portfolio', done: true, due: 'Mar 10' },
+      ]},
+      { num: 2, title: 'Design', status: 'active', tasks: [
+        { text: 'Wireframes approval', done: false, due: 'Mar 20' },
+      ]},
+      { num: 3, title: 'Development', status: 'locked', tasks: [] },
+    ],
+    paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'held' }],
+    escrow: { total: '6,000 EGP', deposited: '3,000 EGP', held: '3,000 EGP', fee: '300 EGP' },
+    timeline: [],
+    createdAt: 'March 8, 2026',
+    meetings: [],
+    attachments: [],
+    reviews: [],
+    myRole: 'as-client',
   },
 ];
 
