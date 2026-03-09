@@ -42,25 +42,25 @@ export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClo
   };
 
   return (
-    <div onClick={(e) => e.target === e.currentTarget && handleClose()} className={`fixed inset-0 z-[200] flex items-center justify-center bg-black/40 backdrop-blur-[6px] transition-opacity duration-250 ${visible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-      <div className={`bg-card border border-border rounded-3xl shadow-[0_32px_80px_rgba(0,0,0,0.18)] w-full max-w-[520px] overflow-hidden transition-all duration-300 max-h-[90vh] overflow-y-auto ${visible ? 'translate-y-0 scale-100' : 'translate-y-4 scale-[0.98]'}`}>
+    <div onClick={(e) => e.target === e.currentTarget && handleClose()} className={`fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-[6px] transition-opacity duration-250 ${visible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+      <div className={`bg-card border border-border rounded-2xl md:rounded-3xl shadow-[0_32px_80px_rgba(0,0,0,0.18)] w-full max-w-[520px] overflow-hidden transition-all duration-300 max-h-[85vh] overflow-y-auto ${visible ? 'translate-y-0 scale-100' : 'translate-y-4 scale-[0.98]'}`}>
         {/* Header */}
-        <div className="p-5 px-[22px] pb-3 flex items-center gap-3 border-b border-border">
-          <div className="w-[52px] h-[52px] rounded-[14px] bg-otj-off flex items-center justify-center text-[28px] shrink-0">{c.av}</div>
-          <div className="flex-1">
-            <div className="text-base font-extrabold tracking-[-0.03em] text-foreground">{c.name}</div>
-            <div className="text-xs text-otj-text">{c.role}</div>
+        <div className="p-4 md:p-5 px-4 md:px-[22px] pb-3 flex items-center gap-2.5 md:gap-3 border-b border-border">
+          <div className="w-10 h-10 md:w-[52px] md:h-[52px] rounded-xl md:rounded-[14px] bg-otj-off flex items-center justify-center text-xl md:text-[28px] shrink-0">{c.av}</div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm md:text-base font-extrabold tracking-[-0.03em] text-foreground truncate">{c.name}</div>
+            <div className="text-[11px] md:text-xs text-otj-text truncate">{c.role}</div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted">Step {step}/2</div>
-            <button onClick={handleClose} className="w-7 h-7 rounded-full border border-border bg-card cursor-pointer text-[13px] flex items-center justify-center text-otj-muted transition-all duration-150 shrink-0 hover:border-foreground hover:text-foreground">×</button>
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted">Step {step}/2</div>
+            <button onClick={handleClose} className="w-6 h-6 md:w-7 md:h-7 rounded-full border border-border bg-card cursor-pointer text-xs md:text-[13px] flex items-center justify-center text-otj-muted transition-all duration-150 shrink-0 hover:border-foreground hover:text-foreground">×</button>
           </div>
         </div>
 
         {step === 1 && (
           <>
             {/* Step 1: Project Details */}
-            <div className="px-[22px] py-4 pb-5 flex flex-col gap-3">
+            <div className="px-4 md:px-[22px] py-3 md:py-4 pb-4 md:pb-5 flex flex-col gap-2.5 md:gap-3">
               <div>
                 <div className={labelClass}>Project Name</div>
                 <input type="text" placeholder="e.g. Ramadan Campaign Shoot" className={inputClass} />
@@ -71,29 +71,29 @@ export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClo
                 <textarea rows={3} placeholder="Describe your project — mood, deliverables, references…" className={`${inputClass} resize-none leading-relaxed`} />
               </div>
 
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-2">
                 <div>
                   <div className={labelClass}>Date</div>
                   <input type="date" className={inputClass} />
                 </div>
                 <div>
                   <div className={labelClass}>Location</div>
-                  <input type="text" placeholder="e.g. Cairo, Studio A" className={inputClass} />
+                  <input type="text" placeholder="e.g. Cairo" className={inputClass} />
                 </div>
               </div>
 
               <div>
                 <div className={labelClass}>Budget</div>
-                <div className="flex gap-1.5 mb-2.5">
+                <div className="flex gap-1 md:gap-1.5 mb-2">
                   {([
-                    { id: 'price' as const, label: 'Fixed Price' },
+                    { id: 'price' as const, label: 'Fixed' },
                     { id: 'range' as const, label: 'Range' },
                     { id: 'negotiate' as const, label: 'Negotiate' },
                   ]).map(opt => (
                     <button
                       key={opt.id}
                       onClick={() => setBudgetType(opt.id)}
-                      className={`flex-1 px-2 py-2 rounded-[10px] border-[1.5px] text-[11.5px] font-bold cursor-pointer transition-all duration-150 text-center tracking-[-0.01em] ${
+                      className={`flex-1 px-1.5 md:px-2 py-2 rounded-lg md:rounded-[10px] border-[1.5px] text-[10px] md:text-[11.5px] font-bold cursor-pointer transition-all duration-150 text-center tracking-[-0.01em] ${
                         budgetType === opt.id
                           ? 'bg-foreground border-foreground text-card'
                           : 'bg-card border-border text-otj-muted hover:border-foreground hover:text-foreground'
@@ -107,22 +107,22 @@ export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClo
                   <input type="number" placeholder="e.g. 3500 EGP" value={budgetFixed} onChange={e => setBudgetFixed(e.target.value)} className={inputClass} />
                 )}
                 {budgetType === 'range' && (
-                  <div className="grid grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-2 gap-2">
                     <input type="number" placeholder="Min (EGP)" value={budgetMin} onChange={e => setBudgetMin(e.target.value)} className={inputClass} />
                     <input type="number" placeholder="Max (EGP)" value={budgetMax} onChange={e => setBudgetMax(e.target.value)} className={inputClass} />
                   </div>
                 )}
                 {budgetType === 'negotiate' && (
-                  <div className="text-xs text-otj-text bg-otj-off rounded-[10px] p-3 text-center border border-border">
-                    💬 No amount specified — you'll discuss pricing with the creative
+                  <div className="text-[11px] md:text-xs text-otj-text bg-otj-off rounded-lg md:rounded-[10px] p-2.5 md:p-3 text-center border border-border">
+                    💬 You'll discuss pricing with the creative
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="px-[22px] pb-5">
-              <button onClick={() => setStep(2)} className="w-full py-3 rounded-full border-none bg-foreground text-card text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-2 hover:opacity-90 group">
-                Next: Survey Questions <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
+            <div className="px-4 md:px-[22px] pb-4 md:pb-5">
+              <button onClick={() => setStep(2)} className="w-full py-2.5 md:py-3 rounded-full border-none bg-foreground text-card text-[13px] md:text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-2 hover:opacity-90 group">
+                Next <span className="hidden md:inline">: Survey Questions</span> <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
               </button>
             </div>
           </>
