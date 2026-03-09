@@ -210,7 +210,6 @@ const typeConfig: Record<string, { bg: string; border: string; text: string; dot
   call: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Call', icon: '📞' },
 };
 
-const HOURS = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 const DAY_LABELS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
 const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['activeProjects']; navigate: ReturnType<typeof useNavigate>; allMeetings: MeetingData[] }> = ({ projects, navigate }) => {
