@@ -179,9 +179,8 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
   // Apply all filters to a creative list
   const applyFilters = (list: Creative[]): Creative[] => {
     return list.filter(c => {
-      if (filters.niches.size > 0 && !filters.niches.has(c.niche)) return false;
-      if (filters.availability && c.avail !== filters.availability) return false;
-      if (filters.minRating > 0 && parseFloat(c.rating) < filters.minRating) return false;
+      if (filters.profession && c.niche !== filters.profession) return false;
+      if (filters.category && c.category !== filters.category) return false;
       if (filters.minExperience > 0 && c.experience < filters.minExperience) return false;
       return true;
     });
