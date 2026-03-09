@@ -3,7 +3,9 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
-import { useProjects, PhaseData, PaymentMilestone, PaymentMethod, MeetingData, AttachmentData } from '../context/ProjectContext';
+import { useProjects, PhaseData, PaymentMilestone, PaymentMethod, MeetingData, AttachmentData, ProjectData } from '../context/ProjectContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
+import { Button } from '../components/ui/button';
 import { ProposalBuilder } from '../components/ProposalBuilder';
 import { ReviewModal, ReviewPayload } from '../components/ReviewModal';
 import { ClientProposalReview, ClientPhaseApproval, ClientPaymentTab } from '../components/ClientProjectActions';
@@ -14,7 +16,7 @@ const ProjectProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const { userRole, getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview, clients } = useProjects();
+  const { userRole, getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview, clients, confirmPaymentReceipt } = useProjects();
   const isClient = userRole === 'client';
 
   const navigateToClient = (name: string) => {
@@ -540,34 +542,7 @@ const ProjectProfile = () => {
                 <ClientPaymentTab project={proj} />
               )}
               {activeTab === 4 && !isClient && (
-                <div className="animate-fade-up">
-                  <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">💰 Payment Milestones</div>
-                  {proj.paymentMilestones.map((m, i) => {
-                    const amount = numericPrice > 0 ? `${Math.round(numericPrice * m.percentage / 100).toLocaleString()} EGP` : '—';
-                    const statusLabel = m.status === 'paid' ? 'Paid ✓' : m.status === 'held' ? 'Awaiting Payment' : 'Pending';
-                    const statusClass = m.status === 'paid' ? 'text-otj-green' : m.status === 'pending' ? 'text-otj-yellow' : 'text-otj-muted';
-                    const icon = m.status === 'paid' ? '✓' : m.status === 'pending' ? '⏳' : '🔒';
-                    return (
-                      <div key={i} className="bg-card border border-border rounded-[10px] p-3.5 px-4 mb-2 flex items-center justify-between">
-                        <div>
-                          <div className="text-[13px] font-bold">{m.label} ({m.percentage}%)</div>
-                          <div className={`text-[11px] font-bold ${statusClass}`}>{icon} {statusLabel}</div>
-                        </div>
-                        <div className="text-[14px] font-extrabold">{amount}</div>
-                      </div>
-                    );
-                  })}
-                  {proj.paymentMethod && (
-                    <div className="bg-otj-off rounded-[10px] p-3.5 px-4 mt-3">
-                      <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Payment Method</div>
-                      {proj.paymentMethod.type === 'instapay' ? (
-                        <div className="text-[13px] font-bold">📱 InstaPay — {proj.paymentMethod.instapayHandle}</div>
-                      ) : (
-                        <div className="text-[13px] font-bold">🏦 {proj.paymentMethod.bankName} — {proj.paymentMethod.accountName} · {proj.paymentMethod.accountNumber}</div>
-                      )}
-                    </div>
-                  )}
-                </div>
+                <CreativePaymentView project={proj} numericPrice={numericPrice} confirmPaymentReceipt={confirmPaymentReceipt} />
               )}
             </div>
 
@@ -649,5 +624,99 @@ const ProjectProfile = () => {
   );
 };
 
+// ─── Creative Payment View ────────────────────────────────
+const CreativePaymentView: React.FC<{
+  project: ProjectData;
+  numericPrice: number;
+  confirmPaymentReceipt: (projectId: string, milestoneIndex: number) => void;
+}> = ({ project, numericPrice, confirmPaymentReceipt }) => {
+  const [confirmIdx, setConfirmIdx] = useState<number | null>(null);
+
+  return (
+    <div className="animate-fade-up">
+      <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">💰 Payment Milestones</div>
+      {project.paymentMilestones.map((m, i) => {
+        const amount = numericPrice > 0 ? `${Math.round(numericPrice * m.percentage / 100).toLocaleString()} EGP` : '—';
+        const statusLabel = m.status === 'paid' ? 'Received ✓' : m.status === 'proof-submitted' ? '📎 Proof Uploaded — Confirm?' : 'Awaiting Payment';
+        const statusClass = m.status === 'paid' ? 'text-otj-green' : m.status === 'proof-submitted' ? 'text-otj-blue' : 'text-otj-muted';
+
+        return (
+          <div key={i} className={`bg-card border rounded-[14px] p-4 mb-3 ${m.status === 'proof-submitted' ? 'border-otj-blue border-[1.5px]' : 'border-border'}`}>
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <div className="text-[13px] font-bold">{m.label} ({m.percentage}%)</div>
+                <div className={`text-[11px] font-bold ${statusClass}`}>{statusLabel}</div>
+              </div>
+              <div className="text-[16px] font-extrabold">{amount}</div>
+            </div>
+
+            {/* Show proof screenshot from client */}
+            {m.status === 'proof-submitted' && m.proofUrl && (
+              <div className="border-t border-border pt-3">
+                <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue mb-2">📎 Client's Transfer Proof</div>
+                <div className="flex items-center gap-3 bg-otj-blue-bg border border-otj-blue-border rounded-[10px] p-3">
+                  <img src={m.proofUrl} alt="Transfer proof" className="w-16 h-16 rounded-lg object-cover border border-border cursor-pointer" onClick={() => window.open(m.proofUrl, '_blank')} />
+                  <div className="flex-1">
+                    <div className="text-[12px] font-bold text-foreground">{m.proofName || 'transfer-proof.jpg'}</div>
+                    <div className="text-[10px] text-otj-muted">Click image to view full size</div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setConfirmIdx(i)}
+                  className="w-full mt-3 text-[12px] font-bold py-2.5 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90"
+                >
+                  ✓ Confirm Payment Received
+                </button>
+              </div>
+            )}
+
+            {/* Confirmed payment */}
+            {m.status === 'paid' && m.proofUrl && (
+              <div className="border-t border-border pt-3 flex items-center gap-3">
+                <img src={m.proofUrl} alt="Transfer proof" className="w-10 h-10 rounded-lg object-cover border border-border" />
+                <div className="text-[11px] text-otj-green font-bold">✓ Payment received & confirmed</div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {project.paymentMethod && (
+        <div className="bg-otj-off rounded-[10px] p-3.5 px-4 mt-3">
+          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Your Payment Method</div>
+          {project.paymentMethod.type === 'instapay' ? (
+            <div className="text-[13px] font-bold">📱 InstaPay — {project.paymentMethod.instapayHandle}</div>
+          ) : (
+            <div className="text-[13px] font-bold">🏦 {project.paymentMethod.bankName} — {project.paymentMethod.accountName} · {project.paymentMethod.accountNumber}</div>
+          )}
+        </div>
+      )}
+
+      {/* Confirm Receipt Dialog */}
+      <Dialog open={confirmIdx !== null} onOpenChange={() => setConfirmIdx(null)}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle className="text-[16px] font-extrabold">Confirm Payment Received</DialogTitle>
+            <DialogDescription className="text-[13px]">
+              {confirmIdx !== null && `Confirm that you've received ${numericPrice > 0 ? `${Math.round(numericPrice * project.paymentMilestones[confirmIdx].percentage / 100).toLocaleString()} EGP` : '—'} for "${project.paymentMilestones[confirmIdx!]?.label}"?`}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => setConfirmIdx(null)} className="rounded-full text-[12px] font-bold">Cancel</Button>
+            <Button onClick={() => {
+              if (confirmIdx !== null) {
+                confirmPaymentReceipt(project.id, confirmIdx);
+                setConfirmIdx(null);
+                showToast('✓ Payment confirmed! Client has been notified.');
+              }
+            }} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
+              ✓ Confirm Received
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
 
 export default ProjectProfile;
