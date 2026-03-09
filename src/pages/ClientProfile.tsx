@@ -213,7 +213,7 @@ const ClientProfile = () => {
                       <div className="w-10 h-10 rounded-[10px] bg-accent flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
                       <div className="flex-1 min-w-0">
                         <div className="text-[13px] font-extrabold tracking-[-0.02em] truncate">{proj.name}</div>
-                        <div className="text-[11px] text-muted-foreground">{proj.status} · {proj.price}</div>
+                        <div className="text-[11px] text-muted-foreground">{proj.status} · {proj.budget}</div>
                       </div>
                       <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
                         proj.status === 'active' ? 'bg-[hsl(var(--otj-blue-bg))] text-[hsl(var(--otj-blue))]' :
