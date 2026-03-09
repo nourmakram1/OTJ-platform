@@ -104,6 +104,7 @@ interface ProjectContextType {
   activeProjects: ProjectData[];
   completedProjects: { icon: string; name: string; client: string; earned: string }[];
   acceptBrief: (briefId: string) => string;
+  getBrief: (id: string) => BriefData | undefined;
   getProject: (id: string) => ProjectData | undefined;
   submitProposal: (projectId: string, phases: PhaseData[], deliverables: string[], price: string, milestones: PaymentMilestone[], paymentMethod: PaymentMethod) => void;
   updateProject: (projectId: string, updates: Partial<ProjectData>) => void;
@@ -435,8 +436,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return activeProjects.find(p => p.id === id);
   }, [activeProjects]);
 
+  const getBrief = useCallback((id: string): BriefData | undefined => {
+    return pendingBriefs.find(b => b.id === id);
+  }, [pendingBriefs]);
+
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews }}>
+    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews }}>
       {children}
     </ProjectContext.Provider>
   );
