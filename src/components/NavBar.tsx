@@ -173,25 +173,6 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
         </div>
       )}
 
-      {/* Mobile bottom nav */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-[100] h-[56px] bg-card border-t border-border flex items-center justify-around px-2">
-        {[
-          { label: 'Explore', path: '/explore', icon: '🔍' },
-          { label: 'Dashboard', path: '/dashboard', icon: '📊' },
-          { label: 'Messages', path: '/messages', icon: '💬' },
-        ].map(tab => (
-          <button
-            key={tab.path}
-            onClick={() => navigate(tab.path)}
-            className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl cursor-pointer transition-all ${
-              isActive(tab.path) ? 'text-foreground' : 'text-otj-muted'
-            }`}
-          >
-            <span className="text-lg">{tab.icon}</span>
-            <span className="text-[9px] font-bold">{tab.label}</span>
-          </button>
-        ))}
-      </div>
 
       {/* Mobile slide-down menu */}
       {showMobileMenu && (
