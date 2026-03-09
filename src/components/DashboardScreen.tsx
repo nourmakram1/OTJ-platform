@@ -45,14 +45,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
       {/* Stats — 4 cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
         {[
-          { label: 'Active Projects', val: String(activeProjects.length), color: 'text-otj-blue', delta: '↑ 1 this week', deltaClass: 'text-otj-green' },
-          { label: 'Pending Briefs', val: String(pendingBriefs.length), color: 'text-otj-yellow', delta: pendingBriefs.length > 0 ? 'Need response' : 'All clear', deltaClass: 'text-otj-text' },
-          { label: 'Revenue (Mar)', val: '14K', color: '', delta: '↑ 23% vs Feb', deltaClass: 'text-otj-green' },
-          { label: 'Complete', val: String(completedProjects.length), color: 'text-otj-green', delta: 'Total projects', deltaClass: 'text-otj-text' },
+          { label: 'Active Projects', val: String(activeProjects.length), delta: '↑ 1 this week', deltaClass: 'text-otj-green' },
+          { label: 'Pending Briefs', val: String(pendingBriefs.length), delta: pendingBriefs.length > 0 ? 'Need response' : 'All clear', deltaClass: 'text-otj-text' },
+          { label: 'Revenue (Mar)', val: '14K', delta: '↑ 23% vs Feb', deltaClass: 'text-otj-green' },
+          { label: 'Complete', val: String(completedProjects.length), delta: 'Total projects', deltaClass: 'text-otj-text' },
         ].map((s, i) => (
           <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4">
             <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">{s.label}</div>
-            <div className={`text-[26px] font-extrabold tracking-[-0.05em] leading-none ${s.color}`}>{s.val}</div>
+            <div className="text-[26px] font-extrabold tracking-[-0.05em] leading-none text-foreground">{s.val}</div>
             <div className={`text-[11px] font-bold mt-1 ${s.deltaClass}`}>{s.delta}</div>
           </div>
         ))}
