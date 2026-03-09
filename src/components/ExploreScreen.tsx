@@ -214,13 +214,12 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
 
   const featured = useMemo(() => applySort(applyFilters(getFeaturedCreatives())), [filters, sortBy]);
 
-  const toggleNiche = (niche: string) => {
-    setFilters(prev => {
-      const next = new Set(prev.niches);
-      next.has(niche) ? next.delete(niche) : next.add(niche);
-      return { ...prev, niches: next };
-    });
-  };
+  // Get all unique professions (niches) for filter popup
+  const allProfessions = useMemo(() => {
+    const set = new Set<string>();
+    allCreatives.forEach(c => set.add(c.niche));
+    return Array.from(set).sort();
+  }, []);
 
   return (
     <div className="p-[16px_16px_80px] md:p-[20px_24px_80px]">
