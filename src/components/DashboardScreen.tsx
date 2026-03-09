@@ -257,21 +257,6 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
     return items;
   }, [projects]);
 
-  // Group items by day-key and hour
-  const itemsByDayHour = useMemo(() => {
-    const map: Record<string, ScheduleItem[]> = {};
-    scheduleItems.forEach(item => {
-      weekDays.forEach(day => {
-        if (isSameDay(item.deadline, day)) {
-          const key = `${format(day, 'yyyy-MM-dd')}-${item.hour}`;
-          if (!map[key]) map[key] = [];
-          map[key].push(item);
-        }
-      });
-    });
-    return map;
-  }, [scheduleItems, weekDays]);
-
   // Summary counts
   const weekItems = scheduleItems.filter(item => weekDays.some(d => isSameDay(item.deadline, d)));
   const meetingCount = weekItems.filter(i => i.type === 'meeting' || i.type === 'call').length;
