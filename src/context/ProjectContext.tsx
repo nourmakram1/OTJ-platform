@@ -465,8 +465,36 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return pendingBriefs.find(b => b.id === id);
   }, [pendingBriefs]);
 
+  const addNotification = useCallback((notif: Omit<NotificationData, 'id'>) => {
+    const newNotif: NotificationData = { ...notif, id: `notif-${Date.now()}` };
+    setNotifications(prev => [newNotif, ...prev]);
+  }, []);
+
+  const markAllRead = useCallback(() => {
+    setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+  }, []);
+
+  const unreadCount = useMemo(() => notifications.filter(n => n.unread).length, [notifications]);
+
+  const submitCounterOffer = useCallback((briefId: string, budget: string, clientName: string, briefName: string) => {
+    // Simulate client accepting the counter offer after 4 seconds
+    setTimeout(() => {
+      const acceptNotif: Omit<NotificationData, 'id'> = {
+        icon: '🎉',
+        bg: 'bg-[hsl(var(--otj-green-bg))]',
+        title: `Counter offer accepted!`,
+        sub: `${clientName} accepted your counter for ${briefName} at ${budget}`,
+        time: 'Just now',
+        unread: true,
+        type: 'counter-accepted',
+        briefId,
+      };
+      setNotifications(prev => [{ ...acceptNotif, id: `notif-${Date.now()}` }, ...prev]);
+    }, 4000);
+  }, []);
+
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews }}>
+    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer }}>
       {children}
     </ProjectContext.Provider>
   );
