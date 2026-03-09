@@ -171,6 +171,10 @@ interface ProjectContextType {
   clients: ClientData[];
   getClient: (id: string) => ClientData | undefined;
   addClientReview: (clientId: string, review: Omit<ClientReviewData, 'id' | 'createdAt'>) => void;
+  approvePhase: (projectId: string, phaseNum: number) => void;
+  releasePayment: (projectId: string, milestoneIndex: number) => void;
+  acceptProposal: (projectId: string) => void;
+  rejectProposal: (projectId: string) => void;
 }
 
 const defaultBriefs: BriefData[] = [
