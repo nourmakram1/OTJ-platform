@@ -26,7 +26,7 @@ const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
   };
 
   return (
-    <div className="h-[220px] relative overflow-hidden group/carousel">
+    <div className="h-[140px] md:h-[220px] relative overflow-hidden group/carousel">
       <div
         className="flex h-full transition-transform duration-300 ease-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
