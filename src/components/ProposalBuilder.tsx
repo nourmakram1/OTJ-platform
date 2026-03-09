@@ -118,11 +118,11 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
   };
 
   return (
-    <div className="grid grid-cols-[1fr_340px] gap-6">
+    <div className="flex flex-col md:grid md:grid-cols-[1fr_340px] gap-6">
       {/* Main proposal form */}
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 order-1">
         {/* Header banner */}
-        <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[14px] p-4">
+        <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[14px] p-3 md:p-4">
           <div className="text-[14px] font-extrabold text-otj-yellow mb-1">📝 Write Your Proposal</div>
           <div className="text-[12px] text-otj-text leading-relaxed">
             Define phases, tasks, deliverables and pricing. Deadlines sync to your dashboard schedule. Drag phases to reorder.
@@ -132,41 +132,43 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
         {/* Phases */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-[16px] font-extrabold tracking-[-0.03em]">Phases & Tasks</div>
-            <button onClick={addPhase} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground transition-all duration-150">+ Add Phase</button>
+            <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em]">Phases & Tasks</div>
+            <button onClick={addPhase} className="text-[10px] md:text-[11.5px] font-bold px-2.5 md:px-3.5 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground transition-all duration-150">+ Add Phase</button>
           </div>
           <div className="flex flex-col gap-3">
             {phases.map((phase, pi) => (
               <div key={pi} className="bg-card border-[1.5px] border-border rounded-[14px] overflow-hidden">
-                <div className="p-3.5 px-4 flex items-center gap-3 border-b border-border bg-otj-off/50">
+                <div className="p-2.5 md:p-3.5 px-3 md:px-4 flex flex-wrap md:flex-nowrap items-center gap-2 md:gap-3 border-b border-border bg-otj-off/50">
                   {/* Reorder buttons */}
                   <div className="flex flex-col gap-0.5 shrink-0">
                     <button onClick={() => movePhase(pi, -1)} disabled={pi === 0} className={`text-[10px] leading-none cursor-pointer ${pi === 0 ? 'text-otj-light' : 'text-otj-muted hover:text-foreground'}`}>▲</button>
                     <button onClick={() => movePhase(pi, 1)} disabled={pi === phases.length - 1} className={`text-[10px] leading-none cursor-pointer ${pi === phases.length - 1 ? 'text-otj-light' : 'text-otj-muted hover:text-foreground'}`}>▼</button>
                   </div>
-                  <div className="w-8 h-8 rounded-lg bg-otj-blue text-primary-foreground flex items-center justify-center text-sm font-bold shrink-0">{pi + 1}</div>
-                  <input type="text" value={phase.title} onChange={e => updatePhaseTitle(pi, e.target.value)} placeholder="Phase title (e.g. Pre-Production)" className="flex-1 text-[13.5px] font-extrabold tracking-[-0.02em] bg-transparent border-none outline-none placeholder:text-otj-muted" />
+                  <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-otj-blue text-primary-foreground flex items-center justify-center text-xs md:text-sm font-bold shrink-0">{pi + 1}</div>
+                  <input type="text" value={phase.title} onChange={e => updatePhaseTitle(pi, e.target.value)} placeholder="Phase title" className="flex-1 min-w-[120px] text-[12px] md:text-[13.5px] font-extrabold tracking-[-0.02em] bg-transparent border-none outline-none placeholder:text-otj-muted" />
                   {/* Date picker */}
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className={cn("h-8 px-2.5 text-[11px] font-bold rounded-lg gap-1.5 border-border", !phase.deadline && "text-otj-muted")}>
-                        <CalendarIcon className="h-3 w-3" />
-                        {phase.deadline ? format(phase.deadline, 'MMM d, yyyy') : 'Set deadline'}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="end">
-                      <Calendar
-                        mode="single"
-                        selected={phase.deadline}
-                        onSelect={(date) => updatePhaseDeadline(pi, date)}
-                        initialFocus
-                        className={cn("p-3 pointer-events-auto")}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  {phases.length > 1 && (
-                    <button onClick={() => removePhase(pi)} className="text-otj-muted hover:text-foreground text-sm cursor-pointer">✕</button>
-                  )}
+                  <div className="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className={cn("h-7 md:h-8 px-2 md:px-2.5 text-[10px] md:text-[11px] font-bold rounded-lg gap-1 md:gap-1.5 border-border flex-1 md:flex-none", !phase.deadline && "text-otj-muted")}>
+                          <CalendarIcon className="h-3 w-3" />
+                          {phase.deadline ? format(phase.deadline, 'MMM d') : 'Deadline'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="end">
+                        <Calendar
+                          mode="single"
+                          selected={phase.deadline}
+                          onSelect={(date) => updatePhaseDeadline(pi, date)}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    {phases.length > 1 && (
+                      <button onClick={() => removePhase(pi)} className="text-otj-muted hover:text-foreground text-sm cursor-pointer">✕</button>
+                    )}
+                  </div>
                 </div>
                 <div className="p-4 flex flex-col gap-2">
                   {phase.tasks.map((task, ti) => (
@@ -188,8 +190,8 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
         {/* Deliverables */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-[16px] font-extrabold tracking-[-0.03em]">Deliverables</div>
-            <button onClick={addDeliverable} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground transition-all duration-150">+ Add Deliverable</button>
+            <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em]">Deliverables</div>
+            <button onClick={addDeliverable} className="text-[10px] md:text-[11.5px] font-bold px-2.5 md:px-3.5 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground transition-all duration-150">+ Add</button>
           </div>
           <div className="bg-card border border-border rounded-[14px] p-4 flex flex-col gap-2">
             {deliverables.map((d, i) => (
@@ -206,26 +208,26 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
 
         {/* Pricing & Payment Milestones */}
         <div>
-          <div className="text-[16px] font-extrabold tracking-[-0.03em] mb-3">Pricing & Payment Schedule</div>
-          <div className="bg-card border border-border rounded-[14px] p-4">
-            <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em] mb-3">Pricing & Payment Schedule</div>
+          <div className="bg-card border border-border rounded-[14px] p-3 md:p-4">
+            <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4">
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Total Price</div>
+                <div className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Total Price</div>
                 <div className="flex items-center gap-1.5">
-                  <input type="text" value={price} onChange={e => setPrice(e.target.value.replace(/[^0-9]/g, ''))} placeholder="0" className="text-[22px] font-extrabold tracking-[-0.04em] bg-transparent border-none outline-none w-[120px]" />
-                  <span className="text-[14px] font-bold text-otj-muted">EGP</span>
+                  <input type="text" value={price} onChange={e => setPrice(e.target.value.replace(/[^0-9]/g, ''))} placeholder="0" className="text-[18px] md:text-[22px] font-extrabold tracking-[-0.04em] bg-transparent border-none outline-none w-[80px] md:w-[120px]" />
+                  <span className="text-[12px] md:text-[14px] font-bold text-otj-muted">EGP</span>
                 </div>
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Client's Budget</div>
-                <div className="text-[16px] font-extrabold text-otj-text">{project.budget}</div>
+                <div className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Client's Budget</div>
+                <div className="text-[14px] md:text-[16px] font-extrabold text-otj-text">{project.budget}</div>
               </div>
             </div>
             <div className="border-t border-border pt-4">
-              <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">Payment Split</div>
-              <div className="flex gap-2 mb-3">
+              <div className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">Payment Split</div>
+              <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3">
                 {PRESET_SPLITS.map((preset, i) => (
-                  <button key={i} onClick={() => selectPreset(i)} className={`text-[11px] font-bold px-3 py-1.5 rounded-full border cursor-pointer transition-all duration-150 ${
+                  <button key={i} onClick={() => selectPreset(i)} className={`text-[10px] md:text-[11px] font-bold px-2 md:px-3 py-1 md:py-1.5 rounded-full border cursor-pointer transition-all duration-150 ${
                     selectedSplit === i ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border text-otj-text hover:border-foreground'
                   }`}>{preset.label}</button>
                 ))}
@@ -269,16 +271,16 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
 
         {/* Payment Method */}
         <div>
-          <div className="text-[16px] font-extrabold tracking-[-0.03em] mb-3">Payment Method</div>
-          <div className="bg-card border border-border rounded-[14px] p-4">
-            <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">How will the client pay?</div>
+          <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em] mb-3">Payment Method</div>
+          <div className="bg-card border border-border rounded-[14px] p-3 md:p-4">
+            <div className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">How will the client pay?</div>
             <div className="flex gap-2 mb-4">
-              <button onClick={() => setPaymentType('instapay')} className={`text-[12px] font-bold px-4 py-2 rounded-lg border cursor-pointer transition-all duration-150 flex items-center gap-2 ${
+              <button onClick={() => setPaymentType('instapay')} className={`text-[10px] md:text-[12px] font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-lg border cursor-pointer transition-all duration-150 flex items-center gap-1.5 md:gap-2 ${
                 paymentType === 'instapay' ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border text-otj-text hover:border-foreground'
               }`}>📱 InstaPay</button>
-              <button onClick={() => setPaymentType('bank')} className={`text-[12px] font-bold px-4 py-2 rounded-lg border cursor-pointer transition-all duration-150 flex items-center gap-2 ${
+              <button onClick={() => setPaymentType('bank')} className={`text-[10px] md:text-[12px] font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-lg border cursor-pointer transition-all duration-150 flex items-center gap-1.5 md:gap-2 ${
                 paymentType === 'bank' ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border text-otj-text hover:border-foreground'
-              }`}>🏦 Bank Transfer</button>
+              }`}>🏦 Bank</button>
             </div>
             {paymentType === 'instapay' ? (
               <div>
@@ -306,23 +308,23 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
 
         {/* Notes */}
         <div>
-          <div className="text-[16px] font-extrabold tracking-[-0.03em] mb-3">Notes to Client</div>
-          <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Any additional notes, terms, or conditions…" className="w-full bg-card border border-border rounded-[14px] p-4 text-[13px] font-medium outline-none resize-none min-h-[80px] placeholder:text-otj-muted" />
+          <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em] mb-3">Notes to Client</div>
+          <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Any additional notes, terms, or conditions…" className="w-full bg-card border border-border rounded-[14px] p-3 md:p-4 text-[12px] md:text-[13px] font-medium outline-none resize-none min-h-[80px] placeholder:text-otj-muted" />
         </div>
 
         {/* Send to Client */}
-        <div className="flex items-center gap-3 pb-6">
-          <button onClick={handleSubmit} disabled={!canSubmit} className={`text-[13px] font-bold px-6 py-2.5 rounded-full border-none cursor-pointer transition-all duration-150 ${
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 pb-6">
+          <button onClick={handleSubmit} disabled={!canSubmit} className={`text-[12px] md:text-[13px] font-bold px-5 md:px-6 py-2 md:py-2.5 rounded-full border-none cursor-pointer transition-all duration-150 w-full md:w-auto ${
             canSubmit ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-otj-off text-otj-muted cursor-not-allowed'
           }`}>
             Send to Client →
           </button>
-          <span className="text-[11px] text-otj-muted">Client will be notified to review and approve your proposal</span>
+          <span className="text-[10px] md:text-[11px] text-otj-muted text-center md:text-left">Client will be notified to review and approve</span>
         </div>
       </div>
 
       {/* Right sidebar — Brief summary + Schedule preview */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 order-2">
         <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4">
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-blue mb-3">Client's Brief</div>
           {[
