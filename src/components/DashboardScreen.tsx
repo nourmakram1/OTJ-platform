@@ -109,7 +109,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                   </div>
                 </div>
                 {/* Mobile buttons at bottom */}
-                <div className="flex md:hidden items-center gap-[5px] flex-wrap mt-2">
+                <div className="flex md:hidden items-center gap-[5px] flex-wrap ml-[52px]">
                   <button onClick={() => navigate(`/brief/${brief.id}`)} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer">View Brief</button>
                   <button onClick={() => showToast('Brief declined')} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full border-[1.5px] border-border bg-card text-muted-foreground cursor-pointer hover:border-foreground hover:text-foreground">Decline</button>
                 </div>
