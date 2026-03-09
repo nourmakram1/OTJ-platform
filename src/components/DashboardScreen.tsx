@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { format, parseISO, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, getWeek } from 'date-fns';
 import { showToast } from './Toast';
 import { useProjects, MeetingData } from '../context/ProjectContext';
+import { ProfileCompletenessCard, useProfileCompleteness } from './ProfileCompleteness';
 
 interface DashboardScreenProps {
   onOpenBrief: () => void;
