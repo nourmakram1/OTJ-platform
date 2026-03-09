@@ -596,13 +596,13 @@ const ProjectProfile = () => {
                 <div className="animate-fade-up">
                   <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">Team</div>
                   {[
-                    { emoji: '👩‍💼', name: proj.clientName, role: proj.clientCompany, badge: 'Client', badgeClass: 'bg-otj-blue-bg text-otj-blue' },
-                    { emoji: '👩‍🎨', name: 'Nour Makram', role: 'Fashion & E-commerce Photographer', badge: 'Creative', badgeClass: 'bg-otj-green-bg text-otj-green' },
+                    { emoji: '👩‍💼', name: proj.clientName, role: proj.clientCompany, badge: 'Client', badgeClass: 'bg-otj-blue-bg text-otj-blue', isClient: true },
+                    { emoji: '👩‍🎨', name: 'Nour Makram', role: 'Fashion & E-commerce Photographer', badge: 'Creative', badgeClass: 'bg-otj-green-bg text-otj-green', isClient: false },
                   ].map((p, i) => (
                     <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 mb-2 flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-otj-off flex items-center justify-center text-xl shrink-0">{p.emoji}</div>
                       <div className="flex-1">
-                        <div className="text-[13.5px] font-extrabold tracking-[-0.02em]">{p.name}</div>
+                        <div className={`text-[13.5px] font-extrabold tracking-[-0.02em] ${p.isClient ? 'cursor-pointer hover:underline' : ''}`} onClick={() => p.isClient && navigateToClient(p.name)}>{p.name}</div>
                         <div className="text-[11.5px] text-otj-text">{p.role}</div>
                       </div>
                       <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${p.badgeClass}`}>{p.badge}</span>
