@@ -81,7 +81,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
         {projectTab === 'pending' && (
           <div className="flex flex-col gap-2 animate-fade-up">
             {pendingBriefs.length === 0 && (
-              <div className="bg-card border border-border rounded-[14px] p-6 text-center text-otj-muted text-[13px]">No pending briefs — you're all caught up! 🎉</div>
+              <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
+                <div className="text-[48px]">🎉</div>
+                <div className="text-[14px] font-extrabold text-foreground">No pending briefs!</div>
+                <div className="text-[12px] text-muted-foreground max-w-[260px]">You're all caught up — sit back and relax until the next opportunity rolls in.</div>
+              </div>
             )}
             {pendingBriefs.map((brief) => (
               <div key={brief.id} className="bg-card border border-border rounded-[14px] p-3.5 px-4 transition-all duration-150 flex flex-col md:flex-row md:items-center gap-3 hover:shadow-md hover:border-otj-muted">
@@ -118,6 +122,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
 
         {projectTab === 'active' && (
           <div className="flex flex-col gap-2 animate-fade-up">
+            {activeProjects.length === 0 && (
+              <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
+                <div className="text-[48px]">🚀</div>
+                <div className="text-[14px] font-extrabold text-foreground">No active projects yet</div>
+                <div className="text-[12px] text-muted-foreground max-w-[260px]">Accept a brief and watch the magic begin — your next project is just around the corner!</div>
+              </div>
+            )}
             {activeProjects.map((proj) => {
               const phaseDone = proj.phases.filter(p => p.status === 'complete').length;
               const phaseTotal = proj.phases.length;
@@ -157,6 +168,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
 
         {projectTab === 'complete' && (
           <div className="flex flex-col gap-2 animate-fade-up">
+            {completedProjects.length === 0 && (
+              <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
+                <div className="text-[48px]">✨</div>
+                <div className="text-[14px] font-extrabold text-foreground">No completed projects yet</div>
+                <div className="text-[12px] text-muted-foreground max-w-[260px]">Your finished masterpieces will live here — keep creating amazing work!</div>
+              </div>
+            )}
             {completedProjects.map((proj, i) => (
               <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex flex-col md:flex-row gap-2 md:gap-3 md:items-center cursor-pointer transition-all duration-150 hover:shadow-md hover:border-otj-muted">
                 <div className="flex gap-3 items-center flex-1">
