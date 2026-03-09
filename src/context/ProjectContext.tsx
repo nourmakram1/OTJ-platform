@@ -99,6 +99,19 @@ export interface ProjectData {
   reviews: ReviewData[];
 }
 
+export interface NotificationData {
+  id: string;
+  icon: string;
+  bg: string;
+  title: string;
+  sub: string;
+  time: string;
+  unread: boolean;
+  type: 'counter-accepted' | 'message' | 'payment' | 'booking' | 'brief';
+  briefId?: string;
+  projectId?: string;
+}
+
 interface ProjectContextType {
   pendingBriefs: BriefData[];
   activeProjects: ProjectData[];
@@ -116,6 +129,11 @@ interface ProjectContextType {
   completeProject: (projectId: string) => void;
   addReview: (projectId: string, review: Omit<ReviewData, 'id' | 'createdAt'>) => void;
   reviews: ReviewData[];
+  notifications: NotificationData[];
+  addNotification: (notif: Omit<NotificationData, 'id'>) => void;
+  markAllRead: () => void;
+  unreadCount: number;
+  submitCounterOffer: (briefId: string, budget: string, clientName: string, briefName: string) => void;
 }
 
 const defaultBriefs: BriefData[] = [
