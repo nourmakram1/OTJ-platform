@@ -1,31 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { format, parseISO, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, getWeek } from 'date-fns';
 import { showToast } from './Toast';
-import { useProjects } from '../context/ProjectContext';
-import { allCreatives } from '../data/creatives';
-import { CreativeCard } from './CreativeCard';
+import { useProjects, MeetingData } from '../context/ProjectContext';
 
-interface ClientDashboardScreenProps {
-  onOpenBrief: (creativeId: string) => void;
-}
-
-export const ClientDashboardScreen: React.FC<ClientDashboardScreenProps> = ({ onOpenBrief }) => {
+export const ClientDashboardScreen: React.FC = () => {
   const navigate = useNavigate();
-  const { activeProjects, completedProjects, pendingBriefs } = useProjects();
-  const [tab, setTab] = useState<'briefs' | 'active' | 'complete' | 'discover'>('briefs');
-  const [saved, setSaved] = useState<Set<string>>(new Set());
+  const { activeProjects, completedProjects, pendingBriefs, allMeetings } = useProjects();
+  const [tab, setTab] = useState<'briefs' | 'active' | 'complete'>('briefs');
 
-  const toggleSave = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    setSaved(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) { next.delete(id); showToast('Removed from saved'); }
-      else { next.add(id); showToast('✓ Saved!'); }
-      return next;
-    });
-  };
-
-  // Client's briefs (sent to creatives)
   const clientBriefs = pendingBriefs;
 
   return (
@@ -41,12 +24,11 @@ export const ClientDashboardScreen: React.FC<ClientDashboardScreenProps> = ({ on
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
+      <div className="grid grid-cols-3 gap-2 mb-5">
         {[
           { label: 'Briefs Sent', val: String(clientBriefs.length), color: 'text-[hsl(var(--otj-yellow))]', delta: clientBriefs.length > 0 ? 'Awaiting response' : 'Send a brief', deltaClass: 'text-muted-foreground' },
           { label: 'Active Projects', val: String(activeProjects.length), color: 'text-[hsl(var(--otj-blue))]', delta: activeProjects.length > 0 ? 'In progress' : 'No active', deltaClass: 'text-muted-foreground' },
           { label: 'Completed', val: String(completedProjects.length), color: 'text-[hsl(var(--otj-green))]', delta: 'Total projects', deltaClass: 'text-muted-foreground' },
-          { label: 'Creatives Hired', val: '5', color: '', delta: 'All time', deltaClass: 'text-muted-foreground' },
         ].map((s, i) => (
           <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4">
             <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-1.5">{s.label}</div>
@@ -58,13 +40,12 @@ export const ClientDashboardScreen: React.FC<ClientDashboardScreenProps> = ({ on
 
       {/* Tab Navigation */}
       <div className="flex items-center gap-2 mb-4 flex-wrap">
-        <div className="text-lg font-extrabold tracking-[-0.04em]">Overview</div>
+        <div className="text-lg font-extrabold tracking-[-0.04em]">Projects</div>
         <div className="flex gap-1 ml-0 md:ml-3 overflow-x-auto hide-scrollbar">
           {[
             { key: 'briefs' as const, label: `My Briefs (${clientBriefs.length})` },
             { key: 'active' as const, label: `Active (${activeProjects.length})` },
             { key: 'complete' as const, label: `Complete (${completedProjects.length})` },
-            { key: 'discover' as const, label: 'Discover Creatives' },
           ].map(t => (
             <button key={t.key} onClick={() => setTab(t.key)} className={`text-[12px] font-semibold px-3.5 py-[5px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 whitespace-nowrap ${
               tab === t.key ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-muted-foreground hover:border-foreground hover:text-foreground'
@@ -174,23 +155,151 @@ export const ClientDashboardScreen: React.FC<ClientDashboardScreenProps> = ({ on
         </div>
       )}
 
-      {/* Discover Creatives */}
-      {tab === 'discover' && (
-        <div className="animate-fade-up">
-          <div className="text-[13px] text-muted-foreground mb-4">Browse top creatives to hire for your next project.</div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {allCreatives.slice(0, 8).map(creative => (
-              <CreativeCard
-                key={creative.id}
-                creative={creative}
-                onOpenBrief={onOpenBrief}
-                saved={saved.has(creative.id)}
-                onToggleSave={toggleSave}
-              />
-            ))}
+      {/* Schedule — meetings & phase due dates only */}
+      <ClientScheduleSection projects={activeProjects} navigate={navigate} />
+    </div>
+  );
+};
+
+// Client schedule: meetings + phase due dates only (no tasks)
+type ClientScheduleItem = {
+  label: string;
+  sublabel: string;
+  projectId: string;
+  deadline: Date;
+  type: 'phase' | 'meeting' | 'call';
+  hour: number;
+  duration: number;
+};
+
+const clientTypeConfig: Record<string, { bg: string; border: string; text: string; dot: string; label: string; icon: string }> = {
+  meeting: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Meeting', icon: '👥' },
+  phase: { bg: 'bg-otj-yellow-bg', border: 'border-otj-yellow-border', text: 'text-otj-yellow', dot: 'bg-otj-yellow', label: 'Due', icon: '⏰' },
+  call: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Call', icon: '📞' },
+};
+
+const DAY_LABELS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+
+const ClientScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['activeProjects']; navigate: ReturnType<typeof useNavigate> }> = ({ projects, navigate }) => {
+  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const today = new Date();
+  const weekNum = getWeek(weekStart, { weekStartsOn: 1 });
+
+  const weekDays = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)), [weekStart]);
+
+  const scheduleItems = useMemo(() => {
+    const items: ClientScheduleItem[] = [];
+    projects.forEach(proj => {
+      // Phase due dates
+      proj.phases.forEach(phase => {
+        if (phase.deadline) {
+          try {
+            const d = parseISO(phase.deadline);
+            items.push({ label: `${proj.name.substring(0, 12)}…`, sublabel: `Phase ${phase.num} — ${phase.title}`, projectId: proj.id, deadline: d, type: 'phase', hour: 11, duration: 1 });
+          } catch {}
+        }
+      });
+      // Meetings
+      proj.meetings.forEach(meeting => {
+        try {
+          const d = parseISO(meeting.date);
+          const hourMatch = meeting.time?.match(/(\d+)/);
+          const isPM = meeting.time?.toLowerCase().includes('pm');
+          let hour = hourMatch ? parseInt(hourMatch[1]) : 9;
+          if (isPM && hour < 12) hour += 12;
+          if (!isPM && hour === 12) hour = 0;
+          items.push({ label: meeting.title, sublabel: proj.name, projectId: proj.id, deadline: d, type: meeting.type === 'call' ? 'call' : 'meeting', hour, duration: meeting.type === 'call' ? 1 : 2 });
+        } catch {}
+      });
+    });
+    return items;
+  }, [projects]);
+
+  const weekItems = scheduleItems.filter(item => weekDays.some(d => isSameDay(item.deadline, d)));
+  const meetingCount = weekItems.filter(i => i.type === 'meeting' || i.type === 'call').length;
+  const dueCount = weekItems.filter(i => i.type === 'phase').length;
+
+  return (
+    <div className="mt-5">
+      <div className="bg-card border border-border rounded-[16px] overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between p-3 md:p-4 px-4 md:px-5 gap-2">
+          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+            <span className="text-lg">📅</span>
+            <span className="text-[17px] font-extrabold tracking-[-0.04em]">Schedule</span>
+            <div className="flex items-center gap-1 md:gap-2 ml-1 md:ml-3">
+              <button onClick={() => setWeekStart(subWeeks(weekStart, 1))} className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-muted-foreground hover:border-foreground hover:text-foreground transition-all duration-150 text-sm">‹</button>
+              <span className="text-[11px] md:text-[13px] font-extrabold tracking-[-0.02em] min-w-[120px] md:min-w-[160px] text-center">{format(weekStart, 'MMMM yyyy')} · Week {weekNum}</span>
+              <button onClick={() => setWeekStart(addWeeks(weekStart, 1))} className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-muted-foreground hover:border-foreground hover:text-foreground transition-all duration-150 text-sm">›</button>
+            </div>
+            <div className="hidden md:flex items-center gap-3 ml-4">
+              {[
+                { key: 'meeting', color: 'bg-otj-blue', label: 'Meeting' },
+                { key: 'phase', color: 'bg-otj-yellow', label: 'Due' },
+              ].map(l => (
+                <div key={l.key} className="flex items-center gap-1.5">
+                  <div className={`w-[7px] h-[7px] rounded-full ${l.color}`} />
+                  <span className="text-[11px] font-semibold text-muted-foreground">{l.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-1">
+            <button className="text-[10px] md:text-[11px] font-bold px-2.5 md:px-3 py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer">Weekly</button>
+            <button onClick={() => showToast('Monthly view coming soon!')} className="text-[10px] md:text-[11px] font-bold px-2.5 md:px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card text-muted-foreground cursor-pointer hover:border-foreground transition-all">Monthly</button>
           </div>
         </div>
-      )}
+
+        {/* Day picker + list */}
+        <div className="border-t border-border">
+          <div className="flex overflow-x-auto hide-scrollbar border-b border-border">
+            {weekDays.map((day, i) => {
+              const isToday = isSameDay(day, today);
+              const dayEvents = scheduleItems.filter(item => isSameDay(item.deadline, day));
+              return (
+                <div key={i} className={`flex-1 min-w-[48px] md:min-w-[80px] text-center py-2.5 md:py-3 border-r border-border last:border-r-0 ${isToday ? 'bg-[hsl(var(--otj-blue-bg))]' : ''}`}>
+                  <div className={`text-[9px] md:text-[10px] font-bold uppercase ${isToday ? 'text-[hsl(var(--otj-blue))]' : 'text-muted-foreground'}`}>{DAY_LABELS[i]}</div>
+                  <div className={`text-[15px] md:text-[18px] font-extrabold mt-0.5 ${isToday ? 'text-[hsl(var(--otj-blue))]' : 'text-foreground'}`}>{format(day, 'd')}</div>
+                  {dayEvents.length > 0 && <div className="flex justify-center mt-1 gap-[2px]">{dayEvents.slice(0, 3).map((ev, j) => <div key={j} className={`w-[5px] h-[5px] md:w-[6px] md:h-[6px] rounded-full ${clientTypeConfig[ev.type]?.dot}`} />)}</div>}
+                </div>
+              );
+            })}
+          </div>
+          <div className="p-3 md:p-4 flex flex-col gap-2 max-h-[300px] md:max-h-[400px] overflow-y-auto">
+            {weekItems.length === 0 && <div className="text-center text-[12px] text-muted-foreground py-4">No events this week</div>}
+            {weekItems.slice(0, 10).map((item, i) => {
+              const cfg = clientTypeConfig[item.type];
+              return (
+                <div key={i} onClick={() => navigate(`/project/${item.projectId}`)} className="flex items-center gap-2.5 md:gap-3 p-2.5 md:p-3 rounded-[10px] md:rounded-[12px] border border-border bg-card cursor-pointer hover:border-muted-foreground hover:shadow-sm transition-all">
+                  <div className={`w-1.5 md:w-2 self-stretch rounded-full shrink-0 ${cfg.dot}`} />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[12px] md:text-[13px] font-extrabold tracking-[-0.02em] truncate">{item.label}</div>
+                    <div className="text-[10px] md:text-[11px] text-muted-foreground truncate">{item.sublabel} · {format(item.deadline, 'EEE, MMM d')} · {item.hour <= 12 ? `${item.hour}:00 AM` : `${item.hour - 12}:00 PM`}</div>
+                  </div>
+                  <span className={`text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-[1px] md:py-[2px] rounded ${cfg.bg} ${cfg.text} shrink-0`}>{cfg.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Summary footer */}
+        <div className="flex items-center gap-4 md:gap-8 p-3 md:p-4 px-4 md:px-5 border-t border-border flex-wrap">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">👥</span>
+            <div>
+              <div className="text-[13px] md:text-[14px] font-extrabold tracking-[-0.02em]">{meetingCount} Meeting{meetingCount !== 1 ? 's' : ''}</div>
+              <div className="text-[10px] text-muted-foreground font-semibold">This week</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg">⏰</span>
+            <div>
+              <div className="text-[13px] md:text-[14px] font-extrabold tracking-[-0.02em]">{dueCount} Due Date{dueCount !== 1 ? 's' : ''}</div>
+              <div className="text-[10px] text-muted-foreground font-semibold">Coming up</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
