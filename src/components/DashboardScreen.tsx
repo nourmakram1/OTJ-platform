@@ -94,14 +94,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                   <div className="flex items-center gap-[5px]">
                     <button onClick={(e) => { e.stopPropagation(); onAcceptBrief(brief.id); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer transition-all duration-150 whitespace-nowrap">✓ Accept</button>
                     <button onClick={(e) => { e.stopPropagation(); onOpenCounter(); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-otj-yellow text-otj-yellow bg-card cursor-pointer transition-all duration-150 whitespace-nowrap">↕ Counter</button>
-                    <button onClick={(e) => { e.stopPropagation(); navigate(`/project/${brief.id}?tab=brief`); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground whitespace-nowrap">View</button>
+                    <button onClick={(e) => { e.stopPropagation(); navigate(`/project/${brief.id}?tab=brief`); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground whitespace-nowrap">View Brief</button>
                   </div>
                 </div>
                 {/* Mobile buttons at bottom */}
                 <div className="flex md:hidden items-center gap-[5px] flex-wrap mt-2">
                   <button onClick={() => onAcceptBrief(brief.id)} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer">✓ Accept</button>
                   <button onClick={() => onOpenCounter()} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full border-[1.5px] border-otj-yellow text-otj-yellow bg-card cursor-pointer">↕ Counter</button>
-                  <button onClick={() => navigate(`/project/${brief.id}?tab=brief`)} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full border-[1.5px] border-border bg-card cursor-pointer hover:border-foreground">View</button>
+                  <button onClick={() => navigate(`/project/${brief.id}?tab=brief`)} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full border-[1.5px] border-border bg-card cursor-pointer hover:border-foreground">View Brief</button>
                 </div>
               </div>
             ))}
