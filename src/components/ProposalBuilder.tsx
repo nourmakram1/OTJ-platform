@@ -138,35 +138,37 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
           <div className="flex flex-col gap-3">
             {phases.map((phase, pi) => (
               <div key={pi} className="bg-card border-[1.5px] border-border rounded-[14px] overflow-hidden">
-                <div className="p-3.5 px-4 flex items-center gap-3 border-b border-border bg-otj-off/50">
+                <div className="p-2.5 md:p-3.5 px-3 md:px-4 flex flex-wrap md:flex-nowrap items-center gap-2 md:gap-3 border-b border-border bg-otj-off/50">
                   {/* Reorder buttons */}
                   <div className="flex flex-col gap-0.5 shrink-0">
                     <button onClick={() => movePhase(pi, -1)} disabled={pi === 0} className={`text-[10px] leading-none cursor-pointer ${pi === 0 ? 'text-otj-light' : 'text-otj-muted hover:text-foreground'}`}>▲</button>
                     <button onClick={() => movePhase(pi, 1)} disabled={pi === phases.length - 1} className={`text-[10px] leading-none cursor-pointer ${pi === phases.length - 1 ? 'text-otj-light' : 'text-otj-muted hover:text-foreground'}`}>▼</button>
                   </div>
-                  <div className="w-8 h-8 rounded-lg bg-otj-blue text-primary-foreground flex items-center justify-center text-sm font-bold shrink-0">{pi + 1}</div>
-                  <input type="text" value={phase.title} onChange={e => updatePhaseTitle(pi, e.target.value)} placeholder="Phase title (e.g. Pre-Production)" className="flex-1 text-[13.5px] font-extrabold tracking-[-0.02em] bg-transparent border-none outline-none placeholder:text-otj-muted" />
+                  <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-otj-blue text-primary-foreground flex items-center justify-center text-xs md:text-sm font-bold shrink-0">{pi + 1}</div>
+                  <input type="text" value={phase.title} onChange={e => updatePhaseTitle(pi, e.target.value)} placeholder="Phase title" className="flex-1 min-w-[120px] text-[12px] md:text-[13.5px] font-extrabold tracking-[-0.02em] bg-transparent border-none outline-none placeholder:text-otj-muted" />
                   {/* Date picker */}
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className={cn("h-8 px-2.5 text-[11px] font-bold rounded-lg gap-1.5 border-border", !phase.deadline && "text-otj-muted")}>
-                        <CalendarIcon className="h-3 w-3" />
-                        {phase.deadline ? format(phase.deadline, 'MMM d, yyyy') : 'Set deadline'}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="end">
-                      <Calendar
-                        mode="single"
-                        selected={phase.deadline}
-                        onSelect={(date) => updatePhaseDeadline(pi, date)}
-                        initialFocus
-                        className={cn("p-3 pointer-events-auto")}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  {phases.length > 1 && (
-                    <button onClick={() => removePhase(pi)} className="text-otj-muted hover:text-foreground text-sm cursor-pointer">✕</button>
-                  )}
+                  <div className="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className={cn("h-7 md:h-8 px-2 md:px-2.5 text-[10px] md:text-[11px] font-bold rounded-lg gap-1 md:gap-1.5 border-border flex-1 md:flex-none", !phase.deadline && "text-otj-muted")}>
+                          <CalendarIcon className="h-3 w-3" />
+                          {phase.deadline ? format(phase.deadline, 'MMM d') : 'Deadline'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="end">
+                        <Calendar
+                          mode="single"
+                          selected={phase.deadline}
+                          onSelect={(date) => updatePhaseDeadline(pi, date)}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    {phases.length > 1 && (
+                      <button onClick={() => removePhase(pi)} className="text-otj-muted hover:text-foreground text-sm cursor-pointer">✕</button>
+                    )}
+                  </div>
                 </div>
                 <div className="p-4 flex flex-col gap-2">
                   {phase.tasks.map((task, ti) => (
