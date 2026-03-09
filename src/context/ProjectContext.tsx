@@ -134,6 +134,8 @@ export interface ClientData {
   name: string;
   avatar: string;
   company?: string;
+  email: string;
+  phone: string;
   industry: string;
   location: string;
   bio: string;
