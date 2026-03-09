@@ -616,15 +616,21 @@ const ProjectProfile = () => {
                 <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">Payment Summary</div>
                 {[
                   { label: 'Total', val: proj.budget, bold: true },
-                  { label: 'Deposit', val: proj.escrow.deposited, bold: false },
-                  { label: 'In Escrow', val: proj.escrow.held, bold: false },
-                  { label: 'OTJ Fee (5%)', val: `-${proj.escrow.fee}`, bold: false },
                 ].map((f, i) => (
-                  <div key={i} className={`flex items-center justify-between py-1.5 ${i < 3 ? 'border-b border-border' : ''}`}>
+                  <div key={i} className="flex items-center justify-between py-1.5">
                     <div className="text-[11px] text-otj-text">{f.label}</div>
                     <div className={`text-[12px] ${f.bold ? 'font-extrabold text-foreground' : 'font-bold text-otj-text'}`}>{f.val}</div>
                   </div>
                 ))}
+                {proj.paymentMilestones.map((m, i) => {
+                  const amount = numericPrice > 0 ? `${Math.round(numericPrice * m.percentage / 100).toLocaleString()} EGP` : '—';
+                  return (
+                    <div key={i} className="flex items-center justify-between py-1.5 border-t border-border">
+                      <div className="text-[11px] text-otj-text">{m.label} ({m.percentage}%)</div>
+                      <div className="text-[12px] font-bold text-otj-text">{amount}</div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
