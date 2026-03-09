@@ -81,47 +81,6 @@ const CreativeRow: React.FC<{
   );
 };
 
-/** Filter dropdown chip */
-const FilterChip: React.FC<{
-  label: string;
-  active: boolean;
-  children: React.ReactNode;
-}> = ({ label, active, children }) => {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  // Close on outside click
-  React.useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [open]);
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen(o => !o)}
-        className={`flex items-center gap-1.5 text-[12px] font-semibold px-3 py-[6px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 whitespace-nowrap ${
-          active
-            ? 'bg-primary border-primary text-primary-foreground'
-            : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
-        }`}
-      >
-        {label}
-        <ChevronDown className={`w-3 h-3 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open && (
-        <div className="absolute top-full left-0 md:left-0 mt-1.5 z-[50] min-w-[200px] max-w-[calc(100vw-32px)] bg-card border border-border rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.12)] p-3 animate-fade-up">
-          {children}
-        </div>
-      )}
-    </div>
-  );
-};
-
 export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searchQuery = '' }) => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [saved, setSaved] = useState<Set<string>>(new Set());
