@@ -94,9 +94,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
           
         </div>
 
-        {projectTab === 'pending' && (
+        {projectTab === 'pending' && (() => {
+          const filtered = pendingBriefs.filter(b => roleFilter === 'all' ? true : roleFilter === 'hired' ? b.myRole !== 'as-client' : b.myRole === 'as-client');
+          return (
           <div className="flex flex-col gap-2 animate-fade-up">
-            {pendingBriefs.length === 0 && (
+            {filtered.length === 0 && (
               <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
                 <div className="text-[48px]">🎉</div>
                 <div className="text-[14px] font-extrabold text-foreground">No pending briefs!</div>
