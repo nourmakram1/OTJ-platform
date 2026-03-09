@@ -150,8 +150,19 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                 <div key={proj.id} onClick={() => navigate(`/project/${proj.id}`)} className="bg-card border border-border rounded-[14px] p-3.5 px-4 cursor-pointer transition-all duration-150 flex gap-3 items-start hover:shadow-md hover:border-otj-muted">
                   <div className="w-10 h-10 rounded-[10px] bg-otj-off flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
                   <div className="flex-1">
-                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5">{proj.name}</div>
-                    <div className="text-[11.5px] text-otj-text mb-1.5">Client: {proj.clientName} · {proj.clientCompany}</div>
+                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5 flex items-center gap-1.5">
+                      {proj.name}
+                      {proj.myRole && (
+                        <span className={`text-[9px] font-bold px-1.5 py-[1px] rounded-full border shrink-0 ${
+                          proj.myRole === 'as-client' 
+                            ? 'bg-otj-blue-bg text-otj-blue border-otj-blue-border' 
+                            : 'bg-otj-green-bg text-otj-green border-otj-green-border'
+                        }`}>
+                          {proj.myRole === 'as-client' ? 'Booked by you' : 'Hired'}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[11.5px] text-otj-text mb-1.5">{proj.myRole === 'as-client' ? 'Creative' : 'Client'}: {proj.clientName} · {proj.clientCompany}</div>
                     <div className="flex gap-[3px] mb-1.5">
                       {proj.phases.map((phase) => (
                         <div key={phase.num} className={`h-1 flex-1 rounded-full ${
