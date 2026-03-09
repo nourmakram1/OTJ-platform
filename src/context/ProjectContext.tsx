@@ -290,10 +290,17 @@ export const useProjects = () => {
   return ctx;
 };
 
+const defaultNotifications: NotificationData[] = [
+  { id: 'notif-1', icon: '💬', bg: 'bg-muted', title: 'Ahmed Karim sent you a message', sub: 'Can we schedule a call for Thursday?', time: '12m ago', unread: true, type: 'message' },
+  { id: 'notif-2', icon: '💳', bg: 'bg-[hsl(var(--otj-green-bg))]', title: 'Payment released — 3,325 EGP', sub: 'Edita Campaign · Phase 2 approved by client', time: '2h ago', unread: true, type: 'payment' },
+  { id: 'notif-3', icon: '📅', bg: 'bg-[hsl(var(--otj-blue-bg))]', title: 'Booking confirmed · March 15', sub: 'Edita Group campaign — added to your calendar', time: 'Yesterday', unread: false, type: 'booking' },
+];
+
 export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [pendingBriefs, setPendingBriefs] = useState<BriefData[]>(defaultBriefs);
   const [activeProjects, setActiveProjects] = useState<ProjectData[]>(defaultActiveProjects);
   const [completedProjects] = useState(defaultCompleted);
+  const [notifications, setNotifications] = useState<NotificationData[]>(defaultNotifications);
 
   const acceptBrief = useCallback((briefId: string): string => {
     const brief = pendingBriefs.find(b => b.id === briefId);
