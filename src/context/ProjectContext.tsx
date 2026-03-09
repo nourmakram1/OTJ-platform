@@ -178,6 +178,7 @@ interface ProjectContextType {
   submitCounterOffer: (briefId: string, budget: string, clientName: string, briefName: string) => void;
   clients: ClientData[];
   getClient: (id: string) => ClientData | undefined;
+  updateClient: (clientId: string, updates: Partial<ClientData>) => void;
   addClientReview: (clientId: string, review: Omit<ClientReviewData, 'id' | 'createdAt'>) => void;
   approvePhase: (projectId: string, phaseNum: number) => void;
   releasePayment: (projectId: string, milestoneIndex: number) => void;
