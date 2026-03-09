@@ -29,7 +29,7 @@ const NotifBell = ({ onClick }: { onClick: () => void }) => {
 export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, searchQuery = '', onSearchChange }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userRole } = useProjects();
+  const { userRole, setUserRole } = useProjects();
   const [showNotif, setShowNotif] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -97,11 +97,23 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
         )}
 
         <div className="ml-auto flex items-center gap-2 md:gap-2.5">
+          {/* Dev role switcher */}
+          <button
+            onClick={() => {
+              const newRole = userRole === 'client' ? 'creative' : 'client';
+              setUserRole(newRole);
+              showToast(`Switched to ${newRole} view`);
+            }}
+            className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-dashed border-border bg-muted text-muted-foreground cursor-pointer hover:border-foreground hover:text-foreground transition-all duration-150"
+          >
+            {userRole === 'client' ? '🏢 Client' : '🎨 Creative'}
+          </button>
+
           {/* Mobile search toggle (explore only) */}
           {isExplore && (
             <button
               onClick={() => setShowSearch(prev => !prev)}
-              className="md:hidden p-1.5 rounded-lg transition-all duration-150 hover:bg-otj-off"
+              className="md:hidden p-1.5 rounded-lg transition-all duration-150 hover:bg-muted"
             >
               <Search className="w-[18px] h-[18px] text-otj-text" />
             </button>
