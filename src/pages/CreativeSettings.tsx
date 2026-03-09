@@ -69,6 +69,19 @@ const CreativeSettings = () => {
   const [profSearch, setProfSearch] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
+  // Notification preferences
+  const [notifEmail, setNotifEmail] = useState({ messages: true, bookings: true, reviews: true, marketing: false });
+  const [notifPush, setNotifPush] = useState({ messages: true, bookings: true, reviews: false, marketing: false });
+  const [notifInApp, setNotifInApp] = useState({ messages: true, bookings: true, reviews: true, marketing: true });
+
+  // Account settings
+  const [email, setEmail] = useState('nour@example.com');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('instapay');
+  const [paymentDetails, setPaymentDetails] = useState('nour.makram@instapay');
+
   const availableNiches = nicheMap[profession] || [];
   const q = profSearch.toLowerCase();
   const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q)) : professions;
