@@ -57,6 +57,8 @@ const ProjectProfile = () => {
     name: 'Edita Re-Branding',
     clientName: 'Randa Hatem',
     clientCompany: 'Edita Group',
+    clientEmail: 'randa.hatem@editagroup.com',
+    clientPhone: '+20 100 123 4567',
     projectType: 'Full Day Campaign Shoot',
     budget: '3,500 EGP',
     deliverables: '40 edited photos (20 product, 10 lifestyle, 10 BTS)',
@@ -322,6 +324,29 @@ const ProjectProfile = () => {
                         <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Company</div>
                         <div className="text-[13px] font-semibold text-foreground">{proj.clientCompany}</div>
                       </div>
+                      {(proj.status === 'active' || proj.status === 'complete') ? (
+                        <>
+                          <div>
+                            <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Email</div>
+                            <div className="text-[13px] font-semibold text-foreground">{proj.clientEmail}</div>
+                          </div>
+                          <div>
+                            <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Phone</div>
+                            <div className="text-[13px] font-semibold text-foreground">{proj.clientPhone}</div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div>
+                            <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Email</div>
+                            <div className="text-[12px] text-muted-foreground italic">Available after budget is finalized</div>
+                          </div>
+                          <div>
+                            <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Phone</div>
+                            <div className="text-[12px] text-muted-foreground italic">Available after budget is finalized</div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
 

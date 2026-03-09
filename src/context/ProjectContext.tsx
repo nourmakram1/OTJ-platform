@@ -6,6 +6,8 @@ export interface BriefData {
   name: string;
   clientName: string;
   clientCompany: string;
+  clientEmail: string;
+  clientPhone: string;
   projectType: string;
   budget: string;
   deliverables: string;
@@ -80,6 +82,8 @@ export interface ProjectData {
   name: string;
   clientName: string;
   clientCompany: string;
+  clientEmail: string;
+  clientPhone: string;
   projectType: string;
   budget: string;
   deliverables: string;
@@ -189,6 +193,8 @@ const defaultBriefs: BriefData[] = [
     name: 'Ramadan Campaign Shoot',
     clientName: 'Randa Hatem',
     clientCompany: 'Edita Group',
+    clientEmail: 'randa.hatem@editagroup.com',
+    clientPhone: '+20 100 123 4567',
     projectType: 'Full Day Campaign Shoot',
     budget: '3,500 EGP',
     deliverables: '40 edited photos (20 product, 10 lifestyle, 10 BTS)',
@@ -204,6 +210,8 @@ const defaultBriefs: BriefData[] = [
     name: 'Product Launch Photography',
     clientName: 'Tarek Saad',
     clientCompany: 'Vodafone Egypt',
+    clientEmail: 'tarek.saad@vodafone.eg',
+    clientPhone: '+20 101 987 6543',
     projectType: '3-Day Event Photography',
     budget: 'Negotiable',
     deliverables: '120 shots minimum — event coverage, product close-ups, speaker portraits',
@@ -220,6 +228,7 @@ const defaultActiveProjects: ProjectData[] = [
     id: 'proj-existing-1',
     icon: '📸', name: 'Edita Re-Branding',
     clientName: 'Randa Hatem', clientCompany: 'Edita Group',
+    clientEmail: 'randa.hatem@editagroup.com', clientPhone: '+20 100 123 4567',
     projectType: 'Full Day Campaign Shoot', budget: '3,500 EGP',
     deliverables: '40 edited photos', date: 'Mar 5', deadline: 'Mar 20',
     moodAesthetic: '', usageRights: '',
@@ -268,6 +277,7 @@ const defaultActiveProjects: ProjectData[] = [
     id: 'proj-existing-2',
     icon: '🎥', name: 'CIB Campaign Assets',
     clientName: 'Ahmed Karim', clientCompany: 'CIB',
+    clientEmail: 'ahmed.karim@cib.com.eg', clientPhone: '+20 102 555 7890',
     projectType: 'Campaign Video', budget: '5,200 EGP',
     deliverables: 'Campaign video assets', date: 'Mar 10', deadline: 'Mar 25',
     moodAesthetic: '', usageRights: '',
@@ -296,6 +306,7 @@ const defaultActiveProjects: ProjectData[] = [
     id: 'proj-existing-3',
     icon: '📸', name: 'Vodafone Brand Refresh',
     clientName: 'Tarek Saad', clientCompany: 'Vodafone',
+    clientEmail: 'tarek.saad@vodafone.eg', clientPhone: '+20 101 987 6543',
     projectType: 'Brand Photography', budget: '4,800 EGP',
     deliverables: 'Brand refresh photos', date: 'Mar 20', deadline: 'Apr 5',
     moodAesthetic: '', usageRights: '',
@@ -426,6 +437,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       name: brief.name,
       clientName: brief.clientName,
       clientCompany: brief.clientCompany,
+      clientEmail: brief.clientEmail,
+      clientPhone: brief.clientPhone,
       projectType: brief.projectType,
       budget: brief.budget,
       deliverables: brief.deliverables,
