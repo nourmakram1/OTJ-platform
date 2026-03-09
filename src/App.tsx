@@ -8,6 +8,7 @@ import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import BookingFlow from "./pages/BookingFlow";
 import ProjectProfile from "./pages/ProjectProfile";
+import BriefProfile from "./pages/BriefProfile";
 import CreativeProfile from "./pages/CreativeProfile";
 import NotFound from "./pages/NotFound";
 
