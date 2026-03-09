@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { showToast } from './Toast';
+import { useProjects } from '../context/ProjectContext';
 
 // Quick Brief Popup
 interface QuickBriefPopupProps {
