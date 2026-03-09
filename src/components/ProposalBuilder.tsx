@@ -120,7 +120,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
   return (
     <div className="flex flex-col md:grid md:grid-cols-[1fr_340px] gap-6">
       {/* Main proposal form */}
-      <div className="flex flex-col gap-6 order-1">
+      <div className="flex flex-col gap-6 order-2 md:order-1">
         {/* Header banner */}
         <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[14px] p-3 md:p-4">
           <div className="text-[14px] font-extrabold text-otj-yellow mb-1">📝 Write Your Proposal</div>
