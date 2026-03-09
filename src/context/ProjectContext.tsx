@@ -210,6 +210,7 @@ const defaultBriefs: BriefData[] = [
     time: '3m ago',
     moodAesthetic: 'Clean, modern, high-contrast product photography with lifestyle elements',
     usageRights: 'Social media + print ads · 12 months',
+    myRole: 'as-creative',
   },
   {
     id: 'brief-2',
@@ -227,6 +228,25 @@ const defaultBriefs: BriefData[] = [
     time: '1h ago',
     moodAesthetic: 'Corporate but energetic, brand-aligned colors, candid + posed mix',
     usageRights: 'All platforms · Unlimited',
+    myRole: 'as-creative',
+  },
+  {
+    id: 'brief-3',
+    icon: '🎨',
+    name: 'Brand Identity Design',
+    clientName: 'Omar El-Sherif',
+    clientCompany: 'Freelance Designer',
+    clientEmail: 'omar.elsherif@gmail.com',
+    clientPhone: '+20 109 876 5432',
+    projectType: 'Logo & Brand Guidelines',
+    budget: '4,000 EGP',
+    deliverables: 'Logo, brand guidelines, social media templates',
+    date: 'Mar 28',
+    tags: ['Branding', '4,000 EGP', 'Mar 28'],
+    time: '25m ago',
+    moodAesthetic: 'Minimalist, contemporary, bold typography',
+    usageRights: 'Full ownership transfer',
+    myRole: 'as-client',
   },
 ];
 
