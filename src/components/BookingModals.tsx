@@ -131,37 +131,37 @@ export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClo
         {step === 2 && (
           <>
             {/* Step 2: Survey Questions */}
-            <div className="px-[22px] py-4 pb-5 flex flex-col gap-3">
-              <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground pb-2.5 border-b border-border flex items-center gap-2">
-                📋 Brief Questions <span className="text-[11px] font-medium text-otj-text">— answer these for the creative</span>
+            <div className="px-4 md:px-[22px] py-3 md:py-4 pb-4 md:pb-5 flex flex-col gap-2.5 md:gap-3">
+              <div className="text-[12px] md:text-[13px] font-bold tracking-[-0.02em] text-foreground pb-2 md:pb-2.5 border-b border-border flex items-center gap-2 flex-wrap">
+                📋 Brief Questions <span className="text-[10px] md:text-[11px] font-medium text-otj-text">— answer for creative</span>
               </div>
               {surveyQuestions.map((q, i) => (
                 <div key={i}>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <div className="w-[22px] h-[22px] rounded-md bg-otj-off border border-border flex items-center justify-center text-[10px] font-bold text-otj-muted shrink-0">{i + 1}</div>
-                    <div className="text-[12.5px] font-semibold text-foreground">{q}</div>
+                  <div className="flex items-start gap-2 mb-1.5">
+                    <div className="w-5 h-5 md:w-[22px] md:h-[22px] rounded-md bg-otj-off border border-border flex items-center justify-center text-[9px] md:text-[10px] font-bold text-otj-muted shrink-0 mt-0.5">{i + 1}</div>
+                    <div className="text-[11px] md:text-[12.5px] font-semibold text-foreground leading-snug">{q}</div>
                   </div>
                   <textarea
                     rows={2}
                     value={surveyAnswers[i]}
                     onChange={e => { const next = [...surveyAnswers]; next[i] = e.target.value; setSurveyAnswers(next); }}
                     placeholder="Type your answer…"
-                    className={`${inputClass} resize-none leading-relaxed`}
+                    className={`${inputClass} resize-none leading-relaxed text-[12px] md:text-[13.5px]`}
                   />
                 </div>
               ))}
             </div>
 
-            <div className="px-[22px] pb-5 flex flex-col gap-2">
+            <div className="px-4 md:px-[22px] pb-4 md:pb-5 flex flex-col gap-2">
               <div className="flex gap-2">
-                <button onClick={() => setStep(1)} className="flex-1 py-3 rounded-full border-[1.5px] border-border bg-card text-otj-text text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">
+                <button onClick={() => setStep(1)} className="flex-1 py-2.5 md:py-3 rounded-full border-[1.5px] border-border bg-card text-otj-text text-[12px] md:text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">
                   ← Back
                 </button>
-                <button onClick={() => { handleClose(); showToast('✓ Brief sent! Creative has 2hrs to confirm'); }} className="flex-[2] py-3 rounded-full border-none bg-foreground text-card text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-2 hover:opacity-90 group">
+                <button onClick={() => { handleClose(); showToast('✓ Brief sent! Creative has 2hrs to confirm'); }} className="flex-[2] py-2.5 md:py-3 rounded-full border-none bg-foreground text-card text-[12px] md:text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-1.5 md:gap-2 hover:opacity-90 group">
                   Send Brief <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
                 </button>
               </div>
-              <div className="text-[11px] text-otj-muted text-center leading-relaxed">🔒 50% deposit held in escrow on acceptance · Creative has 2hrs to confirm</div>
+              <div className="text-[10px] md:text-[11px] text-otj-muted text-center leading-relaxed">🔒 50% deposit in escrow · Creative has 2hrs to confirm</div>
             </div>
           </>
         )}
