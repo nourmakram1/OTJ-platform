@@ -112,6 +112,36 @@ export interface NotificationData {
   projectId?: string;
 }
 
+export interface ClientReviewData {
+  id: string;
+  creativeAvatar: string;
+  creativeName: string;
+  rating: number;
+  comment: string;
+  projectName: string;
+  createdAt: string;
+}
+
+export interface ClientData {
+  id: string;
+  type: 'individual' | 'company';
+  name: string;
+  avatar: string;
+  company?: string;
+  industry: string;
+  location: string;
+  bio: string;
+  website?: string;
+  teamSize?: string;
+  joinedDate: string;
+  projectsCompleted: number;
+  totalSpent: string;
+  avgResponseTime: string;
+  paymentReliability: number; // 0-100
+  verified: boolean;
+  reviews: ClientReviewData[];
+}
+
 interface ProjectContextType {
   pendingBriefs: BriefData[];
   activeProjects: ProjectData[];
@@ -134,6 +164,9 @@ interface ProjectContextType {
   markAllRead: () => void;
   unreadCount: number;
   submitCounterOffer: (briefId: string, budget: string, clientName: string, briefName: string) => void;
+  clients: ClientData[];
+  getClient: (id: string) => ClientData | undefined;
+  addClientReview: (clientId: string, review: Omit<ClientReviewData, 'id' | 'createdAt'>) => void;
 }
 
 const defaultBriefs: BriefData[] = [
