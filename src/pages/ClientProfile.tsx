@@ -182,10 +182,9 @@ const ClientProfile = () => {
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 {[
                   { label: 'Projects', value: String(client.projectsCompleted), icon: '📋' },
-                  { label: 'Total Spent', value: client.totalSpent, icon: '💰' },
                   { label: 'Avg Response', value: client.avgResponseTime, icon: '⏱️' },
                   { label: 'Rating', value: avgRating, icon: '⭐' },
                 ].map((stat) => (
@@ -195,6 +194,30 @@ const ClientProfile = () => {
                     <div className="text-[10px] text-muted-foreground font-semibold uppercase tracking-[0.08em]">{stat.label}</div>
                   </div>
                 ))}
+              </div>
+
+              {/* Trust Score */}
+              <div className="bg-card border border-border rounded-[14px] p-4">
+                <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-4">🛡️ Trust Score</div>
+                <div className="flex items-center gap-4">
+                  <div className="relative w-20 h-20">
+                    <svg className="w-20 h-20 -rotate-90" viewBox="0 0 36 36">
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="hsl(var(--border))" strokeWidth="3" />
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="hsl(var(--otj-green))" strokeWidth="3" strokeDasharray={`${client.paymentReliability}, 100`} strokeLinecap="round" />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-[16px] font-extrabold text-foreground">{client.paymentReliability}%</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[14px] font-extrabold text-foreground mb-0.5">
+                      {client.paymentReliability >= 90 ? 'Excellent' : client.paymentReliability >= 70 ? 'Good' : 'Fair'}
+                    </div>
+                    <div className="text-[11px] text-muted-foreground leading-relaxed">
+                      Based on payment history, response time, and project completion rate.
+                    </div>
+                  </div>
+                </div>
               </div>
             </>
           )}
