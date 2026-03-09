@@ -48,7 +48,7 @@ const nicheMap: Record<string, string[]> = {
 
 const inputClass = "px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-background text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card placeholder:text-muted-foreground";
 
-type Section = 'hub' | 'profile' | 'portfolio' | 'reviews' | 'notifications' | 'account' | 'privacy' | 'help';
+type Section = 'hub' | 'profile' | 'portfolio' | 'reviews' | 'notifications' | 'account' | 'privacy' | 'help' | 'subscription';
 
 const CreativeSettings = () => {
   const navigate = useNavigate();
