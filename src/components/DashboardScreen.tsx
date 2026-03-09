@@ -148,16 +148,18 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
           );
         })()}
 
-        {projectTab === 'active' && (
+        {projectTab === 'active' && (() => {
+          const filtered = activeProjects.filter(p => roleFilter === 'all' ? true : roleFilter === 'hired' ? p.myRole !== 'as-client' : p.myRole === 'as-client');
+          return (
           <div className="flex flex-col gap-2 animate-fade-up">
-            {activeProjects.length === 0 && (
+            {filtered.length === 0 && (
               <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
                 <div className="text-[48px]">🚀</div>
-                <div className="text-[14px] font-extrabold text-foreground">No active projects yet</div>
-                <div className="text-[12px] text-muted-foreground max-w-[260px]">Accept a brief and watch the magic begin — your next project is just around the corner!</div>
+                <div className="text-[14px] font-extrabold text-foreground">No {roleFilter === 'booked' ? 'bookings' : 'projects'} yet</div>
+                <div className="text-[12px] text-muted-foreground max-w-[260px]">{roleFilter === 'booked' ? 'Book a creative and your projects will show here.' : 'Accept a brief and watch the magic begin!'}</div>
               </div>
             )}
-            {activeProjects.map((proj) => {
+            {filtered.map((proj) => {
               const phaseDone = proj.phases.filter(p => p.status === 'complete').length;
               const phaseTotal = proj.phases.length;
               const pct = Math.round((phaseDone / phaseTotal) * 100);
