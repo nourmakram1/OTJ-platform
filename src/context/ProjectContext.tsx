@@ -589,8 +589,24 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }, 4000);
   }, []);
 
+  const getClient = useCallback((id: string): ClientData | undefined => {
+    return clients.find(c => c.id === id);
+  }, [clients]);
+
+  const addClientReview = useCallback((clientId: string, review: Omit<ClientReviewData, 'id' | 'createdAt'>) => {
+    const newReview: ClientReviewData = {
+      ...review,
+      id: `cr-${Date.now()}`,
+      createdAt: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+    };
+    setClients(prev => prev.map(c => {
+      if (c.id !== clientId) return c;
+      return { ...c, reviews: [...c.reviews, newReview] };
+    }));
+  }, []);
+
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer }}>
+    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, addClientReview }}>
       {children}
     </ProjectContext.Provider>
   );
