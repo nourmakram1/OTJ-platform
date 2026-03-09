@@ -126,8 +126,19 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
   const [activeFilter, setActiveFilter] = useState('All');
   const [saved, setSaved] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState<Filters>(defaultFilters);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilterPopup, setShowFilterPopup] = useState(false);
   const [sortBy, setSortBy] = useState<'' | 'rating' | 'experience' | 'price-low' | 'price-high'>('');
+  const filterPopupRef = useRef<HTMLDivElement>(null);
+
+  // Close popup on outside click
+  React.useEffect(() => {
+    if (!showFilterPopup) return;
+    const handler = (e: MouseEvent) => {
+      if (filterPopupRef.current && !filterPopupRef.current.contains(e.target as Node)) setShowFilterPopup(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showFilterPopup]);
 
   const toggleSave = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -139,13 +150,10 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
 
   const handleFilterChange = (f: string) => {
     setActiveFilter(f);
-    // Reset niche filter when category changes
-    setFilters(prev => ({ ...prev, niches: new Set() }));
   };
 
-  const activeFilterCount = (filters.niches.size > 0 ? 1 : 0) +
-    (filters.availability ? 1 : 0) +
-    (filters.minRating > 0 ? 1 : 0) +
+  const activeFilterCount = (filters.profession ? 1 : 0) +
+    (filters.category ? 1 : 0) +
     (filters.minExperience > 0 ? 1 : 0);
 
   const clearFilters = () => { setFilters(defaultFilters); setSortBy(''); };
