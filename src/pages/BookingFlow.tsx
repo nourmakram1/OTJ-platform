@@ -63,7 +63,7 @@ const BookingFlow = () => {
         {activeTab === 'messages' && <MessagesScreen onOpenCounter={() => setShowCounter(true)} />}
         {activeTab === 'dashboard' && (
           isClient ? (
-            <ClientDashboardScreen onOpenBrief={openBrief} />
+            <ClientDashboardScreen />
           ) : (
             <DashboardScreen
               onOpenBrief={() => { setBriefCreative(null); setShowBrief(true); }}
