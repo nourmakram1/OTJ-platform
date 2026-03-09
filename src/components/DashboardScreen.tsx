@@ -316,7 +316,7 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
                   <div className={`w-1.5 md:w-2 self-stretch rounded-full shrink-0 ${cfg.dot}`} />
                   <div className="flex-1 min-w-0">
                     <div className="text-[12px] md:text-[13px] font-extrabold tracking-[-0.02em] truncate">{item.label}</div>
-                    <div className="text-[10px] md:text-[11px] text-otj-text truncate">{item.sublabel} · {format(item.deadline, 'EEE, MMM d')}</div>
+                    <div className="text-[10px] md:text-[11px] text-otj-text truncate">{item.sublabel} · {format(item.deadline, 'EEE, MMM d')} · {item.hour <= 12 ? `${item.hour}:00 AM` : `${item.hour - 12}:00 PM`}</div>
                   </div>
                   <span className={`text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-[1px] md:py-[2px] rounded ${cfg.bg} ${cfg.text} shrink-0`}>{cfg.label}</span>
                 </div>
