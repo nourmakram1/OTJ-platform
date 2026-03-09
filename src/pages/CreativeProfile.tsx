@@ -36,28 +36,20 @@ const CreativeProfile = () => {
             </div>
             <div className="flex gap-2 flex-wrap">
               <button onClick={() => showToast('Opening Quick Brief…')} className="text-[13px] font-bold px-6 py-2.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">Book Now →</button>
-              <button onClick={() => navigate('/messages')} className="text-[13px] font-bold px-5 py-2.5 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">💬 Message</button>
+              <button onClick={() => window.open('https://nourmakram.com', '_blank')} className="text-[13px] font-bold px-5 py-2.5 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">🔗 Portfolio</button>
               <button onClick={() => showToast('♥ Saved to Collections')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center text-sm transition-all duration-150 hover:border-foreground">♡</button>
             </div>
           </div>
         </div>
 
         {/* Skills & info */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
           <div className="bg-card border border-border rounded-[14px] p-3.5">
             <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Skills</div>
             <div className="flex flex-wrap gap-1.5">
               {['Photography', 'Product', 'Fashion', 'E-Commerce', 'Lifestyle', 'Branding'].map(s => (
                 <span key={s} className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-otj-off border border-border text-otj-text">{s}</span>
               ))}
-            </div>
-          </div>
-          <div className="bg-card border border-border rounded-[14px] p-3.5">
-            <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Rates</div>
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-[12px]"><span className="text-otj-text">Half Day</span><span className="font-bold">2,000 EGP</span></div>
-              <div className="flex justify-between text-[12px]"><span className="text-otj-text">Full Day</span><span className="font-bold">3,500 EGP</span></div>
-              <div className="flex justify-between text-[12px]"><span className="text-otj-text">Multi-Day</span><span className="font-bold">6,500 EGP</span></div>
             </div>
           </div>
           <div className="bg-card border border-border rounded-[14px] p-3.5">
