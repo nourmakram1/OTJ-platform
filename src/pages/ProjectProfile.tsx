@@ -197,7 +197,7 @@ const ProjectProfile = () => {
             )}
           </div>
           {!isProposal && (
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mt-5 pt-4 border-t border-border">
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mt-5 pt-4 border-t border-border">
               {[
                 { label: '% Complete', val: `${pctComplete}%` },
                 { label: 'Days Left', val: String(daysLeft) },
