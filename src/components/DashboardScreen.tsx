@@ -79,6 +79,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                 }`}>{tab.label}</button>
               ))}
             </div>
+            <div className="flex gap-1 ml-0 md:ml-2 overflow-x-auto hide-scrollbar">
+              {[
+                { key: 'all' as const, label: 'All' },
+                { key: 'hired' as const, label: 'Hired' },
+                { key: 'booked' as const, label: 'My Bookings' },
+              ].map((f) => (
+                <button key={f.key} onClick={() => setRoleFilter(f.key)} className={`text-[11px] font-semibold px-2.5 py-[4px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 ${
+                  roleFilter === f.key ? 'bg-muted border-border text-foreground' : 'bg-transparent border-transparent text-otj-muted hover:text-foreground'
+                }`}>{f.label}</button>
+              ))}
+            </div>
           </div>
           
         </div>
