@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { Toast, showToast } from '../components/Toast';
 import { useCreativeProfile } from '../context/CreativeProfileContext';
+import { ProfileCompletenessCard } from '../components/ProfileCompleteness';
 import { Camera, LayoutGrid, Star, Bell, Settings, Shield, HelpCircle, LogOut, Trash2, ChevronRight, Crown, Check, X } from 'lucide-react';
 
 const professions = [
@@ -134,6 +135,11 @@ const CreativeSettings = () => {
         <div className="min-h-screen pt-[52px] bg-background">
           <div className="max-w-[600px] mx-auto px-4 py-8">
             <div className="text-lg font-extrabold tracking-[-0.03em] text-foreground mb-6">Settings</div>
+
+            {/* Profile Completeness */}
+            <div className="mb-4">
+              <ProfileCompletenessCard variant="full" />
+            </div>
 
             {/* Group 1 */}
             <div className="bg-card rounded-2xl border border-border overflow-hidden mb-4">
