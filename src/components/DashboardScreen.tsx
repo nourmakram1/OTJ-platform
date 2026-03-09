@@ -81,7 +81,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
         {projectTab === 'pending' && (
           <div className="flex flex-col gap-2 animate-fade-up">
             {pendingBriefs.length === 0 && (
-              <div className="bg-card border border-border rounded-[14px] p-6 text-center text-otj-muted text-[13px]">No pending briefs — you're all caught up! 🎉</div>
+              <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
+                <div className="text-[48px]">🎉</div>
+                <div className="text-[14px] font-extrabold text-foreground">No pending briefs!</div>
+                <div className="text-[12px] text-muted-foreground max-w-[260px]">You're all caught up — sit back and relax until the next opportunity rolls in.</div>
+              </div>
             )}
             {pendingBriefs.map((brief) => (
               <div key={brief.id} className="bg-card border border-border rounded-[14px] p-3.5 px-4 transition-all duration-150 flex flex-col md:flex-row md:items-center gap-3 hover:shadow-md hover:border-otj-muted">
