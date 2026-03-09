@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProjectProvider } from "./context/ProjectContext";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
+import ClientOnboarding from "./pages/ClientOnboarding";
 import BookingFlow from "./pages/BookingFlow";
 import ProjectProfile from "./pages/ProjectProfile";
 import BriefProfile from "./pages/BriefProfile";
