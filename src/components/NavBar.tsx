@@ -12,6 +12,20 @@ interface NavBarProps {
   onSearchChange?: (query: string) => void;
 }
 
+const NotifBell = ({ onClick }: { onClick: () => void }) => {
+  const { unreadCount } = useProjects();
+  return (
+    <div onClick={onClick} className="relative cursor-pointer p-2 rounded-lg transition-all duration-150 hover:bg-muted">
+      <Bell className="w-[18px] h-[18px] text-foreground" />
+      {unreadCount > 0 && (
+        <div className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full bg-destructive flex items-center justify-center px-1">
+          <span className="text-[9px] font-bold text-destructive-foreground leading-none">{unreadCount}</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, searchQuery = '', onSearchChange }) => {
   const navigate = useNavigate();
   const location = useLocation();
