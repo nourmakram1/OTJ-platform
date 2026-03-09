@@ -205,7 +205,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
               );
             })}
           </div>
-        )}
+          );
+        })()}
 
         {projectTab === 'complete' && (
           <div className="flex flex-col gap-2 animate-fade-up">
