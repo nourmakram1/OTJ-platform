@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { Toast, showToast } from '../components/Toast';
-import { useProjects, ClientData, ClientReviewData } from '../context/ProjectContext';
+import { useProjects } from '../context/ProjectContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import { Star, Shield, Clock, CreditCard, ExternalLink, MapPin, Building2, Users, Calendar } from 'lucide-react';
+import { Star, Shield, ExternalLink, MapPin, Building2, Users, Calendar } from 'lucide-react';
 
-const tabs = ['About', 'Projects', 'Reviews', 'Trust & Payment'];
+const tabs = ['About', 'Reviews'];
 
 const StarRating = ({ rating, onRate, interactive = false }: { rating: number; onRate?: (r: number) => void; interactive?: boolean }) => (
   <div className="flex gap-0.5">
@@ -25,7 +25,7 @@ const StarRating = ({ rating, onRate, interactive = false }: { rating: number; o
 const ClientProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { getClient, addClientReview, activeProjects, completedProjects } = useProjects();
+  const { getClient, addClientReview } = useProjects();
   const [activeTab, setActiveTab] = useState(0);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewRating, setReviewRating] = useState(0);
@@ -67,8 +67,6 @@ const ClientProfile = () => {
     setReviewComment('');
   };
 
-  // Find projects associated with this client
-  const clientProjects = activeProjects.filter(p => p.clientName === client.name);
 
   return (
     <>
@@ -182,10 +180,9 @@ const ClientProfile = () => {
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 {[
                   { label: 'Projects', value: String(client.projectsCompleted), icon: '📋' },
-                  { label: 'Total Spent', value: client.totalSpent, icon: '💰' },
                   { label: 'Avg Response', value: client.avgResponseTime, icon: '⏱️' },
                   { label: 'Rating', value: avgRating, icon: '⭐' },
                 ].map((stat) => (
@@ -196,60 +193,35 @@ const ClientProfile = () => {
                   </div>
                 ))}
               </div>
-            </>
-          )}
 
-          {/* Projects Tab */}
-          {activeTab === 1 && (
-            <>
-              {clientProjects.length > 0 ? (
-                <div className="flex flex-col gap-2">
-                  {clientProjects.map(proj => (
-                    <div
-                      key={proj.id}
-                      onClick={() => navigate(`/project/${proj.id}`)}
-                      className="bg-card border border-border rounded-[14px] p-3.5 px-4 cursor-pointer transition-all duration-150 hover:shadow-md hover:border-muted-foreground flex items-center gap-3"
-                    >
-                      <div className="w-10 h-10 rounded-[10px] bg-accent flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[13px] font-extrabold tracking-[-0.02em] truncate">{proj.name}</div>
-                        <div className="text-[11px] text-muted-foreground">{proj.status} · {proj.budget}</div>
-                      </div>
-                      <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
-                        proj.status === 'active' ? 'bg-[hsl(var(--otj-blue-bg))] text-[hsl(var(--otj-blue))]' :
-                        proj.status === 'proposal' ? 'bg-[hsl(var(--otj-yellow-bg))] text-[hsl(var(--otj-yellow))]' :
-                        'bg-muted text-muted-foreground'
-                      }`}>{proj.status}</span>
+              {/* Trust Score */}
+              <div className="bg-card border border-border rounded-[14px] p-4">
+                <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-4">🛡️ Trust Score</div>
+                <div className="flex items-center gap-4">
+                  <div className="relative w-20 h-20">
+                    <svg className="w-20 h-20 -rotate-90" viewBox="0 0 36 36">
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="hsl(var(--border))" strokeWidth="3" />
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="hsl(var(--otj-green))" strokeWidth="3" strokeDasharray={`${client.paymentReliability}, 100`} strokeLinecap="round" />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-[16px] font-extrabold text-foreground">{client.paymentReliability}%</span>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-card border border-border rounded-[14px] p-8 text-center">
-                  <div className="text-[32px] mb-2">📁</div>
-                  <div className="text-[13px] font-bold text-foreground mb-1">No projects yet</div>
-                  <div className="text-[11px] text-muted-foreground">Projects with this client will appear here.</div>
-                </div>
-              )}
-
-              {/* Past completed projects */}
-              <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mt-2">Completed Projects</div>
-              <div className="flex flex-col gap-2">
-                {completedProjects.slice(0, 3).map((proj, i) => (
-                  <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-[10px] bg-muted flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[13px] font-extrabold tracking-[-0.02em] truncate">{proj.name}</div>
-                      <div className="text-[11px] text-muted-foreground">{proj.client}</div>
-                    </div>
-                    <div className="text-[12px] font-extrabold text-[hsl(var(--otj-green))]">{proj.earned}</div>
                   </div>
-                ))}
+                  <div>
+                    <div className="text-[14px] font-extrabold text-foreground mb-0.5">
+                      {client.paymentReliability >= 90 ? 'Excellent' : client.paymentReliability >= 70 ? 'Good' : 'Fair'}
+                    </div>
+                    <div className="text-[11px] text-muted-foreground leading-relaxed">
+                      Based on payment history, response time, and project completion rate.
+                    </div>
+                  </div>
+                </div>
               </div>
             </>
           )}
 
           {/* Reviews Tab */}
-          {activeTab === 2 && (
+          {activeTab === 1 && (
             <>
               <div className="flex items-center justify-between">
                 <div>
@@ -287,82 +259,6 @@ const ClientProfile = () => {
             </>
           )}
 
-          {/* Trust & Payment Tab */}
-          {activeTab === 3 && (
-            <>
-              {/* Trust Score */}
-              <div className="bg-card border border-border rounded-[14px] p-4">
-                <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-4">🛡️ Trust Score</div>
-                <div className="flex items-center gap-4">
-                  <div className="relative w-20 h-20">
-                    <svg className="w-20 h-20 -rotate-90" viewBox="0 0 36 36">
-                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="hsl(var(--border))" strokeWidth="3" />
-                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="hsl(var(--otj-green))" strokeWidth="3" strokeDasharray={`${client.paymentReliability}, 100`} strokeLinecap="round" />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-[16px] font-extrabold text-foreground">{client.paymentReliability}%</span>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-[14px] font-extrabold text-foreground mb-0.5">
-                      {client.paymentReliability >= 90 ? 'Excellent' : client.paymentReliability >= 70 ? 'Good' : 'Fair'}
-                    </div>
-                    <div className="text-[11px] text-muted-foreground leading-relaxed">
-                      Based on payment history, response time, and project completion rate.
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Payment Stats */}
-              <div className="bg-card border border-border rounded-[14px] p-4">
-                <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-3">💳 Payment Details</div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-[10px]">
-                    <CreditCard className="w-5 h-5 text-[hsl(var(--otj-green))]" />
-                    <div>
-                      <div className="text-[13px] font-extrabold text-foreground">{client.totalSpent}</div>
-                      <div className="text-[10px] text-muted-foreground">Total Spent</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-[10px]">
-                    <Clock className="w-5 h-5 text-[hsl(var(--otj-blue))]" />
-                    <div>
-                      <div className="text-[13px] font-extrabold text-foreground">{client.avgResponseTime}</div>
-                      <div className="text-[10px] text-muted-foreground">Avg Response</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-[10px]">
-                    <Shield className="w-5 h-5 text-[hsl(var(--otj-yellow))]" />
-                    <div>
-                      <div className="text-[13px] font-extrabold text-foreground">{client.projectsCompleted}</div>
-                      <div className="text-[10px] text-muted-foreground">Projects Completed</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Payment Behavior */}
-              <div className="bg-card border border-border rounded-[14px] p-4">
-                <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-3">📊 Payment Behavior</div>
-                <div className="flex flex-col gap-2">
-                  {[
-                    { label: 'On-time Payments', value: `${client.paymentReliability}%`, color: 'bg-[hsl(var(--otj-green))]' },
-                    { label: 'Escrow Deposits', value: 'Always', color: 'bg-[hsl(var(--otj-blue))]' },
-                    { label: 'Dispute Rate', value: '0%', color: 'bg-[hsl(var(--otj-green))]' },
-                  ].map(item => (
-                    <div key={item.label} className="flex items-center justify-between py-2 border-b border-border last:border-b-0">
-                      <div className="text-[12px] text-muted-foreground">{item.label}</div>
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${item.color}`} />
-                        <div className="text-[12px] font-bold text-foreground">{item.value}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
         </div>
       </div>
 

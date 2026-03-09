@@ -135,7 +135,7 @@ export interface ClientData {
   teamSize?: string;
   joinedDate: string;
   projectsCompleted: number;
-  totalSpent: string;
+  
   avgResponseTime: string;
   paymentReliability: number; // 0-100
   verified: boolean;
@@ -343,7 +343,7 @@ const defaultClients: ClientData[] = [
     teamSize: '50+',
     joinedDate: 'Jan 2024',
     projectsCompleted: 12,
-    totalSpent: '42,000 EGP',
+    
     avgResponseTime: '< 2 hours',
     paymentReliability: 96,
     verified: true,
@@ -362,7 +362,7 @@ const defaultClients: ClientData[] = [
     bio: 'Founder of a fast-growing fintech startup. Looking for creatives to help build our brand identity and marketing campaigns. Values speed and quality.',
     joinedDate: 'Mar 2024',
     projectsCompleted: 5,
-    totalSpent: '18,500 EGP',
+    
     avgResponseTime: '< 4 hours',
     paymentReliability: 88,
     verified: true,
@@ -383,7 +383,7 @@ const defaultClients: ClientData[] = [
     teamSize: '10-25',
     joinedDate: 'Jun 2024',
     projectsCompleted: 3,
-    totalSpent: '15,000 EGP',
+    
     avgResponseTime: '< 1 hour',
     paymentReliability: 100,
     verified: true,
