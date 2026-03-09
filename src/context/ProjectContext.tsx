@@ -396,6 +396,7 @@ const defaultClients: ClientData[] = [
 ];
 
 export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [userRole, setUserRole] = useState<UserRole>('creative');
   const [pendingBriefs, setPendingBriefs] = useState<BriefData[]>(defaultBriefs);
   const [activeProjects, setActiveProjects] = useState<ProjectData[]>(defaultActiveProjects);
   const [completedProjects] = useState(defaultCompleted);
