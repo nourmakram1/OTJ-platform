@@ -216,12 +216,19 @@ const ProjectProfile = () => {
       </div>
 
       {isProposal ? (
-        /* Proposal Builder */
+        /* Proposal: Client sees review, Creative sees builder */
         <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 pb-20">
-          <ProposalBuilder
-            project={proj}
-            onSubmit={handleSubmitProposal}
-          />
+          {isClient && proj.status === 'pending-deposit' ? (
+            <ClientProposalReview project={proj} />
+          ) : isClient ? (
+            <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-6 text-center">
+              <div className="text-2xl mb-2">📝</div>
+              <div className="text-[14px] font-bold text-otj-blue mb-1">Waiting for Creative's Proposal</div>
+              <div className="text-[12px] text-otj-text">The creative is preparing their proposal. You'll be notified when it's ready for review.</div>
+            </div>
+          ) : (
+            <ProposalBuilder project={proj} onSubmit={handleSubmitProposal} />
+          )}
         </div>
       ) : (
         <>
