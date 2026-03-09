@@ -109,8 +109,8 @@ export const ClientProposalReview: React.FC<{ project: ProjectData }> = ({ proje
 };
 
 // ─── Phase Approval ────────────────────────────────────────
-export const ClientPhaseApproval: React.FC<{ project: ProjectData }> = ({ project }) => {
-  const { approvePhase, releasePayment } = useProjects();
+export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPayments?: () => void }> = ({ project, onSwitchToPayments }) => {
+  const { approvePhase } = useProjects();
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [approvedPhaseNum, setApprovedPhaseNum] = useState<number | null>(null);
   const [expandedPhase, setExpandedPhase] = useState(() => {
@@ -121,23 +121,21 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData }> = ({ projec
   const numericPrice = parseInt(project.budget.replace(/[^0-9]/g, '')) || 0;
 
   // Find the next unpaid milestone
-  const nextMilestoneIndex = project.paymentMilestones.findIndex(m => m.status !== 'paid');
+  const nextMilestoneIndex = project.paymentMilestones.findIndex(m => m.status !== 'paid' && m.status !== 'proof-submitted');
 
   const handleApprovePhase = (phaseNum: number) => {
     approvePhase(project.id, phaseNum);
     setApprovedPhaseNum(phaseNum);
-    // Auto-suggest payment release
+    // Auto-suggest payment proof upload
     if (nextMilestoneIndex >= 0) {
       setTimeout(() => setPaymentModalOpen(true), 600);
     }
   };
 
-  const handleReleasePayment = () => {
-    if (nextMilestoneIndex >= 0) {
-      releasePayment(project.id, nextMilestoneIndex);
-    }
+  const handleGoToPayments = () => {
     setPaymentModalOpen(false);
     setApprovedPhaseNum(null);
+    onSwitchToPayments?.();
   };
 
   return (
