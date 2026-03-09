@@ -235,7 +235,7 @@ const defaultBriefs: BriefData[] = [
     icon: '🎨',
     name: 'Brand Identity Design',
     clientName: 'Omar El-Sherif',
-    clientCompany: 'Freelance Designer',
+    clientCompany: 'Photographer',
     clientEmail: 'omar.elsherif@gmail.com',
     clientPhone: '+20 109 876 5432',
     projectType: 'Logo & Brand Guidelines',
