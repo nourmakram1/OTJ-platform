@@ -43,21 +43,13 @@ const CreativeProfile = () => {
         </div>
 
         {/* Skills & info */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
           <div className="bg-card border border-border rounded-[14px] p-3.5">
             <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Skills</div>
             <div className="flex flex-wrap gap-1.5">
               {['Photography', 'Product', 'Fashion', 'E-Commerce', 'Lifestyle', 'Branding'].map(s => (
                 <span key={s} className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-otj-off border border-border text-otj-text">{s}</span>
               ))}
-            </div>
-          </div>
-          <div className="bg-card border border-border rounded-[14px] p-3.5">
-            <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Rates</div>
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-[12px]"><span className="text-otj-text">Half Day</span><span className="font-bold">2,000 EGP</span></div>
-              <div className="flex justify-between text-[12px]"><span className="text-otj-text">Full Day</span><span className="font-bold">3,500 EGP</span></div>
-              <div className="flex justify-between text-[12px]"><span className="text-otj-text">Multi-Day</span><span className="font-bold">6,500 EGP</span></div>
             </div>
           </div>
           <div className="bg-card border border-border rounded-[14px] p-3.5">
