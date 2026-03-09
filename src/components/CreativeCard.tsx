@@ -81,7 +81,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
   return (
   <div
     onClick={() => onOpenBrief(c.id)}
-    className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 relative hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 min-w-[170px] md:min-w-[200px] snap-start"
+    className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 relative hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 w-full h-full flex flex-col snap-start"
   >
     <div className="relative">
       <ImageCarousel bg={c.bg} emoji={c.emoji} />
