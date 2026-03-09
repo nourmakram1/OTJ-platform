@@ -329,11 +329,74 @@ const defaultNotifications: NotificationData[] = [
   { id: 'notif-3', icon: '📅', bg: 'bg-[hsl(var(--otj-blue-bg))]', title: 'Booking confirmed · March 15', sub: 'Edita Group campaign — added to your calendar', time: 'Yesterday', unread: false, type: 'booking' },
 ];
 
+const defaultClients: ClientData[] = [
+  {
+    id: 'client-randa',
+    type: 'company',
+    name: 'Randa Hatem',
+    avatar: '👩‍💼',
+    company: 'Edita Group',
+    industry: 'FMCG / Food & Beverage',
+    location: 'Cairo, Egypt',
+    bio: 'Senior Marketing Manager at Edita Group, overseeing visual content for seasonal campaigns across multiple brands including Molto, Bake Rolz, and Tiger. Passionate about bold, high-quality creative work that connects with young audiences.',
+    website: 'edita.com.eg',
+    teamSize: '50+',
+    joinedDate: 'Jan 2024',
+    projectsCompleted: 12,
+    totalSpent: '42,000 EGP',
+    avgResponseTime: '< 2 hours',
+    paymentReliability: 96,
+    verified: true,
+    reviews: [
+      { id: 'cr-1', creativeAvatar: '🎥', creativeName: 'Omar Hassan', rating: 5, comment: 'Randa is an amazing client to work with. Clear briefs, fast payments, and gives great creative freedom. Highly recommend!', projectName: 'Ramadan Campaign 2025', createdAt: 'Feb 2025' },
+      { id: 'cr-2', creativeAvatar: '🎨', creativeName: 'Sara Ahmed', rating: 4, comment: 'Professional and responsive. Sometimes tight deadlines but always fair on budget. Would work with again.', projectName: 'Bake Rolz Rebrand', createdAt: 'Jan 2025' },
+    ],
+  },
+  {
+    id: 'client-ahmed',
+    type: 'individual',
+    name: 'Ahmed Karim',
+    avatar: '👨‍💼',
+    industry: 'Tech / Startups',
+    location: 'Cairo, Egypt',
+    bio: 'Founder of a fast-growing fintech startup. Looking for creatives to help build our brand identity and marketing campaigns. Values speed and quality.',
+    joinedDate: 'Mar 2024',
+    projectsCompleted: 5,
+    totalSpent: '18,500 EGP',
+    avgResponseTime: '< 4 hours',
+    paymentReliability: 88,
+    verified: true,
+    reviews: [
+      { id: 'cr-3', creativeAvatar: '📸', creativeName: 'Nour Makram', rating: 4, comment: 'Good communicator and pays on time. Briefs could be more detailed but overall a great experience.', projectName: 'Product Shoot', createdAt: 'Dec 2024' },
+    ],
+  },
+  {
+    id: 'client-sara',
+    type: 'company',
+    name: 'Sara M.',
+    avatar: '🎨',
+    company: 'Studio Noir',
+    industry: 'Fashion / Retail',
+    location: 'Alexandria, Egypt',
+    bio: 'Creative Director at Studio Noir, a luxury fashion brand. Looking for photographers and videographers for seasonal lookbooks and social content.',
+    website: 'studionoir.eg',
+    teamSize: '10-25',
+    joinedDate: 'Jun 2024',
+    projectsCompleted: 3,
+    totalSpent: '15,000 EGP',
+    avgResponseTime: '< 1 hour',
+    paymentReliability: 100,
+    verified: true,
+    reviews: [],
+  },
+];
+
 export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [pendingBriefs, setPendingBriefs] = useState<BriefData[]>(defaultBriefs);
   const [activeProjects, setActiveProjects] = useState<ProjectData[]>(defaultActiveProjects);
   const [completedProjects] = useState(defaultCompleted);
   const [notifications, setNotifications] = useState<NotificationData[]>(defaultNotifications);
+  const [clients, setClients] = useState<ClientData[]>(defaultClients);
 
   const acceptBrief = useCallback((briefId: string): string => {
     const brief = pendingBriefs.find(b => b.id === briefId);
