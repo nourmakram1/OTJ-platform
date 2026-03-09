@@ -251,8 +251,23 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
   const { submitPaymentProof } = useProjects();
   const numericPrice = parseInt(project.budget.replace(/[^0-9]/g, '')) || 0;
   const [confirmIdx, setConfirmIdx] = useState<number | null>(null);
-  const [localProofs, setLocalProofs] = useState<Record<number, { url: string; name: string }>>({});
+  const [autoPromptShown, setAutoPromptShown] = useState(false);
+  const [autoPromptOpen, setAutoPromptOpen] = useState(false);
   const fileRefs = useRef<Record<number, HTMLInputElement | null>>({});
+
+  // Find the first pending (unpaid, no proof) milestone
+  const pendingMilestoneIndex = project.paymentMilestones.findIndex(m => m.status !== 'paid' && m.status !== 'proof-submitted');
+
+  // Auto-prompt on mount if there's a pending milestone
+  useEffect(() => {
+    if (!autoPromptShown && pendingMilestoneIndex >= 0) {
+      const timer = setTimeout(() => {
+        setAutoPromptOpen(true);
+        setAutoPromptShown(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPromptShown, pendingMilestoneIndex]);
 
   const handleProofUpload = (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
