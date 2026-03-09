@@ -251,6 +251,7 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
   const { submitPaymentProof } = useProjects();
   const numericPrice = parseInt(project.budget.replace(/[^0-9]/g, '')) || 0;
   const [confirmIdx, setConfirmIdx] = useState<number | null>(null);
+  const [localProofs, setLocalProofs] = useState<Record<number, { url: string; name: string }>>({});
   const [autoPromptShown, setAutoPromptShown] = useState(false);
   const [autoPromptOpen, setAutoPromptOpen] = useState(false);
   const fileRefs = useRef<Record<number, HTMLInputElement | null>>({});
