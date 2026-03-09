@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { showToast } from './Toast';
+import { useProjects } from '../context/ProjectContext';
 
 // Quick Brief Popup
 interface QuickBriefPopupProps {
@@ -222,39 +223,43 @@ interface NotifPopupProps {
 }
 
 export const NotifPopup: React.FC<NotifPopupProps> = ({ visible, onClose, onAcceptBrief, onCounter, onSwitchToMessages }) => {
+  const { notifications, markAllRead, pendingBriefs } = useProjects();
   if (!visible) return null;
+
+  const briefNotif = pendingBriefs[0]; // Show first pending brief as featured
+
   return (
     <div className={`fixed top-14 md:top-16 right-2 md:right-5 left-2 md:left-auto z-[300] md:w-[340px] bg-card border border-border rounded-2xl md:rounded-[18px] shadow-[0_16px_48px_rgba(0,0,0,0.12)] transition-all duration-250 ${visible ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-2 opacity-0 pointer-events-none'}`}>
       <div className="p-3 md:p-3.5 px-3.5 md:px-4 border-b border-border flex items-center justify-between">
         <div className="text-[12px] md:text-[13px] font-extrabold tracking-[-0.02em]">Notifications</div>
-        <div onClick={onClose} className="text-[10px] md:text-xs text-otj-muted cursor-pointer px-1.5 md:px-2 py-0.5 rounded-md border border-border transition-all duration-150 hover:text-foreground hover:border-foreground">Mark read</div>
+        <div onClick={() => { markAllRead(); }} className="text-[10px] md:text-xs text-muted-foreground cursor-pointer px-1.5 md:px-2 py-0.5 rounded-md border border-border transition-all duration-150 hover:text-foreground hover:border-foreground">Mark read</div>
       </div>
-      {/* Brief request */}
-      <div className="p-3 md:p-3.5 px-3.5 md:px-4 bg-otj-yellow-bg border-[1.5px] border-otj-yellow-border rounded-xl mx-2 md:mx-2.5 my-2">
-        <div className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.08em] text-otj-yellow mb-1 md:mb-1.5">📋 New Brief · 3m ago</div>
-        <div className="text-[13px] md:text-sm font-extrabold tracking-[-0.03em] mb-1">Randa Hatem wants to book you</div>
-        <div className="text-[11px] md:text-xs text-otj-text leading-relaxed mb-2 md:mb-2.5">Campaign shoot for Edita Group · Full Day · 3,500 EGP</div>
-        <div className="flex gap-1 md:gap-1.5">
-          <button onClick={() => { onClose(); onAcceptBrief(); }} className="flex-1 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-bold cursor-pointer transition-all duration-150 bg-primary border-[1.5px] border-primary text-primary-foreground hover:bg-primary/90">Accept</button>
-          <button onClick={() => { onClose(); onCounter(); }} className="flex-1 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-bold cursor-pointer transition-all duration-150 border-[1.5px] border-otj-yellow text-otj-yellow bg-card">Counter</button>
-          <button onClick={onClose} className="flex-1 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-bold cursor-pointer transition-all duration-150 border-[1.5px] border-border bg-card hover:border-foreground">Decline</button>
+
+      {/* Featured brief request */}
+      {briefNotif && (
+        <div className="p-3 md:p-3.5 px-3.5 md:px-4 bg-[hsl(var(--otj-yellow-bg))] border-[1.5px] border-[hsl(var(--otj-yellow-border))] rounded-xl mx-2 md:mx-2.5 my-2">
+          <div className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.08em] text-[hsl(var(--otj-yellow))] mb-1 md:mb-1.5">📋 New Brief · {briefNotif.time}</div>
+          <div className="text-[13px] md:text-sm font-extrabold tracking-[-0.03em] mb-1">{briefNotif.clientName} wants to book you</div>
+          <div className="text-[11px] md:text-xs text-muted-foreground leading-relaxed mb-2 md:mb-2.5">{briefNotif.name} · {briefNotif.budget}</div>
+          <div className="flex gap-1 md:gap-1.5">
+            <button onClick={() => { onClose(); onAcceptBrief(); }} className="flex-1 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-bold cursor-pointer transition-all duration-150 bg-primary border-[1.5px] border-primary text-primary-foreground hover:bg-primary/90">Accept</button>
+            <button onClick={() => { onClose(); onCounter(); }} className="flex-1 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-bold cursor-pointer transition-all duration-150 border-[1.5px] border-[hsl(var(--otj-yellow))] text-[hsl(var(--otj-yellow))] bg-card">Counter</button>
+            <button onClick={onClose} className="flex-1 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-bold cursor-pointer transition-all duration-150 border-[1.5px] border-border bg-card hover:border-foreground">Decline</button>
+          </div>
         </div>
-      </div>
+      )}
+
       <div className="py-1.5 max-h-[280px] md:max-h-[360px] overflow-y-auto">
-        {[
-          { icon: '💬', bg: 'bg-otj-off', title: 'Ahmed Karim sent you a message', sub: 'Can we schedule a call for Thursday?', time: '12m ago', unread: true },
-          { icon: '💳', bg: 'bg-otj-green-bg', title: 'Payment released — 3,325 EGP', sub: 'Edita Campaign · Phase 2 approved by client', time: '2h ago', unread: true },
-          { icon: '📅', bg: 'bg-otj-blue-bg', title: 'Booking confirmed · March 15', sub: 'Edita Group campaign — added to your calendar', time: 'Yesterday', unread: false },
-        ].map((n, i) => (
-          <div key={i} onClick={() => { onClose(); onSwitchToMessages(); }} className="px-3.5 md:px-4 py-2 md:py-2.5 cursor-pointer transition-colors duration-150 border-b border-border last:border-b-0 hover:bg-otj-off">
+        {notifications.map((n) => (
+          <div key={n.id} onClick={() => { onClose(); onSwitchToMessages(); }} className="px-3.5 md:px-4 py-2 md:py-2.5 cursor-pointer transition-colors duration-150 border-b border-border last:border-b-0 hover:bg-muted">
             <div className="flex items-start gap-2 md:gap-2.5">
               <div className={`w-8 h-8 md:w-[34px] md:h-[34px] rounded-lg md:rounded-[10px] flex items-center justify-center text-sm md:text-base shrink-0 ${n.bg}`}>{n.icon}</div>
               <div className="flex-1 min-w-0">
-                <div className="text-[11px] md:text-[12.5px] font-bold tracking-[-0.01em] mb-px truncate">{n.title}</div>
-                <div className="text-[10px] md:text-[11.5px] text-otj-text leading-snug truncate">{n.sub}</div>
-                <div className="text-[9px] md:text-[10.5px] text-otj-muted mt-0.5">{n.time}</div>
+                <div className={`text-[11px] md:text-[12.5px] font-bold tracking-[-0.01em] mb-px truncate ${n.type === 'counter-accepted' ? 'text-[hsl(var(--otj-green))]' : 'text-foreground'}`}>{n.title}</div>
+                <div className="text-[10px] md:text-[11.5px] text-muted-foreground leading-snug truncate">{n.sub}</div>
+                <div className="text-[9px] md:text-[10.5px] text-muted-foreground mt-0.5">{n.time}</div>
               </div>
-              {n.unread && <div className="w-1.5 h-1.5 md:w-[7px] md:h-[7px] rounded-full bg-otj-blue shrink-0 mt-[5px]" />}
+              {n.unread && <div className="w-1.5 h-1.5 md:w-[7px] md:h-[7px] rounded-full bg-[hsl(var(--otj-blue))] shrink-0 mt-[5px]" />}
             </div>
           </div>
         ))}

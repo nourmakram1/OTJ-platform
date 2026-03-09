@@ -99,6 +99,19 @@ export interface ProjectData {
   reviews: ReviewData[];
 }
 
+export interface NotificationData {
+  id: string;
+  icon: string;
+  bg: string;
+  title: string;
+  sub: string;
+  time: string;
+  unread: boolean;
+  type: 'counter-accepted' | 'message' | 'payment' | 'booking' | 'brief';
+  briefId?: string;
+  projectId?: string;
+}
+
 interface ProjectContextType {
   pendingBriefs: BriefData[];
   activeProjects: ProjectData[];
@@ -116,6 +129,11 @@ interface ProjectContextType {
   completeProject: (projectId: string) => void;
   addReview: (projectId: string, review: Omit<ReviewData, 'id' | 'createdAt'>) => void;
   reviews: ReviewData[];
+  notifications: NotificationData[];
+  addNotification: (notif: Omit<NotificationData, 'id'>) => void;
+  markAllRead: () => void;
+  unreadCount: number;
+  submitCounterOffer: (briefId: string, budget: string, clientName: string, briefName: string) => void;
 }
 
 const defaultBriefs: BriefData[] = [
@@ -272,10 +290,17 @@ export const useProjects = () => {
   return ctx;
 };
 
+const defaultNotifications: NotificationData[] = [
+  { id: 'notif-1', icon: '💬', bg: 'bg-muted', title: 'Ahmed Karim sent you a message', sub: 'Can we schedule a call for Thursday?', time: '12m ago', unread: true, type: 'message' },
+  { id: 'notif-2', icon: '💳', bg: 'bg-[hsl(var(--otj-green-bg))]', title: 'Payment released — 3,325 EGP', sub: 'Edita Campaign · Phase 2 approved by client', time: '2h ago', unread: true, type: 'payment' },
+  { id: 'notif-3', icon: '📅', bg: 'bg-[hsl(var(--otj-blue-bg))]', title: 'Booking confirmed · March 15', sub: 'Edita Group campaign — added to your calendar', time: 'Yesterday', unread: false, type: 'booking' },
+];
+
 export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [pendingBriefs, setPendingBriefs] = useState<BriefData[]>(defaultBriefs);
   const [activeProjects, setActiveProjects] = useState<ProjectData[]>(defaultActiveProjects);
   const [completedProjects] = useState(defaultCompleted);
+  const [notifications, setNotifications] = useState<NotificationData[]>(defaultNotifications);
 
   const acceptBrief = useCallback((briefId: string): string => {
     const brief = pendingBriefs.find(b => b.id === briefId);
@@ -440,8 +465,36 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return pendingBriefs.find(b => b.id === id);
   }, [pendingBriefs]);
 
+  const addNotification = useCallback((notif: Omit<NotificationData, 'id'>) => {
+    const newNotif: NotificationData = { ...notif, id: `notif-${Date.now()}` };
+    setNotifications(prev => [newNotif, ...prev]);
+  }, []);
+
+  const markAllRead = useCallback(() => {
+    setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+  }, []);
+
+  const unreadCount = useMemo(() => notifications.filter(n => n.unread).length, [notifications]);
+
+  const submitCounterOffer = useCallback((briefId: string, budget: string, clientName: string, briefName: string) => {
+    // Simulate client accepting the counter offer after 4 seconds
+    setTimeout(() => {
+      const acceptNotif: Omit<NotificationData, 'id'> = {
+        icon: '🎉',
+        bg: 'bg-[hsl(var(--otj-green-bg))]',
+        title: `Counter offer accepted!`,
+        sub: `${clientName} accepted your counter for ${briefName} at ${budget}`,
+        time: 'Just now',
+        unread: true,
+        type: 'counter-accepted',
+        briefId,
+      };
+      setNotifications(prev => [{ ...acceptNotif, id: `notif-${Date.now()}` }, ...prev]);
+    }, 4000);
+  }, []);
+
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews }}>
+    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer }}>
       {children}
     </ProjectContext.Provider>
   );
