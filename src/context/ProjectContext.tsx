@@ -386,6 +386,8 @@ const defaultClients: ClientData[] = [
     type: 'individual',
     name: 'Ahmed Karim',
     avatar: '👨‍💼',
+    email: 'ahmed.karim@fintech.eg',
+    phone: '+20 102 555 7890',
     industry: 'Tech / Startups',
     location: 'Cairo, Egypt',
     bio: 'Founder of a fast-growing fintech startup. Looking for creatives to help build our brand identity and marketing campaigns. Values speed and quality.',
