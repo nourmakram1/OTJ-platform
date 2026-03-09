@@ -25,7 +25,7 @@ const StarRating = ({ rating, onRate, interactive = false }: { rating: number; o
 const ClientProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { getClient, addClientReview } = useProjects();
+  const { getClient, addClientReview, completedProjects } = useProjects();
   const [activeTab, setActiveTab] = useState(0);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewRating, setReviewRating] = useState(0);
@@ -108,12 +108,6 @@ const ClientProfile = () => {
                 )}
               </div>
             </div>
-            <button
-              onClick={() => setShowReviewModal(true)}
-              className="text-[11.5px] font-bold px-4 py-1.5 rounded-full bg-primary text-primary-foreground border-none cursor-pointer transition-all duration-150 hover:opacity-90 shrink-0"
-            >
-              ✍ Leave Review
-            </button>
           </div>
         </div>
       </div>
@@ -228,7 +222,9 @@ const ClientProfile = () => {
                   <div className="text-[15px] font-extrabold text-foreground">{avgRating} <span className="text-muted-foreground font-normal text-[13px]">/ 5.0</span></div>
                   <div className="text-[11px] text-muted-foreground">{client.reviews.length} reviews from creatives</div>
                 </div>
-                <button onClick={() => setShowReviewModal(true)} className="text-[11.5px] font-bold px-4 py-1.5 rounded-full bg-primary text-primary-foreground border-none cursor-pointer transition-all duration-150 hover:opacity-90">✍ Write Review</button>
+                {completedProjects.some(p => p.client === client.name) && (
+                  <button onClick={() => setShowReviewModal(true)} className="text-[11.5px] font-bold px-4 py-1.5 rounded-full bg-primary text-primary-foreground border-none cursor-pointer transition-all duration-150 hover:opacity-90">✍ Write Review</button>
+                )}
               </div>
 
               {client.reviews.length > 0 ? (
