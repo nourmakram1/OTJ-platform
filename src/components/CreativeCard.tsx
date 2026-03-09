@@ -94,7 +94,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
     </div>
     <div className="p-2.5 md:p-3 flex flex-col flex-1">
       <div className="flex items-center justify-between mb-0.5">
-        <div className="text-sm font-extrabold tracking-[-0.03em]">{c.name}</div>
+        <div className="text-[12px] md:text-sm font-extrabold tracking-[-0.03em] truncate">{c.name}</div>
         <div className="flex items-center gap-1">
           <span className="text-[11px] font-bold text-foreground">⭐ {c.rating}</span>
           <span className="text-[11px] text-otj-text">({c.jobs.replace(' jobs', '')})</span>
