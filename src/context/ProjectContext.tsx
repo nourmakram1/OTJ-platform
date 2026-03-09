@@ -679,6 +679,56 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   }, [activeProjects, addNotification]);
 
+  const submitPaymentProof = useCallback((projectId: string, milestoneIndex: number, proofUrl: string, proofName: string) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const updatedMilestones = p.paymentMilestones.map((m, i) =>
+        i === milestoneIndex ? { ...m, status: 'proof-submitted' as const, proofUrl, proofName } : m
+      );
+      return { ...p, paymentMilestones: updatedMilestones };
+    }));
+    // Notify creative
+    const proj = activeProjects.find(p => p.id === projectId);
+    const milestone = proj?.paymentMilestones[milestoneIndex];
+    const numericPrice = parseInt(proj?.budget.replace(/[^0-9]/g, '') || '0') || 0;
+    const amount = milestone && numericPrice > 0 ? `${Math.round(numericPrice * milestone.percentage / 100).toLocaleString()} EGP` : '';
+    addNotification({
+      icon: '📎',
+      bg: 'bg-[hsl(var(--otj-blue-bg))]',
+      title: `Payment proof uploaded — ${amount}`,
+      sub: `${proj?.clientName || 'Client'} attached a bank transfer screenshot for ${milestone?.label || 'milestone'} on ${proj?.name || 'project'}. Please confirm receipt.`,
+      time: 'Just now',
+      unread: true,
+      type: 'payment',
+      projectId,
+    });
+  }, [activeProjects, addNotification]);
+
+  const confirmPaymentReceipt = useCallback((projectId: string, milestoneIndex: number) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const updatedMilestones = p.paymentMilestones.map((m, i) =>
+        i === milestoneIndex ? { ...m, status: 'paid' as const } : m
+      );
+      return { ...p, paymentMilestones: updatedMilestones };
+    }));
+    // Notify client
+    const proj = activeProjects.find(p => p.id === projectId);
+    const milestone = proj?.paymentMilestones[milestoneIndex];
+    const numericPrice = parseInt(proj?.budget.replace(/[^0-9]/g, '') || '0') || 0;
+    const amount = milestone && numericPrice > 0 ? `${Math.round(numericPrice * milestone.percentage / 100).toLocaleString()} EGP` : '';
+    addNotification({
+      icon: '✅',
+      bg: 'bg-[hsl(var(--otj-green-bg))]',
+      title: `Payment confirmed — ${amount}`,
+      sub: `Creative confirmed receipt of ${milestone?.label || 'milestone'} for ${proj?.name || 'project'}`,
+      time: 'Just now',
+      unread: true,
+      type: 'payment',
+      projectId,
+    });
+  }, [activeProjects, addNotification]);
+
   const acceptProposal = useCallback((projectId: string) => {
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
