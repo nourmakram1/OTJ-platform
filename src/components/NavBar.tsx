@@ -195,7 +195,7 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
         visible={showNotif}
         onClose={() => setShowNotif(false)}
         onAcceptBrief={() => { setShowNotif(false); onAcceptBrief?.(); }}
-        onCounter={() => { setShowNotif(false); onOpenCounter?.(); }}
+        onCounter={() => { setShowNotif(false); navigate('/brief/brief-1'); }}
         onSwitchToMessages={() => { setShowNotif(false); navigate('/messages'); }}
       />
     </>
