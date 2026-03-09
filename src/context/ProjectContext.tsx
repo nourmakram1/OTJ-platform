@@ -363,6 +363,8 @@ const defaultClients: ClientData[] = [
     name: 'Randa Hatem',
     avatar: '👩‍💼',
     company: 'Edita Group',
+    email: 'randa.hatem@editagroup.com',
+    phone: '+20 100 123 4567',
     industry: 'FMCG / Food & Beverage',
     location: 'Cairo, Egypt',
     bio: 'Senior Marketing Manager at Edita Group, overseeing visual content for seasonal campaigns across multiple brands including Molto, Bake Rolz, and Tiger. Passionate about bold, high-quality creative work that connects with young audiences.',
