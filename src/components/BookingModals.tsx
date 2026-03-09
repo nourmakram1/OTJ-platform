@@ -223,7 +223,7 @@ interface NotifPopupProps {
   onNavigate: (path: string) => void;
 }
 
-export const NotifPopup: React.FC<NotifPopupProps> = ({ visible, onClose, onAcceptBrief, onCounter, onSwitchToMessages }) => {
+export const NotifPopup: React.FC<NotifPopupProps> = ({ visible, onClose, onAcceptBrief, onCounter, onSwitchToMessages, onNavigate }) => {
   const { notifications, markAllRead, pendingBriefs } = useProjects();
   if (!visible) return null;
 
