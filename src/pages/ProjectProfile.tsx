@@ -499,23 +499,25 @@ const ProjectProfile = () => {
               )}
             </div>
 
-            {/* Right sidebar */}
-            <div className="flex flex-col gap-4">
+            {/* Right sidebar - shows below content on mobile */}
+            <div className="flex flex-col gap-4 order-2 md:order-none">
               <div className="bg-card border border-border rounded-[14px] p-4">
                 <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">Project Info</div>
-                {[
-                  { label: 'Client', val: proj.clientName },
-                  { label: 'Company', val: proj.clientCompany },
-                  { label: 'Started', val: proj.createdAt },
-                  { label: 'Deadline', val: proj.deadline },
-                  { label: 'Type', val: proj.projectType },
-                  { label: 'Budget', val: proj.budget },
-                ].map((f, i) => (
-                  <div key={i} className="flex items-center justify-between py-1.5 border-b border-border last:border-0">
-                    <div className="text-[11px] text-otj-text">{f.label}</div>
-                    <div className="text-[12px] font-bold">{f.val}</div>
-                  </div>
-                ))}
+                <div className="grid grid-cols-2 md:grid-cols-1 gap-x-4">
+                  {[
+                    { label: 'Client', val: proj.clientName },
+                    { label: 'Company', val: proj.clientCompany },
+                    { label: 'Started', val: proj.createdAt },
+                    { label: 'Deadline', val: proj.deadline },
+                    { label: 'Type', val: proj.projectType },
+                    { label: 'Budget', val: proj.budget },
+                  ].map((f, i) => (
+                    <div key={i} className="flex items-center justify-between py-1.5 border-b border-border last:border-0 md:last:border-0">
+                      <div className="text-[11px] text-otj-text">{f.label}</div>
+                      <div className="text-[12px] font-bold">{f.val}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="bg-card border border-border rounded-[14px] p-4">
