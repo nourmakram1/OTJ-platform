@@ -8,7 +8,7 @@ import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Star, Shield, Clock, CreditCard, ExternalLink, MapPin, Building2, Users, Calendar } from 'lucide-react';
 
-const tabs = ['About', 'Projects', 'Reviews', 'Trust & Payment'];
+const tabs = ['About', 'Reviews'];
 
 const StarRating = ({ rating, onRate, interactive = false }: { rating: number; onRate?: (r: number) => void; interactive?: boolean }) => (
   <div className="flex gap-0.5">
