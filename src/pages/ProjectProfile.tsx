@@ -204,7 +204,6 @@ const ProjectProfile = () => {
                 { label: 'Brief Status', val: 'Approved ✓' },
                 { label: 'Phase', val: `${currentPhase?.num || 1} of ${phaseTotal}` },
                 { label: 'Total Value', val: proj.budget },
-                { label: 'In Escrow', val: proj.escrow.held },
               ].map((s, i) => (
                 <div key={i}>
                   <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-0.5">{s.label}</div>
