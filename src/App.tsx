@@ -37,6 +37,7 @@ const App = () => (
             <Route path="/project/:id" element={<ProjectProfile />} />
             <Route path="/creative/:id" element={<CreativeProfile />} />
             <Route path="/client/:id" element={<ClientProfile />} />
+            <Route path="/settings" element={<CreativeSettings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
