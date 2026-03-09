@@ -203,34 +203,41 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPay
         );
       })}
 
-      {/* Payment Release Modal */}
+      {/* Payment Proof Prompt Modal */}
       <Dialog open={paymentModalOpen} onOpenChange={setPaymentModalOpen}>
         <DialogContent className="sm:max-w-[420px]">
           <DialogHeader>
             <DialogTitle className="text-[16px] font-extrabold tracking-[-0.03em]">
-              💳 Release Milestone Payment?
+              📎 Upload Payment Proof
             </DialogTitle>
             <DialogDescription className="text-[13px] text-otj-text">
-              Phase {approvedPhaseNum} has been approved. Would you like to release the associated milestone payment to the creative?
+              Phase {approvedPhaseNum} has been approved! Please transfer the milestone payment and upload the bank transfer screenshot as proof.
             </DialogDescription>
           </DialogHeader>
           {nextMilestoneIndex >= 0 && (
-            <div className="bg-otj-green-bg border border-otj-green-border rounded-[12px] p-4 my-2">
-              <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-otj-green mb-1">Payment Details</div>
+            <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[12px] p-4 my-2">
+              <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-otj-blue mb-1">Amount Due</div>
               <div className="text-[18px] font-extrabold text-foreground">
                 {numericPrice > 0 ? `${Math.round(numericPrice * project.paymentMilestones[nextMilestoneIndex].percentage / 100).toLocaleString()} EGP` : '—'}
               </div>
               <div className="text-[12px] text-otj-text mt-0.5">
                 {project.paymentMilestones[nextMilestoneIndex].label} ({project.paymentMilestones[nextMilestoneIndex].percentage}%)
               </div>
+              {project.paymentMethod && (
+                <div className="mt-2 pt-2 border-t border-border text-[11px] text-otj-muted">
+                  {project.paymentMethod.type === 'instapay'
+                    ? `📱 InstaPay — ${project.paymentMethod.instapayHandle}`
+                    : `🏦 ${project.paymentMethod.bankName} — ${project.paymentMethod.accountName}`}
+                </div>
+              )}
             </div>
           )}
           <DialogFooter className="flex gap-2 sm:gap-2">
             <Button variant="outline" onClick={() => setPaymentModalOpen(false)} className="rounded-full text-[12px] font-bold">
               Later
             </Button>
-            <Button onClick={handleReleasePayment} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
-              ✓ Release Payment
+            <Button onClick={handleGoToPayments} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
+              📎 Go to Payments
             </Button>
           </DialogFooter>
         </DialogContent>
