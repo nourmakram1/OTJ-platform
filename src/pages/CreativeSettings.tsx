@@ -69,6 +69,19 @@ const CreativeSettings = () => {
   const [profSearch, setProfSearch] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
+  // Notification preferences
+  const [notifEmail, setNotifEmail] = useState({ messages: true, bookings: true, reviews: true, marketing: false });
+  const [notifPush, setNotifPush] = useState({ messages: true, bookings: true, reviews: false, marketing: false });
+  const [notifInApp, setNotifInApp] = useState({ messages: true, bookings: true, reviews: true, marketing: true });
+
+  // Account settings
+  const [email, setEmail] = useState('nour@example.com');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('instapay');
+  const [paymentDetails, setPaymentDetails] = useState('nour.makram@instapay');
+
   const availableNiches = nicheMap[profession] || [];
   const q = profSearch.toLowerCase();
   const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q)) : professions;
@@ -356,13 +369,145 @@ const CreativeSettings = () => {
             </div>
           )}
 
+          {/* Notifications */}
+          {activeSection === 'notifications' && (
+            <div className="animate-fade-up">
+              <SectionHeader title="Notifications" />
+
+              {/* Email notifications */}
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="text-[13px] font-bold text-foreground mb-1">Email Notifications</div>
+                <div className="text-[12px] text-muted-foreground mb-4">Receive updates via email</div>
+                {Object.entries(notifEmail).map(([key, val]) => (
+                  <div key={key} className="flex items-center justify-between py-3 border-b border-border last:border-0">
+                    <div className="text-[13px] text-foreground capitalize">{key === 'marketing' ? 'Marketing & tips' : key}</div>
+                    <button onClick={() => setNotifEmail(p => ({ ...p, [key]: !p[key as keyof typeof p] }))}
+                      className={`w-10 h-6 rounded-full transition-colors cursor-pointer border-none relative ${val ? 'bg-primary' : 'bg-muted'}`}>
+                      <div className={`absolute top-1 w-4 h-4 rounded-full bg-card transition-all ${val ? 'left-5' : 'left-1'}`} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Push notifications */}
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="text-[13px] font-bold text-foreground mb-1">Push Notifications</div>
+                <div className="text-[12px] text-muted-foreground mb-4">Receive push notifications on your device</div>
+                {Object.entries(notifPush).map(([key, val]) => (
+                  <div key={key} className="flex items-center justify-between py-3 border-b border-border last:border-0">
+                    <div className="text-[13px] text-foreground capitalize">{key === 'marketing' ? 'Marketing & tips' : key}</div>
+                    <button onClick={() => setNotifPush(p => ({ ...p, [key]: !p[key as keyof typeof p] }))}
+                      className={`w-10 h-6 rounded-full transition-colors cursor-pointer border-none relative ${val ? 'bg-primary' : 'bg-muted'}`}>
+                      <div className={`absolute top-1 w-4 h-4 rounded-full bg-card transition-all ${val ? 'left-5' : 'left-1'}`} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* In-app notifications */}
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="text-[13px] font-bold text-foreground mb-1">In-App Notifications</div>
+                <div className="text-[12px] text-muted-foreground mb-4">Show notifications inside the app</div>
+                {Object.entries(notifInApp).map(([key, val]) => (
+                  <div key={key} className="flex items-center justify-between py-3 border-b border-border last:border-0">
+                    <div className="text-[13px] text-foreground capitalize">{key === 'marketing' ? 'Marketing & tips' : key}</div>
+                    <button onClick={() => setNotifInApp(p => ({ ...p, [key]: !p[key as keyof typeof p] }))}
+                      className={`w-10 h-6 rounded-full transition-colors cursor-pointer border-none relative ${val ? 'bg-primary' : 'bg-muted'}`}>
+                      <div className={`absolute top-1 w-4 h-4 rounded-full bg-card transition-all ${val ? 'left-5' : 'left-1'}`} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none">
+                Save Preferences
+              </button>
+            </div>
+          )}
+
+          {/* Account Settings */}
+          {activeSection === 'account' && (
+            <div className="animate-fade-up">
+              <SectionHeader title="Account Settings" />
+
+              {/* Email */}
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="text-[13px] font-bold text-foreground mb-3">Email Address</div>
+                <div className="flex flex-col gap-1.5">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Current Email</div>
+                  <input value={email} onChange={e => setEmail(e.target.value)} className={inputClass} placeholder="your@email.com" />
+                </div>
+                <button onClick={() => { showToast('Verification email sent ✓'); }} className="mt-3 text-[12px] font-semibold text-primary cursor-pointer bg-transparent border-none hover:underline">
+                  Update Email
+                </button>
+              </div>
+
+              {/* Password */}
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="text-[13px] font-bold text-foreground mb-3">Change Password</div>
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1.5">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Current Password</div>
+                    <input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} className={inputClass} placeholder="••••••••" />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">New Password</div>
+                    <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} className={inputClass} placeholder="••••••••" />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Confirm New Password</div>
+                    <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className={inputClass} placeholder="••••••••" />
+                    {confirmPassword && newPassword !== confirmPassword && (
+                      <div className="text-[11px] text-destructive">Passwords don't match</div>
+                    )}
+                  </div>
+                </div>
+                <button onClick={() => {
+                  if (!currentPassword || !newPassword) return showToast('Please fill all fields');
+                  if (newPassword !== confirmPassword) return showToast('Passwords don\'t match');
+                  setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
+                  showToast('Password updated ✓');
+                }} className="mt-3 text-[12px] font-semibold text-primary cursor-pointer bg-transparent border-none hover:underline">
+                  Update Password
+                </button>
+              </div>
+
+              {/* Payment Method */}
+              <div className="bg-card rounded-2xl border border-border p-5 mb-4">
+                <div className="text-[13px] font-bold text-foreground mb-1">Payment Method</div>
+                <div className="text-[12px] text-muted-foreground mb-4">How clients pay you for completed work</div>
+                <div className="flex flex-col gap-3">
+                  <div className="flex gap-2">
+                    {['instapay', 'bank', 'vodafone-cash'].map(m => (
+                      <button key={m} onClick={() => setPaymentMethod(m)}
+                        className={`text-[12px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all ${
+                          paymentMethod === m ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-muted-foreground hover:border-muted-foreground'
+                        }`}>
+                        {m === 'instapay' ? 'InstaPay' : m === 'bank' ? 'Bank Transfer' : 'Vodafone Cash'}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                      {paymentMethod === 'instapay' ? 'InstaPay Username' : paymentMethod === 'bank' ? 'Account Number / IBAN' : 'Phone Number'}
+                    </div>
+                    <input value={paymentDetails} onChange={e => setPaymentDetails(e.target.value)} className={inputClass}
+                      placeholder={paymentMethod === 'instapay' ? 'username@instapay' : paymentMethod === 'bank' ? 'EG00 0000 0000 ...' : '01x xxxx xxxx'} />
+                  </div>
+                </div>
+              </div>
+
+              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none">
+                Save Changes
+              </button>
+            </div>
+          )}
+
           {/* Placeholder sections */}
-          {['reviews', 'notifications', 'account', 'privacy', 'help'].includes(activeSection) && (
+          {['reviews', 'privacy', 'help'].includes(activeSection) && (
             <div className="animate-fade-up">
               <SectionHeader title={
                 activeSection === 'reviews' ? 'Reviews' :
-                activeSection === 'notifications' ? 'Notifications' :
-                activeSection === 'account' ? 'Account Settings' :
                 activeSection === 'privacy' ? 'Privacy' : 'Help & Support'
               } />
               <div className="bg-card rounded-2xl border border-border p-8 text-center">
