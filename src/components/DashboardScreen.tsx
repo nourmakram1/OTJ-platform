@@ -29,7 +29,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 text-[12px] font-bold text-otj-yellow">
             <span>⭐</span>
-            <span>4.9</span>
+            <span className="text-muted-foreground">4.9</span>
             <span className="text-otj-muted font-medium">(127)</span>
           </div>
           <button onClick={() => showToast('Profile link copied!')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer">Share Profile</button>
