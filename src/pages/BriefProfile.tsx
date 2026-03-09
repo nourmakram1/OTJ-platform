@@ -371,6 +371,42 @@ const BriefProfile = () => {
         </Dialog>
       )}
 
+      {/* Counter Accepted Notification */}
+      {counterAcceptedNotif && counterAcceptedBrief && (
+        <div className="fixed inset-0 z-[1000] flex items-start justify-center pt-20 px-4" onClick={() => setCounterAcceptedNotif(false)}>
+          <div className="bg-card border border-border rounded-[14px] shadow-[0_8px_40px_rgba(0,0,0,0.15)] p-5 max-w-[420px] w-full animate-in slide-in-from-top-4 fade-in duration-300" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-[hsl(var(--otj-green-bg))] border border-[hsl(var(--otj-green-border))] flex items-center justify-center text-[18px] shrink-0">🎉</div>
+              <div className="flex-1">
+                <div className="text-[13px] font-extrabold text-foreground mb-0.5">Counter Offer Accepted!</div>
+                <div className="text-[11px] text-muted-foreground leading-relaxed">
+                  <span className="font-semibold text-foreground">{counterAcceptedBrief.clientName}</span> accepted your counter offer for <span className="font-semibold text-foreground">{counterAcceptedBrief.name}</span> at <span className="font-extrabold text-[hsl(var(--otj-green))]">{counterAcceptedBrief.budget}</span>.
+                </div>
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={() => {
+                      setCounterAcceptedNotif(false);
+                      const projectId = acceptBrief(brief.id);
+                      showToast('✓ Project created! Redirecting…');
+                      setTimeout(() => navigate(`/project/${projectId}`), 500);
+                    }}
+                    className="text-[11px] font-bold px-4 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90"
+                  >
+                    View Project →
+                  </button>
+                  <button
+                    onClick={() => setCounterAcceptedNotif(false)}
+                    className="text-[11px] font-bold px-4 py-1.5 rounded-full border border-border bg-transparent text-muted-foreground cursor-pointer transition-all duration-150 hover:bg-muted"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Toast />
     </>
   );
