@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 
+export type ProjectRole = 'as-creative' | 'as-client';
+
 export interface BriefData {
   id: string;
   icon: string;
@@ -16,6 +18,7 @@ export interface BriefData {
   time: string;
   moodAesthetic: string;
   usageRights: string;
+  myRole?: ProjectRole;
 }
 
 export interface PhaseData {
@@ -103,6 +106,7 @@ export interface ProjectData {
   meetings: MeetingData[];
   attachments: AttachmentData[];
   reviews: ReviewData[];
+  myRole?: ProjectRole;
 }
 
 export interface NotificationData {
@@ -206,6 +210,7 @@ const defaultBriefs: BriefData[] = [
     time: '3m ago',
     moodAesthetic: 'Clean, modern, high-contrast product photography with lifestyle elements',
     usageRights: 'Social media + print ads · 12 months',
+    myRole: 'as-creative',
   },
   {
     id: 'brief-2',
@@ -223,6 +228,25 @@ const defaultBriefs: BriefData[] = [
     time: '1h ago',
     moodAesthetic: 'Corporate but energetic, brand-aligned colors, candid + posed mix',
     usageRights: 'All platforms · Unlimited',
+    myRole: 'as-creative',
+  },
+  {
+    id: 'brief-3',
+    icon: '🎨',
+    name: 'Brand Identity Design',
+    clientName: 'Omar El-Sherif',
+    clientCompany: 'Freelance Designer',
+    clientEmail: 'omar.elsherif@gmail.com',
+    clientPhone: '+20 109 876 5432',
+    projectType: 'Logo & Brand Guidelines',
+    budget: '4,000 EGP',
+    deliverables: 'Logo, brand guidelines, social media templates',
+    date: 'Mar 28',
+    tags: ['Branding', '4,000 EGP', 'Mar 28'],
+    time: '25m ago',
+    moodAesthetic: 'Minimalist, contemporary, bold typography',
+    usageRights: 'Full ownership transfer',
+    myRole: 'as-client',
   },
 ];
 
@@ -275,6 +299,7 @@ const defaultActiveProjects: ProjectData[] = [
       { id: 'att-2', name: 'Shot List.pdf', size: '340 KB', type: 'application/pdf', url: '', uploadedAt: 'Mar 6', icon: '📄' },
     ],
     reviews: [],
+    myRole: 'as-creative',
   },
   {
     id: 'proj-existing-2',
@@ -304,6 +329,7 @@ const defaultActiveProjects: ProjectData[] = [
     ],
     attachments: [],
     reviews: [],
+    myRole: 'as-creative',
   },
   {
     id: 'proj-existing-3',
@@ -331,6 +357,36 @@ const defaultActiveProjects: ProjectData[] = [
     meetings: [],
     attachments: [],
     reviews: [],
+    myRole: 'as-creative',
+  },
+  {
+    id: 'proj-booked-1',
+    icon: '🎨', name: 'My Portfolio Redesign',
+    clientName: 'Yara Mansour', clientCompany: 'Freelance',
+    clientEmail: 'yara.mansour@gmail.com', clientPhone: '+20 112 345 6789',
+    projectType: 'UI/UX Design', budget: '6,000 EGP',
+    deliverables: 'Full portfolio website redesign', date: 'Mar 8', deadline: 'Apr 1',
+    moodAesthetic: '', usageRights: '',
+    status: 'active',
+    proposalDeliverables: ['Portfolio website redesign', 'Mobile responsive design'],
+    proposalPrice: '6,000 EGP',
+    phases: [
+      { num: 1, title: 'Discovery', status: 'complete', tasks: [
+        { text: 'Review current portfolio', done: true, due: 'Mar 10' },
+      ]},
+      { num: 2, title: 'Design', status: 'active', tasks: [
+        { text: 'Wireframes approval', done: false, due: 'Mar 20' },
+      ]},
+      { num: 3, title: 'Development', status: 'locked', tasks: [] },
+    ],
+    paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'held' }],
+    escrow: { total: '6,000 EGP', deposited: '3,000 EGP', held: '3,000 EGP', fee: '300 EGP' },
+    timeline: [],
+    createdAt: 'March 8, 2026',
+    meetings: [],
+    attachments: [],
+    reviews: [],
+    myRole: 'as-client',
   },
 ];
 

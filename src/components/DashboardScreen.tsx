@@ -44,12 +44,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
 
       {/* Stats — 4 cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
-        {[
-          { label: 'Active Projects', val: String(activeProjects.length), delta: '↑ 1 this week', deltaClass: 'text-otj-green' },
-          { label: 'Pending Briefs', val: String(pendingBriefs.length), delta: pendingBriefs.length > 0 ? 'Need response' : 'All clear', deltaClass: 'text-otj-text' },
-          { label: 'Revenue (Mar)', val: '14K', delta: '↑ 23% vs Feb', deltaClass: 'text-otj-green' },
-          { label: 'Complete', val: String(completedProjects.length), delta: 'Total projects', deltaClass: 'text-otj-text' },
-        ].map((s, i) => (
+        {(() => {
+          const myBookings = activeProjects.filter(p => p.myRole === 'as-client').length;
+          const hiredProjects = activeProjects.filter(p => p.myRole !== 'as-client').length;
+          return [
+            { label: 'Hired Projects', val: String(hiredProjects), delta: 'Working on', deltaClass: 'text-otj-green' },
+            { label: 'My Bookings', val: String(myBookings), delta: myBookings > 0 ? 'You booked' : 'None yet', deltaClass: 'text-otj-blue' },
+            { label: 'Revenue (Mar)', val: '14K', delta: '↑ 23% vs Feb', deltaClass: 'text-otj-green' },
+            { label: 'Pending Briefs', val: String(pendingBriefs.length), delta: pendingBriefs.length > 0 ? 'Need response' : 'All clear', deltaClass: 'text-otj-text' },
+          ];
+        })().map((s, i) => (
           <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4">
             <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">{s.label}</div>
             <div className="text-[26px] font-extrabold tracking-[-0.05em] leading-none text-foreground">{s.val}</div>
@@ -93,7 +97,18 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                 <div className="flex gap-3 items-start flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/brief/${brief.id}`)}>
                   <div className="w-10 h-10 rounded-[10px] bg-otj-yellow-bg flex items-center justify-center text-xl shrink-0">{brief.icon}</div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate mb-0.5">{brief.name}</div>
+                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate mb-0.5 flex items-center gap-1.5">
+                      {brief.name}
+                      {brief.myRole && (
+                        <span className={`text-[9px] font-bold px-1.5 py-[1px] rounded-full border shrink-0 ${
+                          brief.myRole === 'as-client' 
+                            ? 'bg-otj-blue-bg text-otj-blue border-otj-blue-border' 
+                            : 'bg-otj-green-bg text-otj-green border-otj-green-border'
+                        }`}>
+                          {brief.myRole === 'as-client' ? 'Booked by you' : 'Hired'}
+                        </span>
+                      )}
+                    </div>
                     <div className="text-[11.5px] text-otj-text mb-1.5">From: {brief.clientName} · {brief.clientCompany}</div>
                     <div className="flex gap-[5px] flex-wrap">
                       {brief.tags.map((t, j) => <span key={j} className="text-[10.5px] font-semibold px-2 py-0.5 rounded-full bg-otj-off border border-border text-otj-text">{t}</span>)}
@@ -139,8 +154,19 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                 <div key={proj.id} onClick={() => navigate(`/project/${proj.id}`)} className="bg-card border border-border rounded-[14px] p-3.5 px-4 cursor-pointer transition-all duration-150 flex gap-3 items-start hover:shadow-md hover:border-otj-muted">
                   <div className="w-10 h-10 rounded-[10px] bg-otj-off flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
                   <div className="flex-1">
-                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5">{proj.name}</div>
-                    <div className="text-[11.5px] text-otj-text mb-1.5">Client: {proj.clientName} · {proj.clientCompany}</div>
+                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5 flex items-center gap-1.5">
+                      {proj.name}
+                      {proj.myRole && (
+                        <span className={`text-[9px] font-bold px-1.5 py-[1px] rounded-full border shrink-0 ${
+                          proj.myRole === 'as-client' 
+                            ? 'bg-otj-blue-bg text-otj-blue border-otj-blue-border' 
+                            : 'bg-otj-green-bg text-otj-green border-otj-green-border'
+                        }`}>
+                          {proj.myRole === 'as-client' ? 'Booked by you' : 'Hired'}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[11.5px] text-otj-text mb-1.5">{proj.myRole === 'as-client' ? 'Creative' : 'Client'}: {proj.clientName} · {proj.clientCompany}</div>
                     <div className="flex gap-[3px] mb-1.5">
                       {proj.phases.map((phase) => (
                         <div key={phase.num} className={`h-1 flex-1 rounded-full ${
