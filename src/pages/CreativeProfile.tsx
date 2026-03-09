@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Share2 } from 'lucide-react';
+import { Share2, Pencil } from 'lucide-react';
 import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
@@ -42,6 +42,9 @@ const CreativeProfile = () => {
                 <Share2 size={16} className="text-otj-text" />
               </button>
               <button onClick={() => showToast('♥ Saved to Collections')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center text-sm transition-all duration-150 hover:border-foreground">♡</button>
+              <button onClick={() => navigate('/settings')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center transition-all duration-150 hover:border-foreground" title="Edit Profile">
+                <Pencil size={15} className="text-otj-text" />
+              </button>
             </div>
           </div>
         </div>
