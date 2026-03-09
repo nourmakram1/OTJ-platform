@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { showToast } from './Toast';
-import { ChevronLeft, ChevronRight, SlidersHorizontal, X, ChevronDown, ArrowUpDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from 'lucide-react';
 import { categoryNiches } from '../data/niches';
 import { allCreatives, categories, getFeaturedCreatives, getCreativesByNiche, getNichesForCategory } from '../data/creatives';
 import { CreativeCard } from './CreativeCard';
