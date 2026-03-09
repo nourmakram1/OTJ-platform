@@ -76,13 +76,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
               <div className="bg-card border border-border rounded-[14px] p-6 text-center text-otj-muted text-[13px]">No pending briefs — you're all caught up! 🎉</div>
             )}
             {pendingBriefs.map((brief) => (
-              <div key={brief.id} className="bg-card border border-border rounded-[14px] p-3.5 px-4 transition-all duration-150 flex flex-col md:flex-row gap-3 hover:shadow-md hover:border-otj-muted">
-                {/* Left: Action buttons */}
-                <div className="hidden md:flex flex-col gap-[5px] shrink-0 pt-0.5">
-                  <button onClick={() => onAcceptBrief(brief.id)} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer transition-all duration-150 whitespace-nowrap">✓ Accept</button>
-                  <button onClick={() => onOpenCounter()} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-otj-yellow text-otj-yellow bg-card cursor-pointer transition-all duration-150 whitespace-nowrap">↕ Counter</button>
-                  <button onClick={() => navigate(`/project/${brief.id}?tab=brief`)} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground whitespace-nowrap">View</button>
-                </div>
+              <div key={brief.id} className="bg-card border border-border rounded-[14px] p-3.5 px-4 transition-all duration-150 flex flex-col md:flex-row md:items-center gap-3 hover:shadow-md hover:border-otj-muted">
                 {/* Content */}
                 <div className="flex gap-3 items-start flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/project/${brief.id}?tab=brief`)}>
                   <div className="w-10 h-10 rounded-[10px] bg-otj-yellow-bg flex items-center justify-center text-xl shrink-0">{brief.icon}</div>
@@ -96,6 +90,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                       {brief.tags.map((t, j) => <span key={j} className="text-[10.5px] font-semibold px-2 py-0.5 rounded-full bg-otj-off border border-border text-otj-text">{t}</span>)}
                     </div>
                   </div>
+                </div>
+                {/* Right: Action buttons (desktop) */}
+                <div className="hidden md:flex items-center gap-[5px] shrink-0">
+                  <button onClick={(e) => { e.stopPropagation(); onAcceptBrief(brief.id); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer transition-all duration-150 whitespace-nowrap">✓ Accept</button>
+                  <button onClick={(e) => { e.stopPropagation(); onOpenCounter(); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-otj-yellow text-otj-yellow bg-card cursor-pointer transition-all duration-150 whitespace-nowrap">↕ Counter</button>
+                  <button onClick={(e) => { e.stopPropagation(); navigate(`/project/${brief.id}?tab=brief`); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground whitespace-nowrap">View</button>
                 </div>
                 {/* Mobile buttons at bottom */}
                 <div className="flex md:hidden items-center gap-[5px] flex-wrap mt-2">
