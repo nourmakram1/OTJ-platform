@@ -25,19 +25,19 @@ const CounterOfferForm = ({
   counterDeliverables,
   setCounterDeliverables,
   counterNotes,
-  setCounterNotes,
-}: {
-  brief: { budget: string; date: string; deliverables: string };
-  counterBudget: string;
-  setCounterBudget: (v: string) => void;
-  counterDate: Date | undefined;
-  setCounterDate: (v: Date | undefined) => void;
-  counterDeliverables: string;
-  setCounterDeliverables: (v: string) => void;
-  counterNotes: string;
-  setCounterNotes: (v: string) => void;
-}) => (
-  <div className="flex flex-col gap-4">
+  setCounterNotes
+
+
+
+
+
+
+
+
+
+
+}: {brief: {budget: string;date: string;deliverables: string;};counterBudget: string;setCounterBudget: (v: string) => void;counterDate: Date | undefined;setCounterDate: (v: Date | undefined) => void;counterDeliverables: string;setCounterDeliverables: (v: string) => void;counterNotes: string;setCounterNotes: (v: string) => void;}) =>
+<div className="flex flex-col gap-4">
     {/* Comparison header */}
     <div className="bg-muted/50 rounded-[10px] p-3 border border-border">
       <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2">📊 Original Terms</div>
@@ -61,35 +61,35 @@ const CounterOfferForm = ({
       <div>
         <label className="text-[11px] font-bold text-foreground mb-1.5 block">💰 Your Budget</label>
         <Input
-          value={counterBudget}
-          onChange={(e) => setCounterBudget(e.target.value)}
-          placeholder="e.g., $3,500"
-          className="text-[13px] font-semibold rounded-[10px]"
-        />
+        value={counterBudget}
+        onChange={(e) => setCounterBudget(e.target.value)}
+        placeholder="e.g., $3,500"
+        className="text-[13px] font-semibold rounded-[10px]" />
+      
       </div>
       <div>
         <label className="text-[11px] font-bold text-foreground mb-1.5 block">📅 Your Date</label>
         <Popover>
           <PopoverTrigger asChild>
             <Button
-              variant="outline"
-              className={cn(
-                "w-full justify-start text-left text-[13px] font-semibold rounded-[10px]",
-                !counterDate && "text-muted-foreground font-normal"
-              )}
-            >
+            variant="outline"
+            className={cn(
+              "w-full justify-start text-left text-[13px] font-semibold rounded-[10px]",
+              !counterDate && "text-muted-foreground font-normal"
+            )}>
+            
               <CalendarIcon className="mr-2 h-4 w-4" />
               {counterDate ? format(counterDate, "PPP") : <span>Pick a date</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0 z-[100]" align="start">
             <Calendar
-              mode="single"
-              selected={counterDate}
-              onSelect={setCounterDate}
-              initialFocus
-              className={cn("p-3 pointer-events-auto")}
-            />
+            mode="single"
+            selected={counterDate}
+            onSelect={setCounterDate}
+            initialFocus
+            className={cn("p-3 pointer-events-auto")} />
+          
           </PopoverContent>
         </Popover>
       </div>
@@ -98,28 +98,28 @@ const CounterOfferForm = ({
     <div>
       <label className="text-[11px] font-bold text-foreground mb-1.5 block">📦 Adjusted Deliverables</label>
       <Textarea
-        value={counterDeliverables}
-        onChange={(e) => setCounterDeliverables(e.target.value)}
-        placeholder="Describe what you'll deliver..."
-        className="min-h-[60px] text-[13px] rounded-[10px]"
-      />
+      value={counterDeliverables}
+      onChange={(e) => setCounterDeliverables(e.target.value)}
+      placeholder="Describe what you'll deliver..."
+      className="min-h-[60px] text-[13px] rounded-[10px]" />
+    
     </div>
 
     <div>
       <label className="text-[11px] font-bold text-foreground mb-1.5 block">💬 Notes to Client</label>
       <Textarea
-        value={counterNotes}
-        onChange={(e) => setCounterNotes(e.target.value)}
-        placeholder="Explain your reasoning, availability, or any additional context..."
-        className="min-h-[70px] text-[13px] rounded-[10px]"
-      />
+      value={counterNotes}
+      onChange={(e) => setCounterNotes(e.target.value)}
+      placeholder="Explain your reasoning, availability, or any additional context..."
+      className="min-h-[70px] text-[13px] rounded-[10px]" />
+    
     </div>
-  </div>
-);
+  </div>;
+
 
 const BriefProfile = () => {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{id: string;}>();
   const { getBrief, acceptBrief, submitCounterOffer } = useProjects();
   const isMobile = useIsMobile();
   const [showDeclineModal, setShowDeclineModal] = useState(false);
@@ -143,8 +143,8 @@ const BriefProfile = () => {
           <button onClick={() => navigate('/dashboard')} className="text-[12px] font-bold px-5 py-2 rounded-full bg-primary text-primary-foreground border-none cursor-pointer">← Back to Dashboard</button>
         </div>
         <Toast />
-      </>
-    );
+      </>);
+
   }
 
   const handleAccept = () => {
@@ -166,7 +166,7 @@ const BriefProfile = () => {
     try {
       const parsed = new Date(brief.date);
       if (!isNaN(parsed.getTime())) setCounterDate(parsed);
-    } catch { /* keep undefined */ }
+    } catch {/* keep undefined */}
     setShowCounterPanel(true);
   };
 
@@ -181,7 +181,7 @@ const BriefProfile = () => {
     counterBudget, setCounterBudget,
     counterDate, setCounterDate,
     counterDeliverables, setCounterDeliverables,
-    counterNotes, setCounterNotes,
+    counterNotes, setCounterNotes
   };
 
   return (
@@ -213,9 +213,9 @@ const BriefProfile = () => {
 
           {/* Tags */}
           <div className="flex gap-2 flex-wrap">
-            {brief.tags.map((t, j) => (
-              <span key={j} className="text-[11px] font-semibold px-3 py-1 rounded-full bg-muted border border-border text-foreground">{t}</span>
-            ))}
+            {brief.tags.map((t, j) =>
+            <span key={j} className="text-[11px] font-semibold px-3 py-1 rounded-full bg-muted border border-border text-foreground">{t}</span>
+            )}
           </div>
 
           {/* Client Information */}
@@ -227,7 +227,7 @@ const BriefProfile = () => {
                 <div className="text-[13px] font-semibold text-foreground">{brief.clientName}</div>
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Company</div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Profession </div>
                 <div className="text-[13px] font-semibold text-foreground">{brief.clientCompany}</div>
               </div>
               <div>
@@ -320,8 +320,8 @@ const BriefProfile = () => {
               placeholder="e.g., Schedule conflict, outside my expertise, budget doesn't align..."
               value={declineReason}
               onChange={(e) => setDeclineReason(e.target.value)}
-              className="min-h-[100px] rounded-[10px]"
-            />
+              className="min-h-[100px] rounded-[10px]" />
+            
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowDeclineModal(false)} className="rounded-full">Cancel</Button>
@@ -331,8 +331,8 @@ const BriefProfile = () => {
       </Dialog>
 
       {/* Counter Offer — Drawer on mobile, Dialog on desktop */}
-      {isMobile ? (
-        <Drawer open={showCounterPanel} onOpenChange={setShowCounterPanel}>
+      {isMobile ?
+      <Drawer open={showCounterPanel} onOpenChange={setShowCounterPanel}>
           <DrawerContent className="px-4 pb-6 max-h-[90vh]">
             <DrawerHeader className="text-left px-0">
               <DrawerTitle className="flex items-center gap-2 text-[16px]">
@@ -350,9 +350,9 @@ const BriefProfile = () => {
               <Button onClick={handleSubmitCounter} className="rounded-full flex-1 text-[12px] font-bold">Send Counter Offer</Button>
             </DrawerFooter>
           </DrawerContent>
-        </Drawer>
-      ) : (
-        <Dialog open={showCounterPanel} onOpenChange={setShowCounterPanel}>
+        </Drawer> :
+
+      <Dialog open={showCounterPanel} onOpenChange={setShowCounterPanel}>
           <DialogContent className="sm:max-w-[540px] rounded-[14px]">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-[16px]">
@@ -369,12 +369,12 @@ const BriefProfile = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      )}
+      }
 
 
       <Toast />
-    </>
-  );
+    </>);
+
 };
 
 export default BriefProfile;
