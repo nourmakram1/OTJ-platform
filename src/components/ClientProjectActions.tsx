@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useProjects, ProjectData } from '../context/ProjectContext';
 import { showToast } from './Toast';
 import {
@@ -109,8 +109,8 @@ export const ClientProposalReview: React.FC<{ project: ProjectData }> = ({ proje
 };
 
 // ─── Phase Approval ────────────────────────────────────────
-export const ClientPhaseApproval: React.FC<{ project: ProjectData }> = ({ project }) => {
-  const { approvePhase, releasePayment } = useProjects();
+export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPayments?: () => void }> = ({ project, onSwitchToPayments }) => {
+  const { approvePhase } = useProjects();
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [approvedPhaseNum, setApprovedPhaseNum] = useState<number | null>(null);
   const [expandedPhase, setExpandedPhase] = useState(() => {
@@ -121,23 +121,21 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData }> = ({ projec
   const numericPrice = parseInt(project.budget.replace(/[^0-9]/g, '')) || 0;
 
   // Find the next unpaid milestone
-  const nextMilestoneIndex = project.paymentMilestones.findIndex(m => m.status !== 'paid');
+  const nextMilestoneIndex = project.paymentMilestones.findIndex(m => m.status !== 'paid' && m.status !== 'proof-submitted');
 
   const handleApprovePhase = (phaseNum: number) => {
     approvePhase(project.id, phaseNum);
     setApprovedPhaseNum(phaseNum);
-    // Auto-suggest payment release
+    // Auto-suggest payment proof upload
     if (nextMilestoneIndex >= 0) {
       setTimeout(() => setPaymentModalOpen(true), 600);
     }
   };
 
-  const handleReleasePayment = () => {
-    if (nextMilestoneIndex >= 0) {
-      releasePayment(project.id, nextMilestoneIndex);
-    }
+  const handleGoToPayments = () => {
     setPaymentModalOpen(false);
     setApprovedPhaseNum(null);
+    onSwitchToPayments?.();
   };
 
   return (
@@ -205,34 +203,41 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData }> = ({ projec
         );
       })}
 
-      {/* Payment Release Modal */}
+      {/* Payment Proof Prompt Modal */}
       <Dialog open={paymentModalOpen} onOpenChange={setPaymentModalOpen}>
         <DialogContent className="sm:max-w-[420px]">
           <DialogHeader>
             <DialogTitle className="text-[16px] font-extrabold tracking-[-0.03em]">
-              💳 Release Milestone Payment?
+              📎 Upload Payment Proof
             </DialogTitle>
             <DialogDescription className="text-[13px] text-otj-text">
-              Phase {approvedPhaseNum} has been approved. Would you like to release the associated milestone payment to the creative?
+              Phase {approvedPhaseNum} has been approved! Please transfer the milestone payment and upload the bank transfer screenshot as proof.
             </DialogDescription>
           </DialogHeader>
           {nextMilestoneIndex >= 0 && (
-            <div className="bg-otj-green-bg border border-otj-green-border rounded-[12px] p-4 my-2">
-              <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-otj-green mb-1">Payment Details</div>
+            <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[12px] p-4 my-2">
+              <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-otj-blue mb-1">Amount Due</div>
               <div className="text-[18px] font-extrabold text-foreground">
                 {numericPrice > 0 ? `${Math.round(numericPrice * project.paymentMilestones[nextMilestoneIndex].percentage / 100).toLocaleString()} EGP` : '—'}
               </div>
               <div className="text-[12px] text-otj-text mt-0.5">
                 {project.paymentMilestones[nextMilestoneIndex].label} ({project.paymentMilestones[nextMilestoneIndex].percentage}%)
               </div>
+              {project.paymentMethod && (
+                <div className="mt-2 pt-2 border-t border-border text-[11px] text-otj-muted">
+                  {project.paymentMethod.type === 'instapay'
+                    ? `📱 InstaPay — ${project.paymentMethod.instapayHandle}`
+                    : `🏦 ${project.paymentMethod.bankName} — ${project.paymentMethod.accountName}`}
+                </div>
+              )}
             </div>
           )}
           <DialogFooter className="flex gap-2 sm:gap-2">
             <Button variant="outline" onClick={() => setPaymentModalOpen(false)} className="rounded-full text-[12px] font-bold">
               Later
             </Button>
-            <Button onClick={handleReleasePayment} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
-              ✓ Release Payment
+            <Button onClick={handleGoToPayments} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
+              📎 Go to Payments
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -247,7 +252,23 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
   const numericPrice = parseInt(project.budget.replace(/[^0-9]/g, '')) || 0;
   const [confirmIdx, setConfirmIdx] = useState<number | null>(null);
   const [localProofs, setLocalProofs] = useState<Record<number, { url: string; name: string }>>({});
+  const [autoPromptShown, setAutoPromptShown] = useState(false);
+  const [autoPromptOpen, setAutoPromptOpen] = useState(false);
   const fileRefs = useRef<Record<number, HTMLInputElement | null>>({});
+
+  // Find the first pending (unpaid, no proof) milestone
+  const pendingMilestoneIndex = project.paymentMilestones.findIndex(m => m.status !== 'paid' && m.status !== 'proof-submitted');
+
+  // Auto-prompt on mount if there's a pending milestone
+  useEffect(() => {
+    if (!autoPromptShown && pendingMilestoneIndex >= 0) {
+      const timer = setTimeout(() => {
+        setAutoPromptOpen(true);
+        setAutoPromptShown(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPromptShown, pendingMilestoneIndex]);
 
   const handleProofUpload = (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -388,6 +409,46 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
             <Button variant="outline" onClick={() => setConfirmIdx(null)} className="rounded-full text-[12px] font-bold">Cancel</Button>
             <Button onClick={handleConfirmPayment} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
               ✓ Submit Proof
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Auto-prompt Payment Reminder */}
+      <Dialog open={autoPromptOpen} onOpenChange={setAutoPromptOpen}>
+        <DialogContent className="sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle className="text-[16px] font-extrabold tracking-[-0.03em]">
+              📎 Payment Proof Required
+            </DialogTitle>
+            <DialogDescription className="text-[13px] text-otj-text">
+              You have a pending milestone payment. Please transfer the amount and upload your bank transfer screenshot as proof.
+            </DialogDescription>
+          </DialogHeader>
+          {pendingMilestoneIndex >= 0 && (
+            <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[12px] p-4 my-2">
+              <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-otj-blue mb-1">Amount Due</div>
+              <div className="text-[18px] font-extrabold text-foreground">
+                {numericPrice > 0 ? `${Math.round(numericPrice * project.paymentMilestones[pendingMilestoneIndex].percentage / 100).toLocaleString()} EGP` : '—'}
+              </div>
+              <div className="text-[12px] text-otj-text mt-0.5">
+                {project.paymentMilestones[pendingMilestoneIndex].label} ({project.paymentMilestones[pendingMilestoneIndex].percentage}%)
+              </div>
+              {project.paymentMethod && (
+                <div className="mt-2 pt-2 border-t border-border text-[11px] text-otj-muted">
+                  {project.paymentMethod.type === 'instapay'
+                    ? `📱 InstaPay — ${project.paymentMethod.instapayHandle}`
+                    : `🏦 ${project.paymentMethod.bankName} — ${project.paymentMethod.accountName}`}
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter className="flex gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => setAutoPromptOpen(false)} className="rounded-full text-[12px] font-bold">
+              Later
+            </Button>
+            <Button onClick={() => { setAutoPromptOpen(false); if (pendingMilestoneIndex >= 0) fileRefs.current[pendingMilestoneIndex]?.click(); }} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
+              📷 Upload Proof Now
             </Button>
           </DialogFooter>
         </DialogContent>
