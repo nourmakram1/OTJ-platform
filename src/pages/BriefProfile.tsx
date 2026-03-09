@@ -7,17 +7,121 @@ import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
 import { useProjects } from '../context/ProjectContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '../components/ui/drawer';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Input } from '../components/ui/input';
 import { Calendar } from '../components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { cn } from '../lib/utils';
+import { useIsMobile } from '../hooks/use-mobile';
+
+const CounterOfferForm = ({
+  brief,
+  counterBudget,
+  setCounterBudget,
+  counterDate,
+  setCounterDate,
+  counterDeliverables,
+  setCounterDeliverables,
+  counterNotes,
+  setCounterNotes,
+}: {
+  brief: { budget: string; date: string; deliverables: string };
+  counterBudget: string;
+  setCounterBudget: (v: string) => void;
+  counterDate: Date | undefined;
+  setCounterDate: (v: Date | undefined) => void;
+  counterDeliverables: string;
+  setCounterDeliverables: (v: string) => void;
+  counterNotes: string;
+  setCounterNotes: (v: string) => void;
+}) => (
+  <div className="flex flex-col gap-4">
+    {/* Comparison header */}
+    <div className="bg-muted/50 rounded-[10px] p-3 border border-border">
+      <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2">📊 Original Terms</div>
+      <div className="grid grid-cols-3 gap-2">
+        <div>
+          <div className="text-[9px] font-bold uppercase text-muted-foreground">Budget</div>
+          <div className="text-[12px] font-extrabold text-foreground">{brief.budget}</div>
+        </div>
+        <div>
+          <div className="text-[9px] font-bold uppercase text-muted-foreground">Date</div>
+          <div className="text-[12px] font-semibold text-foreground">{brief.date}</div>
+        </div>
+        <div>
+          <div className="text-[9px] font-bold uppercase text-muted-foreground">Deliverables</div>
+          <div className="text-[12px] text-foreground truncate">{brief.deliverables}</div>
+        </div>
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label className="text-[11px] font-bold text-foreground mb-1.5 block">💰 Your Budget</label>
+        <Input
+          value={counterBudget}
+          onChange={(e) => setCounterBudget(e.target.value)}
+          placeholder="e.g., $3,500"
+          className="text-[13px] font-semibold rounded-[10px]"
+        />
+      </div>
+      <div>
+        <label className="text-[11px] font-bold text-foreground mb-1.5 block">📅 Your Date</label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left text-[13px] font-semibold rounded-[10px]",
+                !counterDate && "text-muted-foreground font-normal"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {counterDate ? format(counterDate, "PPP") : <span>Pick a date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 z-[100]" align="start">
+            <Calendar
+              mode="single"
+              selected={counterDate}
+              onSelect={setCounterDate}
+              initialFocus
+              className={cn("p-3 pointer-events-auto")}
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+    </div>
+
+    <div>
+      <label className="text-[11px] font-bold text-foreground mb-1.5 block">📦 Adjusted Deliverables</label>
+      <Textarea
+        value={counterDeliverables}
+        onChange={(e) => setCounterDeliverables(e.target.value)}
+        placeholder="Describe what you'll deliver..."
+        className="min-h-[60px] text-[13px] rounded-[10px]"
+      />
+    </div>
+
+    <div>
+      <label className="text-[11px] font-bold text-foreground mb-1.5 block">💬 Notes to Client</label>
+      <Textarea
+        value={counterNotes}
+        onChange={(e) => setCounterNotes(e.target.value)}
+        placeholder="Explain your reasoning, availability, or any additional context..."
+        className="min-h-[70px] text-[13px] rounded-[10px]"
+      />
+    </div>
+  </div>
+);
 
 const BriefProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { getBrief, acceptBrief } = useProjects();
+  const isMobile = useIsMobile();
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [declineReason, setDeclineReason] = useState('');
   const [showCounterPanel, setShowCounterPanel] = useState(false);
@@ -59,7 +163,6 @@ const BriefProfile = () => {
     setCounterBudget(brief.budget);
     setCounterDeliverables(brief.deliverables);
     setCounterNotes('');
-    // Try to parse the brief date
     try {
       const parsed = new Date(brief.date);
       if (!isNaN(parsed.getTime())) setCounterDate(parsed);
@@ -71,6 +174,14 @@ const BriefProfile = () => {
     showToast('✓ Counter offer sent to client');
     setShowCounterPanel(false);
     setTimeout(() => navigate('/dashboard'), 800);
+  };
+
+  const counterFormProps = {
+    brief: { budget: brief.budget, date: brief.date, deliverables: brief.deliverables },
+    counterBudget, setCounterBudget,
+    counterDate, setCounterDate,
+    counterDeliverables, setCounterDeliverables,
+    counterNotes, setCounterNotes,
   };
 
   return (
@@ -189,7 +300,7 @@ const BriefProfile = () => {
 
       {/* Decline Modal */}
       <Dialog open={showDeclineModal} onOpenChange={setShowDeclineModal}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] rounded-[14px]">
           <DialogHeader>
             <DialogTitle>Decline Brief</DialogTitle>
             <DialogDescription>
@@ -201,93 +312,56 @@ const BriefProfile = () => {
               placeholder="e.g., Schedule conflict, outside my expertise, budget doesn't align..."
               value={declineReason}
               onChange={(e) => setDeclineReason(e.target.value)}
-              className="min-h-[100px]"
+              className="min-h-[100px] rounded-[10px]"
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowDeclineModal(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDecline}>Decline Brief</Button>
+            <Button variant="outline" onClick={() => setShowDeclineModal(false)} className="rounded-full">Cancel</Button>
+            <Button variant="destructive" onClick={handleDecline} className="rounded-full">Decline Brief</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Counter Offer Modal */}
-      <Dialog open={showCounterPanel} onOpenChange={setShowCounterPanel}>
-        <DialogContent className="sm:max-w-[520px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <span>↕</span> Counter Offer
-            </DialogTitle>
-            <DialogDescription>
-              Propose different terms to the client. They'll be notified and can accept, decline, or continue negotiating.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-4 py-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-1.5 block">Your Proposed Budget</label>
-                <Input
-                  value={counterBudget}
-                  onChange={(e) => setCounterBudget(e.target.value)}
-                  placeholder="e.g., $3,500"
-                  className="text-[13px] font-semibold"
-                />
-                <div className="text-[10px] text-muted-foreground mt-1">Client offered: <span className="font-semibold text-foreground">{brief?.budget}</span></div>
-              </div>
-              <div>
-                <label className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-1.5 block">Your Proposed Date</label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left text-[13px] font-semibold",
-                        !counterDate && "text-muted-foreground font-normal"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {counterDate ? format(counterDate, "PPP") : <span>Pick a date</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={counterDate}
-                      onSelect={setCounterDate}
-                      initialFocus
-                      className={cn("p-3 pointer-events-auto")}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <div className="text-[10px] text-muted-foreground mt-1">Client requested: <span className="font-semibold text-foreground">{brief?.date}</span></div>
-              </div>
+      {/* Counter Offer — Drawer on mobile, Dialog on desktop */}
+      {isMobile ? (
+        <Drawer open={showCounterPanel} onOpenChange={setShowCounterPanel}>
+          <DrawerContent className="px-4 pb-6 max-h-[90vh]">
+            <DrawerHeader className="text-left px-0">
+              <DrawerTitle className="flex items-center gap-2 text-[16px]">
+                <span>↕</span> Counter Offer
+              </DrawerTitle>
+              <DrawerDescription className="text-[12px]">
+                Propose different terms to the client.
+              </DrawerDescription>
+            </DrawerHeader>
+            <div className="overflow-y-auto flex-1 px-0">
+              <CounterOfferForm {...counterFormProps} />
             </div>
-            <div>
-              <label className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-1.5 block">Adjusted Deliverables</label>
-              <Textarea
-                value={counterDeliverables}
-                onChange={(e) => setCounterDeliverables(e.target.value)}
-                placeholder="Describe what you'll deliver..."
-                className="min-h-[70px] text-[13px]"
-              />
-              <div className="text-[10px] text-muted-foreground mt-1">Original: <span className="font-semibold text-foreground">{brief?.deliverables}</span></div>
-            </div>
-            <div>
-              <label className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-1.5 block">Notes to Client</label>
-              <Textarea
-                value={counterNotes}
-                onChange={(e) => setCounterNotes(e.target.value)}
-                placeholder="Explain your reasoning, availability, or any additional context..."
-                className="min-h-[80px] text-[13px]"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCounterPanel(false)}>Cancel</Button>
-            <Button onClick={handleSubmitCounter} className="rounded-full text-[12px] font-bold px-5">Send Counter Offer</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DrawerFooter className="px-0 pt-4 flex-row gap-3">
+              <Button variant="outline" onClick={() => setShowCounterPanel(false)} className="rounded-full flex-1">Cancel</Button>
+              <Button onClick={handleSubmitCounter} className="rounded-full flex-1 text-[12px] font-bold">Send Counter Offer</Button>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <Dialog open={showCounterPanel} onOpenChange={setShowCounterPanel}>
+          <DialogContent className="sm:max-w-[540px] rounded-[14px]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-[16px]">
+                <span>↕</span> Counter Offer
+              </DialogTitle>
+              <DialogDescription className="text-[12px]">
+                Propose different terms to the client. They'll be notified and can accept, decline, or continue negotiating.
+              </DialogDescription>
+            </DialogHeader>
+            <CounterOfferForm {...counterFormProps} />
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowCounterPanel(false)} className="rounded-full">Cancel</Button>
+              <Button onClick={handleSubmitCounter} className="rounded-full text-[12px] font-bold px-5">Send Counter Offer</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
 
       <Toast />
     </>
