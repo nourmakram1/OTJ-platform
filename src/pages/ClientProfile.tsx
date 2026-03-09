@@ -6,7 +6,7 @@ import { useProjects } from '../context/ProjectContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import { Star, Shield, ExternalLink, MapPin, Building2, Users, Calendar } from 'lucide-react';
+import { Star, Shield, ExternalLink, MapPin, Building2, Calendar } from 'lucide-react';
 
 const tabs = ['About', 'Reviews'];
 
@@ -156,12 +156,6 @@ const ClientProfile = () => {
                     <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Location</div>
                     <div className="text-[13px] font-semibold text-foreground">{client.location}</div>
                   </div>
-                  {client.teamSize && (
-                    <div>
-                      <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Team Size</div>
-                      <div className="text-[13px] font-semibold text-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5 text-muted-foreground" /> {client.teamSize}</div>
-                    </div>
-                  )}
                   {client.website && (
                     <div>
                       <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Website</div>
