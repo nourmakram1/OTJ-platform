@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProjectProvider } from "./context/ProjectContext";
+import { CreativeProfileProvider } from "./context/CreativeProfileContext";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import ClientOnboarding from "./pages/ClientOnboarding";
