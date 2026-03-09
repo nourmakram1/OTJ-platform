@@ -12,6 +12,7 @@ import ProjectProfile from "./pages/ProjectProfile";
 import BriefProfile from "./pages/BriefProfile";
 import CreativeProfile from "./pages/CreativeProfile";
 import ClientProfile from "./pages/ClientProfile";
+import CreativeSettings from "./pages/CreativeSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/project/:id" element={<ProjectProfile />} />
             <Route path="/creative/:id" element={<CreativeProfile />} />
             <Route path="/client/:id" element={<ClientProfile />} />
+            <Route path="/settings" element={<CreativeSettings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

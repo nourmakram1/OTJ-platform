@@ -133,7 +133,7 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
             {showProfileMenu && (
               <div className="absolute top-10 right-0 w-[180px] bg-card border border-border rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.1)] py-1.5 z-[200]">
                 <div onClick={() => { setShowProfileMenu(false); navigate('/creative/nour'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-foreground cursor-pointer hover:bg-otj-off">👤 My Profile</div>
-                <div onClick={() => { setShowProfileMenu(false); navigate('/onboarding'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-foreground cursor-pointer hover:bg-otj-off">⚙️ Settings</div>
+                <div onClick={() => { setShowProfileMenu(false); navigate('/settings'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-foreground cursor-pointer hover:bg-otj-off">⚙️ Settings</div>
                 <div className="h-px bg-border mx-2 my-1" />
                 <div onClick={() => { setShowProfileMenu(false); navigate('/login'); showToast('Logged out'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-otj-text cursor-pointer hover:bg-otj-off">↩ Log Out</div>
               </div>
