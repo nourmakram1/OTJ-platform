@@ -81,6 +81,7 @@ const CreativeSettings = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('instapay');
   const [paymentDetails, setPaymentDetails] = useState('nour.makram@instapay');
+  const [currentPlan, setCurrentPlan] = useState<'free' | 'pro'>('free');
 
   const availableNiches = nicheMap[profession] || [];
   const q = profSearch.toLowerCase();
