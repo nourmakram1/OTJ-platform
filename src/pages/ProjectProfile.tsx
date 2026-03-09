@@ -503,18 +503,6 @@ const ProjectProfile = () => {
               )}
 
               {activeTab === 3 && (
-                <AttachmentsTab
-                  proj={proj}
-                  projectId={id || proj.id}
-                  attachFileRef={attachFileRef}
-                  handleAttachFiles={handleAttachFiles}
-                  addAttachment={addAttachment}
-                  removeAttachment={removeAttachment}
-                  renameAttachment={renameAttachment}
-                />
-              )}
-
-              {activeTab === 4 && (
                 <div className="animate-fade-up">
                   {proj.proposalDeliverables.length > 0 ? (
                     <>
