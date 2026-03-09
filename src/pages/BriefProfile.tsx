@@ -120,13 +120,11 @@ const CounterOfferForm = ({
 const BriefProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { getBrief, acceptBrief } = useProjects();
+  const { getBrief, acceptBrief, submitCounterOffer } = useProjects();
   const isMobile = useIsMobile();
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [declineReason, setDeclineReason] = useState('');
   const [showCounterPanel, setShowCounterPanel] = useState(false);
-  const [counterAcceptedNotif, setCounterAcceptedNotif] = useState(false);
-  const [counterAcceptedBrief, setCounterAcceptedBrief] = useState<{ name: string; clientName: string; budget: string } | null>(null);
   const [counterBudget, setCounterBudget] = useState('');
   const [counterDate, setCounterDate] = useState<Date | undefined>();
   const [counterDeliverables, setCounterDeliverables] = useState('');
