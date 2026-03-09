@@ -156,12 +156,6 @@ const ClientProfile = () => {
                     <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Location</div>
                     <div className="text-[13px] font-semibold text-foreground">{client.location}</div>
                   </div>
-                  {client.teamSize && (
-                    <div>
-                      <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Team Size</div>
-                      <div className="text-[13px] font-semibold text-foreground flex items-center gap-1"><Users className="w-3.5 h-3.5 text-muted-foreground" /> {client.teamSize}</div>
-                    </div>
-                  )}
                   {client.website && (
                     <div>
                       <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Website</div>
