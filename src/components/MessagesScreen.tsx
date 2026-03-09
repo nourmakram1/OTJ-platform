@@ -225,7 +225,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
         <div className="p-3.5 px-[18px] border-b border-border bg-card flex items-center gap-3">
           {/* Mobile back button */}
           <button onClick={() => setMobileShowChat(false)} className="md:hidden w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-sm text-otj-text shrink-0">←</button>
-          <div className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg">{currentThread?.emoji || '👩‍💼'}</div>
+          <div onClick={() => navigate(`/client/${currentThread?.clientId}`)} className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg cursor-pointer hover:ring-2 hover:ring-primary transition-all">{currentThread?.emoji || '👩‍💼'}</div>
           <div
             onClick={() => setShowCollabPanel(prev => !prev)}
             className="cursor-pointer hover:opacity-70 transition-opacity"
