@@ -135,10 +135,10 @@ export const ClientDashboardScreen: React.FC = () => {
       {tab === 'complete' && (
         <div className="flex flex-col gap-2 animate-fade-up">
           {completedProjects.length === 0 ? (
-            <div className="bg-card border border-border rounded-[14px] p-8 text-center">
-              <div className="text-[32px] mb-2">✅</div>
-              <div className="text-[13px] font-bold text-foreground mb-1">No completed projects yet</div>
-              <div className="text-[11px] text-muted-foreground">Completed projects will show up here.</div>
+            <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
+              <div className="text-[48px]">✨</div>
+              <div className="text-[14px] font-extrabold text-foreground">No completed projects yet</div>
+              <div className="text-[12px] text-muted-foreground max-w-[260px]">Your success stories will shine here — every great project starts with a single step!</div>
             </div>
           ) : (
             completedProjects.map((proj, i) => (
