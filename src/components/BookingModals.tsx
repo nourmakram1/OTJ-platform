@@ -16,147 +16,111 @@ const creativeData: Record<string, { av: string; name: string; role: string; rat
 };
 
 export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClose, creativeId }) => {
-  const [mode, setMode] = useState<'A' | 'B' | 'C' | 'D'>('A');
-  const [selectedPkg, setSelectedPkg] = useState(0);
+  const [budgetType, setBudgetType] = useState<'price' | 'range' | 'negotiate'>('price');
+  const [budgetMin, setBudgetMin] = useState('');
+  const [budgetMax, setBudgetMax] = useState('');
+  const [budgetFixed, setBudgetFixed] = useState('');
 
-  const c = creativeId && creativeData[creativeId] ? creativeData[creativeId] : { av: '👥', name: 'New Brief', role: 'Select creatives below', rating: 'Mode: Casting Call' };
-  const modes = [
-    { id: 'A' as const, icon: '⚡', label: 'Quick Brief' },
-    { id: 'B' as const, icon: '↕', label: 'Negotiate' },
-    { id: 'C' as const, icon: '👥', label: 'Casting Call' },
-    { id: 'D' as const, icon: '📁', label: 'Saved Brief' },
-  ];
-  const submitLabels = { A: 'Send Brief → Creative', B: 'Request Quote →', C: 'Send to All Creatives →', D: 'Send Saved Brief →' };
+  const c = creativeId && creativeData[creativeId] ? creativeData[creativeId] : { av: '👥', name: 'New Brief', role: 'Select creatives below', rating: '' };
+
+  const inputClass = "w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-muted/40 text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card placeholder:text-muted-foreground/60";
+  const labelClass = "text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-[5px]";
 
   return (
     <div onClick={(e) => e.target === e.currentTarget && onClose()} className={`fixed inset-0 z-[200] flex items-center justify-center bg-foreground/40 backdrop-blur-[6px] transition-opacity duration-250 ${visible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-      <div className={`bg-card/96 backdrop-blur-[20px] border border-card/80 rounded-3xl shadow-[0_32px_80px_rgba(0,0,0,0.2)] w-full max-w-[520px] overflow-hidden transition-all duration-300 max-h-[90vh] overflow-y-auto ${visible ? 'translate-y-0 scale-100' : 'translate-y-4 scale-[0.98]'}`}>
+      <div className={`bg-card/96 backdrop-blur-[20px] border border-border rounded-3xl shadow-[0_32px_80px_rgba(0,0,0,0.2)] w-full max-w-[520px] overflow-hidden transition-all duration-300 max-h-[90vh] overflow-y-auto ${visible ? 'translate-y-0 scale-100' : 'translate-y-4 scale-[0.98]'}`}>
         {/* Header */}
-        <div className="p-5 px-[22px] pb-0 flex items-center gap-3">
-          <div className="w-[52px] h-[52px] rounded-[14px] bg-otj-off flex items-center justify-center text-[28px] shrink-0">{c.av}</div>
+        <div className="p-5 px-[22px] pb-3 flex items-center gap-3">
+          <div className="w-[52px] h-[52px] rounded-[14px] bg-muted flex items-center justify-center text-[28px] shrink-0">{c.av}</div>
           <div className="flex-1">
             <div className="text-base font-extrabold tracking-[-0.03em]">{c.name}</div>
-            <div className="text-xs text-otj-text">{c.role}</div>
-            <div className="text-[11.5px] font-bold text-foreground mt-0.5">{c.rating}</div>
+            <div className="text-xs text-muted-foreground">{c.role}</div>
           </div>
-          <button onClick={onClose} className="w-7 h-7 rounded-full border border-border bg-card cursor-pointer text-[13px] flex items-center justify-center text-otj-text transition-all duration-150 shrink-0 hover:border-foreground hover:text-foreground">×</button>
-        </div>
-
-        {/* Mode tabs */}
-        <div className="flex gap-1 p-3.5 px-[22px] pt-3.5">
-          {modes.map(m => (
-            <button key={m.id} onClick={() => setMode(m.id)} className={`flex-1 px-1.5 py-2 rounded-[10px] border-[1.5px] text-[11.5px] font-bold cursor-pointer transition-all duration-150 text-center tracking-[-0.01em] ${
-              mode === m.id ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
-            }`}>
-              <span className="text-sm block mb-0.5">{m.icon}</span>{m.label}
-            </button>
-          ))}
+          <button onClick={onClose} className="w-7 h-7 rounded-full border border-border bg-card cursor-pointer text-[13px] flex items-center justify-center text-muted-foreground transition-all duration-150 shrink-0 hover:border-foreground hover:text-foreground">×</button>
         </div>
 
         {/* Body */}
-        <div className="px-[22px] py-4 pb-5">
-          {mode === 'A' && (
-            <div className="animate-fade-up">
-              <div className="mb-3">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Select Package</div>
-                <div className="flex flex-col gap-1.5">
-                  {[
-                    { name: 'Starter · Half Day', desc: '20 edited photos · 2 revisions', price: '2,000', unit: 'EGP' },
-                    { name: 'Full Day Campaign', desc: '40 edited photos · 3 revisions', price: '3,500', unit: 'EGP', badge: 'Popular' },
-                    { name: 'Premium Multi-Day', desc: '80+ photos · unlimited revisions', price: '6,500', unit: 'EGP' },
-                  ].map((pkg, i) => (
-                    <div key={i} onClick={() => setSelectedPkg(i)} className={`p-2.5 px-3.5 rounded-[10px] border-[1.5px] bg-card cursor-pointer transition-all duration-150 flex items-center justify-between ${selectedPkg === i ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted'}`}>
-                      <div>
-                        <div className="text-[13px] font-bold tracking-[-0.02em]">{pkg.name}</div>
-                        <div className="text-[11px] text-otj-text">{pkg.desc}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-[13px] font-extrabold">{pkg.price} <span className="text-[10px] font-medium text-otj-text">{pkg.unit}</span></div>
-                        {pkg.badge && <div className="text-[10.5px] font-semibold text-primary-foreground bg-primary px-2 py-0.5 rounded-full mt-0.5">{pkg.badge}</div>}
-                      </div>
-                    </div>
-                  ))}
-                  <div onClick={() => setSelectedPkg(-1)} className={`text-xs font-semibold p-[9px_14px] rounded-[10px] border-[1.5px] border-dashed text-center cursor-pointer transition-all duration-150 ${selectedPkg === -1 ? 'border-otj-blue text-otj-blue bg-otj-blue-bg' : 'border-border text-otj-text hover:border-foreground hover:text-foreground'}`}>
-                    💬 I want to discuss pricing
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2.5 mb-3">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Date</div>
-                  <input type="date" className="w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card" />
-                </div>
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Duration</div>
-                  <select className="w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card appearance-none cursor-pointer">
-                    <option>Half day (4hrs)</option><option>Full day (8hrs)</option><option>Multi-day</option><option>Custom</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Brief Notes</div>
-                <textarea rows={3} placeholder="Describe your project — mood, deliverables, references…" className="w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 resize-none leading-relaxed focus:border-foreground focus:bg-card placeholder:text-otj-muted" />
-              </div>
+        <div className="px-[22px] py-4 pb-5 flex flex-col gap-3">
+          {/* Project Name */}
+          <div>
+            <div className={labelClass}>Project Name</div>
+            <input type="text" placeholder="e.g. Ramadan Campaign Shoot" className={inputClass} />
+          </div>
+
+          {/* Description */}
+          <div>
+            <div className={labelClass}>Description</div>
+            <textarea rows={3} placeholder="Describe your project — mood, deliverables, references…" className={`${inputClass} resize-none leading-relaxed`} />
+          </div>
+
+          {/* Survey Question */}
+          <div>
+            <div className={labelClass}>Survey Question</div>
+            <input type="text" placeholder="e.g. Can you share relevant portfolio pieces?" className={inputClass} />
+          </div>
+
+          {/* Date & Location */}
+          <div className="grid grid-cols-2 gap-2.5">
+            <div>
+              <div className={labelClass}>Date</div>
+              <input type="date" className={inputClass} />
             </div>
-          )}
-          {mode === 'B' && (
-            <div className="animate-fade-up">
-              <div className="grid grid-cols-2 gap-2.5 mb-3">
-                <div><div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Your Budget (EGP)</div><input type="number" placeholder="3000" className="w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card" /></div>
-                <div><div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Timeline</div><select className="w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none appearance-none cursor-pointer"><option>3 days</option><option>5 days</option><option>1 week</option><option>2 weeks</option></select></div>
-              </div>
-              <div><div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">What do you need?</div><textarea rows={3} placeholder="Describe the project scope and requirements…" className="w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none resize-none leading-relaxed focus:border-foreground focus:bg-card placeholder:text-otj-muted" /></div>
+            <div>
+              <div className={labelClass}>Location</div>
+              <input type="text" placeholder="e.g. Cairo, Studio A" className={inputClass} />
             </div>
-          )}
-          {mode === 'C' && (
-            <div className="animate-fade-up">
-              <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Selected Creatives</div>
-              <div className="flex flex-col gap-1.5 mb-3">
-                {[{ av: '👩‍🎨', name: 'Nour Makram', role: 'Photographer' }, { av: '🎥', name: 'Omar Hassan', role: 'Cinematographer' }].map((c, i) => (
-                  <div key={i} className="flex items-center gap-2.5 p-2 px-3 rounded-[10px] border-[1.5px] border-border bg-card">
-                    <div className="w-8 h-8 rounded-full bg-otj-off flex items-center justify-center text-base shrink-0">{c.av}</div>
-                    <div className="flex-1 text-[12.5px] font-bold">{c.name}</div>
-                    <div className="text-[11px] text-otj-text">{c.role}</div>
-                    <span className="text-[11px] text-otj-muted cursor-pointer px-2 py-0.5 rounded-md border border-border transition-all duration-150 hover:text-destructive hover:border-destructive">×</span>
-                  </div>
-                ))}
-                <button className="p-2 px-3.5 rounded-[10px] border-[1.5px] border-dashed border-border bg-transparent text-xs font-semibold text-otj-text cursor-pointer transition-all duration-150 text-center w-full hover:border-foreground hover:text-foreground">+ Add Creative</button>
-              </div>
-              <div><div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Brief</div><textarea rows={3} placeholder="Describe the project for all creatives…" className="w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none resize-none leading-relaxed focus:border-foreground focus:bg-card placeholder:text-otj-muted" /></div>
+          </div>
+
+          {/* Budget */}
+          <div>
+            <div className={labelClass}>Budget</div>
+            <div className="flex gap-1.5 mb-2.5">
+              {([
+                { id: 'price' as const, label: 'Fixed Price' },
+                { id: 'range' as const, label: 'Range' },
+                { id: 'negotiate' as const, label: 'I want to negotiate' },
+              ]).map(opt => (
+                <button
+                  key={opt.id}
+                  onClick={() => setBudgetType(opt.id)}
+                  className={`flex-1 px-2 py-2 rounded-[10px] border-[1.5px] text-[11.5px] font-bold cursor-pointer transition-all duration-150 text-center tracking-[-0.01em] ${
+                    budgetType === opt.id
+                      ? 'bg-primary border-primary text-primary-foreground'
+                      : 'bg-card border-border text-muted-foreground hover:border-foreground hover:text-foreground'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
             </div>
-          )}
-          {mode === 'D' && (
-            <div className="animate-fade-up">
-              <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]">Your Saved Briefs</div>
-              <div className="flex flex-col gap-1.5 mb-2.5">
-                {[
-                  { icon: '📸', name: 'Product Shoot Brief', meta: 'Used 3 times · Last: Feb 28' },
-                  { icon: '🎥', name: 'Campaign Video Brief', meta: 'Used 1 time · Last: Feb 15' },
-                ].map((b, i) => (
-                  <div key={i} className="p-2.5 px-3.5 rounded-[10px] border-[1.5px] border-border bg-card cursor-pointer transition-all duration-150 flex items-center gap-2.5 hover:border-foreground">
-                    <span className="text-base shrink-0">{b.icon}</span>
-                    <div className="flex-1"><div className="text-[13px] font-bold tracking-[-0.02em]">{b.name}</div><div className="text-[11px] text-otj-text">{b.meta}</div></div>
-                    <span className="text-sm text-otj-blue">✓</span>
-                  </div>
-                ))}
+            {budgetType === 'price' && (
+              <input type="number" placeholder="e.g. 3500" value={budgetFixed} onChange={e => setBudgetFixed(e.target.value)} className={inputClass} />
+            )}
+            {budgetType === 'range' && (
+              <div className="grid grid-cols-2 gap-2.5">
+                <input type="number" placeholder="Min (EGP)" value={budgetMin} onChange={e => setBudgetMin(e.target.value)} className={inputClass} />
+                <input type="number" placeholder="Max (EGP)" value={budgetMax} onChange={e => setBudgetMax(e.target.value)} className={inputClass} />
               </div>
-            </div>
-          )}
+            )}
+            {budgetType === 'negotiate' && (
+              <div className="text-xs text-muted-foreground bg-muted/40 rounded-[10px] p-3 text-center border border-border">
+                💬 No amount specified — you'll discuss pricing with the creative
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Footer */}
         <div className="px-[22px] pb-5 flex flex-col gap-2">
           <button onClick={() => { onClose(); showToast('✓ Brief sent! Creative has 2hrs to confirm'); }} className="w-full py-3 rounded-full border-none bg-primary text-primary-foreground text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-2 hover:bg-primary/90 group">
-            {submitLabels[mode]} <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
+            Send Brief → <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
           </button>
-          <button onClick={() => showToast('📁 Brief saved as template')} className="w-full py-[9px] rounded-full border-[1.5px] border-border bg-transparent text-[12.5px] font-semibold text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">📁 Save as Brief Template</button>
-          <div className="text-[11px] text-otj-muted text-center leading-relaxed">🔒 50% deposit held in OTJ escrow on acceptance · Creative has 2hrs to confirm</div>
+          <div className="text-[11px] text-muted-foreground text-center leading-relaxed">🔒 50% deposit held in escrow on acceptance · Creative has 2hrs to confirm</div>
         </div>
       </div>
     </div>
   );
 };
-
 // Counter Offer Modal
 interface CounterOfferModalProps {
   visible: boolean;
