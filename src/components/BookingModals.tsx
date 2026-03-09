@@ -220,6 +220,7 @@ interface NotifPopupProps {
   onAcceptBrief: () => void;
   onCounter: () => void;
   onSwitchToMessages: () => void;
+  onNavigate: (path: string) => void;
 }
 
 export const NotifPopup: React.FC<NotifPopupProps> = ({ visible, onClose, onAcceptBrief, onCounter, onSwitchToMessages }) => {
