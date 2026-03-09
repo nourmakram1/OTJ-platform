@@ -27,7 +27,9 @@ export interface PhaseData {
 export interface PaymentMilestone {
   label: string;
   percentage: number;
-  status: 'pending' | 'paid' | 'held';
+  status: 'pending' | 'paid' | 'held' | 'proof-submitted';
+  proofUrl?: string;
+  proofName?: string;
 }
 
 export interface PaymentMethod {
