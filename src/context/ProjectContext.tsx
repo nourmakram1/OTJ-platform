@@ -775,8 +775,20 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   }, [activeProjects, addNotification]);
 
+  const toggleTask = useCallback((projectId: string, phaseNum: number, taskIndex: number) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const updatedPhases = p.phases.map(ph => {
+        if (ph.num !== phaseNum) return ph;
+        const updatedTasks = ph.tasks.map((t, i) => i === taskIndex ? { ...t, done: !t.done } : t);
+        return { ...ph, tasks: updatedTasks };
+      });
+      return { ...p, phases: updatedPhases };
+    }));
+  }, []);
+
   return (
-    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal }}>
+    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask }}>
       {children}
     </ProjectContext.Provider>
   );
