@@ -222,57 +222,8 @@ const ClientProfile = () => {
             </>
           )}
 
-          {/* Projects Tab */}
-          {activeTab === 1 && (
-            <>
-              {clientProjects.length > 0 ? (
-                <div className="flex flex-col gap-2">
-                  {clientProjects.map(proj => (
-                    <div
-                      key={proj.id}
-                      onClick={() => navigate(`/project/${proj.id}`)}
-                      className="bg-card border border-border rounded-[14px] p-3.5 px-4 cursor-pointer transition-all duration-150 hover:shadow-md hover:border-muted-foreground flex items-center gap-3"
-                    >
-                      <div className="w-10 h-10 rounded-[10px] bg-accent flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[13px] font-extrabold tracking-[-0.02em] truncate">{proj.name}</div>
-                        <div className="text-[11px] text-muted-foreground">{proj.status} · {proj.budget}</div>
-                      </div>
-                      <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
-                        proj.status === 'active' ? 'bg-[hsl(var(--otj-blue-bg))] text-[hsl(var(--otj-blue))]' :
-                        proj.status === 'proposal' ? 'bg-[hsl(var(--otj-yellow-bg))] text-[hsl(var(--otj-yellow))]' :
-                        'bg-muted text-muted-foreground'
-                      }`}>{proj.status}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-card border border-border rounded-[14px] p-8 text-center">
-                  <div className="text-[32px] mb-2">📁</div>
-                  <div className="text-[13px] font-bold text-foreground mb-1">No projects yet</div>
-                  <div className="text-[11px] text-muted-foreground">Projects with this client will appear here.</div>
-                </div>
-              )}
-
-              {/* Past completed projects */}
-              <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mt-2">Completed Projects</div>
-              <div className="flex flex-col gap-2">
-                {completedProjects.slice(0, 3).map((proj, i) => (
-                  <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-[10px] bg-muted flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[13px] font-extrabold tracking-[-0.02em] truncate">{proj.name}</div>
-                      <div className="text-[11px] text-muted-foreground">{proj.client}</div>
-                    </div>
-                    <div className="text-[12px] font-extrabold text-[hsl(var(--otj-green))]">{proj.earned}</div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
           {/* Reviews Tab */}
-          {activeTab === 2 && (
+          {activeTab === 1 && (
             <>
               <div className="flex items-center justify-between">
                 <div>
