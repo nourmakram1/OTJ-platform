@@ -52,7 +52,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
         ].map((s, i) => (
           <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4">
             <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">{s.label}</div>
-            <div className={`text-[26px] font-extrabold tracking-[-0.05em] leading-none ${s.color}`}>{s.val}</div>
+            <div className="text-[26px] font-extrabold tracking-[-0.05em] leading-none text-foreground">{s.val}</div>
             <div className={`text-[11px] font-bold mt-1 ${s.deltaClass}`}>{s.delta}</div>
           </div>
         ))}
