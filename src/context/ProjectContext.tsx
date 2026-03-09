@@ -329,6 +329,7 @@ const defaultActiveProjects: ProjectData[] = [
     ],
     attachments: [],
     reviews: [],
+    myRole: 'as-creative',
   },
   {
     id: 'proj-existing-3',
