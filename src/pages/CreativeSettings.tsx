@@ -101,6 +101,7 @@ const CreativeSettings = () => {
   ];
 
   const menuItems2 = [
+    { key: 'subscription' as Section, icon: Crown, title: 'Subscription', subtitle: currentPlan === 'pro' ? 'Pro plan · Active' : 'Free plan' },
     { key: 'account' as Section, icon: Settings, title: 'Account Settings', subtitle: 'Email, password, payments' },
     { key: 'privacy' as Section, icon: Shield, title: 'Privacy', subtitle: 'Visibility and data' },
     { key: 'help' as Section, icon: HelpCircle, title: 'Help & Support', subtitle: 'FAQs, contact us' },
