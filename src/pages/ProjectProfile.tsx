@@ -96,6 +96,7 @@ const ProjectProfile = () => {
     createdAt: 'March 5, 2026',
     meetings: [] as MeetingData[],
     attachments: [] as AttachmentData[],
+    reviews: [],
   };
 
   const isProposal = proj.status === 'proposal';
