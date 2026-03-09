@@ -308,98 +308,33 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
           </div>
         </div>
 
-        {/* Desktop: Day headers + Time grid */}
-        <div className="hidden md:block">
-          <div className="grid grid-cols-[60px_repeat(7,1fr)] border-t border-border">
-            <div className="border-r border-border" />
-            {weekDays.map((day, i) => {
-              const isToday = isSameDay(day, today);
-              return (
-                <div key={i} className={`text-center py-2.5 border-r border-border last:border-r-0 ${isToday ? 'bg-otj-blue-bg' : ''}`}>
-                  <div className={`text-[10px] font-bold uppercase tracking-[0.1em] ${isToday ? 'text-otj-blue' : 'text-otj-muted'}`}>{DAY_LABELS[i]}</div>
-                  <div className={`text-[18px] font-extrabold tracking-[-0.04em] mt-0.5 ${isToday ? 'text-otj-blue' : 'text-foreground'}`}>{format(day, 'd')}</div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="grid grid-cols-[60px_repeat(7,1fr)]">
-            {HOURS.map(hour => (
-              <React.Fragment key={hour}>
-                <div className="border-r border-t border-border h-[72px] flex items-start justify-end pr-2 pt-1">
-                  <span className="text-[10px] font-bold text-otj-muted">{hour <= 12 ? `${hour}AM` : `${hour - 12}PM`}</span>
-                </div>
-                {weekDays.map((day, di) => {
-                  const key = `${format(day, 'yyyy-MM-dd')}-${hour}`;
-                  const events = itemsByDayHour[key] || [];
-                  const isToday = isSameDay(day, today);
-
-                  return (
-                    <div key={di} className={`border-r border-t border-border last:border-r-0 h-[72px] p-[3px] relative ${isToday ? 'bg-otj-blue-bg/30' : ''}`}>
-                      {events.length > 0 && (
-                        <div className="flex flex-col gap-[2px] h-full">
-                          {events.slice(0, 2).map((ev, j) => {
-                            const cfg = typeConfig[ev.type];
-                            return (
-                              <div
-                                key={j}
-                                onClick={() => navigate(`/project/${ev.projectId}`)}
-                                className={`${cfg.bg} border ${cfg.border} rounded-[8px] p-1.5 px-2 cursor-pointer flex-1 min-h-0 overflow-hidden transition-all duration-150 hover:shadow-sm`}
-                              >
-                                <div className="flex items-center gap-1 mb-0.5">
-                                  <span className="text-[9px]">{cfg.icon}</span>
-                                  <span className={`text-[8px] font-bold uppercase tracking-[0.05em] ${cfg.text} truncate`}>
-                                    {ev.sublabel.length > 10 ? ev.sublabel.substring(0, 10) + '…' : ev.sublabel}
-                                  </span>
-                                  {ev.type === 'meeting' && <div className="w-[5px] h-[5px] rounded-full bg-destructive ml-auto shrink-0" />}
-                                </div>
-                                <div className="text-[10px] font-extrabold text-foreground leading-tight truncate">{ev.label}</div>
-                                {ev.duration > 1 && (
-                                  <div className={`text-[8px] font-semibold ${cfg.text} mt-0.5`}>{hour <= 12 ? hour : hour - 12}:00 - {(hour + ev.duration) <= 12 ? hour + ev.duration : (hour + ev.duration) - 12}:00</div>
-                                )}
-                              </div>
-                            );
-                          })}
-                          {events.length > 2 && (
-                            <div className="text-[8px] font-bold text-otj-muted text-center">+{events.length - 2}</div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile: List view */}
-        <div className="md:hidden border-t border-border">
+        {/* Day picker + List view (unified for both mobile and desktop) */}
+        <div className="border-t border-border">
           <div className="flex overflow-x-auto hide-scrollbar border-b border-border">
             {weekDays.map((day, i) => {
               const isToday = isSameDay(day, today);
               const dayEvents = scheduleItems.filter(item => isSameDay(item.deadline, day));
               return (
-                <div key={i} className={`flex-1 min-w-[48px] text-center py-2.5 border-r border-border last:border-r-0 ${isToday ? 'bg-otj-blue-bg' : ''}`}>
-                  <div className={`text-[9px] font-bold uppercase ${isToday ? 'text-otj-blue' : 'text-otj-muted'}`}>{DAY_LABELS[i]}</div>
-                  <div className={`text-[15px] font-extrabold mt-0.5 ${isToday ? 'text-otj-blue' : 'text-foreground'}`}>{format(day, 'd')}</div>
-                  {dayEvents.length > 0 && <div className="flex justify-center mt-1 gap-[2px]">{dayEvents.slice(0, 3).map((ev, j) => <div key={j} className={`w-[5px] h-[5px] rounded-full ${typeConfig[ev.type]?.dot}`} />)}</div>}
+                <div key={i} className={`flex-1 min-w-[48px] md:min-w-[80px] text-center py-2.5 md:py-3 border-r border-border last:border-r-0 ${isToday ? 'bg-otj-blue-bg' : ''}`}>
+                  <div className={`text-[9px] md:text-[10px] font-bold uppercase ${isToday ? 'text-otj-blue' : 'text-otj-muted'}`}>{DAY_LABELS[i]}</div>
+                  <div className={`text-[15px] md:text-[18px] font-extrabold mt-0.5 ${isToday ? 'text-otj-blue' : 'text-foreground'}`}>{format(day, 'd')}</div>
+                  {dayEvents.length > 0 && <div className="flex justify-center mt-1 gap-[2px]">{dayEvents.slice(0, 3).map((ev, j) => <div key={j} className={`w-[5px] h-[5px] md:w-[6px] md:h-[6px] rounded-full ${typeConfig[ev.type]?.dot}`} />)}</div>}
                 </div>
               );
             })}
           </div>
-          <div className="p-3 flex flex-col gap-2 max-h-[300px] overflow-y-auto">
+          <div className="p-3 md:p-4 flex flex-col gap-2 max-h-[300px] md:max-h-[400px] overflow-y-auto">
             {weekItems.length === 0 && <div className="text-center text-[12px] text-otj-muted py-4">No events this week</div>}
-            {weekItems.slice(0, 8).map((item, i) => {
+            {weekItems.slice(0, 10).map((item, i) => {
               const cfg = typeConfig[item.type];
               return (
-                <div key={i} onClick={() => navigate(`/project/${item.projectId}`)} className="flex items-center gap-2.5 p-2.5 rounded-[10px] border border-border bg-card cursor-pointer hover:border-otj-muted transition-all">
-                  <div className={`w-1.5 self-stretch rounded-full shrink-0 ${cfg.dot}`} />
+                <div key={i} onClick={() => navigate(`/project/${item.projectId}`)} className="flex items-center gap-2.5 md:gap-3 p-2.5 md:p-3 rounded-[10px] md:rounded-[12px] border border-border bg-card cursor-pointer hover:border-otj-muted hover:shadow-sm transition-all">
+                  <div className={`w-1.5 md:w-2 self-stretch rounded-full shrink-0 ${cfg.dot}`} />
                   <div className="flex-1 min-w-0">
-                    <div className="text-[12px] font-extrabold tracking-[-0.02em] truncate">{item.label}</div>
-                    <div className="text-[10px] text-otj-text truncate">{item.sublabel} · {format(item.deadline, 'EEE, MMM d')}</div>
+                    <div className="text-[12px] md:text-[13px] font-extrabold tracking-[-0.02em] truncate">{item.label}</div>
+                    <div className="text-[10px] md:text-[11px] text-otj-text truncate">{item.sublabel} · {format(item.deadline, 'EEE, MMM d')}</div>
                   </div>
-                  <span className={`text-[9px] font-bold px-1.5 py-[1px] rounded ${cfg.bg} ${cfg.text} shrink-0`}>{cfg.label}</span>
+                  <span className={`text-[9px] md:text-[10px] font-bold px-1.5 md:px-2 py-[1px] md:py-[2px] rounded ${cfg.bg} ${cfg.text} shrink-0`}>{cfg.label}</span>
                 </div>
               );
             })}
