@@ -142,7 +142,11 @@ export interface ClientData {
   reviews: ClientReviewData[];
 }
 
+export type UserRole = 'client' | 'creative';
+
 interface ProjectContextType {
+  userRole: UserRole;
+  setUserRole: (role: UserRole) => void;
   pendingBriefs: BriefData[];
   activeProjects: ProjectData[];
   completedProjects: { icon: string; name: string; client: string; earned: string }[];
