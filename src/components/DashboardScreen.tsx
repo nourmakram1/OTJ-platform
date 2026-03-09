@@ -17,6 +17,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
   const { pendingBriefs, activeProjects, completedProjects, allMeetings } = useProjects();
   const { percentage } = useProfileCompleteness();
   const [projectTab, setProjectTab] = useState<'pending' | 'active' | 'complete'>('pending');
+  const [roleFilter, setRoleFilter] = useState<'all' | 'hired' | 'booked'>('all');
 
   return (
     <div className="max-w-[1100px] mx-auto p-4 md:p-6 pb-20 md:pb-6">
@@ -78,20 +79,33 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                 }`}>{tab.label}</button>
               ))}
             </div>
+            <div className="flex gap-1 ml-0 md:ml-2 overflow-x-auto hide-scrollbar">
+              {[
+                { key: 'all' as const, label: 'All' },
+                { key: 'hired' as const, label: 'Hired' },
+                { key: 'booked' as const, label: 'My Bookings' },
+              ].map((f) => (
+                <button key={f.key} onClick={() => setRoleFilter(f.key)} className={`text-[11px] font-semibold px-2.5 py-[4px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 ${
+                  roleFilter === f.key ? 'bg-muted border-border text-foreground' : 'bg-transparent border-transparent text-otj-muted hover:text-foreground'
+                }`}>{f.label}</button>
+              ))}
+            </div>
           </div>
           
         </div>
 
-        {projectTab === 'pending' && (
+        {projectTab === 'pending' && (() => {
+          const filtered = pendingBriefs.filter(b => roleFilter === 'all' ? true : roleFilter === 'hired' ? b.myRole !== 'as-client' : b.myRole === 'as-client');
+          return (
           <div className="flex flex-col gap-2 animate-fade-up">
-            {pendingBriefs.length === 0 && (
+            {filtered.length === 0 && (
               <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
                 <div className="text-[48px]">🎉</div>
                 <div className="text-[14px] font-extrabold text-foreground">No pending briefs!</div>
                 <div className="text-[12px] text-muted-foreground max-w-[260px]">You're all caught up — sit back and relax until the next opportunity rolls in.</div>
               </div>
             )}
-            {pendingBriefs.map((brief) => (
+            {filtered.map((brief) => (
               <div key={brief.id} className="bg-card border border-border rounded-[14px] p-3.5 px-4 transition-all duration-150 flex flex-col md:flex-row md:items-center gap-3 hover:shadow-md hover:border-otj-muted">
                 {/* Content */}
                 <div className="flex gap-3 items-start flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/brief/${brief.id}`)}>
@@ -131,18 +145,21 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
               </div>
             ))}
           </div>
-        )}
+          );
+        })()}
 
-        {projectTab === 'active' && (
+        {projectTab === 'active' && (() => {
+          const filtered = activeProjects.filter(p => roleFilter === 'all' ? true : roleFilter === 'hired' ? p.myRole !== 'as-client' : p.myRole === 'as-client');
+          return (
           <div className="flex flex-col gap-2 animate-fade-up">
-            {activeProjects.length === 0 && (
+            {filtered.length === 0 && (
               <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
                 <div className="text-[48px]">🚀</div>
-                <div className="text-[14px] font-extrabold text-foreground">No active projects yet</div>
-                <div className="text-[12px] text-muted-foreground max-w-[260px]">Accept a brief and watch the magic begin — your next project is just around the corner!</div>
+                <div className="text-[14px] font-extrabold text-foreground">No {roleFilter === 'booked' ? 'bookings' : 'projects'} yet</div>
+                <div className="text-[12px] text-muted-foreground max-w-[260px]">{roleFilter === 'booked' ? 'Book a creative and your projects will show here.' : 'Accept a brief and watch the magic begin!'}</div>
               </div>
             )}
-            {activeProjects.map((proj) => {
+            {filtered.map((proj) => {
               const phaseDone = proj.phases.filter(p => p.status === 'complete').length;
               const phaseTotal = proj.phases.length;
               const pct = Math.round((phaseDone / phaseTotal) * 100);
@@ -188,7 +205,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
               );
             })}
           </div>
-        )}
+          );
+        })()}
 
         {projectTab === 'complete' && (
           <div className="flex flex-col gap-2 animate-fade-up">
