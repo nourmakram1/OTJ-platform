@@ -230,6 +230,14 @@ const BriefProfile = () => {
                 <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Company</div>
                 <div className="text-[13px] font-semibold text-foreground">{brief.clientCompany}</div>
               </div>
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Email</div>
+                <div className="text-[12px] text-muted-foreground italic">Available after accepting brief</div>
+              </div>
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Phone</div>
+                <div className="text-[12px] text-muted-foreground italic">Available after accepting brief</div>
+              </div>
             </div>
           </div>
 
