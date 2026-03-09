@@ -362,7 +362,7 @@ const defaultClients: ClientData[] = [
     bio: 'Founder of a fast-growing fintech startup. Looking for creatives to help build our brand identity and marketing campaigns. Values speed and quality.',
     joinedDate: 'Mar 2024',
     projectsCompleted: 5,
-    totalSpent: '18,500 EGP',
+    
     avgResponseTime: '< 4 hours',
     paymentReliability: 88,
     verified: true,
