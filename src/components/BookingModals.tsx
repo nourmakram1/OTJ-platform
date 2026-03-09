@@ -256,6 +256,10 @@ export const NotifPopup: React.FC<NotifPopupProps> = ({ visible, onClose, onAcce
             onClose();
             if (n.type === 'counter-accepted' && n.briefId) {
               onNavigate(`/brief/${n.briefId}`);
+            } else if (n.type === 'payment' && n.projectId) {
+              onNavigate(`/project/${n.projectId}?tab=4`);
+            } else if (n.projectId) {
+              onNavigate(`/project/${n.projectId}`);
             } else {
               onSwitchToMessages();
             }

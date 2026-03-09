@@ -24,8 +24,9 @@ const ProjectProfile = () => {
     if (client) navigate(`/client/${client.id}`);
   };
   
-  // Check for tab query param to auto-select Brief tab
-  const initialTab = searchParams.get('tab') === 'brief' ? 1 : 0;
+  // Check for tab query param to auto-select tab
+  const tabParam = searchParams.get('tab');
+  const initialTab = tabParam === 'brief' ? 1 : tabParam ? parseInt(tabParam) || 0 : 0;
   const [activeTab, setActiveTab] = useState(initialTab);
   const [expandedPhase, setExpandedPhase] = useState(0);
   const attachFileRef = useRef<HTMLInputElement>(null);
