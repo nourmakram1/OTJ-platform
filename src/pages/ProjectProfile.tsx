@@ -6,6 +6,7 @@ import { Toast } from '../components/Toast';
 import { useProjects, PhaseData, PaymentMilestone, PaymentMethod, MeetingData, AttachmentData } from '../context/ProjectContext';
 import { ProposalBuilder } from '../components/ProposalBuilder';
 import { ReviewModal, ReviewPayload } from '../components/ReviewModal';
+import { ClientProposalReview, ClientPhaseApproval, ClientPaymentTab } from '../components/ClientProjectActions';
 
 const tabs = ['Phases & Tasks', 'Brief', 'Schedule', 'Attachments', 'Deliverables', 'Payments', 'Timeline', 'Team'];
 
@@ -13,7 +14,8 @@ const ProjectProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const { getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview, clients } = useProjects();
+  const { userRole, getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview, clients } = useProjects();
+  const isClient = userRole === 'client';
 
   const navigateToClient = (name: string) => {
     const client = clients.find(c => c.name === name);
@@ -94,9 +96,10 @@ const ProjectProfile = () => {
     createdAt: 'March 5, 2026',
     meetings: [] as MeetingData[],
     attachments: [] as AttachmentData[],
+    reviews: [],
   };
 
-  const isProposal = proj.status === 'proposal';
+  const isProposal = proj.status === 'proposal' || (isClient && proj.status === 'pending-deposit');
 
   const phaseDone = proj.phases.filter(p => p.status === 'complete').length;
   const phaseTotal = proj.phases.length || 1;
@@ -177,8 +180,14 @@ const ProjectProfile = () => {
             {!isProposal && proj.status !== 'complete' && (
               <div className="flex gap-2 shrink-0 flex-wrap">
                 <button onClick={() => navigate('/messages')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">💬 Message</button>
-                <button onClick={() => showToast('Opening deliverables…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">📦 Deliverables</button>
-                <button onClick={handleCompleteProject} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90">✓ Complete Project</button>
+                {isClient ? (
+                  <button onClick={() => setActiveTab(0)} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">📦 Review Deliverables</button>
+                ) : (
+                  <>
+                    <button onClick={() => showToast('Opening deliverables…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">📦 Deliverables</button>
+                    <button onClick={handleCompleteProject} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90">✓ Complete Project</button>
+                  </>
+                )}
               </div>
             )}
             {proj.status === 'complete' && (
@@ -208,12 +217,19 @@ const ProjectProfile = () => {
       </div>
 
       {isProposal ? (
-        /* Proposal Builder */
+        /* Proposal: Client sees review, Creative sees builder */
         <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 pb-20">
-          <ProposalBuilder
-            project={proj}
-            onSubmit={handleSubmitProposal}
-          />
+          {isClient && proj.status === 'pending-deposit' ? (
+            <ClientProposalReview project={proj} />
+          ) : isClient ? (
+            <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-6 text-center">
+              <div className="text-2xl mb-2">📝</div>
+              <div className="text-[14px] font-bold text-otj-blue mb-1">Waiting for Creative's Proposal</div>
+              <div className="text-[12px] text-otj-text">The creative is preparing their proposal. You'll be notified when it's ready for review.</div>
+            </div>
+          ) : (
+            <ProposalBuilder project={proj} onSubmit={handleSubmitProposal} />
+          )}
         </div>
       ) : (
         <>
@@ -231,7 +247,10 @@ const ProjectProfile = () => {
           {/* Content */}
           <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 pb-20 md:pb-6 flex flex-col md:grid md:grid-cols-[1fr_300px] gap-6">
             <div className="order-1 md:order-none">
-              {activeTab === 0 && (
+              {activeTab === 0 && isClient && (
+                <ClientPhaseApproval project={proj} />
+              )}
+              {activeTab === 0 && !isClient && (
                 <div className="flex flex-col gap-3 animate-fade-up">
                   {proj.phases.map(p => {
                     const isExpanded = expandedPhase === p.num;
@@ -530,7 +549,10 @@ const ProjectProfile = () => {
                 </div>
               )}
 
-              {activeTab === 5 && (
+              {activeTab === 5 && isClient && (
+                <ClientPaymentTab project={proj} />
+              )}
+              {activeTab === 5 && !isClient && (
                 <div className="animate-fade-up">
                   <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4 mb-4">
                     <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-blue mb-2">Escrow Summary</div>

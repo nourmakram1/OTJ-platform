@@ -171,6 +171,10 @@ interface ProjectContextType {
   clients: ClientData[];
   getClient: (id: string) => ClientData | undefined;
   addClientReview: (clientId: string, review: Omit<ClientReviewData, 'id' | 'createdAt'>) => void;
+  approvePhase: (projectId: string, phaseNum: number) => void;
+  releasePayment: (projectId: string, milestoneIndex: number) => void;
+  acceptProposal: (projectId: string) => void;
+  rejectProposal: (projectId: string) => void;
 }
 
 const defaultBriefs: BriefData[] = [
@@ -610,8 +614,115 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const approvePhase = useCallback((projectId: string, phaseNum: number) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      const updatedPhases = p.phases.map(ph => {
+        if (ph.num === phaseNum) return { ...ph, status: 'complete' as const, tasks: ph.tasks.map(t => ({ ...t, done: true })) };
+        if (ph.num === phaseNum + 1 && ph.status === 'locked') return { ...ph, status: 'active' as const };
+        return ph;
+      });
+      return {
+        ...p,
+        phases: updatedPhases,
+        timeline: [...p.timeline, { label: `Phase ${phaseNum} Approved by Client`, date: today, status: 'complete' as const }],
+      };
+    }));
+    // Add notification
+    const proj = activeProjects.find(p => p.id === projectId);
+    const phaseName = proj?.phases.find(ph => ph.num === phaseNum)?.title || `Phase ${phaseNum}`;
+    addNotification({
+      icon: '✅',
+      bg: 'bg-[hsl(var(--otj-green-bg))]',
+      title: `Phase ${phaseNum} approved`,
+      sub: `${phaseName} on ${proj?.name || 'project'} has been approved`,
+      time: 'Just now',
+      unread: true,
+      type: 'payment',
+      projectId,
+    });
+  }, [activeProjects, addNotification]);
+
+  const releasePayment = useCallback((projectId: string, milestoneIndex: number) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      const updatedMilestones = p.paymentMilestones.map((m, i) => i === milestoneIndex ? { ...m, status: 'paid' as const } : m);
+      const milestone = p.paymentMilestones[milestoneIndex];
+      const numericPrice = parseInt(p.budget.replace(/[^0-9]/g, '')) || 0;
+      const amount = numericPrice > 0 ? `${Math.round(numericPrice * milestone.percentage / 100).toLocaleString()} EGP` : '';
+      return {
+        ...p,
+        paymentMilestones: updatedMilestones,
+        timeline: [...p.timeline, { label: `Payment Released — ${amount}`, date: today, status: 'complete' as const }],
+      };
+    }));
+    // Add notification
+    const proj = activeProjects.find(p => p.id === projectId);
+    const milestone = proj?.paymentMilestones[milestoneIndex];
+    const numericPrice = parseInt(proj?.budget.replace(/[^0-9]/g, '') || '0') || 0;
+    const amount = milestone && numericPrice > 0 ? `${Math.round(numericPrice * milestone.percentage / 100).toLocaleString()} EGP` : '';
+    addNotification({
+      icon: '💳',
+      bg: 'bg-[hsl(var(--otj-green-bg))]',
+      title: `Payment released — ${amount}`,
+      sub: `${milestone?.label || 'Milestone'} for ${proj?.name || 'project'}`,
+      time: 'Just now',
+      unread: true,
+      type: 'payment',
+      projectId,
+    });
+  }, [activeProjects, addNotification]);
+
+  const acceptProposal = useCallback((projectId: string) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      return {
+        ...p,
+        status: 'active' as const,
+        phases: p.phases.map((ph, i) => ({ ...ph, status: (i === 0 ? 'active' : 'locked') as 'active' | 'locked' })),
+        paymentMilestones: p.paymentMilestones.map((m, i) => i === 0 ? { ...m, status: 'paid' as const } : m),
+        timeline: [...p.timeline.map(t => ({ ...t, status: 'complete' as const })), { label: 'Proposal Accepted', date: today, status: 'complete' as const }, { label: 'Project Started', date: today, status: 'active' as const }],
+      };
+    }));
+    addNotification({
+      icon: '🎉',
+      bg: 'bg-[hsl(var(--otj-green-bg))]',
+      title: 'Proposal accepted!',
+      sub: `You accepted the proposal for ${activeProjects.find(p => p.id === projectId)?.name || 'project'}`,
+      time: 'Just now',
+      unread: true,
+      type: 'brief',
+      projectId,
+    });
+  }, [activeProjects, addNotification]);
+
+  const rejectProposal = useCallback((projectId: string) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      return {
+        ...p,
+        status: 'proposal' as const,
+        timeline: [...p.timeline, { label: 'Proposal Rejected', date: today, status: 'complete' as const }],
+      };
+    }));
+    addNotification({
+      icon: '❌',
+      bg: 'bg-destructive/10',
+      title: 'Proposal rejected',
+      sub: `You rejected the proposal for ${activeProjects.find(p => p.id === projectId)?.name || 'project'}`,
+      time: 'Just now',
+      unread: true,
+      type: 'brief',
+      projectId,
+    });
+  }, [activeProjects, addNotification]);
+
   return (
-    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, addClientReview }}>
+    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, addClientReview, approvePhase, releasePayment, acceptProposal, rejectProposal }}>
       {children}
     </ProjectContext.Provider>
   );
