@@ -78,19 +78,21 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
             {pendingBriefs.map((brief) => (
               <div key={brief.id} onClick={onSwitchToMessages} className="bg-card border border-border rounded-[14px] p-3.5 px-4 cursor-pointer transition-all duration-150 flex gap-3 items-start hover:shadow-md hover:border-otj-muted">
                 <div className="w-10 h-10 rounded-[10px] bg-otj-yellow-bg flex items-center justify-center text-xl shrink-0">{brief.icon}</div>
-                <div className="flex-1">
-                  <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5">{brief.name}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start gap-2 mb-0.5">
+                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate">{brief.name}</div>
+                    <div className="text-[10.5px] text-otj-muted whitespace-nowrap shrink-0">{brief.time}</div>
+                  </div>
                   <div className="text-[11.5px] text-otj-text mb-1.5">From: {brief.clientName} · {brief.clientCompany}</div>
-                  <div className="flex gap-[5px] flex-wrap mb-2">
+                  <div className="flex gap-[5px] flex-wrap mb-3">
                     {brief.tags.map((t, j) => <span key={j} className="text-[10.5px] font-semibold px-2 py-0.5 rounded-full bg-otj-off border border-border text-otj-text">{t}</span>)}
                   </div>
-                  <div className="flex gap-[5px] flex-wrap">
+                  <div className="flex items-center justify-start gap-[5px] flex-wrap">
                     <button onClick={(e) => { e.stopPropagation(); onAcceptBrief(brief.id); }} className="text-[10px] md:text-[11.5px] font-bold px-2.5 md:px-3 py-[4px] md:py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer transition-all duration-150">✓ Accept</button>
                     <button onClick={(e) => { e.stopPropagation(); onOpenCounter(); }} className="text-[10px] md:text-[11.5px] font-bold px-2.5 md:px-3 py-[4px] md:py-[5px] rounded-full border-[1.5px] border-otj-yellow text-otj-yellow bg-card cursor-pointer transition-all duration-150">↕ Counter</button>
                     <button onClick={(e) => { e.stopPropagation(); onSwitchToMessages(); }} className="text-[10px] md:text-[11.5px] font-bold px-2.5 md:px-3 py-[4px] md:py-[5px] rounded-full border-[1.5px] border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">View</button>
                   </div>
                 </div>
-                <div className="text-[10.5px] text-otj-muted whitespace-nowrap shrink-0">{brief.time}</div>
               </div>
             ))}
           </div>
