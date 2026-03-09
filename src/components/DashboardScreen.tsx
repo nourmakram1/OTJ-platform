@@ -15,6 +15,7 @@ interface DashboardScreenProps {
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, onAcceptBrief, onOpenCounter, onSwitchToMessages }) => {
   const navigate = useNavigate();
   const { pendingBriefs, activeProjects, completedProjects, allMeetings } = useProjects();
+  const { percentage } = useProfileCompleteness();
   const [projectTab, setProjectTab] = useState<'pending' | 'active' | 'complete'>('pending');
 
   return (
