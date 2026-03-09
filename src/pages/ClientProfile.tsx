@@ -25,7 +25,7 @@ const StarRating = ({ rating, onRate, interactive = false }: { rating: number; o
 const ClientProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { getClient, addClientReview } = useProjects();
+  const { getClient, addClientReview, completedProjects } = useProjects();
   const [activeTab, setActiveTab] = useState(0);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewRating, setReviewRating] = useState(0);
