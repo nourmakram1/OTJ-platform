@@ -5,6 +5,7 @@ import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
 import { useCreativeProfile } from '../context/CreativeProfileContext';
+import { ProfileCompletenessCard } from '../components/ProfileCompleteness';
 
 const CreativeProfile = () => {
   const navigate = useNavigate();
