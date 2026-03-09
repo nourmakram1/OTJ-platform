@@ -99,7 +99,7 @@ const ProjectProfile = () => {
     reviews: [],
   };
 
-  const isProposal = proj.status === 'proposal';
+  const isProposal = proj.status === 'proposal' || (isClient && proj.status === 'pending-deposit');
 
   const phaseDone = proj.phases.filter(p => p.status === 'complete').length;
   const phaseTotal = proj.phases.length || 1;
