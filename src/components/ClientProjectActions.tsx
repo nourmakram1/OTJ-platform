@@ -413,6 +413,46 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Auto-prompt Payment Reminder */}
+      <Dialog open={autoPromptOpen} onOpenChange={setAutoPromptOpen}>
+        <DialogContent className="sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle className="text-[16px] font-extrabold tracking-[-0.03em]">
+              📎 Payment Proof Required
+            </DialogTitle>
+            <DialogDescription className="text-[13px] text-otj-text">
+              You have a pending milestone payment. Please transfer the amount and upload your bank transfer screenshot as proof.
+            </DialogDescription>
+          </DialogHeader>
+          {pendingMilestoneIndex >= 0 && (
+            <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[12px] p-4 my-2">
+              <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-otj-blue mb-1">Amount Due</div>
+              <div className="text-[18px] font-extrabold text-foreground">
+                {numericPrice > 0 ? `${Math.round(numericPrice * project.paymentMilestones[pendingMilestoneIndex].percentage / 100).toLocaleString()} EGP` : '—'}
+              </div>
+              <div className="text-[12px] text-otj-text mt-0.5">
+                {project.paymentMilestones[pendingMilestoneIndex].label} ({project.paymentMilestones[pendingMilestoneIndex].percentage}%)
+              </div>
+              {project.paymentMethod && (
+                <div className="mt-2 pt-2 border-t border-border text-[11px] text-otj-muted">
+                  {project.paymentMethod.type === 'instapay'
+                    ? `📱 InstaPay — ${project.paymentMethod.instapayHandle}`
+                    : `🏦 ${project.paymentMethod.bankName} — ${project.paymentMethod.accountName}`}
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter className="flex gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => setAutoPromptOpen(false)} className="rounded-full text-[12px] font-bold">
+              Later
+            </Button>
+            <Button onClick={() => { setAutoPromptOpen(false); if (pendingMilestoneIndex >= 0) fileRefs.current[pendingMilestoneIndex]?.click(); }} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
+              📷 Upload Proof Now
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
