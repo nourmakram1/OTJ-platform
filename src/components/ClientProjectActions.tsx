@@ -243,19 +243,29 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData }> = ({ projec
 
 // ─── Client Payment Tab ────────────────────────────────────
 export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }) => {
-  const { releasePayment } = useProjects();
+  const { submitPaymentProof } = useProjects();
   const numericPrice = parseInt(project.budget.replace(/[^0-9]/g, '')) || 0;
   const [confirmIdx, setConfirmIdx] = useState<number | null>(null);
-  const [proofImages, setProofImages] = useState<Record<number, { url: string; name: string }>>({});
+  const [localProofs, setLocalProofs] = useState<Record<number, { url: string; name: string }>>({});
   const fileRefs = useRef<Record<number, HTMLInputElement | null>>({});
 
   const handleProofUpload = (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
-    setProofImages(prev => ({ ...prev, [idx]: { url, name: file.name } }));
+    setLocalProofs(prev => ({ ...prev, [idx]: { url, name: file.name } }));
     showToast('📎 Transfer screenshot attached');
     e.target.value = '';
+  };
+
+  const handleConfirmPayment = () => {
+    if (confirmIdx === null) return;
+    const proof = localProofs[confirmIdx];
+    if (proof) {
+      submitPaymentProof(project.id, confirmIdx, proof.url, proof.name);
+    }
+    setConfirmIdx(null);
+    showToast('✓ Payment proof submitted! Creative will be notified.');
   };
 
   return (
@@ -269,23 +279,22 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
 
       {project.paymentMilestones.map((m, i) => {
         const amount = numericPrice > 0 ? `${Math.round(numericPrice * m.percentage / 100).toLocaleString()} EGP` : '—';
-        const statusLabel = m.status === 'paid' ? 'Paid ✓' : 'Awaiting Payment';
-        const statusClass = m.status === 'paid' ? 'text-otj-green' : 'text-otj-muted';
-        const icon = m.status === 'paid' ? '✓' : '⏳';
-        const proof = proofImages[i];
+        const statusLabel = m.status === 'paid' ? 'Confirmed ✓' : m.status === 'proof-submitted' ? '⏳ Awaiting Confirmation' : 'Awaiting Payment';
+        const statusClass = m.status === 'paid' ? 'text-otj-green' : m.status === 'proof-submitted' ? 'text-otj-yellow' : 'text-otj-muted';
+        const proof = localProofs[i] || (m.proofUrl ? { url: m.proofUrl, name: m.proofName || 'proof.jpg' } : null);
 
         return (
           <div key={i} className="bg-card border border-border rounded-[14px] p-4 mb-3">
             <div className="flex items-center justify-between mb-3">
               <div>
                 <div className="text-[13px] font-bold">{m.label} ({m.percentage}%)</div>
-                <div className={`text-[11px] font-bold ${statusClass}`}>{icon} {statusLabel}</div>
+                <div className={`text-[11px] font-bold ${statusClass}`}>{statusLabel}</div>
               </div>
               <div className="text-[16px] font-extrabold">{amount}</div>
             </div>
 
-            {/* Proof upload area — client only */}
-            {m.status !== 'paid' && (
+            {/* Upload area — only when not yet submitted */}
+            {m.status !== 'paid' && m.status !== 'proof-submitted' && (
               <div className="border-t border-border pt-3">
                 <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-2">📎 Attach Bank Transfer Screenshot</div>
                 <input
@@ -325,17 +334,30 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
                     onClick={() => setConfirmIdx(i)}
                     className="w-full mt-2.5 text-[12px] font-bold py-2.5 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90"
                   >
-                    ✓ Confirm Payment Sent
+                    ✓ Submit Payment Proof
                   </button>
                 )}
               </div>
             )}
 
-            {/* Show proof if already paid */}
+            {/* Proof submitted — awaiting creative confirmation */}
+            {m.status === 'proof-submitted' && proof && (
+              <div className="border-t border-border pt-3">
+                <div className="flex items-center gap-3 bg-otj-yellow-bg border border-otj-yellow-border rounded-[10px] p-2.5 px-3">
+                  <img src={proof.url} alt="Transfer proof" className="w-12 h-12 rounded-lg object-cover border border-border" />
+                  <div className="flex-1">
+                    <div className="text-[12px] font-bold text-otj-yellow">Proof Sent — Awaiting Confirmation</div>
+                    <div className="text-[10px] text-otj-muted">Creative will review and confirm receipt</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Confirmed */}
             {m.status === 'paid' && proof && (
               <div className="border-t border-border pt-3 flex items-center gap-3">
                 <img src={proof.url} alt="Transfer proof" className="w-10 h-10 rounded-lg object-cover border border-border" />
-                <div className="text-[11px] text-otj-muted">Transfer proof attached</div>
+                <div className="text-[11px] text-otj-green font-bold">✓ Payment confirmed by creative</div>
               </div>
             )}
           </div>
@@ -357,15 +379,15 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
       <Dialog open={confirmIdx !== null} onOpenChange={() => setConfirmIdx(null)}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
-            <DialogTitle className="text-[16px] font-extrabold">Confirm Payment Sent</DialogTitle>
+            <DialogTitle className="text-[16px] font-extrabold">Submit Payment Proof</DialogTitle>
             <DialogDescription className="text-[13px]">
-              {confirmIdx !== null && `Confirm that you've sent ${numericPrice > 0 ? `${Math.round(numericPrice * project.paymentMilestones[confirmIdx].percentage / 100).toLocaleString()} EGP` : '—'} for "${project.paymentMilestones[confirmIdx!]?.label}"?`}
+              {confirmIdx !== null && `Submit transfer proof for ${numericPrice > 0 ? `${Math.round(numericPrice * project.paymentMilestones[confirmIdx].percentage / 100).toLocaleString()} EGP` : '—'} (${project.paymentMilestones[confirmIdx!]?.label})? The creative will be notified to confirm receipt.`}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex gap-2 sm:gap-2">
             <Button variant="outline" onClick={() => setConfirmIdx(null)} className="rounded-full text-[12px] font-bold">Cancel</Button>
-            <Button onClick={() => { if (confirmIdx !== null) { releasePayment(project.id, confirmIdx); setConfirmIdx(null); showToast('✓ Payment confirmed!'); } }} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
-              ✓ Confirm Payment
+            <Button onClick={handleConfirmPayment} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
+              ✓ Submit Proof
             </Button>
           </DialogFooter>
         </DialogContent>
