@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 
+export type ProjectRole = 'as-creative' | 'as-client';
+
 export interface BriefData {
   id: string;
   icon: string;
@@ -16,6 +18,7 @@ export interface BriefData {
   time: string;
   moodAesthetic: string;
   usageRights: string;
+  myRole?: ProjectRole;
 }
 
 export interface PhaseData {
