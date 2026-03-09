@@ -172,7 +172,14 @@ const ClientProfile = () => {
               </div>
 
               <div className="bg-card border border-border rounded-[14px] p-4">
-                <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-3">🏢 Details</div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">🏢 Details & Contact</div>
+                  {isOwnClientProfile && (
+                    <button onClick={handleOpenEditContact} className="flex items-center gap-1 text-[11px] font-bold text-primary cursor-pointer hover:opacity-80 transition-opacity">
+                      <Pencil className="w-3 h-3" /> Edit
+                    </button>
+                  )}
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   <div>
                     <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Industry</div>
@@ -190,6 +197,18 @@ const ClientProfile = () => {
                       </div>
                     </div>
                   )}
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Email</div>
+                    <div className="text-[13px] font-semibold text-foreground flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5 text-muted-foreground" /> {client.email}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Phone</div>
+                    <div className="text-[13px] font-semibold text-foreground flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5 text-muted-foreground" /> {client.phone}
+                    </div>
+                  </div>
                 </div>
               </div>
 
