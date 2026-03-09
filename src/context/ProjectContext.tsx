@@ -135,7 +135,7 @@ export interface ClientData {
   teamSize?: string;
   joinedDate: string;
   projectsCompleted: number;
-  totalSpent: string;
+  
   avgResponseTime: string;
   paymentReliability: number; // 0-100
   verified: boolean;
