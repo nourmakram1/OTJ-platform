@@ -7,6 +7,8 @@ import { Toast } from '../components/Toast';
 
 const CreativeProfile = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isOwnProfile = id === 'nour';
   const [activeTab, setActiveTab] = useState<'portfolio' | 'reviews'>('portfolio');
 
   return (
