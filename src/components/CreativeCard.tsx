@@ -26,7 +26,7 @@ const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
   };
 
   return (
-    <div className="h-[220px] relative overflow-hidden group/carousel">
+    <div className="h-[140px] md:h-[220px] relative overflow-hidden group/carousel">
       <div
         className="flex h-full transition-transform duration-300 ease-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
@@ -81,7 +81,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
   return (
   <div
     onClick={() => onOpenBrief(c.id)}
-    className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 relative hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 min-w-[170px] md:min-w-[200px] snap-start"
+    className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 relative hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 w-full h-full flex flex-col snap-start"
   >
     <div className="relative">
       <ImageCarousel bg={c.bg} emoji={c.emoji} />
@@ -92,25 +92,25 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
         {saved ? '♥' : '♡'}
       </button>
     </div>
-    <div className="p-3">
+    <div className="p-2.5 md:p-3 flex flex-col flex-1">
       <div className="flex items-center justify-between mb-0.5">
-        <div className="text-sm font-extrabold tracking-[-0.03em]">{c.name}</div>
+        <div className="text-[12px] md:text-sm font-extrabold tracking-[-0.03em] truncate">{c.name}</div>
         <div className="flex items-center gap-1">
           <span className="text-[11px] font-bold text-foreground">⭐ {c.rating}</span>
           <span className="text-[11px] text-otj-text">({c.jobs.replace(' jobs', '')})</span>
         </div>
       </div>
-      <div className="text-[11px] text-otj-text mb-1.5">{c.role}</div>
-      <div className="flex items-center gap-2 text-[11px] text-otj-text mb-2.5 flex-wrap">
+      <div className="text-[10px] md:text-[11px] text-otj-text mb-1 md:mb-1.5 truncate">{c.role}</div>
+      <div className="hidden md:flex items-center gap-2 text-[11px] text-otj-text mb-2.5 flex-wrap">
         <span className="flex items-center gap-1">👥 {c.jobs}</span>
         <span className="w-[3px] h-[3px] rounded-full bg-otj-muted" />
         <span className="flex items-center gap-1">📍 Cairo, EG</span>
         <span className="w-[3px] h-[3px] rounded-full bg-otj-muted" />
         <span className="flex items-center gap-1">🏅 {c.experience >= 10 ? 'Veteran 10+' : c.experience >= 5 ? 'Expert 5+' : 'Beginner 1-3'}</span>
       </div>
-      <div className="flex gap-1.5">
-        <button onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-primary bg-primary text-primary-foreground text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:bg-primary/90">Book Now</button>
-        <button onClick={(e) => { e.stopPropagation(); navigate(`/creative/${c.id}`); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-border bg-transparent text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">View Profile</button>
+      <div className="mt-auto flex flex-col md:flex-row gap-1.5">
+        <button onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }} className="flex-1 py-[6px] md:py-[7px] rounded-full border-[1.5px] border-primary bg-primary text-primary-foreground text-[10px] md:text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:bg-primary/90">Book Now</button>
+        <button onClick={(e) => { e.stopPropagation(); navigate(`/creative/${c.id}`); }} className="flex-1 py-[6px] md:py-[7px] rounded-full border-[1.5px] border-border bg-transparent text-[10px] md:text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">View Profile</button>
       </div>
     </div>
   </div>
