@@ -105,13 +105,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                   <div className="text-[10.5px] text-otj-muted whitespace-nowrap">{brief.time}</div>
                   <div className="flex items-center gap-[5px]">
                     <button onClick={(e) => { e.stopPropagation(); navigate(`/brief/${brief.id}`); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer transition-all duration-150 whitespace-nowrap">View Brief</button>
-                    <button onClick={(e) => { e.stopPropagation(); showToast('Brief declined'); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-destructive text-destructive bg-card cursor-pointer transition-all duration-150 whitespace-nowrap">Decline</button>
+                    <button onClick={(e) => { e.stopPropagation(); showToast('Brief declined'); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card text-muted-foreground cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground whitespace-nowrap">Decline</button>
                   </div>
                 </div>
                 {/* Mobile buttons at bottom */}
                 <div className="flex md:hidden items-center gap-[5px] flex-wrap mt-2">
                   <button onClick={() => navigate(`/brief/${brief.id}`)} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer">View Brief</button>
-                  <button onClick={() => showToast('Brief declined')} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full border-[1.5px] border-destructive text-destructive bg-card cursor-pointer">Decline</button>
+                  <button onClick={() => showToast('Brief declined')} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full border-[1.5px] border-border bg-card text-muted-foreground cursor-pointer hover:border-foreground hover:text-foreground">Decline</button>
                 </div>
               </div>
             ))}
