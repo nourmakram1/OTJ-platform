@@ -71,6 +71,28 @@ const ClientProfile = () => {
     setReviewComment('');
   };
 
+  const isOwnClientProfile = userRole === 'client';
+
+  const handleOpenEditContact = () => {
+    setEditEmail(client.email);
+    setEditPhone(client.phone);
+    setShowEditContactModal(true);
+  };
+
+  const handleSaveContact = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!editEmail.trim() || !emailRegex.test(editEmail.trim())) {
+      showToast('Please enter a valid email address');
+      return;
+    }
+    if (!editPhone.trim() || editPhone.trim().length < 8) {
+      showToast('Please enter a valid phone number');
+      return;
+    }
+    updateClient(client.id, { email: editEmail.trim(), phone: editPhone.trim() });
+    showToast('✓ Contact info updated');
+    setShowEditContactModal(false);
+  };
 
   return (
     <>
