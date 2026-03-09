@@ -12,16 +12,14 @@ interface ExploreScreenProps {
 }
 
 interface Filters {
-  niches: Set<string>;
-  availability: string; // '' | 'Available now' | 'Next week'
-  minRating: number; // 0 means no filter
+  profession: string; // niche
+  category: string; // profession category
   minExperience: number; // 0 means no filter
 }
 
 const defaultFilters: Filters = {
-  niches: new Set(),
-  availability: '',
-  minRating: 0,
+  profession: '',
+  category: '',
   minExperience: 0,
 };
 
