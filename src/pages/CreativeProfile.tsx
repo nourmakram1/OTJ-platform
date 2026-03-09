@@ -69,6 +69,13 @@ const CreativeProfile = () => {
           </div>
         </div>
 
+        {/* Profile Completeness - own profile only */}
+        {isOwnProfile && (
+          <div className="mb-6">
+            <ProfileCompletenessCard variant="compact" />
+          </div>
+        )}
+
         {/* Skills & info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
           <div className="bg-card border border-border rounded-[14px] p-3.5">

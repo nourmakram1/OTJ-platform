@@ -35,6 +35,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
           <button onClick={() => showToast('Profile link copied!')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer">Share Profile</button>
         </div>
       </div>
+      {/* Profile Completeness */}
+      {percentage < 100 && (
+        <div className="mb-5">
+          <ProfileCompletenessCard variant="compact" />
+        </div>
+      )}
 
       {/* Stats — 4 cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
