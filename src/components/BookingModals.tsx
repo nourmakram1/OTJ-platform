@@ -252,7 +252,14 @@ export const NotifPopup: React.FC<NotifPopupProps> = ({ visible, onClose, onAcce
 
       <div className="py-1.5 max-h-[280px] md:max-h-[360px] overflow-y-auto">
         {notifications.map((n) => (
-          <div key={n.id} onClick={() => { onClose(); onSwitchToMessages(); }} className="px-3.5 md:px-4 py-2 md:py-2.5 cursor-pointer transition-colors duration-150 border-b border-border last:border-b-0 hover:bg-muted">
+          <div key={n.id} onClick={() => {
+            onClose();
+            if (n.type === 'counter-accepted' && n.briefId) {
+              onNavigate(`/brief/${n.briefId}`);
+            } else {
+              onSwitchToMessages();
+            }
+          }} className="px-3.5 md:px-4 py-2 md:py-2.5 cursor-pointer transition-colors duration-150 border-b border-border last:border-b-0 hover:bg-muted">
             <div className="flex items-start gap-2 md:gap-2.5">
               <div className={`w-8 h-8 md:w-[34px] md:h-[34px] rounded-lg md:rounded-[10px] flex items-center justify-center text-sm md:text-base shrink-0 ${n.bg}`}>{n.icon}</div>
               <div className="flex-1 min-w-0">
