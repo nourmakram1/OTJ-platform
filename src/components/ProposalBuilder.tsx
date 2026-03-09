@@ -190,8 +190,8 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
         {/* Deliverables */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-[16px] font-extrabold tracking-[-0.03em]">Deliverables</div>
-            <button onClick={addDeliverable} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground transition-all duration-150">+ Add Deliverable</button>
+            <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em]">Deliverables</div>
+            <button onClick={addDeliverable} className="text-[10px] md:text-[11.5px] font-bold px-2.5 md:px-3.5 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground transition-all duration-150">+ Add</button>
           </div>
           <div className="bg-card border border-border rounded-[14px] p-4 flex flex-col gap-2">
             {deliverables.map((d, i) => (
