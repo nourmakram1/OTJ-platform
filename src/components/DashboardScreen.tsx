@@ -100,7 +100,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                 {/* Mobile buttons at bottom */}
                 <div className="flex md:hidden items-center gap-[5px] flex-wrap mt-2">
                   <button onClick={() => onAcceptBrief(brief.id)} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer">✓ Accept</button>
-                  <button onClick={() => onOpenCounter()} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full border-[1.5px] border-otj-yellow text-otj-yellow bg-card cursor-pointer">↕ Counter</button>
+                  <button onClick={() => navigate(`/brief/${brief.id}`)} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full border-[1.5px] border-otj-yellow text-otj-yellow bg-card cursor-pointer">↕ Counter</button>
                   <button onClick={() => navigate(`/brief/${brief.id}`)} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full border-[1.5px] border-border bg-card cursor-pointer hover:border-foreground">View Brief</button>
                 </div>
               </div>
