@@ -91,15 +91,17 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
             </button>
           )}
           {/* Messages icon */}
-          <div onClick={() => navigate('/messages')} className="relative cursor-pointer p-1.5 rounded-lg transition-all duration-150 hover:bg-otj-off">
-            <span className="text-lg">💬</span>
-            <div className="absolute top-0.5 right-0.5 w-[8px] h-[8px] rounded-full bg-destructive border-2 border-card" />
+          <div onClick={() => navigate('/messages')} className="relative cursor-pointer p-2 rounded-lg transition-all duration-150 hover:bg-muted">
+            <MessageCircle className="w-[18px] h-[18px] text-foreground" />
+            <div className="absolute top-1 right-1 w-[8px] h-[8px] rounded-full bg-destructive border-2 border-card" />
           </div>
 
           {/* Notifications */}
-          <div onClick={() => setShowNotif((prev) => !prev)} className="relative cursor-pointer p-1.5 rounded-lg transition-all duration-150 hover:bg-otj-off">
-            <span className="text-lg">🔔</span>
-            <div className="absolute top-0.5 right-0.5 w-[8px] h-[8px] rounded-full bg-destructive border-2 border-card" />
+          <div onClick={() => setShowNotif((prev) => !prev)} className="relative cursor-pointer p-2 rounded-lg transition-all duration-150 hover:bg-muted">
+            <Bell className="w-[18px] h-[18px] text-foreground" />
+            <div className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full bg-destructive flex items-center justify-center px-1">
+              <span className="text-[9px] font-bold text-destructive-foreground leading-none">3</span>
+            </div>
           </div>
 
           {/* Profile avatar */}
