@@ -306,6 +306,7 @@ const defaultActiveProjects: ProjectData[] = [
     id: 'proj-existing-3',
     icon: '📸', name: 'Vodafone Brand Refresh',
     clientName: 'Tarek Saad', clientCompany: 'Vodafone',
+    clientEmail: 'tarek.saad@vodafone.eg', clientPhone: '+20 101 987 6543',
     projectType: 'Brand Photography', budget: '4,800 EGP',
     deliverables: 'Brand refresh photos', date: 'Mar 20', deadline: 'Apr 5',
     moodAesthetic: '', usageRights: '',
