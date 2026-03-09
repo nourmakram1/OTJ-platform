@@ -326,6 +326,44 @@ const ClientProfile = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Edit Contact Modal */}
+      <Dialog open={showEditContactModal} onOpenChange={setShowEditContactModal}>
+        <DialogContent className="sm:max-w-[425px] rounded-[14px]">
+          <DialogHeader>
+            <DialogTitle>Edit Contact Information</DialogTitle>
+            <DialogDescription>Update your email and phone number so creatives can reach you.</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4 py-2">
+            <div>
+              <label className="text-[11px] font-bold text-foreground mb-1.5 block">📧 Email</label>
+              <Input
+                value={editEmail}
+                onChange={e => setEditEmail(e.target.value)}
+                placeholder="your@email.com"
+                type="email"
+                maxLength={255}
+                className="text-[13px] rounded-[10px]"
+              />
+            </div>
+            <div>
+              <label className="text-[11px] font-bold text-foreground mb-1.5 block">📱 Phone</label>
+              <Input
+                value={editPhone}
+                onChange={e => setEditPhone(e.target.value)}
+                placeholder="+20 100 123 4567"
+                type="tel"
+                maxLength={20}
+                className="text-[13px] rounded-[10px]"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditContactModal(false)} className="rounded-full">Cancel</Button>
+            <Button onClick={handleSaveContact} className="rounded-full">Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Toast />
     </>
   );
