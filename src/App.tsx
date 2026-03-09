@@ -33,6 +33,7 @@ const App = () => (
             <Route path="/brief/:id" element={<BriefProfile />} />
             <Route path="/project/:id" element={<ProjectProfile />} />
             <Route path="/creative/:id" element={<CreativeProfile />} />
+            <Route path="/client/:id" element={<ClientProfile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
