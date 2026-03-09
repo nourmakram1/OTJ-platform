@@ -536,22 +536,15 @@ const ProjectProfile = () => {
                 </div>
               )}
 
-              {activeTab === 5 && isClient && (
+              {activeTab === 4 && isClient && (
                 <ClientPaymentTab project={proj} />
               )}
-              {activeTab === 5 && !isClient && (
+              {activeTab === 4 && !isClient && (
                 <div className="animate-fade-up">
-                  <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4 mb-4">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-blue mb-2">Escrow Summary</div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div><div className="text-[10px] text-otj-text mb-0.5">Total</div><div className="text-[16px] font-extrabold text-foreground">{proj.escrow.total}</div></div>
-                      <div><div className="text-[10px] text-otj-text mb-0.5">In Escrow</div><div className="text-[16px] font-extrabold text-otj-blue">{proj.escrow.held}</div></div>
-                      <div><div className="text-[10px] text-otj-text mb-0.5">OTJ Fee (5%)</div><div className="text-[16px] font-extrabold text-otj-muted">{proj.escrow.fee}</div></div>
-                    </div>
-                  </div>
+                  <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">💰 Payment Milestones</div>
                   {proj.paymentMilestones.map((m, i) => {
                     const amount = numericPrice > 0 ? `${Math.round(numericPrice * m.percentage / 100).toLocaleString()} EGP` : '—';
-                    const statusLabel = m.status === 'paid' ? 'Received' : m.status === 'held' ? 'In Escrow · Held' : 'Awaiting Payment';
+                    const statusLabel = m.status === 'paid' ? 'Paid ✓' : m.status === 'held' ? 'Awaiting Payment' : 'Pending';
                     const statusClass = m.status === 'paid' ? 'text-otj-green' : m.status === 'pending' ? 'text-otj-yellow' : 'text-otj-muted';
                     const icon = m.status === 'paid' ? '✓' : m.status === 'pending' ? '⏳' : '🔒';
                     return (
@@ -574,49 +567,6 @@ const ProjectProfile = () => {
                       )}
                     </div>
                   )}
-                  <button onClick={() => showToast('Fund release requested')} className="mt-3 text-[12px] font-bold px-4 py-2 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer hover:border-foreground hover:text-foreground">Request Fund Release →</button>
-                </div>
-              )}
-
-              {activeTab === 6 && (
-                <div className="animate-fade-up">
-                  <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">Timeline</div>
-                  <div className="relative pl-6">
-                    <div className="absolute left-[9px] top-0 bottom-0 w-[2px] bg-border" />
-                    {proj.timeline.map((item, i) => (
-                      <div key={i} className="flex items-start gap-3 mb-4 relative">
-                        <div className={`w-[20px] h-[20px] rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold absolute left-[-16px] ${
-                          item.status === 'complete' ? 'bg-otj-green text-primary-foreground' :
-                          item.status === 'active' ? 'bg-otj-blue text-primary-foreground' :
-                          item.status === 'upcoming' ? 'bg-otj-blue-bg text-otj-blue border-2 border-otj-blue' :
-                          'bg-otj-off text-otj-muted border-2 border-dashed border-border'
-                        }`}>{item.status === 'complete' ? '✓' : ''}</div>
-                        <div className="ml-3">
-                          <div className="text-[13px] font-bold">{item.label}</div>
-                          <div className="text-[11px] text-otj-muted">{item.date}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 7 && (
-                <div className="animate-fade-up">
-                  <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">Team</div>
-                  {[
-                    { emoji: '👩‍💼', name: proj.clientName, role: proj.clientCompany, badge: 'Client', badgeClass: 'bg-otj-blue-bg text-otj-blue', isClient: true },
-                    { emoji: '👩‍🎨', name: 'Nour Makram', role: 'Fashion & E-commerce Photographer', badge: 'Creative', badgeClass: 'bg-otj-green-bg text-otj-green', isClient: false },
-                  ].map((p, i) => (
-                    <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 mb-2 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-otj-off flex items-center justify-center text-xl shrink-0">{p.emoji}</div>
-                      <div className="flex-1">
-                        <div className={`text-[13.5px] font-extrabold tracking-[-0.02em] ${p.isClient ? 'cursor-pointer hover:underline' : ''}`} onClick={() => p.isClient && navigateToClient(p.name)}>{p.name}</div>
-                        <div className="text-[11.5px] text-otj-text">{p.role}</div>
-                      </div>
-                      <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${p.badgeClass}`}>{p.badge}</span>
-                    </div>
-                  ))}
                 </div>
               )}
             </div>
