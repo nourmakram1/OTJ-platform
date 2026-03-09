@@ -58,10 +58,10 @@ export const ClientDashboardScreen: React.FC = () => {
       {tab === 'briefs' && (
         <div className="flex flex-col gap-2 animate-fade-up">
           {clientBriefs.length === 0 ? (
-            <div className="bg-card border border-border rounded-[14px] p-8 text-center">
-              <div className="text-[32px] mb-2">📋</div>
-              <div className="text-[13px] font-bold text-foreground mb-1">No briefs sent yet</div>
-              <div className="text-[11px] text-muted-foreground">Find a creative and send them a brief to get started.</div>
+            <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
+              <div className="text-[48px]">📋</div>
+              <div className="text-[14px] font-extrabold text-foreground">No briefs sent yet</div>
+              <div className="text-[12px] text-muted-foreground max-w-[260px]">Ready to bring your vision to life? Find a creative and send your first brief!</div>
             </div>
           ) : (
             clientBriefs.map(brief => (
