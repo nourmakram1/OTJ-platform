@@ -93,7 +93,18 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                 <div className="flex gap-3 items-start flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/brief/${brief.id}`)}>
                   <div className="w-10 h-10 rounded-[10px] bg-otj-yellow-bg flex items-center justify-center text-xl shrink-0">{brief.icon}</div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate mb-0.5">{brief.name}</div>
+                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate mb-0.5 flex items-center gap-1.5">
+                      {brief.name}
+                      {brief.myRole && (
+                        <span className={`text-[9px] font-bold px-1.5 py-[1px] rounded-full border shrink-0 ${
+                          brief.myRole === 'as-client' 
+                            ? 'bg-otj-blue-bg text-otj-blue border-otj-blue-border' 
+                            : 'bg-otj-green-bg text-otj-green border-otj-green-border'
+                        }`}>
+                          {brief.myRole === 'as-client' ? 'Booked by you' : 'Hired'}
+                        </span>
+                      )}
+                    </div>
                     <div className="text-[11.5px] text-otj-text mb-1.5">From: {brief.clientName} · {brief.clientCompany}</div>
                     <div className="flex gap-[5px] flex-wrap">
                       {brief.tags.map((t, j) => <span key={j} className="text-[10.5px] font-semibold px-2 py-0.5 rounded-full bg-otj-off border border-border text-otj-text">{t}</span>)}
