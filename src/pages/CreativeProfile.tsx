@@ -43,10 +43,14 @@ const CreativeProfile = () => {
               <button onClick={() => { navigator.clipboard.writeText(window.location.href); showToast('Profile link copied!'); }} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center transition-all duration-150 hover:border-foreground" title="Share Profile">
                 <Share2 size={16} className="text-otj-text" />
               </button>
-              <button onClick={() => showToast('♥ Saved to Collections')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center text-sm transition-all duration-150 hover:border-foreground">♡</button>
-              <button onClick={() => navigate('/settings')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center transition-all duration-150 hover:border-foreground" title="Edit Profile">
-                <Pencil size={15} className="text-otj-text" />
-              </button>
+              {!isOwnProfile && (
+                <button onClick={() => showToast('♥ Saved to Collections')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center text-sm transition-all duration-150 hover:border-foreground">♡</button>
+              )}
+              {isOwnProfile && (
+                <button onClick={() => navigate('/settings')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center transition-all duration-150 hover:border-foreground" title="Edit Profile">
+                  <Pencil size={15} className="text-otj-text" />
+                </button>
+              )}
             </div>
           </div>
         </div>
