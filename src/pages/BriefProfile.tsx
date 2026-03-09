@@ -171,15 +171,9 @@ const BriefProfile = () => {
   };
 
   const handleSubmitCounter = () => {
-    const sentBrief = { name: brief.name, clientName: brief.clientName, budget: counterBudget };
     showToast('✓ Counter offer sent to client');
     setShowCounterPanel(false);
-
-    // Simulate client accepting the counter offer after a delay
-    setTimeout(() => {
-      setCounterAcceptedBrief(sentBrief);
-      setCounterAcceptedNotif(true);
-    }, 4000);
+    submitCounterOffer(brief.id, counterBudget, brief.clientName, brief.name);
   };
 
   const counterFormProps = {
