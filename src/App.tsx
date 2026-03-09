@@ -10,6 +10,7 @@ import BookingFlow from "./pages/BookingFlow";
 import ProjectProfile from "./pages/ProjectProfile";
 import BriefProfile from "./pages/BriefProfile";
 import CreativeProfile from "./pages/CreativeProfile";
+import ClientProfile from "./pages/ClientProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
