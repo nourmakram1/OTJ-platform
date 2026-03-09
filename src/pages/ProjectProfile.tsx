@@ -16,7 +16,7 @@ const ProjectProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const { userRole, getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview, clients, confirmPaymentReceipt } = useProjects();
+  const { userRole, getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview, clients, confirmPaymentReceipt, toggleTask } = useProjects();
   const isClient = userRole === 'client';
 
   const navigateToClient = (name: string) => {
@@ -281,7 +281,7 @@ const ProjectProfile = () => {
                         {isExpanded && p.status !== 'locked' && (
                           <div className="px-4 pb-3.5 flex flex-col gap-1.5 border-t border-border pt-3">
                             {p.tasks.map((task, j) => (
-                              <div key={j} onClick={() => !task.done && showToast('Task marked done ✓')} className="flex items-center gap-2.5 p-2 px-3 rounded-[9px] cursor-pointer transition-all duration-150 hover:bg-otj-off">
+                              <div key={j} onClick={() => { if (!task.done && p.status === 'active') { toggleTask(proj.id, p.num, j); showToast('Task marked done ✓'); } }} className={`flex items-center gap-2.5 p-2 px-3 rounded-[9px] transition-all duration-150 hover:bg-otj-off ${!task.done && p.status === 'active' ? 'cursor-pointer' : ''}`}>
                                 <div className={`w-[18px] h-[18px] rounded shrink-0 flex items-center justify-center ${task.done ? 'bg-otj-green' : 'border-[1.5px] border-border'}`}>
                                   {task.done && <span className="text-primary-foreground text-[10px]">✓</span>}
                                 </div>
