@@ -8,7 +8,7 @@ import { ProposalBuilder } from '../components/ProposalBuilder';
 import { ReviewModal, ReviewPayload } from '../components/ReviewModal';
 import { ClientProposalReview, ClientPhaseApproval, ClientPaymentTab } from '../components/ClientProjectActions';
 
-const tabs = ['Phases & Tasks', 'Brief', 'Schedule', 'Attachments', 'Deliverables', 'Payments', 'Timeline', 'Team'];
+const tabs = ['Phases & Tasks', 'Brief', 'Schedule', 'Deliverables', 'Payments'];
 
 const ProjectProfile = () => {
   const navigate = useNavigate();
