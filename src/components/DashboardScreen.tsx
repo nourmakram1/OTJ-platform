@@ -24,9 +24,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
           <div className="text-[20px] md:text-[22px] font-extrabold tracking-[-0.04em]">Good morning, Nour 👋</div>
           <div className="text-[12px] md:text-[13px] text-otj-text mt-0.5">Monday, March 2 · {pendingBriefs.length > 0 ? `${pendingBriefs.length} briefs need your attention` : 'All caught up!'}</div>
         </div>
-        <div className="flex gap-2">
-          <button onClick={() => showToast('Opening export…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-[1.5px] border-border bg-transparent text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">↓ Export</button>
-          <button onClick={onOpenBrief} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer">+ New Brief</button>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 text-[12px] font-bold text-otj-yellow">
+            <span>⭐</span>
+            <span>4.9</span>
+            <span className="text-otj-muted font-medium">(127)</span>
+          </div>
+          <button onClick={() => showToast('Profile link copied!')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer">Share Profile</button>
         </div>
       </div>
 
