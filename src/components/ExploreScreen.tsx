@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { showToast } from './Toast';
-import { ChevronLeft, ChevronRight, SlidersHorizontal, X, ChevronDown, ArrowUpDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from 'lucide-react';
 import { categoryNiches } from '../data/niches';
 import { allCreatives, categories, getFeaturedCreatives, getCreativesByNiche, getNichesForCategory } from '../data/creatives';
 import { CreativeCard } from './CreativeCard';
@@ -12,16 +12,14 @@ interface ExploreScreenProps {
 }
 
 interface Filters {
-  niches: Set<string>;
-  availability: string; // '' | 'Available now' | 'Next week'
-  minRating: number; // 0 means no filter
+  profession: string; // niche
+  category: string; // profession category
   minExperience: number; // 0 means no filter
 }
 
 const defaultFilters: Filters = {
-  niches: new Set(),
-  availability: '',
-  minRating: 0,
+  profession: '',
+  category: '',
   minExperience: 0,
 };
 
@@ -83,53 +81,23 @@ const CreativeRow: React.FC<{
   );
 };
 
-/** Filter dropdown chip */
-const FilterChip: React.FC<{
-  label: string;
-  active: boolean;
-  children: React.ReactNode;
-}> = ({ label, active, children }) => {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  // Close on outside click
-  React.useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [open]);
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen(o => !o)}
-        className={`flex items-center gap-1.5 text-[12px] font-semibold px-3 py-[6px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 whitespace-nowrap ${
-          active
-            ? 'bg-primary border-primary text-primary-foreground'
-            : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
-        }`}
-      >
-        {label}
-        <ChevronDown className={`w-3 h-3 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open && (
-        <div className="absolute top-full left-0 md:left-0 mt-1.5 z-[50] min-w-[200px] max-w-[calc(100vw-32px)] bg-card border border-border rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.12)] p-3 animate-fade-up">
-          {children}
-        </div>
-      )}
-    </div>
-  );
-};
-
 export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searchQuery = '' }) => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [saved, setSaved] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState<Filters>(defaultFilters);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilterPopup, setShowFilterPopup] = useState(false);
   const [sortBy, setSortBy] = useState<'' | 'rating' | 'experience' | 'price-low' | 'price-high'>('');
+  const filterPopupRef = useRef<HTMLDivElement>(null);
+
+  // Close popup on outside click
+  React.useEffect(() => {
+    if (!showFilterPopup) return;
+    const handler = (e: MouseEvent) => {
+      if (filterPopupRef.current && !filterPopupRef.current.contains(e.target as Node)) setShowFilterPopup(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showFilterPopup]);
 
   const toggleSave = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -141,13 +109,10 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
 
   const handleFilterChange = (f: string) => {
     setActiveFilter(f);
-    // Reset niche filter when category changes
-    setFilters(prev => ({ ...prev, niches: new Set() }));
   };
 
-  const activeFilterCount = (filters.niches.size > 0 ? 1 : 0) +
-    (filters.availability ? 1 : 0) +
-    (filters.minRating > 0 ? 1 : 0) +
+  const activeFilterCount = (filters.profession ? 1 : 0) +
+    (filters.category ? 1 : 0) +
     (filters.minExperience > 0 ? 1 : 0);
 
   const clearFilters = () => { setFilters(defaultFilters); setSortBy(''); };
@@ -173,9 +138,8 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
   // Apply all filters to a creative list
   const applyFilters = (list: Creative[]): Creative[] => {
     return list.filter(c => {
-      if (filters.niches.size > 0 && !filters.niches.has(c.niche)) return false;
-      if (filters.availability && c.avail !== filters.availability) return false;
-      if (filters.minRating > 0 && parseFloat(c.rating) < filters.minRating) return false;
+      if (filters.profession && c.niche !== filters.profession) return false;
+      if (filters.category && c.category !== filters.category) return false;
       if (filters.minExperience > 0 && c.experience < filters.minExperience) return false;
       return true;
     });
@@ -209,13 +173,12 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
 
   const featured = useMemo(() => applySort(applyFilters(getFeaturedCreatives())), [filters, sortBy]);
 
-  const toggleNiche = (niche: string) => {
-    setFilters(prev => {
-      const next = new Set(prev.niches);
-      next.has(niche) ? next.delete(niche) : next.add(niche);
-      return { ...prev, niches: next };
-    });
-  };
+  // Get all unique professions (niches) for filter popup
+  const allProfessions = useMemo(() => {
+    const set = new Set<string>();
+    allCreatives.forEach(c => set.add(c.niche));
+    return Array.from(set).sort();
+  }, []);
 
   return (
     <div className="p-[16px_16px_80px] md:p-[20px_24px_80px]">
@@ -236,143 +199,136 @@ export const ExploreScreen: React.FC<ExploreScreenProps> = ({ onOpenBrief, searc
         ))}
       </div>
 
-      {/* Filter bar */}
-      <div className="flex items-center gap-2 mb-4 overflow-x-auto hide-scrollbar pb-1">
-        <button
-          onClick={() => setShowFilters(s => !s)}
-          className={`flex items-center gap-1.5 text-[12px] font-bold px-3 py-[6px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 whitespace-nowrap ${
-            activeFilterCount > 0
-              ? 'bg-primary border-primary text-primary-foreground'
-              : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
-          }`}
-        >
-          <SlidersHorizontal className="w-3.5 h-3.5" />
-          Filters
-          {activeFilterCount > 0 && (
-            <span className="w-4 h-4 rounded-full bg-primary-foreground text-primary text-[10px] font-bold flex items-center justify-center">
-              {activeFilterCount}
-            </span>
-          )}
-        </button>
-
-        {/* Niche filter */}
-        <FilterChip label="Profession" active={filters.niches.size > 0}>
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Select professions</div>
-          <div className="flex flex-col gap-1 max-h-[220px] overflow-y-auto">
-            {availableNiches.map(niche => (
-              <label key={niche} className="flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-otj-off transition-colors">
-                <input
-                  type="checkbox"
-                  checked={filters.niches.has(niche)}
-                  onChange={() => toggleNiche(niche)}
-                  className="w-3.5 h-3.5 rounded accent-primary cursor-pointer"
-                />
-                <span className="text-[12px] font-medium text-foreground">{niche}</span>
-              </label>
-            ))}
-          </div>
-        </FilterChip>
-
-        {/* Availability filter */}
-        <FilterChip label="Availability" active={!!filters.availability}>
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Availability</div>
-          <div className="flex flex-col gap-1">
-            {['', 'Available now', 'Next week'].map(opt => (
-              <button
-                key={opt}
-                onClick={() => setFilters(prev => ({ ...prev, availability: opt }))}
-                className={`text-left px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
-                  filters.availability === opt
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-foreground hover:bg-otj-off'
-                }`}
-              >
-                {opt || 'Any'}
-              </button>
-            ))}
-          </div>
-        </FilterChip>
-
-        {/* Rating filter */}
-        <FilterChip label="Rating" active={filters.minRating > 0}>
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Minimum rating</div>
-          <div className="flex flex-col gap-1">
-            {[0, 4.5, 4.7, 4.8, 4.9, 5.0].map(r => (
-              <button
-                key={r}
-                onClick={() => setFilters(prev => ({ ...prev, minRating: r }))}
-                className={`text-left px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
-                  filters.minRating === r
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-foreground hover:bg-otj-off'
-                }`}
-              >
-                {r === 0 ? 'Any' : `⭐ ${r}+`}
-              </button>
-            ))}
-          </div>
-        </FilterChip>
-
-        {/* Experience filter */}
-        <FilterChip label="Experience" active={filters.minExperience > 0}>
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Experience level</div>
-          <div className="flex flex-col gap-1">
-            {([
-              { value: 0, label: 'Any' },
-              { value: 1, label: '🌱 Beginner (1-3 yrs)' },
-              { value: 5, label: '⚡ Expert (5+ yrs)' },
-              { value: 10, label: '🏅 Veteran (10+ yrs)' },
-            ]).map(opt => (
-              <button
-                key={opt.value}
-                onClick={() => setFilters(prev => ({ ...prev, minExperience: opt.value }))}
-                className={`text-left px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
-                  filters.minExperience === opt.value
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-foreground hover:bg-otj-off'
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </FilterChip>
-
-        {/* Sort by */}
-        <FilterChip label={sortLabel} active={!!sortBy}>
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Sort by</div>
-          <div className="flex flex-col gap-1">
-            {([
-              { key: '' as const, label: 'Default' },
-              { key: 'rating' as const, label: '⭐ Highest Rating' },
-              { key: 'experience' as const, label: '🏅 Most Experience' },
-              { key: 'price-low' as const, label: '💰 Price: Low → High' },
-              { key: 'price-high' as const, label: '💰 Price: High → Low' },
-            ]).map(opt => (
-              <button
-                key={opt.key}
-                onClick={() => setSortBy(opt.key)}
-                className={`text-left px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
-                  sortBy === opt.key
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-foreground hover:bg-otj-off'
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </FilterChip>
-
-        {/* Clear all */}
-        {(activeFilterCount > 0 || !!sortBy) && (
+      {/* Filter button */}
+      <div className="flex items-center gap-2 mb-4">
+        <div className="relative" ref={filterPopupRef}>
           <button
-            onClick={clearFilters}
-            className="flex items-center gap-1 text-[11px] font-semibold text-otj-text hover:text-foreground cursor-pointer whitespace-nowrap transition-colors"
+            onClick={() => setShowFilterPopup(s => !s)}
+            className={`flex items-center gap-1.5 text-[12px] font-bold px-3.5 py-[7px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 whitespace-nowrap ${
+              activeFilterCount > 0
+                ? 'bg-primary border-primary text-primary-foreground'
+                : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
+            }`}
           >
-            <X className="w-3 h-3" />
-            Clear all
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+            Filters
+            {activeFilterCount > 0 && (
+              <span className="w-4 h-4 rounded-full bg-primary-foreground text-primary text-[10px] font-bold flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
           </button>
+
+          {/* Filter popup */}
+          {showFilterPopup && (
+            <div className="absolute top-full left-0 mt-2 z-[50] w-[280px] bg-card border border-border rounded-[16px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] p-4 animate-fade-up">
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-[14px] font-extrabold">Filters</div>
+                {activeFilterCount > 0 && (
+                  <button onClick={clearFilters} className="text-[11px] font-semibold text-otj-text hover:text-foreground cursor-pointer">
+                    Clear all
+                  </button>
+                )}
+              </div>
+
+              {/* Profession (Category) */}
+              <div className="mb-4">
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Profession</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {categories.filter(c => c !== 'All').map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setFilters(prev => ({ ...prev, category: prev.category === cat ? '' : cat }))}
+                      className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border cursor-pointer transition-all duration-150 ${
+                        filters.category === cat
+                          ? 'bg-primary border-primary text-primary-foreground'
+                          : 'bg-otj-off border-border text-otj-text hover:border-otj-muted'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Niche */}
+              <div className="mb-4">
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Niche</div>
+                <div className="flex flex-wrap gap-1.5 max-h-[120px] overflow-y-auto">
+                  {allProfessions.map(niche => (
+                    <button
+                      key={niche}
+                      onClick={() => setFilters(prev => ({ ...prev, profession: prev.profession === niche ? '' : niche }))}
+                      className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border cursor-pointer transition-all duration-150 ${
+                        filters.profession === niche
+                          ? 'bg-primary border-primary text-primary-foreground'
+                          : 'bg-otj-off border-border text-otj-text hover:border-otj-muted'
+                      }`}
+                    >
+                      {niche}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Experience */}
+              <div className="mb-4">
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Experience</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {([
+                    { value: 0, label: 'Any' },
+                    { value: 1, label: '1+ yrs' },
+                    { value: 3, label: '3+ yrs' },
+                    { value: 5, label: '5+ yrs' },
+                    { value: 10, label: '10+ yrs' },
+                  ]).map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setFilters(prev => ({ ...prev, minExperience: opt.value }))}
+                      className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border cursor-pointer transition-all duration-150 ${
+                        filters.minExperience === opt.value
+                          ? 'bg-primary border-primary text-primary-foreground'
+                          : 'bg-otj-off border-border text-otj-text hover:border-otj-muted'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowFilterPopup(false)}
+                className="w-full text-[12px] font-bold py-2 rounded-full bg-primary text-primary-foreground cursor-pointer"
+              >
+                Apply Filters
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Active filter tags */}
+        {activeFilterCount > 0 && (
+          <div className="flex items-center gap-1.5 overflow-x-auto hide-scrollbar">
+            {filters.category && (
+              <span className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-otj-blue-bg text-otj-blue border border-otj-blue-border whitespace-nowrap">
+                {filters.category}
+                <X className="w-3 h-3 cursor-pointer" onClick={() => setFilters(prev => ({ ...prev, category: '' }))} />
+              </span>
+            )}
+            {filters.profession && (
+              <span className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border whitespace-nowrap">
+                {filters.profession}
+                <X className="w-3 h-3 cursor-pointer" onClick={() => setFilters(prev => ({ ...prev, profession: '' }))} />
+              </span>
+            )}
+            {filters.minExperience > 0 && (
+              <span className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-otj-yellow-bg text-otj-yellow border border-otj-yellow-border whitespace-nowrap">
+                {filters.minExperience}+ yrs
+                <X className="w-3 h-3 cursor-pointer" onClick={() => setFilters(prev => ({ ...prev, minExperience: 0 }))} />
+              </span>
+            )}
+          </div>
         )}
       </div>
 
