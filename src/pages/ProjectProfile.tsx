@@ -13,7 +13,12 @@ const ProjectProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const { getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview } = useProjects();
+  const { getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview, clients } = useProjects();
+
+  const navigateToClient = (name: string) => {
+    const client = clients.find(c => c.name === name);
+    if (client) navigate(`/client/${client.id}`);
+  };
   
   // Check for tab query param to auto-select Brief tab
   const initialTab = searchParams.get('tab') === 'brief' ? 1 : 0;
