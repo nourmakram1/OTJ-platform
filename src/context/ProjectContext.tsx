@@ -106,6 +106,7 @@ export interface ProjectData {
   meetings: MeetingData[];
   attachments: AttachmentData[];
   reviews: ReviewData[];
+  myRole?: ProjectRole;
 }
 
 export interface NotificationData {
