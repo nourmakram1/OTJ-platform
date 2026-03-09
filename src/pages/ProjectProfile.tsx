@@ -220,8 +220,8 @@ const ProjectProfile = () => {
           </div>
 
           {/* Content */}
-          <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 pb-20 md:pb-6 grid grid-cols-1 md:grid-cols-[1fr_300px] gap-6">
-            <div>
+          <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 pb-20 md:pb-6 flex flex-col md:grid md:grid-cols-[1fr_300px] gap-6">
+            <div className="order-1 md:order-none">
               {activeTab === 0 && (
                 <div className="flex flex-col gap-3 animate-fade-up">
                   {proj.phases.map(p => {
