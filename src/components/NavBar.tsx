@@ -13,7 +13,7 @@ interface NavBarProps {
 }
 
 const NotifBell = ({ onClick }: { onClick: () => void }) => {
-  const { unreadCount } = useProjects();
+  const { unreadCount, userRole } = useProjects();
   return (
     <div onClick={onClick} className="relative cursor-pointer p-2 rounded-lg transition-all duration-150 hover:bg-muted">
       <Bell className="w-[18px] h-[18px] text-foreground" />
