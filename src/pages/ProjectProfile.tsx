@@ -167,7 +167,7 @@ const ProjectProfile = () => {
                 <div className="text-[18px] md:text-[22px] font-extrabold tracking-[-0.04em] text-foreground">{proj.name}</div>
                 <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${statusClass}`}>{statusLabel}</span>
               </div>
-              <div className="text-[12px] md:text-[13px] text-otj-text">Client: {proj.clientName} · {proj.clientCompany}</div>
+              <div className="text-[12px] md:text-[13px] text-otj-text">Client: <span className="cursor-pointer hover:underline text-foreground font-semibold" onClick={() => navigateToClient(proj.clientName)}>{proj.clientName}</span> · {proj.clientCompany}</div>
             </div>
             {!isProposal && proj.status !== 'complete' && (
               <div className="flex gap-2 shrink-0 flex-wrap">
