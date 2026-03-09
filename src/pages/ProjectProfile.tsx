@@ -250,7 +250,7 @@ const ProjectProfile = () => {
           <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 pb-20 md:pb-6 flex flex-col md:grid md:grid-cols-[1fr_300px] gap-6">
             <div className="order-1 md:order-none">
               {activeTab === 0 && isClient && (
-                <ClientPhaseApproval project={proj} />
+                <ClientPhaseApproval project={proj} onSwitchToPayments={() => setActiveTab(4)} />
               )}
               {activeTab === 0 && !isClient && (
                 <div className="flex flex-col gap-3 animate-fade-up">
