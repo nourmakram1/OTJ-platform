@@ -134,6 +134,8 @@ export interface ClientData {
   name: string;
   avatar: string;
   company?: string;
+  email: string;
+  phone: string;
   industry: string;
   location: string;
   bio: string;
@@ -176,6 +178,7 @@ interface ProjectContextType {
   submitCounterOffer: (briefId: string, budget: string, clientName: string, briefName: string) => void;
   clients: ClientData[];
   getClient: (id: string) => ClientData | undefined;
+  updateClient: (clientId: string, updates: Partial<ClientData>) => void;
   addClientReview: (clientId: string, review: Omit<ClientReviewData, 'id' | 'createdAt'>) => void;
   approvePhase: (projectId: string, phaseNum: number) => void;
   releasePayment: (projectId: string, milestoneIndex: number) => void;
@@ -360,6 +363,8 @@ const defaultClients: ClientData[] = [
     name: 'Randa Hatem',
     avatar: '👩‍💼',
     company: 'Edita Group',
+    email: 'randa.hatem@editagroup.com',
+    phone: '+20 100 123 4567',
     industry: 'FMCG / Food & Beverage',
     location: 'Cairo, Egypt',
     bio: 'Senior Marketing Manager at Edita Group, overseeing visual content for seasonal campaigns across multiple brands including Molto, Bake Rolz, and Tiger. Passionate about bold, high-quality creative work that connects with young audiences.',
@@ -381,6 +386,8 @@ const defaultClients: ClientData[] = [
     type: 'individual',
     name: 'Ahmed Karim',
     avatar: '👨‍💼',
+    email: 'ahmed.karim@fintech.eg',
+    phone: '+20 102 555 7890',
     industry: 'Tech / Startups',
     location: 'Cairo, Egypt',
     bio: 'Founder of a fast-growing fintech startup. Looking for creatives to help build our brand identity and marketing campaigns. Values speed and quality.',
@@ -400,6 +407,8 @@ const defaultClients: ClientData[] = [
     name: 'Sara M.',
     avatar: '🎨',
     company: 'Studio Noir',
+    email: 'sara@studionoir.eg',
+    phone: '+20 111 222 3344',
     industry: 'Fashion / Retail',
     location: 'Alexandria, Egypt',
     bio: 'Creative Director at Studio Noir, a luxury fashion brand. Looking for photographers and videographers for seasonal lookbooks and social content.',
@@ -801,8 +810,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const updateClient = useCallback((clientId: string, updates: Partial<ClientData>) => {
+    setClients(prev => prev.map(c => c.id === clientId ? { ...c, ...updates } : c));
+  }, []);
+
   return (
-    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask }}>
+    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, updateClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask }}>
       {children}
     </ProjectContext.Provider>
   );

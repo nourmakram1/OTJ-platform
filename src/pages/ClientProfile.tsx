@@ -6,7 +6,8 @@ import { useProjects } from '../context/ProjectContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import { Star, Shield, ExternalLink, MapPin, Building2, Calendar } from 'lucide-react';
+import { Input } from '../components/ui/input';
+import { Star, Shield, ExternalLink, MapPin, Building2, Calendar, Pencil, Mail, Phone } from 'lucide-react';
 
 const tabs = ['About', 'Reviews'];
 
@@ -25,9 +26,12 @@ const StarRating = ({ rating, onRate, interactive = false }: { rating: number; o
 const ClientProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { getClient, addClientReview, completedProjects } = useProjects();
+  const { getClient, addClientReview, updateClient, completedProjects, userRole } = useProjects();
   const [activeTab, setActiveTab] = useState(0);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showEditContactModal, setShowEditContactModal] = useState(false);
+  const [editEmail, setEditEmail] = useState('');
+  const [editPhone, setEditPhone] = useState('');
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
 
@@ -67,6 +71,28 @@ const ClientProfile = () => {
     setReviewComment('');
   };
 
+  const isOwnClientProfile = userRole === 'client';
+
+  const handleOpenEditContact = () => {
+    setEditEmail(client.email);
+    setEditPhone(client.phone);
+    setShowEditContactModal(true);
+  };
+
+  const handleSaveContact = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!editEmail.trim() || !emailRegex.test(editEmail.trim())) {
+      showToast('Please enter a valid email address');
+      return;
+    }
+    if (!editPhone.trim() || editPhone.trim().length < 8) {
+      showToast('Please enter a valid phone number');
+      return;
+    }
+    updateClient(client.id, { email: editEmail.trim(), phone: editPhone.trim() });
+    showToast('✓ Contact info updated');
+    setShowEditContactModal(false);
+  };
 
   return (
     <>
@@ -146,7 +172,14 @@ const ClientProfile = () => {
               </div>
 
               <div className="bg-card border border-border rounded-[14px] p-4">
-                <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-3">🏢 Details</div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">🏢 Details & Contact</div>
+                  {isOwnClientProfile && (
+                    <button onClick={handleOpenEditContact} className="flex items-center gap-1 text-[11px] font-bold text-primary cursor-pointer hover:opacity-80 transition-opacity">
+                      <Pencil className="w-3 h-3" /> Edit
+                    </button>
+                  )}
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   <div>
                     <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Industry</div>
@@ -164,6 +197,18 @@ const ClientProfile = () => {
                       </div>
                     </div>
                   )}
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Email</div>
+                    <div className="text-[13px] font-semibold text-foreground flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5 text-muted-foreground" /> {client.email}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground mb-0.5">Phone</div>
+                    <div className="text-[13px] font-semibold text-foreground flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5 text-muted-foreground" /> {client.phone}
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -277,6 +322,44 @@ const ClientProfile = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowReviewModal(false)} className="rounded-full">Cancel</Button>
             <Button onClick={handleSubmitReview} disabled={reviewRating === 0} className="rounded-full">Submit Review</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Contact Modal */}
+      <Dialog open={showEditContactModal} onOpenChange={setShowEditContactModal}>
+        <DialogContent className="sm:max-w-[425px] rounded-[14px]">
+          <DialogHeader>
+            <DialogTitle>Edit Contact Information</DialogTitle>
+            <DialogDescription>Update your email and phone number so creatives can reach you.</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4 py-2">
+            <div>
+              <label className="text-[11px] font-bold text-foreground mb-1.5 block">📧 Email</label>
+              <Input
+                value={editEmail}
+                onChange={e => setEditEmail(e.target.value)}
+                placeholder="your@email.com"
+                type="email"
+                maxLength={255}
+                className="text-[13px] rounded-[10px]"
+              />
+            </div>
+            <div>
+              <label className="text-[11px] font-bold text-foreground mb-1.5 block">📱 Phone</label>
+              <Input
+                value={editPhone}
+                onChange={e => setEditPhone(e.target.value)}
+                placeholder="+20 100 123 4567"
+                type="tel"
+                maxLength={20}
+                className="text-[13px] rounded-[10px]"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditContactModal(false)} className="rounded-full">Cancel</Button>
+            <Button onClick={handleSaveContact} className="rounded-full">Save Changes</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
