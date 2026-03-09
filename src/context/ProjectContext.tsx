@@ -343,7 +343,7 @@ const defaultClients: ClientData[] = [
     teamSize: '50+',
     joinedDate: 'Jan 2024',
     projectsCompleted: 12,
-    totalSpent: '42,000 EGP',
+    
     avgResponseTime: '< 2 hours',
     paymentReliability: 96,
     verified: true,
