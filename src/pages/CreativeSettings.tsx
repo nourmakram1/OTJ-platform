@@ -53,19 +53,21 @@ type Section = 'hub' | 'profile' | 'portfolio' | 'reviews' | 'notifications' | '
 
 const CreativeSettings = () => {
   const navigate = useNavigate();
+  const { profile, updateProfile } = useCreativeProfile();
+
   const [activeSection, setActiveSection] = useState<Section>('hub');
 
-  // Profile state
-  const [profession, setProfession] = useState('Photographer');
-  const [selectedNiches, setSelectedNiches] = useState<Set<string>>(new Set(['Fashion Editorial', 'E-Commerce']));
-  const [city, setCity] = useState('Cairo');
-  const [experience, setExperience] = useState('5–8 years');
-  const [name, setName] = useState('Nour Makram');
-  const [tagline, setTagline] = useState('Fashion & E-commerce Photographer · Cairo');
-  const [bio, setBio] = useState('Cairo-based fashion and e-commerce photographer with 7+ years of experience.');
+  // Profile state — initialized from context
+  const [profession, setProfession] = useState(profile.profession);
+  const [selectedNiches, setSelectedNiches] = useState<Set<string>>(new Set(profile.selectedNiches));
+  const [city, setCity] = useState(profile.city);
+  const [experience, setExperience] = useState(profile.experience);
+  const [name, setName] = useState(profile.name);
+  const [tagline, setTagline] = useState(profile.tagline);
+  const [bio, setBio] = useState(profile.bio);
   const [avatarUploaded, setAvatarUploaded] = useState(true);
-  const [instagram, setInstagram] = useState('@nourmakram');
-  const [links, setLinks] = useState([{ label: 'Portfolio', url: 'https://nourmakram.com' }]);
+  const [instagram, setInstagram] = useState(profile.instagram);
+  const [links, setLinks] = useState(profile.links.map(l => ({ ...l })));
   const [filledSlots, setFilledSlots] = useState(new Set([0, 1, 2, 3]));
   const [profSearch, setProfSearch] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -90,7 +92,23 @@ const CreativeSettings = () => {
   const filteredNiches = q ? availableNiches.filter(n => n.toLowerCase().includes(q)) : availableNiches;
   const autoTagline = `${profession} · ${Array.from(selectedNiches).map(n => n.toLowerCase()).join(' · ') || 'specialist'}`;
 
-  const handleSave = () => showToast('✓ Changes saved successfully!');
+  const handleSave = () => {
+    // Build skills from profession + niches
+    const skills = [profession, ...Array.from(selectedNiches)].slice(0, 8);
+    updateProfile({
+      name: name.trim(),
+      tagline: tagline.trim(),
+      bio: bio.trim(),
+      profession,
+      selectedNiches: Array.from(selectedNiches),
+      skills,
+      city,
+      experience,
+      instagram,
+      links: links.filter(l => l.url.trim()),
+    });
+    showToast('✓ Changes saved successfully!');
+  };
   const handleSignOut = () => { showToast('Signed out'); navigate('/auth'); };
   const handleDeleteAccount = () => setDeleteConfirm(true);
 
