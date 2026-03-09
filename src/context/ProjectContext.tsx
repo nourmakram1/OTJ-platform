@@ -228,6 +228,7 @@ const defaultActiveProjects: ProjectData[] = [
     id: 'proj-existing-1',
     icon: '📸', name: 'Edita Re-Branding',
     clientName: 'Randa Hatem', clientCompany: 'Edita Group',
+    clientEmail: 'randa.hatem@editagroup.com', clientPhone: '+20 100 123 4567',
     projectType: 'Full Day Campaign Shoot', budget: '3,500 EGP',
     deliverables: '40 edited photos', date: 'Mar 5', deadline: 'Mar 20',
     moodAesthetic: '', usageRights: '',
