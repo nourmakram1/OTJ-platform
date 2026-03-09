@@ -178,7 +178,7 @@ interface ProjectContextType {
   submitPaymentProof: (projectId: string, milestoneIndex: number, proofUrl: string, proofName: string) => void;
   confirmPaymentReceipt: (projectId: string, milestoneIndex: number) => void;
   acceptProposal: (projectId: string) => void;
-  rejectProposal: (projectId: string) => void;
+  toggleTask: (projectId: string, phaseNum: number, taskIndex: number) => void;
 }
 
 const defaultBriefs: BriefData[] = [
