@@ -277,26 +277,130 @@ const ProjectProfile = () => {
               )}
 
               {activeTab === 1 && (
-                <div className="animate-fade-up flex flex-col gap-3">
-                  <div className="text-lg font-extrabold tracking-[-0.04em] mb-2">Brief Details</div>
-                  {[
-                    { label: 'Project Type', val: proj.projectType },
-                    { label: 'Mood & Aesthetic', val: proj.moodAesthetic || 'Not specified' },
-                    { label: 'Deliverables', val: proj.deliverables },
-                    { label: 'Usage Rights', val: proj.usageRights || 'Not specified' },
-                    { label: 'Budget', val: proj.budget },
-                    { label: 'Date', val: proj.deadline },
-                  ].map((f, i) => (
-                    <div key={i} className="bg-otj-off rounded-[10px] p-3.5 px-4">
-                      <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1">{f.label}</div>
-                      <div className="text-[13px] text-foreground">{f.val}</div>
+                <div className="animate-fade-up flex flex-col gap-5">
+                  {/* Brief Header */}
+                  <div>
+                    <div className="text-lg font-extrabold tracking-[-0.04em] mb-1">Brief Details</div>
+                    <div className="text-[12px] text-otj-muted">Submitted {proj.createdAt}</div>
+                  </div>
+
+                  {/* Client Information */}
+                  <div className="bg-card border border-border rounded-[14px] p-4">
+                    <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">👤 Client Information</div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Client Name</div>
+                        <div className="text-[13px] font-semibold text-foreground">{proj.clientName}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Company</div>
+                        <div className="text-[13px] font-semibold text-foreground">{proj.clientCompany}</div>
+                      </div>
                     </div>
-                  ))}
+                  </div>
+
+                  {/* Project Overview */}
+                  <div className="bg-card border border-border rounded-[14px] p-4">
+                    <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">📋 Project Overview</div>
+                    <div className="flex flex-col gap-3">
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Project Type</div>
+                        <div className="text-[13px] text-foreground">{proj.projectType}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Description</div>
+                        <div className="text-[13px] text-foreground leading-relaxed">
+                          {proj.name} project for {proj.clientCompany}. This involves creating high-quality deliverables that align with the client's brand vision and marketing objectives.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Creative Requirements */}
+                  <div className="bg-card border border-border rounded-[14px] p-4">
+                    <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">🎨 Creative Requirements</div>
+                    <div className="flex flex-col gap-3">
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Mood & Aesthetic</div>
+                        <div className="text-[13px] text-foreground">{proj.moodAesthetic || 'Not specified'}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Deliverables</div>
+                        <div className="text-[13px] text-foreground">{proj.deliverables}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Usage Rights</div>
+                        <div className="text-[13px] text-foreground">{proj.usageRights || 'Not specified'}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Timeline & Budget */}
+                  <div className="bg-card border border-border rounded-[14px] p-4">
+                    <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">📅 Timeline & Budget</div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Shoot / Start Date</div>
+                        <div className="text-[13px] font-semibold text-foreground">{proj.date}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Final Deadline</div>
+                        <div className="text-[13px] font-semibold text-foreground">{proj.deadline}</div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Proposed Budget</div>
+                        <div className="text-[13px] font-extrabold text-otj-green">{proj.budget}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Reference Materials (if attachments exist) */}
+                  {proj.attachments && proj.attachments.length > 0 && (
+                    <div className="bg-card border border-border rounded-[14px] p-4">
+                      <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">📎 Reference Materials</div>
+                      <div className="flex flex-wrap gap-2">
+                        {proj.attachments.slice(0, 4).map((att) => (
+                          <div key={att.id} className="flex items-center gap-2 bg-otj-off rounded-lg px-3 py-2 text-[12px]">
+                            <span>{att.icon}</span>
+                            <span className="font-medium truncate max-w-[120px]">{att.name}</span>
+                          </div>
+                        ))}
+                        {proj.attachments.length > 4 && (
+                          <div className="flex items-center gap-2 bg-otj-off rounded-lg px-3 py-2 text-[12px] text-otj-muted">
+                            +{proj.attachments.length - 4} more
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Status Banner */}
                   {proj.status !== 'pending-deposit' && proj.status !== 'proposal' && (
-                    <div className="bg-otj-green-bg border border-otj-green-border rounded-[10px] p-3 px-4 text-[12px] font-bold text-otj-green mt-2">✓ Brief approved by client</div>
+                    <div className="bg-otj-green-bg border border-otj-green-border rounded-[14px] p-4 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-otj-green flex items-center justify-center text-primary-foreground text-lg">✓</div>
+                      <div>
+                        <div className="text-[13px] font-bold text-otj-green">Brief Approved</div>
+                        <div className="text-[11px] text-otj-green/80">Client has approved this brief and the project is active</div>
+                      </div>
+                    </div>
                   )}
                   {proj.status === 'pending-deposit' && (
-                    <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[10px] p-3 px-4 text-[12px] font-bold text-otj-yellow mt-2">⏳ Awaiting 50% deposit to begin project</div>
+                    <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[14px] p-4 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-otj-yellow flex items-center justify-center text-primary-foreground text-lg">⏳</div>
+                      <div>
+                        <div className="text-[13px] font-bold text-otj-yellow">Awaiting Deposit</div>
+                        <div className="text-[11px] text-otj-yellow/80">Client must pay 50% deposit before the project can begin</div>
+                      </div>
+                    </div>
+                  )}
+                  {proj.status === 'proposal' && (
+                    <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-otj-blue flex items-center justify-center text-primary-foreground text-lg">📝</div>
+                      <div>
+                        <div className="text-[13px] font-bold text-otj-blue">Pending Your Proposal</div>
+                        <div className="text-[11px] text-otj-blue/80">Review this brief and submit your proposal with phases, tasks, and pricing</div>
+                      </div>
+                    </div>
                   )}
                 </div>
               )}
