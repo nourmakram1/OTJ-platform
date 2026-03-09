@@ -108,12 +108,6 @@ const ClientProfile = () => {
                 )}
               </div>
             </div>
-            <button
-              onClick={() => setShowReviewModal(true)}
-              className="text-[11.5px] font-bold px-4 py-1.5 rounded-full bg-primary text-primary-foreground border-none cursor-pointer transition-all duration-150 hover:opacity-90 shrink-0"
-            >
-              ✍ Leave Review
-            </button>
           </div>
         </div>
       </div>
