@@ -288,7 +288,7 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
             <button onClick={() => setWeekStart(subWeeks(weekStart, 1))} className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150 text-sm">‹</button>
             <span className="text-[13px] font-extrabold tracking-[-0.02em] min-w-[160px] text-center">{format(weekStart, 'MMMM yyyy')} · Week {weekNum}</span>
             <button onClick={() => setWeekStart(addWeeks(weekStart, 1))} className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150 text-sm">›</button>
-            <span onClick={() => showToast('Opening full calendar…')} className="text-[12px] font-semibold text-otj-blue cursor-pointer ml-2 hover:underline">See all</span>
+            
           </div>
         </div>
 
