@@ -308,23 +308,23 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
 
         {/* Notes */}
         <div>
-          <div className="text-[16px] font-extrabold tracking-[-0.03em] mb-3">Notes to Client</div>
-          <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Any additional notes, terms, or conditions…" className="w-full bg-card border border-border rounded-[14px] p-4 text-[13px] font-medium outline-none resize-none min-h-[80px] placeholder:text-otj-muted" />
+          <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em] mb-3">Notes to Client</div>
+          <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Any additional notes, terms, or conditions…" className="w-full bg-card border border-border rounded-[14px] p-3 md:p-4 text-[12px] md:text-[13px] font-medium outline-none resize-none min-h-[80px] placeholder:text-otj-muted" />
         </div>
 
         {/* Send to Client */}
-        <div className="flex items-center gap-3 pb-6">
-          <button onClick={handleSubmit} disabled={!canSubmit} className={`text-[13px] font-bold px-6 py-2.5 rounded-full border-none cursor-pointer transition-all duration-150 ${
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 pb-6">
+          <button onClick={handleSubmit} disabled={!canSubmit} className={`text-[12px] md:text-[13px] font-bold px-5 md:px-6 py-2 md:py-2.5 rounded-full border-none cursor-pointer transition-all duration-150 w-full md:w-auto ${
             canSubmit ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-otj-off text-otj-muted cursor-not-allowed'
           }`}>
             Send to Client →
           </button>
-          <span className="text-[11px] text-otj-muted">Client will be notified to review and approve your proposal</span>
+          <span className="text-[10px] md:text-[11px] text-otj-muted text-center md:text-left">Client will be notified to review and approve</span>
         </div>
       </div>
 
       {/* Right sidebar — Brief summary + Schedule preview */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 order-2">
         <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4">
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-blue mb-3">Client's Brief</div>
           {[
