@@ -436,8 +436,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return activeProjects.find(p => p.id === id);
   }, [activeProjects]);
 
+  const getBrief = useCallback((id: string): BriefData | undefined => {
+    return pendingBriefs.find(b => b.id === id);
+  }, [pendingBriefs]);
+
   return (
-    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews }}>
+    <ProjectContext.Provider value={{ pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews }}>
       {children}
     </ProjectContext.Provider>
   );
