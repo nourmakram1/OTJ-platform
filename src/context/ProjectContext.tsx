@@ -6,6 +6,8 @@ export interface BriefData {
   name: string;
   clientName: string;
   clientCompany: string;
+  clientEmail: string;
+  clientPhone: string;
   projectType: string;
   budget: string;
   deliverables: string;
