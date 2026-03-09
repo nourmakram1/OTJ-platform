@@ -8,6 +8,7 @@ import { useProjects } from '../context/ProjectContext';
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { setUserRole } = useProjects();
   const [mode, setMode] = useState<'signup' | 'login'>('signup');
   const [userType, setUserType] = useState<'client' | 'creative' | null>(null);
   const [agreed, setAgreed] = useState(false);
