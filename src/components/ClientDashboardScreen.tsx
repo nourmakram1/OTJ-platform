@@ -88,10 +88,10 @@ export const ClientDashboardScreen: React.FC = () => {
       {tab === 'active' && (
         <div className="flex flex-col gap-2 animate-fade-up">
           {activeProjects.length === 0 ? (
-            <div className="bg-card border border-border rounded-[14px] p-8 text-center">
-              <div className="text-[32px] mb-2">🚀</div>
-              <div className="text-[13px] font-bold text-foreground mb-1">No active projects</div>
-              <div className="text-[11px] text-muted-foreground">Accept a proposal from a creative to start a project.</div>
+            <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
+              <div className="text-[48px]">🚀</div>
+              <div className="text-[14px] font-extrabold text-foreground">No active projects</div>
+              <div className="text-[12px] text-muted-foreground max-w-[260px]">Your creative journey starts here — accept a proposal and let's get building!</div>
             </div>
           ) : (
             activeProjects.map(proj => {
