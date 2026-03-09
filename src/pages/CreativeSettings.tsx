@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { Toast, showToast } from '../components/Toast';
-import { Camera, LayoutGrid, Star, Bell, Settings, Shield, HelpCircle, LogOut, Trash2, ChevronRight } from 'lucide-react';
+import { Camera, LayoutGrid, Star, Bell, Settings, Shield, HelpCircle, LogOut, Trash2, ChevronRight, Crown, Check, X } from 'lucide-react';
 
 const professions = [
   { icon: '📸', name: 'Photographer' },
