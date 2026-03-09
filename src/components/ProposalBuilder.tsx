@@ -208,26 +208,26 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
 
         {/* Pricing & Payment Milestones */}
         <div>
-          <div className="text-[16px] font-extrabold tracking-[-0.03em] mb-3">Pricing & Payment Schedule</div>
-          <div className="bg-card border border-border rounded-[14px] p-4">
-            <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em] mb-3">Pricing & Payment Schedule</div>
+          <div className="bg-card border border-border rounded-[14px] p-3 md:p-4">
+            <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4">
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Total Price</div>
+                <div className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Total Price</div>
                 <div className="flex items-center gap-1.5">
-                  <input type="text" value={price} onChange={e => setPrice(e.target.value.replace(/[^0-9]/g, ''))} placeholder="0" className="text-[22px] font-extrabold tracking-[-0.04em] bg-transparent border-none outline-none w-[120px]" />
-                  <span className="text-[14px] font-bold text-otj-muted">EGP</span>
+                  <input type="text" value={price} onChange={e => setPrice(e.target.value.replace(/[^0-9]/g, ''))} placeholder="0" className="text-[18px] md:text-[22px] font-extrabold tracking-[-0.04em] bg-transparent border-none outline-none w-[80px] md:w-[120px]" />
+                  <span className="text-[12px] md:text-[14px] font-bold text-otj-muted">EGP</span>
                 </div>
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Client's Budget</div>
-                <div className="text-[16px] font-extrabold text-otj-text">{project.budget}</div>
+                <div className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Client's Budget</div>
+                <div className="text-[14px] md:text-[16px] font-extrabold text-otj-text">{project.budget}</div>
               </div>
             </div>
             <div className="border-t border-border pt-4">
-              <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">Payment Split</div>
-              <div className="flex gap-2 mb-3">
+              <div className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">Payment Split</div>
+              <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3">
                 {PRESET_SPLITS.map((preset, i) => (
-                  <button key={i} onClick={() => selectPreset(i)} className={`text-[11px] font-bold px-3 py-1.5 rounded-full border cursor-pointer transition-all duration-150 ${
+                  <button key={i} onClick={() => selectPreset(i)} className={`text-[10px] md:text-[11px] font-bold px-2 md:px-3 py-1 md:py-1.5 rounded-full border cursor-pointer transition-all duration-150 ${
                     selectedSplit === i ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border text-otj-text hover:border-foreground'
                   }`}>{preset.label}</button>
                 ))}
