@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useProjects, ProjectData } from '../context/ProjectContext';
 import { showToast } from './Toast';
 import {
@@ -246,48 +246,104 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
   const { releasePayment } = useProjects();
   const numericPrice = parseInt(project.budget.replace(/[^0-9]/g, '')) || 0;
   const [confirmIdx, setConfirmIdx] = useState<number | null>(null);
+  const [proofImages, setProofImages] = useState<Record<number, { url: string; name: string }>>({});
+  const fileRefs = useRef<Record<number, HTMLInputElement | null>>({});
+
+  const handleProofUpload = (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setProofImages(prev => ({ ...prev, [idx]: { url, name: file.name } }));
+    showToast('📎 Transfer screenshot attached');
+    e.target.value = '';
+  };
 
   return (
     <div className="animate-fade-up">
-      <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4 mb-4">
-        <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-blue mb-2">Escrow Summary</div>
-        <div className="grid grid-cols-3 gap-3">
-          <div><div className="text-[10px] text-otj-text mb-0.5">Total</div><div className="text-[16px] font-extrabold text-foreground">{project.escrow.total}</div></div>
-          <div><div className="text-[10px] text-otj-text mb-0.5">In Escrow</div><div className="text-[16px] font-extrabold text-otj-blue">{project.escrow.held}</div></div>
-          <div><div className="text-[10px] text-otj-text mb-0.5">OTJ Fee (5%)</div><div className="text-[16px] font-extrabold text-otj-muted">{project.escrow.fee}</div></div>
-        </div>
+      <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">💰 Payment Milestones</div>
+      <div className="bg-otj-off rounded-[14px] p-4 mb-4">
+        <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Total Project Value</div>
+        <div className="text-[22px] font-extrabold text-foreground">{project.budget}</div>
+        <div className="text-[11px] text-otj-muted mt-0.5">External payment — attach bank transfer proof below</div>
       </div>
 
       {project.paymentMilestones.map((m, i) => {
         const amount = numericPrice > 0 ? `${Math.round(numericPrice * m.percentage / 100).toLocaleString()} EGP` : '—';
-        const statusLabel = m.status === 'paid' ? 'Released ✓' : m.status === 'held' ? 'Held in Escrow' : 'Pending';
-        const statusClass = m.status === 'paid' ? 'text-otj-green' : m.status === 'pending' ? 'text-otj-yellow' : 'text-otj-muted';
-        const icon = m.status === 'paid' ? '✓' : m.status === 'pending' ? '⏳' : '🔒';
-        const canRelease = m.status === 'held';
+        const statusLabel = m.status === 'paid' ? 'Paid ✓' : 'Awaiting Payment';
+        const statusClass = m.status === 'paid' ? 'text-otj-green' : 'text-otj-muted';
+        const icon = m.status === 'paid' ? '✓' : '⏳';
+        const proof = proofImages[i];
 
         return (
-          <div key={i} className="bg-card border border-border rounded-[10px] p-3.5 px-4 mb-2 flex items-center justify-between">
-            <div>
-              <div className="text-[13px] font-bold">{m.label} ({m.percentage}%)</div>
-              <div className={`text-[11px] font-bold ${statusClass}`}>{icon} {statusLabel}</div>
+          <div key={i} className="bg-card border border-border rounded-[14px] p-4 mb-3">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <div className="text-[13px] font-bold">{m.label} ({m.percentage}%)</div>
+                <div className={`text-[11px] font-bold ${statusClass}`}>{icon} {statusLabel}</div>
+              </div>
+              <div className="text-[16px] font-extrabold">{amount}</div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="text-[14px] font-extrabold">{amount}</div>
-              {canRelease && (
-                <button
-                  onClick={() => setConfirmIdx(i)}
-                  className="text-[10px] font-bold px-3 py-1 rounded-full bg-otj-green text-primary-foreground cursor-pointer hover:opacity-90"
-                >
-                  Release
-                </button>
-              )}
-            </div>
+
+            {/* Proof upload area — client only */}
+            {m.status !== 'paid' && (
+              <div className="border-t border-border pt-3">
+                <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-2">📎 Attach Bank Transfer Screenshot</div>
+                <input
+                  ref={el => { fileRefs.current[i] = el; }}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleProofUpload(i, e)}
+                />
+                {proof ? (
+                  <div className="flex items-center gap-3 bg-otj-green-bg border border-otj-green-border rounded-[10px] p-2.5 px-3">
+                    <img src={proof.url} alt="Transfer proof" className="w-12 h-12 rounded-lg object-cover border border-border" />
+                    <div className="flex-1">
+                      <div className="text-[12px] font-bold text-otj-green">Screenshot Attached</div>
+                      <div className="text-[10px] text-otj-muted truncate max-w-[180px]">{proof.name}</div>
+                    </div>
+                    <button
+                      onClick={() => fileRefs.current[i]?.click()}
+                      className="text-[10px] font-bold px-3 py-1 rounded-full border border-border bg-card text-otj-text cursor-pointer hover:border-foreground"
+                    >
+                      Replace
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => fileRefs.current[i]?.click()}
+                    className="w-full border-2 border-dashed border-border rounded-[10px] p-4 text-center cursor-pointer transition-all duration-150 hover:border-primary hover:bg-accent/30"
+                  >
+                    <div className="text-xl mb-1">📷</div>
+                    <div className="text-[11px] font-semibold text-otj-text">Tap to upload transfer screenshot</div>
+                    <div className="text-[9px] text-otj-muted mt-0.5">JPG, PNG accepted</div>
+                  </button>
+                )}
+
+                {proof && (
+                  <button
+                    onClick={() => setConfirmIdx(i)}
+                    className="w-full mt-2.5 text-[12px] font-bold py-2.5 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90"
+                  >
+                    ✓ Confirm Payment Sent
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Show proof if already paid */}
+            {m.status === 'paid' && proof && (
+              <div className="border-t border-border pt-3 flex items-center gap-3">
+                <img src={proof.url} alt="Transfer proof" className="w-10 h-10 rounded-lg object-cover border border-border" />
+                <div className="text-[11px] text-otj-muted">Transfer proof attached</div>
+              </div>
+            )}
           </div>
         );
       })}
 
       {project.paymentMethod && (
-        <div className="bg-otj-off rounded-[10px] p-3.5 px-4 mt-3">
+        <div className="bg-otj-off rounded-[14px] p-4 mt-1">
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Payment Method</div>
           {project.paymentMethod.type === 'instapay' ? (
             <div className="text-[13px] font-bold">📱 InstaPay — {project.paymentMethod.instapayHandle}</div>
@@ -297,19 +353,19 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
         </div>
       )}
 
-      {/* Confirm Release Dialog */}
+      {/* Confirm Payment Dialog */}
       <Dialog open={confirmIdx !== null} onOpenChange={() => setConfirmIdx(null)}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
-            <DialogTitle className="text-[16px] font-extrabold">Confirm Payment Release</DialogTitle>
+            <DialogTitle className="text-[16px] font-extrabold">Confirm Payment Sent</DialogTitle>
             <DialogDescription className="text-[13px]">
-              {confirmIdx !== null && `Release ${numericPrice > 0 ? `${Math.round(numericPrice * project.paymentMilestones[confirmIdx].percentage / 100).toLocaleString()} EGP` : '—'} for "${project.paymentMilestones[confirmIdx!]?.label}"?`}
+              {confirmIdx !== null && `Confirm that you've sent ${numericPrice > 0 ? `${Math.round(numericPrice * project.paymentMilestones[confirmIdx].percentage / 100).toLocaleString()} EGP` : '—'} for "${project.paymentMilestones[confirmIdx!]?.label}"?`}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex gap-2 sm:gap-2">
             <Button variant="outline" onClick={() => setConfirmIdx(null)} className="rounded-full text-[12px] font-bold">Cancel</Button>
-            <Button onClick={() => { if (confirmIdx !== null) { releasePayment(project.id, confirmIdx); setConfirmIdx(null); } }} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
-              ✓ Release Payment
+            <Button onClick={() => { if (confirmIdx !== null) { releasePayment(project.id, confirmIdx); setConfirmIdx(null); showToast('✓ Payment confirmed!'); } }} className="rounded-full text-[12px] font-bold bg-otj-green hover:bg-otj-green/90 text-primary-foreground">
+              ✓ Confirm Payment
             </Button>
           </DialogFooter>
         </DialogContent>
