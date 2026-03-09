@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
@@ -12,8 +12,12 @@ const tabs = ['Phases & Tasks', 'Brief', 'Schedule', 'Attachments', 'Deliverable
 const ProjectProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
   const { getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview } = useProjects();
-  const [activeTab, setActiveTab] = useState(0);
+  
+  // Check for tab query param to auto-select Brief tab
+  const initialTab = searchParams.get('tab') === 'brief' ? 1 : 0;
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [expandedPhase, setExpandedPhase] = useState(0);
   const attachFileRef = useRef<HTMLInputElement>(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
