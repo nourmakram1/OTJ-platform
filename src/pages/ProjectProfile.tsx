@@ -13,7 +13,12 @@ const ProjectProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const { getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview } = useProjects();
+  const { getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview, clients } = useProjects();
+
+  const navigateToClient = (name: string) => {
+    const client = clients.find(c => c.name === name);
+    if (client) navigate(`/client/${client.id}`);
+  };
   
   // Check for tab query param to auto-select Brief tab
   const initialTab = searchParams.get('tab') === 'brief' ? 1 : 0;
@@ -167,7 +172,7 @@ const ProjectProfile = () => {
                 <div className="text-[18px] md:text-[22px] font-extrabold tracking-[-0.04em] text-foreground">{proj.name}</div>
                 <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${statusClass}`}>{statusLabel}</span>
               </div>
-              <div className="text-[12px] md:text-[13px] text-otj-text">Client: {proj.clientName} · {proj.clientCompany}</div>
+              <div className="text-[12px] md:text-[13px] text-otj-text">Client: <span className="cursor-pointer hover:underline text-foreground font-semibold" onClick={() => navigateToClient(proj.clientName)}>{proj.clientName}</span> · {proj.clientCompany}</div>
             </div>
             {!isProposal && proj.status !== 'complete' && (
               <div className="flex gap-2 shrink-0 flex-wrap">
@@ -290,7 +295,7 @@ const ProjectProfile = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
                         <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Client Name</div>
-                        <div className="text-[13px] font-semibold text-foreground">{proj.clientName}</div>
+                        <div className="text-[13px] font-semibold text-foreground cursor-pointer hover:underline" onClick={() => navigateToClient(proj.clientName)}>{proj.clientName}</div>
                       </div>
                       <div>
                         <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Company</div>
@@ -591,13 +596,13 @@ const ProjectProfile = () => {
                 <div className="animate-fade-up">
                   <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">Team</div>
                   {[
-                    { emoji: '👩‍💼', name: proj.clientName, role: proj.clientCompany, badge: 'Client', badgeClass: 'bg-otj-blue-bg text-otj-blue' },
-                    { emoji: '👩‍🎨', name: 'Nour Makram', role: 'Fashion & E-commerce Photographer', badge: 'Creative', badgeClass: 'bg-otj-green-bg text-otj-green' },
+                    { emoji: '👩‍💼', name: proj.clientName, role: proj.clientCompany, badge: 'Client', badgeClass: 'bg-otj-blue-bg text-otj-blue', isClient: true },
+                    { emoji: '👩‍🎨', name: 'Nour Makram', role: 'Fashion & E-commerce Photographer', badge: 'Creative', badgeClass: 'bg-otj-green-bg text-otj-green', isClient: false },
                   ].map((p, i) => (
                     <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 mb-2 flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-otj-off flex items-center justify-center text-xl shrink-0">{p.emoji}</div>
                       <div className="flex-1">
-                        <div className="text-[13.5px] font-extrabold tracking-[-0.02em]">{p.name}</div>
+                        <div className={`text-[13.5px] font-extrabold tracking-[-0.02em] ${p.isClient ? 'cursor-pointer hover:underline' : ''}`} onClick={() => p.isClient && navigateToClient(p.name)}>{p.name}</div>
                         <div className="text-[11.5px] text-otj-text">{p.role}</div>
                       </div>
                       <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${p.badgeClass}`}>{p.badge}</span>

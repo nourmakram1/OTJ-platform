@@ -7,9 +7,9 @@ import { showToast } from './Toast';
 import { useProjects } from '../context/ProjectContext';
 
 const threads = [
-  { id: 'randa', name: 'Randa Hatem', emoji: '👩‍💼', preview: 'Can we do 3,200 EGP?', time: '10:35 AM', unread: 2, projectId: 'proj-existing-1' },
-  { id: 'ahmed', name: 'Ahmed Karim', emoji: '👨‍💼', preview: 'Photos look great! Can we schedule…', time: 'Yesterday', unread: 1, projectId: 'proj-existing-2' },
-  { id: 'sara', name: 'Sara M.', emoji: '🎨', preview: 'Sent you the brand guidelines', time: 'Mon', unread: 0, projectId: 'proj-existing-3' },
+  { id: 'randa', name: 'Randa Hatem', emoji: '👩‍💼', preview: 'Can we do 3,200 EGP?', time: '10:35 AM', unread: 2, projectId: 'proj-existing-1', clientId: 'client-randa' },
+  { id: 'ahmed', name: 'Ahmed Karim', emoji: '👨‍💼', preview: 'Photos look great! Can we schedule…', time: 'Yesterday', unread: 1, projectId: 'proj-existing-2', clientId: 'client-ahmed' },
+  { id: 'sara', name: 'Sara M.', emoji: '🎨', preview: 'Sent you the brand guidelines', time: 'Mon', unread: 0, projectId: 'proj-existing-3', clientId: 'client-sara' },
 ];
 
 interface Message {
@@ -206,7 +206,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
               activeThread === t.id ? 'bg-otj-blue-bg' : 'hover:bg-otj-off'
             }`}
           >
-            <div className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg shrink-0">{t.emoji}</div>
+            <div onClick={(e) => { e.stopPropagation(); navigate(`/client/${t.clientId}`); }} className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg shrink-0 cursor-pointer hover:ring-2 hover:ring-primary transition-all">{t.emoji}</div>
             <div className="flex-1 min-w-0">
               <div className="text-[12.5px] font-bold mb-px">{t.name}</div>
               <div className="text-[11.5px] text-otj-text whitespace-nowrap overflow-hidden text-ellipsis">{t.preview}</div>
@@ -225,7 +225,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
         <div className="p-3.5 px-[18px] border-b border-border bg-card flex items-center gap-3">
           {/* Mobile back button */}
           <button onClick={() => setMobileShowChat(false)} className="md:hidden w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-sm text-otj-text shrink-0">←</button>
-          <div className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg">{currentThread?.emoji || '👩‍💼'}</div>
+          <div onClick={() => navigate(`/client/${currentThread?.clientId}`)} className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg cursor-pointer hover:ring-2 hover:ring-primary transition-all">{currentThread?.emoji || '👩‍💼'}</div>
           <div
             onClick={() => setShowCollabPanel(prev => !prev)}
             className="cursor-pointer hover:opacity-70 transition-opacity"
