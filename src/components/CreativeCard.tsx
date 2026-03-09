@@ -109,8 +109,8 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
         <span className="flex items-center gap-1">🏅 {c.experience >= 10 ? 'Veteran 10+' : c.experience >= 5 ? 'Expert 5+' : 'Beginner 1-3'}</span>
       </div>
       <div className="mt-auto flex flex-col md:flex-row gap-1.5">
-        <button onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-primary bg-primary text-primary-foreground text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:bg-primary/90">Book Now</button>
-        <button onClick={(e) => { e.stopPropagation(); navigate(`/creative/${c.id}`); }} className="flex-1 py-[7px] rounded-full border-[1.5px] border-border bg-transparent text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">View Profile</button>
+        <button onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }} className="flex-1 py-[6px] md:py-[7px] rounded-full border-[1.5px] border-primary bg-primary text-primary-foreground text-[10px] md:text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:bg-primary/90">Book Now</button>
+        <button onClick={(e) => { e.stopPropagation(); navigate(`/creative/${c.id}`); }} className="flex-1 py-[6px] md:py-[7px] rounded-full border-[1.5px] border-border bg-transparent text-[10px] md:text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">View Profile</button>
       </div>
     </div>
   </div>
