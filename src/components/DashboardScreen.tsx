@@ -122,6 +122,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
 
         {projectTab === 'active' && (
           <div className="flex flex-col gap-2 animate-fade-up">
+            {activeProjects.length === 0 && (
+              <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
+                <div className="text-[48px]">🚀</div>
+                <div className="text-[14px] font-extrabold text-foreground">No active projects yet</div>
+                <div className="text-[12px] text-muted-foreground max-w-[260px]">Accept a brief and watch the magic begin — your next project is just around the corner!</div>
+              </div>
+            )}
             {activeProjects.map((proj) => {
               const phaseDone = proj.phases.filter(p => p.status === 'complete').length;
               const phaseTotal = proj.phases.length;
