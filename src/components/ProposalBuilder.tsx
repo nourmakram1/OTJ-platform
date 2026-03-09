@@ -271,16 +271,16 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
 
         {/* Payment Method */}
         <div>
-          <div className="text-[16px] font-extrabold tracking-[-0.03em] mb-3">Payment Method</div>
-          <div className="bg-card border border-border rounded-[14px] p-4">
-            <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">How will the client pay?</div>
+          <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em] mb-3">Payment Method</div>
+          <div className="bg-card border border-border rounded-[14px] p-3 md:p-4">
+            <div className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2.5">How will the client pay?</div>
             <div className="flex gap-2 mb-4">
-              <button onClick={() => setPaymentType('instapay')} className={`text-[12px] font-bold px-4 py-2 rounded-lg border cursor-pointer transition-all duration-150 flex items-center gap-2 ${
+              <button onClick={() => setPaymentType('instapay')} className={`text-[10px] md:text-[12px] font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-lg border cursor-pointer transition-all duration-150 flex items-center gap-1.5 md:gap-2 ${
                 paymentType === 'instapay' ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border text-otj-text hover:border-foreground'
               }`}>📱 InstaPay</button>
-              <button onClick={() => setPaymentType('bank')} className={`text-[12px] font-bold px-4 py-2 rounded-lg border cursor-pointer transition-all duration-150 flex items-center gap-2 ${
+              <button onClick={() => setPaymentType('bank')} className={`text-[10px] md:text-[12px] font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-lg border cursor-pointer transition-all duration-150 flex items-center gap-1.5 md:gap-2 ${
                 paymentType === 'bank' ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border text-otj-text hover:border-foreground'
-              }`}>🏦 Bank Transfer</button>
+              }`}>🏦 Bank</button>
             </div>
             {paymentType === 'instapay' ? (
               <div>
