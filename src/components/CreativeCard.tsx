@@ -100,7 +100,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
           <span className="text-[11px] text-otj-text">({c.jobs.replace(' jobs', '')})</span>
         </div>
       </div>
-      <div className="text-[11px] text-otj-text mb-1.5">{c.role}</div>
+      <div className="text-[10px] md:text-[11px] text-otj-text mb-1 md:mb-1.5 truncate">{c.role}</div>
       <div className="flex items-center gap-2 text-[11px] text-otj-text mb-2.5 flex-wrap">
         <span className="flex items-center gap-1">👥 {c.jobs}</span>
         <span className="w-[3px] h-[3px] rounded-full bg-otj-muted" />
