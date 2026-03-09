@@ -92,7 +92,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
         {saved ? '♥' : '♡'}
       </button>
     </div>
-    <div className="p-3">
+    <div className="p-2.5 md:p-3 flex flex-col flex-1">
       <div className="flex items-center justify-between mb-0.5">
         <div className="text-sm font-extrabold tracking-[-0.03em]">{c.name}</div>
         <div className="flex items-center gap-1">
