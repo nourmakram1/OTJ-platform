@@ -135,6 +135,11 @@ const CreativeSettings = () => {
           <div className="max-w-[600px] mx-auto px-4 py-8">
             <div className="text-lg font-extrabold tracking-[-0.03em] text-foreground mb-6">Settings</div>
 
+            {/* Profile Completeness */}
+            <div className="mb-4">
+              <ProfileCompletenessCard variant="full" />
+            </div>
+
             {/* Group 1 */}
             <div className="bg-card rounded-2xl border border-border overflow-hidden mb-4">
               {menuItems.map((item, i) => (
