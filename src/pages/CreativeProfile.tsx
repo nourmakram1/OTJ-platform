@@ -25,6 +25,16 @@ const CreativeProfile = () => {
             <div className="flex items-center gap-3 mb-1">
               <div className="text-[24px] font-extrabold tracking-[-0.04em]">Nour Makram</div>
               <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border">✓ Verified</span>
+              <div className="flex items-center gap-1.5 ml-auto">
+                <button onClick={() => { navigator.clipboard.writeText(window.location.href); showToast('Profile link copied!'); }} className="w-8 h-8 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center transition-all duration-150 hover:border-foreground" title="Share Profile">
+                  <Share2 size={14} className="text-otj-text" />
+                </button>
+                {isOwnProfile && (
+                  <button onClick={() => navigate('/settings')} className="w-8 h-8 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center transition-all duration-150 hover:border-foreground" title="Edit Profile">
+                    <Pencil size={13} className="text-otj-text" />
+                  </button>
+                )}
+              </div>
             </div>
             <div className="text-[14px] text-otj-text mb-2">Fashion & E-commerce Photographer · Cairo</div>
             <div className="flex items-center gap-3 mb-3 flex-wrap">
@@ -40,16 +50,8 @@ const CreativeProfile = () => {
             <div className="flex gap-2 flex-wrap">
               <button onClick={() => showToast('Opening Quick Brief…')} className="text-[13px] font-bold px-6 py-2.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">Book Now</button>
               <button onClick={() => window.open('https://nourmakram.com', '_blank')} className="text-[13px] font-bold px-5 py-2.5 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">🔗 Portfolio</button>
-              <button onClick={() => { navigator.clipboard.writeText(window.location.href); showToast('Profile link copied!'); }} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center transition-all duration-150 hover:border-foreground" title="Share Profile">
-                <Share2 size={16} className="text-otj-text" />
-              </button>
               {!isOwnProfile && (
                 <button onClick={() => showToast('♥ Saved to Collections')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center text-sm transition-all duration-150 hover:border-foreground">♡</button>
-              )}
-              {isOwnProfile && (
-                <button onClick={() => navigate('/settings')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center transition-all duration-150 hover:border-foreground" title="Edit Profile">
-                  <Pencil size={15} className="text-otj-text" />
-                </button>
               )}
             </div>
           </div>
