@@ -32,7 +32,7 @@ const CreativeProfile = () => {
 
         {/* Profile header */}
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
-          <div className="w-[80px] h-[80px] md:w-[120px] md:h-[120px] rounded-[20px] bg-gradient-to-br from-[#2a2a2a] to-[#555] flex items-center justify-center text-[40px] md:text-[52px] shrink-0">👩‍🎨</div>
+          <div className="w-[80px] h-[80px] md:w-[120px] md:h-[120px] rounded-[20px] bg-gradient-to-br from-[#2a2a2a] to-[#555] flex items-center justify-center shrink-0"><Camera size={40} className="text-muted-foreground" /></div>
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-1">
               <div className="text-[24px] font-extrabold tracking-[-0.04em]">{displayName}</div>
