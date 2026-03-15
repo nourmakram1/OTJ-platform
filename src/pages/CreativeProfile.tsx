@@ -127,7 +127,7 @@ const CreativeProfile = () => {
                     <div className="text-[13px] font-bold">{r.name} <span className="text-otj-text font-medium">· {r.company}</span></div>
                     <div className="text-[11px] text-otj-muted">{r.date}</div>
                   </div>
-                  <div className="text-[13px] font-bold">{'⭐'.repeat(r.rating)}</div>
+                  <div className="flex items-center gap-0.5">{Array.from({ length: r.rating }).map((_, j) => <Star key={j} size={12} className="text-yellow-500 fill-yellow-500" />)}</div>
                 </div>
                 <div className="text-[13px] text-foreground leading-relaxed mb-2">{r.text}</div>
                 <div className="flex gap-1.5">
