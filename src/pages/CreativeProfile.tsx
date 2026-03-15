@@ -61,9 +61,9 @@ const CreativeProfile = () => {
             </div>
             <div className="flex gap-2 flex-wrap">
               <button onClick={() => showToast('Opening Quick Brief…')} className="text-[13px] font-bold px-6 py-2.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">Book Now</button>
-              <button onClick={() => window.open('https://nourmakram.com', '_blank')} className="text-[13px] font-bold px-5 py-2.5 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">🔗 Portfolio</button>
+              <button onClick={() => window.open('https://nourmakram.com', '_blank')} className="text-[13px] font-bold px-5 py-2.5 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground flex items-center gap-1.5"><Link size={13} /> Portfolio</button>
               {!isOwnProfile && (
-                <button onClick={() => showToast('♥ Saved to Collections')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center text-sm transition-all duration-150 hover:border-foreground">♡</button>
+                <button onClick={() => showToast('♥ Saved to Collections')} className="w-10 h-10 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center text-sm transition-all duration-150 hover:border-foreground"><Heart size={16} className="text-otj-text" /></button>
               )}
             </div>
           </div>
