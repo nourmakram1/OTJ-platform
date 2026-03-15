@@ -122,7 +122,7 @@ const CreativeProfile = () => {
             ].map((r, i) => (
               <div key={i} className="bg-card border border-border rounded-[14px] p-4">
                 <div className="flex items-center gap-2.5 mb-2">
-                  <div className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-sm">👤</div>
+                  <div className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center"><User size={16} className="text-otj-text" /></div>
                   <div className="flex-1">
                     <div className="text-[13px] font-bold">{r.name} <span className="text-otj-text font-medium">· {r.company}</span></div>
                     <div className="text-[11px] text-otj-muted">{r.date}</div>
