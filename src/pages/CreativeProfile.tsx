@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Share2, Pencil } from 'lucide-react';
+import { Share2, Pencil, ArrowLeft, Star, CheckCircle, MapPin, Clock, Briefcase, Link, Heart, Camera, User, Image } from 'lucide-react';
 import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
