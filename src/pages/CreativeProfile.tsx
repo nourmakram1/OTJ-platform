@@ -36,7 +36,7 @@ const CreativeProfile = () => {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-1">
               <div className="text-[24px] font-extrabold tracking-[-0.04em]">{displayName}</div>
-              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border">✓ Verified</span>
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border flex items-center gap-1"><CheckCircle size={10} /> Verified</span>
               <div className="flex items-center gap-1.5 ml-auto">
                 <button onClick={() => { navigator.clipboard.writeText(window.location.href); showToast('Profile link copied!'); }} className="w-8 h-8 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center transition-all duration-150 hover:border-foreground" title="Share Profile">
                   <Share2 size={14} className="text-otj-text" />
