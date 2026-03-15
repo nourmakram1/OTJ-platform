@@ -89,9 +89,9 @@ const CreativeProfile = () => {
           <div className="bg-card border border-border rounded-[14px] p-3.5">
             <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Details</div>
             <div className="space-y-1.5">
-              <div className="flex justify-between text-[12px]"><span className="text-otj-text">Location</span><span className="font-bold">{displayCity}</span></div>
-              <div className="flex justify-between text-[12px]"><span className="text-otj-text">Response</span><span className="font-bold">Under 1hr</span></div>
-              <div className="flex justify-between text-[12px]"><span className="text-otj-text">Experience</span><span className="font-bold">{displayExperience}</span></div>
+              <div className="flex justify-between text-[12px]"><span className="text-otj-text flex items-center gap-1"><MapPin size={11} /> Location</span><span className="font-bold">{displayCity}</span></div>
+              <div className="flex justify-between text-[12px]"><span className="text-otj-text flex items-center gap-1"><Clock size={11} /> Response</span><span className="font-bold">Under 1hr</span></div>
+              <div className="flex justify-between text-[12px]"><span className="text-otj-text flex items-center gap-1"><Briefcase size={11} /> Experience</span><span className="font-bold">{displayExperience}</span></div>
             </div>
           </div>
         </div>
