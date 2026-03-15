@@ -28,7 +28,7 @@ const CreativeProfile = () => {
       <NavBar />
       <div className="max-w-[900px] mx-auto px-4 md:px-8 py-8 pt-[72px] pb-20 md:pb-8">
         {/* Back */}
-        <div className="text-[12px] text-otj-text mb-6 cursor-pointer hover:text-foreground" onClick={() => navigate(-1)}>← Back to Explore</div>
+        <div className="text-[12px] text-otj-text mb-6 cursor-pointer hover:text-foreground flex items-center gap-1" onClick={() => navigate(-1)}><ArrowLeft size={12} /> Back to Explore</div>
 
         {/* Profile header */}
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
