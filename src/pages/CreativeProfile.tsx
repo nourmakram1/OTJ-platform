@@ -50,7 +50,7 @@ const CreativeProfile = () => {
             </div>
             <div className="text-[14px] text-otj-text mb-2">{displayTagline}</div>
             <div className="flex items-center gap-3 mb-3 flex-wrap">
-              <span className="text-[13px] font-bold">⭐ 4.9</span>
+              <span className="text-[13px] font-bold flex items-center gap-1"><Star size={13} className="text-yellow-500 fill-yellow-500" /> 4.9</span>
               <span className="w-1 h-1 rounded-full bg-otj-muted" />
               <span className="text-[13px] text-otj-text">127 jobs completed</span>
               <span className="w-1 h-1 rounded-full bg-otj-muted" />
