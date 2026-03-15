@@ -101,7 +101,7 @@ const CreativeProfile = () => {
           {(['portfolio', 'reviews'] as const).map(t => (
             <button key={t} onClick={() => setActiveTab(t)} className={`text-[12.5px] font-semibold px-4 py-[7px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 capitalize whitespace-nowrap shrink-0 ${
               activeTab === t ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-otj-muted'
-            }`}>{t === 'portfolio' ? `📸 Portfolio` : `⭐ Reviews (127)`}</button>
+            }`}>{t === 'portfolio' ? <span className="flex items-center gap-1"><Camera size={12} /> Portfolio</span> : <span className="flex items-center gap-1"><Star size={12} /> Reviews (127)</span>}</button>
           ))}
         </div>
 
