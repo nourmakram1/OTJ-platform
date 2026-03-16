@@ -64,7 +64,9 @@ const CreativeProfile = () => {
               <div className="flex-1 pt-1">
                 <div className="flex items-center gap-2 mb-0.5">
                   <h1 className="text-[22px] md:text-[26px] font-extrabold tracking-[-0.03em]">{displayName}</h1>
-                  <div className="flex items-center gap-1.5 ml-auto">
+                  <div className="flex items-center gap-2 ml-auto">
+                    <button onClick={() => showToast('Opening Quick Brief…')} className="text-[12px] font-bold px-4 py-2 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">Book Now</button>
+                    <button onClick={() => window.open('https://nourmakram.com', '_blank')} className="text-[12px] font-bold px-3.5 py-2 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground flex items-center gap-1.5"><Link size={12} /> Portfolio</button>
                     <button onClick={() => { navigator.clipboard.writeText(window.location.href); showToast('Profile link copied!'); }} className="w-8 h-8 rounded-full border-[1.5px] border-border bg-card cursor-pointer flex items-center justify-center transition-all duration-150 hover:border-foreground" title="Share Profile">
                       <Share2 size={14} className="text-otj-text" />
                     </button>
@@ -121,11 +123,6 @@ const CreativeProfile = () => {
               </div>
             </div>
 
-            {/* Book / Portfolio buttons */}
-            <div className="flex gap-2 mt-5">
-              <button onClick={() => showToast('Opening Quick Brief…')} className="text-[13px] font-bold px-6 py-2.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 hover:bg-primary/90">Book Now</button>
-              <button onClick={() => window.open('https://nourmakram.com', '_blank')} className="text-[13px] font-bold px-5 py-2.5 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground flex items-center gap-1.5"><Link size={13} /> Portfolio</button>
-            </div>
           </div>
 
           {/* Profile Completeness - own profile only */}
