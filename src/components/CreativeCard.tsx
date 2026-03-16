@@ -1,7 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, MapPin, Clock, Briefcase, User } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { showToast } from './Toast';
 import type { Creative } from '../data/creatives';
+
+const portfolioImages = [
+  'from-[#2a2a2a] to-[#444]',
+  'from-[#3a2a1a] to-[#5a4a3a]',
+  'from-[#1a2a3a] to-[#3a4a5a]',
+  'from-[#2a1a3a] to-[#4a3a5a]',
+  'from-[#3a3a1a] to-[#5a5a3a]',
+];
+
+const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
+  const [current, setCurrent] = useState(0);
+  const slides = [bg, ...portfolioImages.slice(0, 4)];
+
+  const prev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrent(i => (i === 0 ? slides.length - 1 : i - 1));
+  };
+  const next = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrent(i => (i === slides.length - 1 ? 0 : i + 1));
+  };
+
+  return (
+    <div className="h-[140px] md:h-[220px] relative overflow-hidden group/carousel">
+      <div
+        className="flex h-full transition-transform duration-300 ease-out"
+        style={{ transform: `translateX(-${current * 100}%)` }}
+      >
+        {slides.map((gradient, i) => (
+          <div
+            key={i}
+            className={`min-w-full h-full flex items-center justify-center text-[56px] bg-gradient-to-br ${gradient}`}
+          >
+            {i === 0 && <span>{emoji}</span>}
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={prev}
+        className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 z-[2] hover:bg-card"
+      >
+        <ChevronLeft className="w-4 h-4 text-foreground" />
+      </button>
+      <button
+        onClick={next}
+        className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200 z-[2] hover:bg-card"
+      >
+        <ChevronRight className="w-4 h-4 text-foreground" />
+      </button>
+
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-[2]">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
+            className={`w-1.5 h-1.5 rounded-full transition-all duration-200 ${
+              i === current ? 'bg-card w-3' : 'bg-card/50'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 interface CreativeCardProps {
   creative: Creative;
@@ -12,67 +78,41 @@ interface CreativeCardProps {
 
 export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenBrief, saved, onToggleSave }) => {
   const navigate = useNavigate();
-
-  const experienceLabel = c.experience >= 10 ? '10+ yrs' : c.experience >= 5 ? `${c.experience} yrs` : `${c.experience} yrs`;
-
   return (
-    <div className="bg-card border border-border rounded-[22px] overflow-hidden cursor-pointer transition-all duration-300 relative hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)] hover:-translate-y-1 w-full h-full flex flex-col group">
-      {/* Image area */}
-      <div className="relative h-[200px] md:h-[260px] bg-muted overflow-hidden">
-        <div className={`w-full h-full bg-gradient-to-br ${c.bg} flex items-center justify-center`}>
-          <User className="w-16 h-16 text-muted-foreground/30" strokeWidth={1} />
+  <div
+    onClick={() => onOpenBrief(c.id)}
+    className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 relative hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 w-full h-full flex flex-col snap-start"
+  >
+    <div className="relative">
+      <ImageCarousel bg={c.bg} emoji={c.emoji} />
+      <div className={`absolute top-2.5 left-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full z-[2] ${
+        c.avail.includes('now') ? 'bg-otj-green-bg text-otj-green border border-otj-green-border' : 'bg-otj-orange-bg text-otj-orange'
+      }`}>{c.avail}</div>
+      <button onClick={(e) => onToggleSave(e, c.id)} className="absolute top-2.5 right-2.5 w-[30px] h-[30px] rounded-full bg-card/90 border-none cursor-pointer text-sm flex items-center justify-center transition-all duration-150 z-[2] hover:bg-card hover:scale-110">
+        {saved ? '♥' : '♡'}
+      </button>
+    </div>
+    <div className="p-2.5 md:p-3 flex flex-col flex-1">
+      <div className="flex items-center justify-between mb-0.5">
+        <div className="text-[12px] md:text-sm font-extrabold tracking-[-0.03em] truncate">{c.name}</div>
+        <div className="flex items-center gap-1">
+          <span className="text-[11px] font-bold text-foreground">⭐ {c.rating}</span>
+          <span className="text-[11px] text-otj-text">({c.jobs.replace(' jobs', '')})</span>
         </div>
-
-        {/* Save button */}
-        <button
-          onClick={(e) => onToggleSave(e, c.id)}
-          className={`absolute top-3.5 right-3.5 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 z-[2] ${
-            saved
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-foreground/70 backdrop-blur-md text-card hover:bg-foreground/90'
-          }`}
-        >
-          <Heart size={16} fill={saved ? 'currentColor' : 'none'} strokeWidth={2} />
-        </button>
       </div>
-
-      {/* Info area */}
-      <div className="p-4 md:p-5 flex flex-col flex-1 gap-3">
-        {/* Name & profession */}
-        <div>
-          <h3 className="text-[15px] md:text-[17px] font-bold tracking-[-0.03em] text-foreground truncate">{c.name}</h3>
-          <p className="text-[12px] md:text-[13px] text-muted-foreground mt-0.5 truncate">{c.role}</p>
-        </div>
-
-        {/* Meta row */}
-        <div className="flex items-center gap-3 text-muted-foreground">
-          <span className="flex items-center gap-1 text-[11px] md:text-[12px]">
-            <MapPin size={12} strokeWidth={2.5} />
-            Cairo
-          </span>
-          <span className="w-1 h-1 rounded-full bg-border" />
-          <span className="flex items-center gap-1 text-[11px] md:text-[12px]">
-            <Briefcase size={12} strokeWidth={2.5} />
-            {experienceLabel}
-          </span>
-        </div>
-
-        {/* Buttons */}
-        <div className="mt-auto flex gap-2 pt-1">
-          <button
-            onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }}
-            className="flex-1 py-2.5 rounded-full bg-primary text-primary-foreground text-[12px] font-bold tracking-[-0.01em] transition-all duration-200 hover:opacity-90"
-          >
-            Book Now
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); navigate(`/creative/${c.id}`); }}
-            className="flex-1 py-2.5 rounded-full border-[1.5px] border-border text-foreground text-[12px] font-bold tracking-[-0.01em] transition-all duration-200 hover:border-foreground"
-          >
-            View Profile
-          </button>
-        </div>
+      <div className="text-[10px] md:text-[11px] text-otj-text mb-1 md:mb-1.5 truncate">{c.role}</div>
+      <div className="hidden md:flex items-center gap-2 text-[11px] text-otj-text mb-2.5 flex-wrap">
+        <span className="flex items-center gap-1">👥 {c.jobs}</span>
+        <span className="w-[3px] h-[3px] rounded-full bg-otj-muted" />
+        <span className="flex items-center gap-1">📍 Cairo, EG</span>
+        <span className="w-[3px] h-[3px] rounded-full bg-otj-muted" />
+        <span className="flex items-center gap-1">🏅 {c.experience >= 10 ? 'Veteran 10+' : c.experience >= 5 ? 'Expert 5+' : 'Beginner 1-3'}</span>
+      </div>
+      <div className="mt-auto flex flex-col md:flex-row gap-1.5">
+        <button onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }} className="flex-1 py-[6px] md:py-[7px] rounded-full border-[1.5px] border-primary bg-primary text-primary-foreground text-[10px] md:text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:bg-primary/90">Book Now</button>
+        <button onClick={(e) => { e.stopPropagation(); navigate(`/creative/${c.id}`); }} className="flex-1 py-[6px] md:py-[7px] rounded-full border-[1.5px] border-border bg-transparent text-[10px] md:text-[11.5px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">View Profile</button>
       </div>
     </div>
+  </div>
   );
 };
