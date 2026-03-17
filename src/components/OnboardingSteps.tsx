@@ -4,6 +4,7 @@ import {
   Camera, Film, Palette, Sparkles, Briefcase, Building2, Monitor,
   Bot, Smartphone, Mic, FileText, PenLine, Target, Share2, Scissors,
   Clapperboard, Calendar, Plus, Search, X, Tag, MapPin, Crosshair,
+  Megaphone, Video, Eye, Armchair, Play, ImagePlus,
 } from 'lucide-react';
 
 // Reusable links section for adding multiple hyperlinks
