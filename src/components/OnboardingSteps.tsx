@@ -38,46 +38,34 @@ const LinksSection: React.FC = () => {
     </div>
   );
 };
-const professions: { icon: React.ElementType; name: string }[] = [
-  { icon: Camera, name: 'Photographer' },
-  { icon: Film, name: 'Videographer' },
-  { icon: Palette, name: 'Graphic Designer' },
-  { icon: Sparkles, name: 'Motion Designer' },
-  { icon: Briefcase, name: 'Business & Marketing' },
-  { icon: Building2, name: 'Space Design' },
-  { icon: Monitor, name: 'Tech Development' },
-  { icon: Bot, name: 'AI Creator' },
-  { icon: Smartphone, name: 'Content Creator' },
-  { icon: Mic, name: 'Talent' },
-  { icon: FileText, name: 'Script Writer' },
-  { icon: PenLine, name: 'Copywriter' },
-  { icon: Target, name: 'Brand Strategist' },
-  { icon: Share2, name: 'Social Media' },
-  { icon: Scissors, name: 'MUA & Stylist' },
-  { icon: Clapperboard, name: 'Creative Director' },
-  { icon: Calendar, name: 'Event Producer' },
-  { icon: Plus, name: 'Other' },
+const professions: { icon: React.ElementType; name: string; sub: string }[] = [
+  { icon: Camera, name: 'Photography', sub: 'Wedding, Portrait, Editorial, Events' },
+  { icon: Film, name: 'Videography', sub: 'Film, Commercial, Documentary' },
+  { icon: Palette, name: 'Design & Branding', sub: 'Branding, Brand Identity, Packaging, Digital' },
+  { icon: Bot, name: 'AI Creator', sub: 'Video, Images, Prompt, Avatars' },
+  { icon: Sparkles, name: 'Talents', sub: 'Models, UGC, Voice Over, Musician' },
+  { icon: Monitor, name: 'Tech Development', sub: 'Web, App, Frontend, Backend' },
+  { icon: Briefcase, name: 'Business & Marketing', sub: 'Web, App, Frontend, Backend' },
+  { icon: Scissors, name: 'MUA & Styling', sub: 'Web, App, Frontend, Backend' },
+  { icon: PenLine, name: 'Creative Writing', sub: 'Models, UGC, Voice Over, Musician' },
+  { icon: Clapperboard, name: 'Creation Production', sub: 'Web, App, Frontend, Backend' },
+  { icon: Calendar, name: 'Event Producers', sub: 'Wedding, Corporate, Festivals, Live' },
+  { icon: Building2, name: 'Space Design', sub: 'Interior, Architecture, Exhibition, Set' },
 ];
 
 const nicheMap: Record<string, string[]> = {
-  'Photographer': ['Fashion Editorial', 'E-Commerce', 'Product Photography', 'Architecture', 'Lifestyle', 'Sports & Action', 'Food & Beverage', 'Corporate & Events', 'Weddings', 'Portraits', 'Street & Documentary', 'Beauty & Cosmetics'],
-  'Videographer': ['Music Videos', 'Commercials', 'Documentary', 'Weddings', 'Corporate', 'Events', 'Social Media'],
-  'Graphic Designer': ['Branding', 'Print Design', 'Digital Design', 'Packaging', 'Illustration', 'Typography'],
-  'Motion Designer': ['2D Animation', '3D Animation', 'VFX', 'UI/UX Animation', 'Explainer Videos'],
-  'Business & Marketing': ['Digital Marketing', 'SEO', 'Content Strategy', 'Growth Hacking', 'Email Marketing', 'Market Research', 'PR'],
-  'Space Design': ['Interior Design', 'Architecture', 'Visual Merchandising', 'Exhibition Design', 'Set Design'],
-  'Tech Development': ['Frontend', 'Backend', 'Full Stack', 'Mobile Apps', 'Web3/Crypto', 'DevOps'],
+  'Photography': ['Wedding', 'Fashion', 'E-Commerce', 'Product', 'Food & Beverage', 'Corporate & Event', 'Portraits'],
+  'Videography': ['Music Videos', 'Commercials', 'Documentary', 'Weddings', 'Corporate', 'Events', 'Social Media'],
+  'Design & Branding': ['Branding', 'Print Design', 'Digital Design', 'Packaging', 'Illustration', 'Typography'],
   'AI Creator': ['Prompt Engineering', 'AI Video', 'AI Image Generation', 'Custom Models', 'AI Avatars'],
-  'Content Creator': ['YouTube', 'TikTok', 'Instagram Reels', 'Podcasting', 'Live Streaming', 'Gaming Content'],
-  'Talent': ['Models', 'UGC Creator', 'Singer', 'Musician', 'Voice Over', 'Dancer'],
-  'Script Writer': ['Film/TV', 'Commercials', 'Video Games', 'YouTube', 'Podcasts'],
-  'Copywriter': ['Ad Copy', 'Website Copy', 'Email Copy', 'Product Descriptions', 'SEO Copywriting'],
-  'Brand Strategist': ['Brand Identity', 'Market Positioning', 'Consumer Insights', 'Tone of Voice'],
-  'Social Media': ['Instagram', 'TikTok', 'LinkedIn', 'Community Management', 'Content Calendar'],
-  'MUA & Stylist': ['Bridal', 'Editorial', 'Special FX', 'Personal Styling', 'Wardrobe'],
-  'Creative Director': ['Art Direction', 'Campaigns', 'Brand Vision', 'Team Leadership'],
-  'Event Producer': ['Corporate Events', 'Festivals', 'Exhibitions', 'Weddings', 'Live Shows'],
-  'Other': ['General'],
+  'Talents': ['Models', 'UGC Creator', 'Singer', 'Musician', 'Voice Over', 'Dancer'],
+  'Tech Development': ['Frontend', 'Backend', 'Full Stack', 'Mobile Apps', 'Web3/Crypto', 'DevOps'],
+  'Business & Marketing': ['Digital Marketing', 'SEO', 'Content Strategy', 'Growth Hacking', 'Email Marketing', 'Market Research', 'PR'],
+  'MUA & Styling': ['Bridal', 'Editorial', 'Special FX', 'Personal Styling', 'Wardrobe'],
+  'Creative Writing': ['Film/TV', 'Commercials', 'Video Games', 'YouTube', 'Podcasts'],
+  'Creation Production': ['Art Direction', 'Campaigns', 'Brand Vision', 'Team Leadership'],
+  'Event Producers': ['Corporate Events', 'Festivals', 'Exhibitions', 'Weddings', 'Live Shows'],
+  'Space Design': ['Interior Design', 'Architecture', 'Visual Merchandising', 'Exhibition Design', 'Set Design'],
 };
 
 interface StepPanelProps {
@@ -96,7 +84,7 @@ interface Step2PanelProps extends StepPanelProps {
 
 // STEP 1
 export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChange }) => {
-  const [selectedProf, setSelectedProf] = useState('Photographer');
+  const [selectedProf, setSelectedProf] = useState('Photography');
   const [selectedNiches, setSelectedNiches] = useState(new Set<string>());
   const [search, setSearch] = useState('');
 
@@ -115,16 +103,21 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
 
   const handleNicheToggle = (n: string) => {
     const next = new Set(selectedNiches);
-    next.has(n) ? next.delete(n) : next.add(n);
+    if (next.has(n)) {
+      next.delete(n);
+    } else {
+      if (next.size >= 3) { showToast('Max 3 niches allowed'); return; }
+      next.add(n);
+    }
     setSelectedNiches(next);
     onSelectionsChange?.(selectedProf, Array.from(next));
   };
 
   return (
     <div className="animate-fade-up">
-      <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-otj-blue mb-2.5">Step 1 of 7</div>
-      <div className="text-[clamp(40px,5vw,60px)] font-extrabold tracking-[-0.05em] leading-[0.9] text-foreground mb-2.5">WHO<br/>ARE YOU?</div>
-      <div className="text-sm text-otj-text leading-relaxed max-w-[560px] mb-6">Pick your primary profession and the niches you specialise in. This shapes how clients find you.</div>
+      <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-otj-muted mb-2.5">Build Your Profile · <span className="text-foreground">Step 1 of 5</span></div>
+      <div className="text-[clamp(36px,5vw,56px)] font-extrabold tracking-[-0.04em] leading-[0.95] text-foreground mb-2.5">What do you ✦ create?</div>
+      <div className="text-sm text-otj-text leading-relaxed max-w-[660px] mb-8">Pick your primary profession and the niches you specialise in. This shapes how clients find you — you can edit later.</div>
 
       {/* Search bar */}
       <div className="relative mb-7">
@@ -140,32 +133,41 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
         )}
       </div>
 
-      <div className="mb-7">
-        <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2"><Crosshair size={14} className="text-otj-muted shrink-0" /> Your Profession</div>
+      <div className="mb-8">
+        <div className="text-[14px] font-bold tracking-[-0.02em] text-foreground mb-1 flex items-center gap-2">Your Profession</div>
+        <div className="h-px bg-border mb-4" />
         {filteredProfessions.length > 0 ? (
-          <div className="grid grid-rows-3 grid-flow-col auto-cols-[140px] gap-2.5 mb-7 pb-4 overflow-x-auto hide-scrollbar snap-x">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
             {filteredProfessions.map(p => (
               <div
                 key={p.name}
                 onClick={() => handleProfChange(p.name)}
-                className={`snap-start w-full p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center flex flex-col items-center justify-center active:scale-95 ${
-                  selectedProf === p.name ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
+                className={`p-3.5 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 flex items-start gap-3 active:scale-[0.98] ${
+                  selectedProf === p.name ? 'border-foreground bg-primary text-primary-foreground' : 'border-border hover:border-otj-muted hover:bg-otj-off'
                 }`}
               >
-                <div className="mb-2 text-foreground flex items-center justify-center"><p.icon size={22} /></div>
-                <div className="text-[12px] font-bold tracking-[-0.02em] text-foreground leading-tight">{p.name}</div>
+                <div className={`w-8 h-8 rounded-lg border-[1.5px] flex items-center justify-center shrink-0 ${
+                  selectedProf === p.name ? 'border-primary-foreground/30' : 'border-border'
+                }`}>
+                  <p.icon size={16} />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[12.5px] font-bold tracking-[-0.02em] leading-tight">{p.name}</div>
+                  <div className={`text-[10.5px] leading-snug mt-0.5 ${
+                    selectedProf === p.name ? 'text-primary-foreground/60' : 'text-otj-muted'
+                  }`}>{p.sub}</div>
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-[12.5px] text-otj-muted py-4 mb-7">No professions match "{search}"</div>
+          <div className="text-[12.5px] text-otj-muted py-4">No professions match "{search}"</div>
         )}
       </div>
 
-      <div className="mb-7">
-        <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">
-          <Tag size={14} className="text-otj-muted shrink-0" /> Your Niches <span className="text-[11px] font-medium text-otj-text">— pick all that apply</span>
-        </div>
+      <div className="mb-8">
+        <div className="text-[14px] font-bold tracking-[-0.02em] text-foreground mb-0.5 flex items-center gap-1.5">Your Niche <span className="text-[11px] font-medium text-otj-muted">· Pick 3 Max</span></div>
+        <div className="h-px bg-border mb-4" />
         {filteredNiches.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {filteredNiches.map(n => (
