@@ -137,7 +137,7 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
         <div className="text-[14px] font-bold tracking-[-0.02em] text-foreground mb-1 flex items-center gap-2">Your Profession</div>
         <div className="h-px bg-border mb-4" />
         {filteredProfessions.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
             {filteredProfessions.map(p => (
               <div
                 key={p.name}
