@@ -33,7 +33,7 @@ const CreativeProfile = () => {
   const { profile } = useCreativeProfile();
 
   const displayName = isOwnProfile ? profile.name : 'Nour Makram';
-  const displayTagline = isOwnProfile ? profile.tagline : 'Fashion · E-Commerce · Studio Photography';
+  const displayTagline = isOwnProfile ? profile.tagline : 'Fashion & E-commerce Photographer';
   const displayBio = isOwnProfile ? profile.bio : 'Cairo-based fashion and e-commerce photographer with 7+ years of experience. Specialising in product photography, lifestyle campaigns, and brand content for leading Egyptian and MENA brands.';
   const displaySkills = isOwnProfile ? profile.skills : ['Photography', 'Product', 'Fashion', 'E-Commerce', 'Lifestyle', 'Branding'];
   const displayCity = isOwnProfile ? profile.city : 'Cairo, EG';
