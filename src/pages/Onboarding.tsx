@@ -12,7 +12,7 @@ const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [doneSteps, setDoneSteps] = useState<Set<number>>(new Set());
   const [showComplete, setShowComplete] = useState(false);
-  const [selectedProfession, setSelectedProfession] = useState('Photographer');
+  const [selectedProfession, setSelectedProfession] = useState('Photography');
   const [selectedNiches, setSelectedNiches] = useState<string[]>(['Fashion Editorial', 'E-Commerce']);
 
   const isReady = REQUIRED_STEPS.every(s => doneSteps.has(s));
