@@ -128,25 +128,35 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
         )}
       </div>
 
-      <div className="mb-7">
-        <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2"><Crosshair size={14} className="text-otj-muted shrink-0" /> Your Profession</div>
+      <div className="mb-8">
+        <div className="text-[14px] font-bold tracking-[-0.02em] text-foreground mb-1 flex items-center gap-2">Your Profession</div>
+        <div className="h-px bg-border mb-4" />
         {filteredProfessions.length > 0 ? (
-          <div className="grid grid-rows-3 grid-flow-col auto-cols-[140px] gap-2.5 mb-7 pb-4 overflow-x-auto hide-scrollbar snap-x">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
             {filteredProfessions.map(p => (
               <div
                 key={p.name}
                 onClick={() => handleProfChange(p.name)}
-                className={`snap-start w-full p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center flex flex-col items-center justify-center active:scale-95 ${
-                  selectedProf === p.name ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
+                className={`p-3.5 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 flex items-start gap-3 active:scale-[0.98] ${
+                  selectedProf === p.name ? 'border-foreground bg-primary text-primary-foreground' : 'border-border hover:border-otj-muted hover:bg-otj-off'
                 }`}
               >
-                <div className="mb-2 text-foreground flex items-center justify-center"><p.icon size={22} /></div>
-                <div className="text-[12px] font-bold tracking-[-0.02em] text-foreground leading-tight">{p.name}</div>
+                <div className={`w-8 h-8 rounded-lg border-[1.5px] flex items-center justify-center shrink-0 ${
+                  selectedProf === p.name ? 'border-primary-foreground/30' : 'border-border'
+                }`}>
+                  <p.icon size={16} />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[12.5px] font-bold tracking-[-0.02em] leading-tight">{p.name}</div>
+                  <div className={`text-[10.5px] leading-snug mt-0.5 ${
+                    selectedProf === p.name ? 'text-primary-foreground/60' : 'text-otj-muted'
+                  }`}>{p.sub}</div>
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-[12.5px] text-otj-muted py-4 mb-7">No professions match "{search}"</div>
+          <div className="text-[12.5px] text-otj-muted py-4">No professions match "{search}"</div>
         )}
       </div>
 
