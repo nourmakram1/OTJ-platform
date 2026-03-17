@@ -39,28 +39,74 @@ const LinksSection: React.FC = () => {
     </div>
   );
 };
-const professions: { icon: React.ElementType; name: string; sub: string }[] = [
-  { icon: Camera, name: 'Photography', sub: 'Wedding, Portrait, Editorial, Events' },
-  { icon: Film, name: 'Videography', sub: 'Film, Commercial, Documentary' },
-  { icon: Palette, name: 'Design & Branding', sub: 'Branding, Brand Identity, Packaging, Digital' },
-  { icon: Bot, name: 'AI Creator', sub: 'Video, Images, Prompt, Avatars' },
-  { icon: Sparkles, name: 'Talents', sub: 'Models, UGC, Voice Over, Musician' },
-  { icon: Monitor, name: 'Tech Development', sub: 'Web, App, Frontend, Backend' },
-  { icon: Briefcase, name: 'Business & Marketing', sub: 'Strategy, Growth, SEO, PR' },
-  { icon: Scissors, name: 'MUA & Styling', sub: 'Bridal, Editorial, Personal Styling' },
-  { icon: PenLine, name: 'Creative Writing', sub: 'Scriptwriting, Copy, Content' },
-  { icon: Clapperboard, name: 'Creation Production', sub: 'Art Direction, Campaigns, Brand' },
-  { icon: Calendar, name: 'Event Producers', sub: 'Wedding, Corporate, Festivals, Live' },
-  { icon: Building2, name: 'Space Design', sub: 'Interior, Architecture, Exhibition, Set' },
-  { icon: Mic, name: 'Voice & Audio', sub: 'Podcasting, Voice Over, Music' },
-  { icon: Smartphone, name: 'Content Creator', sub: 'YouTube, TikTok, Reels, Streaming' },
-  { icon: Share2, name: 'Social Media', sub: 'Instagram, LinkedIn, Community' },
-  { icon: Target, name: 'Brand Strategist', sub: 'Identity, Positioning, Insights' },
+interface Profession { icon: React.ElementType; name: string; sub: string }
+interface ProfessionCategory { category: string; items: Profession[] }
+
+const professionCategories: ProfessionCategory[] = [
+  {
+    category: '📸 Visual & Film',
+    items: [
+      { icon: Camera, name: 'Photography', sub: 'Wedding, Portrait, Editorial, Events' },
+      { icon: Film, name: 'Videography', sub: 'Film, Commercial, Documentary' },
+      { icon: Clapperboard, name: 'Cinematography', sub: 'Narrative, Commercial, Music Videos' },
+      { icon: Play, name: 'Reel Videos & Edit', sub: 'Short-Form, Reels, TikTok Edits' },
+    ],
+  },
+  {
+    category: '🎬 Production & Direction',
+    items: [
+      { icon: Eye, name: 'Directors', sub: 'Film, Commercial, Music Video' },
+      { icon: Calendar, name: 'Producers', sub: 'Film, Commercial, Event, Digital' },
+      { icon: Armchair, name: 'Art Director', sub: 'Sets, Visual Identity, Campaigns' },
+      { icon: Clapperboard, name: 'Creation Production', sub: 'Art Direction, Campaigns, Brand' },
+      { icon: Calendar, name: 'Event Producers', sub: 'Wedding, Corporate, Festivals, Live' },
+    ],
+  },
+  {
+    category: '🎨 Design & Creative',
+    items: [
+      { icon: Palette, name: 'Design & Branding', sub: 'Branding, Brand Identity, Packaging, Digital' },
+      { icon: Bot, name: 'AI Creator', sub: 'Video, Images, Prompt, Avatars' },
+      { icon: Sparkles, name: 'Talents', sub: 'Models, UGC, Voice Over, Musician' },
+      { icon: Scissors, name: 'MUA & Styling', sub: 'Bridal, Editorial, Personal Styling' },
+      { icon: Building2, name: 'Space Design', sub: 'Interior, Architecture, Exhibition, Set' },
+    ],
+  },
+  {
+    category: '✏️ Writing & Content',
+    items: [
+      { icon: PenLine, name: 'Creative Writing', sub: 'Scriptwriting, Copy, Content' },
+      { icon: FileText, name: 'Script Writers', sub: 'Film, TV, Ads, YouTube, Podcasts' },
+      { icon: Smartphone, name: 'Content Creator', sub: 'YouTube, TikTok, Reels, Streaming' },
+      { icon: Mic, name: 'Voice & Audio', sub: 'Podcasting, Voice Over, Music' },
+    ],
+  },
+  {
+    category: '📊 Marketing & Strategy',
+    items: [
+      { icon: Briefcase, name: 'Business & Marketing', sub: 'Strategy, Growth, SEO, PR' },
+      { icon: Share2, name: 'Social Media', sub: 'Instagram, LinkedIn, Community' },
+      { icon: Megaphone, name: 'Media Buyers', sub: 'Paid Media, Google, Meta, TikTok Ads' },
+      { icon: ImagePlus, name: 'Ads Campaign Creative', sub: 'Ad Creative, Banners, Video Ads' },
+      { icon: Target, name: 'Brand Strategist', sub: 'Identity, Positioning, Insights' },
+      { icon: Monitor, name: 'Tech Development', sub: 'Web, App, Frontend, Backend' },
+    ],
+  },
 ];
+
+const allProfessions = professionCategories.flatMap(c => c.items);
 
 const nicheMap: Record<string, string[]> = {
   'Photography': ['Wedding', 'Fashion', 'E-Commerce', 'Product', 'Food & Beverage', 'Corporate & Event', 'Portraits'],
   'Videography': ['Music Videos', 'Commercials', 'Documentary', 'Weddings', 'Corporate', 'Events', 'Social Media'],
+  'Cinematography': ['Narrative Film', 'Music Videos', 'Commercials', 'Documentary', 'Short Film', 'Fashion Film'],
+  'Reel Videos & Edit': ['Instagram Reels', 'TikTok', 'YouTube Shorts', 'Product Reels', 'Brand Reels', 'Transitions'],
+  'Directors': ['Film', 'Commercial', 'Music Video', 'Documentary', 'Fashion Film', 'Short Film'],
+  'Producers': ['Film Producer', 'Commercial', 'Event', 'Digital Content', 'Music', 'Podcast'],
+  'Art Director': ['Print', 'Digital', 'Set Design', 'Campaign', 'Brand Visual', 'Editorial'],
+  'Script Writers': ['Film/TV', 'Commercials', 'YouTube', 'Podcasts', 'Documentaries', 'Social Media'],
+  'Media Buyers': ['Google Ads', 'Meta Ads', 'TikTok Ads', 'Programmatic', 'YouTube Ads', 'LinkedIn Ads'],
+  'Ads Campaign Creative': ['Social Ads', 'Display Banners', 'Video Ads', 'Email Creative', 'Landing Pages'],
   'Design & Branding': ['Branding', 'Print Design', 'Digital Design', 'Packaging', 'Illustration', 'Typography'],
   'AI Creator': ['Prompt Engineering', 'AI Video', 'AI Image Generation', 'Custom Models', 'AI Avatars'],
   'Talents': ['Models', 'UGC Creator', 'Singer', 'Musician', 'Voice Over', 'Dancer'],
@@ -71,11 +117,23 @@ const nicheMap: Record<string, string[]> = {
   'Creation Production': ['Art Direction', 'Campaigns', 'Brand Vision', 'Team Leadership'],
   'Event Producers': ['Corporate Events', 'Festivals', 'Exhibitions', 'Weddings', 'Live Shows'],
   'Space Design': ['Interior Design', 'Architecture', 'Visual Merchandising', 'Exhibition Design', 'Set Design'],
+  'Voice & Audio': ['Podcasting', 'Mixing', 'Mastering', 'Voice Acting', 'Sound Design', 'Music Production'],
+  'Content Creator': ['YouTube', 'TikTok', 'Instagram', 'Streaming', 'Blogging', 'Newsletter'],
+  'Social Media': ['Content Calendar', 'Community Management', 'Analytics', 'Reels', 'Stories', 'Ads'],
+  'Brand Strategist': ['Research', 'Positioning', 'Tone of Voice', 'Consumer Insights', 'Competitive Analysis'],
 };
 
 const skillsMap: Record<string, string[]> = {
   'Photography': ['Editing', 'Retouching', 'Color Grading', 'Lighting', 'Studio', 'Outdoor', 'Drone', 'Composition'],
   'Videography': ['Editing', 'Color Grading', 'Motion Graphics', 'Sound Design', 'Drone', 'Lighting', 'Directing'],
+  'Cinematography': ['Camera Operation', 'Color Grading', 'Lighting', 'Lens Selection', 'Steadicam', 'Drone', 'DaVinci Resolve'],
+  'Reel Videos & Edit': ['Premiere Pro', 'After Effects', 'CapCut', 'Transitions', 'Sound Sync', 'Color Grading', 'Pacing'],
+  'Directors': ['Storyboarding', 'Shot Listing', 'Casting', 'Blocking', 'Script Analysis', 'Post-Production'],
+  'Producers': ['Budgeting', 'Scheduling', 'Casting', 'Location Scouting', 'Contracts', 'Post-Production'],
+  'Art Director': ['Visual Concept', 'Mood Boards', 'Typography', 'Set Styling', 'Brand Guidelines', 'Photoshop'],
+  'Script Writers': ['Screenwriting', 'Story Structure', 'Dialogue', 'Storyboarding', 'Research', 'Final Draft'],
+  'Media Buyers': ['Google Ads', 'Meta Business Suite', 'TikTok Ads Manager', 'Analytics', 'A/B Testing', 'Budget Optimization'],
+  'Ads Campaign Creative': ['Photoshop', 'Figma', 'Video Editing', 'Copywriting', 'A/B Testing', 'Motion Graphics'],
   'Design & Branding': ['Illustrator', 'Photoshop', 'Figma', 'InDesign', 'After Effects', 'Typography', 'Packaging'],
   'AI Creator': ['Midjourney', 'Stable Diffusion', 'ChatGPT', 'Runway', 'ComfyUI', 'LoRA Training'],
   'Talents': ['Acting', 'Modeling', 'Voice Over', 'Dancing', 'Singing', 'Presenting'],
