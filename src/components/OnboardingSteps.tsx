@@ -72,6 +72,25 @@ const nicheMap: Record<string, string[]> = {
   'Space Design': ['Interior Design', 'Architecture', 'Visual Merchandising', 'Exhibition Design', 'Set Design'],
 };
 
+const skillsMap: Record<string, string[]> = {
+  'Photography': ['Editing', 'Retouching', 'Color Grading', 'Lighting', 'Studio', 'Outdoor', 'Drone', 'Composition'],
+  'Videography': ['Editing', 'Color Grading', 'Motion Graphics', 'Sound Design', 'Drone', 'Lighting', 'Directing'],
+  'Design & Branding': ['Illustrator', 'Photoshop', 'Figma', 'InDesign', 'After Effects', 'Typography', 'Packaging'],
+  'AI Creator': ['Midjourney', 'Stable Diffusion', 'ChatGPT', 'Runway', 'ComfyUI', 'LoRA Training'],
+  'Talents': ['Acting', 'Modeling', 'Voice Over', 'Dancing', 'Singing', 'Presenting'],
+  'Tech Development': ['React', 'Node.js', 'Python', 'TypeScript', 'AWS', 'Flutter', 'UI/UX'],
+  'Business & Marketing': ['SEO', 'Google Ads', 'Meta Ads', 'Analytics', 'CRM', 'Copywriting', 'Strategy'],
+  'MUA & Styling': ['Bridal MUA', 'SFX', 'Fashion Styling', 'Hair Styling', 'Wardrobe', 'Color Theory'],
+  'Creative Writing': ['Screenwriting', 'Copywriting', 'Blogging', 'Storytelling', 'Script Editing', 'Research'],
+  'Creation Production': ['Art Direction', 'Project Management', 'Budgeting', 'Casting', 'Storyboarding'],
+  'Event Producers': ['Logistics', 'Vendor Management', 'Stage Design', 'Catering', 'Audio/Visual'],
+  'Space Design': ['AutoCAD', 'SketchUp', '3ds Max', 'Revit', 'Mood Boards', 'Material Selection'],
+  'Voice & Audio': ['Podcasting', 'Mixing', 'Mastering', 'Voice Acting', 'Sound Design', 'Music Production'],
+  'Content Creator': ['Video Editing', 'Thumbnails', 'Scripting', 'Analytics', 'Community', 'Live Streaming'],
+  'Social Media': ['Content Calendar', 'Community Management', 'Analytics', 'Reels', 'Stories', 'Ads'],
+  'Brand Strategist': ['Research', 'Positioning', 'Tone of Voice', 'Consumer Insights', 'Competitive Analysis'],
+};
+
 interface StepPanelProps {
   onNext: () => void;
   onBack?: () => void;
@@ -90,9 +109,11 @@ interface Step2PanelProps extends StepPanelProps {
 export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChange }) => {
   const [selectedProf, setSelectedProf] = useState('Photography');
   const [selectedNiches, setSelectedNiches] = useState(new Set<string>());
+  const [selectedSkills, setSelectedSkills] = useState(new Set<string>());
   const [search, setSearch] = useState('');
 
   const availableNiches = nicheMap[selectedProf] || [];
+  const availableSkills = skillsMap[selectedProf] || [];
   
   const q = search.toLowerCase();
   const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q)) : professions;
@@ -100,7 +121,8 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
 
   const handleProfChange = (name: string) => {
     setSelectedProf(name);
-    setSelectedNiches(new Set()); // Reset niches when profession changes
+    setSelectedNiches(new Set());
+    setSelectedSkills(new Set());
     showToast('Profession set: ' + name);
     onSelectionsChange?.(name, []);
   };
@@ -141,19 +163,19 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
         <div className="text-[14px] font-bold tracking-[-0.02em] text-foreground mb-1 flex items-center gap-2">Your Profession</div>
         <div className="h-px bg-border mb-4" />
         {filteredProfessions.length > 0 ? (
-          <div className="grid grid-rows-3 grid-flow-col auto-cols-[220px] gap-2.5 overflow-x-auto hide-scrollbar snap-x pb-2">
+          <div className="grid grid-rows-3 grid-flow-col auto-cols-[minmax(240px,1fr)] gap-2.5 overflow-x-auto hide-scrollbar snap-x pb-2">
             {filteredProfessions.map(p => (
               <div
                 key={p.name}
                 onClick={() => handleProfChange(p.name)}
-                className={`snap-start p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 flex items-center gap-3 active:scale-[0.98] ${
+                className={`snap-start px-5 py-4 rounded-2xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 flex items-center gap-4 active:scale-[0.98] ${
                   selectedProf === p.name ? 'border-foreground bg-primary text-primary-foreground' : 'border-border hover:border-otj-muted hover:bg-otj-off'
                 }`}
               >
-                <p.icon size={20} className="shrink-0" />
+                <p.icon size={26} strokeWidth={1.5} className="shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-[12.5px] font-bold tracking-[-0.02em] leading-tight">{p.name}</div>
-                  <div className={`text-[10.5px] leading-snug mt-0.5 ${
+                  <div className="text-[13.5px] font-bold tracking-[-0.02em] leading-tight">{p.name}</div>
+                  <div className={`text-[11px] leading-snug mt-0.5 ${
                     selectedProf === p.name ? 'text-primary-foreground/60' : 'text-otj-muted'
                   }`}>{p.sub}</div>
                 </div>
@@ -187,6 +209,36 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
           </div>
         ) : (
           <div className="text-[12.5px] text-otj-muted py-4">No niches match "{search}"</div>
+        )}
+      </div>
+
+      <div className="mb-8">
+        <div className="text-[14px] font-bold tracking-[-0.02em] text-foreground mb-0.5 flex items-center gap-1.5">Select Your Skills <span className="text-[11px] font-medium text-otj-muted">· Pick 6 Max</span></div>
+        <div className="h-px bg-border mb-4" />
+        {availableSkills.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {availableSkills.map(s => (
+              <div
+                key={s}
+                onClick={() => {
+                  const next = new Set(selectedSkills);
+                  if (next.has(s)) { next.delete(s); }
+                  else { if (next.size >= 6) { showToast('Max 6 skills allowed'); return; } next.add(s); }
+                  setSelectedSkills(next);
+                }}
+                className={`text-[12.5px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all duration-150 tracking-[-0.01em] select-none flex items-center gap-1.5 active:scale-95 ${
+                  selectedSkills.has(s)
+                    ? 'bg-primary border-primary text-primary-foreground'
+                    : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground hover:bg-otj-off'
+                }`}
+              >
+                {s}
+                {selectedSkills.has(s) && <span className="w-[5px] h-[5px] rounded-full bg-primary-foreground/50" />}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-[12.5px] text-otj-muted py-4">Select a profession first</div>
         )}
       </div>
 
