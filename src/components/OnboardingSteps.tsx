@@ -39,62 +39,32 @@ const LinksSection: React.FC = () => {
     </div>
   );
 };
-interface Profession { icon: React.ElementType; name: string; sub: string }
-interface ProfessionCategory { category: string; items: Profession[] }
-
-const professionCategories: ProfessionCategory[] = [
-  {
-    category: '📸 Visual & Film',
-    items: [
-      { icon: Camera, name: 'Photography', sub: 'Wedding, Portrait, Editorial, Events' },
-      { icon: Film, name: 'Videography', sub: 'Film, Commercial, Documentary' },
-      { icon: Clapperboard, name: 'Cinematography', sub: 'Narrative, Commercial, Music Videos' },
-      { icon: Play, name: 'Reel Videos & Edit', sub: 'Short-Form, Reels, TikTok Edits' },
-    ],
-  },
-  {
-    category: '🎬 Production & Direction',
-    items: [
-      { icon: Eye, name: 'Directors', sub: 'Film, Commercial, Music Video' },
-      { icon: Calendar, name: 'Producers', sub: 'Film, Commercial, Event, Digital' },
-      { icon: Armchair, name: 'Art Director', sub: 'Sets, Visual Identity, Campaigns' },
-      { icon: Clapperboard, name: 'Creation Production', sub: 'Art Direction, Campaigns, Brand' },
-      { icon: Calendar, name: 'Event Producers', sub: 'Wedding, Corporate, Festivals, Live' },
-    ],
-  },
-  {
-    category: '🎨 Design & Creative',
-    items: [
-      { icon: Palette, name: 'Design & Branding', sub: 'Branding, Brand Identity, Packaging, Digital' },
-      { icon: Bot, name: 'AI Creator', sub: 'Video, Images, Prompt, Avatars' },
-      { icon: Sparkles, name: 'Talents', sub: 'Models, UGC, Voice Over, Musician' },
-      { icon: Scissors, name: 'MUA & Styling', sub: 'Bridal, Editorial, Personal Styling' },
-      { icon: Building2, name: 'Space Design', sub: 'Interior, Architecture, Exhibition, Set' },
-    ],
-  },
-  {
-    category: '✏️ Writing & Content',
-    items: [
-      { icon: PenLine, name: 'Creative Writing', sub: 'Scriptwriting, Copy, Content' },
-      { icon: FileText, name: 'Script Writers', sub: 'Film, TV, Ads, YouTube, Podcasts' },
-      { icon: Smartphone, name: 'Content Creator', sub: 'YouTube, TikTok, Reels, Streaming' },
-      { icon: Mic, name: 'Voice & Audio', sub: 'Podcasting, Voice Over, Music' },
-    ],
-  },
-  {
-    category: '📊 Marketing & Strategy',
-    items: [
-      { icon: Briefcase, name: 'Business & Marketing', sub: 'Strategy, Growth, SEO, PR' },
-      { icon: Share2, name: 'Social Media', sub: 'Instagram, LinkedIn, Community' },
-      { icon: Megaphone, name: 'Media Buyers', sub: 'Paid Media, Google, Meta, TikTok Ads' },
-      { icon: ImagePlus, name: 'Ads Campaign Creative', sub: 'Ad Creative, Banners, Video Ads' },
-      { icon: Target, name: 'Brand Strategist', sub: 'Identity, Positioning, Insights' },
-      { icon: Monitor, name: 'Tech Development', sub: 'Web, App, Frontend, Backend' },
-    ],
-  },
+const professions: { icon: React.ElementType; name: string; sub: string }[] = [
+  { icon: Camera, name: 'Photography', sub: 'Wedding, Portrait, Editorial, Events' },
+  { icon: Film, name: 'Videography', sub: 'Film, Commercial, Documentary' },
+  { icon: Clapperboard, name: 'Cinematography', sub: 'Narrative, Commercial, Music Videos' },
+  { icon: Play, name: 'Reel Videos & Edit', sub: 'Short-Form, Reels, TikTok Edits' },
+  { icon: Eye, name: 'Directors', sub: 'Film, Commercial, Music Video' },
+  { icon: Calendar, name: 'Producers', sub: 'Film, Commercial, Event, Digital' },
+  { icon: Armchair, name: 'Art Director', sub: 'Sets, Visual Identity, Campaigns' },
+  { icon: Clapperboard, name: 'Creation Production', sub: 'Art Direction, Campaigns, Brand' },
+  { icon: Calendar, name: 'Event Producers', sub: 'Wedding, Corporate, Festivals, Live' },
+  { icon: Palette, name: 'Design & Branding', sub: 'Branding, Brand Identity, Packaging, Digital' },
+  { icon: Bot, name: 'AI Creator', sub: 'Video, Images, Prompt, Avatars' },
+  { icon: Sparkles, name: 'Talents', sub: 'Models, UGC, Voice Over, Musician' },
+  { icon: Scissors, name: 'MUA & Styling', sub: 'Bridal, Editorial, Personal Styling' },
+  { icon: Building2, name: 'Space Design', sub: 'Interior, Architecture, Exhibition, Set' },
+  { icon: PenLine, name: 'Creative Writing', sub: 'Scriptwriting, Copy, Content' },
+  { icon: FileText, name: 'Script Writers', sub: 'Film, TV, Ads, YouTube, Podcasts' },
+  { icon: Smartphone, name: 'Content Creator', sub: 'YouTube, TikTok, Reels, Streaming' },
+  { icon: Mic, name: 'Voice & Audio', sub: 'Podcasting, Voice Over, Music' },
+  { icon: Briefcase, name: 'Business & Marketing', sub: 'Strategy, Growth, SEO, PR' },
+  { icon: Share2, name: 'Social Media', sub: 'Instagram, LinkedIn, Community' },
+  { icon: Megaphone, name: 'Media Buyers', sub: 'Paid Media, Google, Meta, TikTok Ads' },
+  { icon: ImagePlus, name: 'Ads Campaign Creative', sub: 'Ad Creative, Banners, Video Ads' },
+  { icon: Target, name: 'Brand Strategist', sub: 'Identity, Positioning, Insights' },
+  { icon: Monitor, name: 'Tech Development', sub: 'Web, App, Frontend, Backend' },
 ];
-
-const allProfessions = professionCategories.flatMap(c => c.items);
 
 const nicheMap: Record<string, string[]> = {
   'Photography': ['Wedding', 'Fashion', 'E-Commerce', 'Product', 'Food & Beverage', 'Corporate & Event', 'Portraits'],
@@ -175,10 +145,7 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
   const availableSkills = skillsMap[selectedProf] || [];
   
   const q = search.toLowerCase();
-  const filteredCategories = professionCategories.map(cat => ({
-    ...cat,
-    items: q ? cat.items.filter(p => p.name.toLowerCase().includes(q) || p.sub.toLowerCase().includes(q)) : cat.items,
-  })).filter(cat => cat.items.length > 0);
+  const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q) || p.sub.toLowerCase().includes(q)) : professions;
   const filteredNiches = q ? availableNiches.filter(n => n.toLowerCase().includes(q)) : availableNiches;
 
   const handleProfChange = (name: string) => {
@@ -224,32 +191,25 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
       <div className="mb-8">
         <div className="text-[14px] font-bold tracking-[-0.02em] text-foreground mb-1 flex items-center gap-2">Your Profession</div>
         <div className="h-px bg-border mb-4" />
-        {filteredCategories.length > 0 ? (
-          <div className="overflow-x-auto hide-scrollbar snap-x pb-2">
-            <div className="flex gap-6 min-w-max">
-              {filteredCategories.map(cat => (
-                <div key={cat.category} className="flex flex-col gap-2 min-w-[240px]">
-                  <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-otj-muted px-1">{cat.category}</div>
-                  {cat.items.map(p => (
-                    <div
-                      key={p.name}
-                      onClick={() => handleProfChange(p.name)}
-                      className={`snap-start px-5 py-4 rounded-2xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 flex items-center gap-4 active:scale-[0.98] ${
-                        selectedProf === p.name ? 'border-foreground bg-primary text-primary-foreground' : 'border-border hover:border-otj-muted hover:bg-otj-off'
-                      }`}
-                    >
-                      <p.icon size={26} strokeWidth={1.5} className="shrink-0" />
-                      <div className="min-w-0">
-                        <div className="text-[13.5px] font-bold tracking-[-0.02em] leading-tight">{p.name}</div>
-                        <div className={`text-[11px] leading-snug mt-0.5 ${
-                          selectedProf === p.name ? 'text-primary-foreground/60' : 'text-otj-muted'
-                        }`}>{p.sub}</div>
-                      </div>
-                    </div>
-                  ))}
+        {filteredProfessions.length > 0 ? (
+          <div className="grid grid-rows-3 grid-flow-col auto-cols-[minmax(240px,1fr)] gap-2.5 overflow-x-auto hide-scrollbar snap-x pb-2">
+            {filteredProfessions.map(p => (
+              <div
+                key={p.name}
+                onClick={() => handleProfChange(p.name)}
+                className={`snap-start px-5 py-4 rounded-2xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 flex items-center gap-4 active:scale-[0.98] ${
+                  selectedProf === p.name ? 'border-foreground bg-primary text-primary-foreground' : 'border-border hover:border-otj-muted hover:bg-otj-off'
+                }`}
+              >
+                <p.icon size={26} strokeWidth={1.5} className="shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-[13.5px] font-bold tracking-[-0.02em] leading-tight">{p.name}</div>
+                  <div className={`text-[11px] leading-snug mt-0.5 ${
+                    selectedProf === p.name ? 'text-primary-foreground/60' : 'text-otj-muted'
+                  }`}>{p.sub}</div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="text-[12.5px] text-otj-muted py-4">No professions match "{search}"</div>
