@@ -5,30 +5,30 @@ import { showToast } from './Toast';
 import type { Creative } from '../data/creatives';
 
 const portfolioImages = [
-  'from-[#2a2a2a] to-[#444]',
-  'from-[#3a2a1a] to-[#5a4a3a]',
-  'from-[#1a2a3a] to-[#3a4a5a]',
-  'from-[#2a1a3a] to-[#4a3a5a]',
-];
+'from-[#2a2a2a] to-[#444]',
+'from-[#3a2a1a] to-[#5a4a3a]',
+'from-[#1a2a3a] to-[#3a4a5a]',
+'from-[#2a1a3a] to-[#4a3a5a]'];
 
-const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
+
+const ImageCarousel = ({ bg, emoji }: {bg: string;emoji: string;}) => {
   const [current, setCurrent] = useState(0);
   const slides = [bg, ...portfolioImages];
 
-  const prev = (e: React.MouseEvent) => { e.stopPropagation(); setCurrent(i => (i === 0 ? slides.length - 1 : i - 1)); };
-  const next = (e: React.MouseEvent) => { e.stopPropagation(); setCurrent(i => (i === slides.length - 1 ? 0 : i + 1)); };
+  const prev = (e: React.MouseEvent) => {e.stopPropagation();setCurrent((i) => i === 0 ? slides.length - 1 : i - 1);};
+  const next = (e: React.MouseEvent) => {e.stopPropagation();setCurrent((i) => i === slides.length - 1 ? 0 : i + 1);};
 
   return (
     <div className="aspect-[4/3] relative overflow-hidden group/carousel">
       <div
         className="flex h-full transition-transform duration-300 ease-out"
-        style={{ transform: `translateX(-${current * 100}%)` }}
-      >
-        {slides.map((gradient, i) => (
-          <div key={i} className={`min-w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br ${gradient}`}>
+        style={{ transform: `translateX(-${current * 100}%)` }}>
+        
+        {slides.map((gradient, i) =>
+        <div key={i} className={`min-w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br ${gradient}`}>
             {i === 0 && <span>{emoji}</span>}
           </div>
-        ))}
+        )}
       </div>
 
       {/* Tap zones */}
@@ -45,14 +45,14 @@ const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
 
       {/* Pill dots */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 items-center z-[3]">
-        {slides.map((_, i) => (
-          <button key={i} onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
-            className={`h-[3px] rounded-full transition-all duration-300 ${i === current ? 'bg-white w-3.5' : 'bg-white/45 w-[5px]'}`}
-          />
-        ))}
+        {slides.map((_, i) =>
+        <button key={i} onClick={(e) => {e.stopPropagation();setCurrent(i);}}
+        className={`h-[3px] rounded-full transition-all duration-300 ${i === current ? 'bg-white w-3.5' : 'bg-white/45 w-[5px]'}`} />
+
+        )}
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 interface CreativeCardProps {
@@ -70,25 +70,25 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
     <div
       onClick={() => onOpenBrief(c.id)}
       className="bg-card border border-border rounded-[18px] overflow-hidden cursor-pointer transition-all duration-200 w-full snap-start hover:shadow-[0_6px_24px_rgba(0,0,0,0.09)] hover:-translate-y-[2px] flex flex-col"
-      style={{ fontFamily: "'Neue Haas Grotesk Display Pro','NeueHaasDisplay','Helvetica Neue',Helvetica,Arial,sans-serif" }}
-    >
+      style={{ fontFamily: "'Neue Haas Grotesk Display Pro','NeueHaasDisplay','Helvetica Neue',Helvetica,Arial,sans-serif" }}>
+      
       {/* ── Inset image ─────────────────────────────────────────────── */}
       <div className="relative">
         <ImageCarousel bg={c.bg} emoji={c.emoji} />
 
         {/* Availability — frosted badge top-left */}
         <div className={`absolute top-[15px] left-[15px] z-[4] flex items-center gap-[5px] text-[9px] font-semibold px-[8px] py-[3.5px] rounded-full backdrop-blur-md border ${
-          c.avail.includes('now') ? 'bg-black/35 text-white border-white/15' : 'bg-black/30 text-white/70 border-white/10'
-        }`}>
+        c.avail.includes('now') ? 'bg-black/35 text-white border-white/15' : 'bg-black/30 text-white/70 border-white/10'}`
+        }>
           {c.avail.includes('now') && <span className="w-[5px] h-[5px] rounded-full bg-emerald-400 shrink-0" />}
           {c.avail.includes('now') ? 'Available' : c.avail}
         </div>
 
         {/* Save — white circle top-right */}
         <button
-          onClick={(e) => { e.stopPropagation(); onToggleSave(e, c.id); showToast(saved ? 'Removed from Collections' : '♥ Saved'); }}
-          className="absolute top-[15px] right-[15px] w-[26px] h-[26px] rounded-full bg-white shadow-sm flex items-center justify-center z-[4] transition-all hover:scale-110 active:scale-95"
-        >
+          onClick={(e) => {e.stopPropagation();onToggleSave(e, c.id);showToast(saved ? 'Removed from Collections' : '♥ Saved');}}
+          className="absolute top-[15px] right-[15px] w-[26px] h-[26px] rounded-full bg-white shadow-sm flex items-center justify-center z-[4] transition-all hover:scale-110 active:scale-95">
+          
           <Heart className={`w-[12px] h-[12px] transition-all ${saved ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
         </button>
       </div>
@@ -99,7 +99,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
         {/* 1 — Identity + rating */}
         <div className="flex items-start justify-between gap-1.5">
           <div className="min-w-0 flex-1">
-            <div className="text-[14px] font-bold tracking-[-0.025em] truncate leading-snug">{c.name}</div>
+            <div className="font-bold tracking-[-0.025em] truncate leading-snug text-sm">{c.name}</div>
             <div className="text-[10px] text-otj-text truncate mt-[1px] tracking-[-0.01em]">{c.role}</div>
           </div>
           <div className="flex items-center gap-[4px] shrink-0 pt-[1.5px]">
@@ -109,7 +109,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
         </div>
 
         {/* 2 — Context: location · experience · jobs */}
-        <div className="flex items-center gap-[6px] text-[9.5px] text-otj-muted">
+        <div className="text-[9.5px] text-otj-muted gap-[6px] flex items-center justify-start">
           <span className="flex items-center gap-[3px]">
             <MapPin className="w-[9px] h-[9px] shrink-0" strokeWidth={2.2} />
             Cairo, EG
@@ -129,19 +129,19 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
         {/* 4 — Actions */}
         <div className="flex gap-[6px] mt-auto pt-[2px]">
           <button
-            onClick={(e) => { e.stopPropagation(); onOpenBrief(c.id); }}
-            className="flex-1 flex items-center justify-center gap-[3px] py-[6.5px] rounded-full bg-foreground text-background text-[9.5px] font-bold tracking-[-0.01em] cursor-pointer hover:opacity-85 active:scale-[0.97] transition-all"
-          >
+            onClick={(e) => {e.stopPropagation();onOpenBrief(c.id);}}
+            className="flex-1 flex items-center justify-center gap-[3px] py-[6.5px] rounded-full bg-foreground text-background text-[9.5px] font-bold tracking-[-0.01em] cursor-pointer hover:opacity-85 active:scale-[0.97] transition-all">
+            
             Book Now <ArrowUpRight className="w-[9px] h-[9px] opacity-80" strokeWidth={2.5} />
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); navigate(`/creative/${c.id}`); }}
-            className="flex-1 py-[6.5px] rounded-full border-[1.5px] border-border text-[9.5px] font-bold tracking-[-0.01em] cursor-pointer text-otj-text hover:border-foreground hover:text-foreground active:scale-[0.97] transition-all"
-          >
+            onClick={(e) => {e.stopPropagation();navigate(`/creative/${c.id}`);}}
+            className="flex-1 py-[6.5px] rounded-full border-[1.5px] border-border text-[9.5px] font-bold tracking-[-0.01em] cursor-pointer text-otj-text hover:border-foreground hover:text-foreground active:scale-[0.97] transition-all">
+            
             View Profile
           </button>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 };
