@@ -45,12 +45,16 @@ const professions: { icon: React.ElementType; name: string; sub: string }[] = [
   { icon: Bot, name: 'AI Creator', sub: 'Video, Images, Prompt, Avatars' },
   { icon: Sparkles, name: 'Talents', sub: 'Models, UGC, Voice Over, Musician' },
   { icon: Monitor, name: 'Tech Development', sub: 'Web, App, Frontend, Backend' },
-  { icon: Briefcase, name: 'Business & Marketing', sub: 'Web, App, Frontend, Backend' },
-  { icon: Scissors, name: 'MUA & Styling', sub: 'Web, App, Frontend, Backend' },
-  { icon: PenLine, name: 'Creative Writing', sub: 'Models, UGC, Voice Over, Musician' },
-  { icon: Clapperboard, name: 'Creation Production', sub: 'Web, App, Frontend, Backend' },
+  { icon: Briefcase, name: 'Business & Marketing', sub: 'Strategy, Growth, SEO, PR' },
+  { icon: Scissors, name: 'MUA & Styling', sub: 'Bridal, Editorial, Personal Styling' },
+  { icon: PenLine, name: 'Creative Writing', sub: 'Scriptwriting, Copy, Content' },
+  { icon: Clapperboard, name: 'Creation Production', sub: 'Art Direction, Campaigns, Brand' },
   { icon: Calendar, name: 'Event Producers', sub: 'Wedding, Corporate, Festivals, Live' },
   { icon: Building2, name: 'Space Design', sub: 'Interior, Architecture, Exhibition, Set' },
+  { icon: Mic, name: 'Voice & Audio', sub: 'Podcasting, Voice Over, Music' },
+  { icon: Smartphone, name: 'Content Creator', sub: 'YouTube, TikTok, Reels, Streaming' },
+  { icon: Share2, name: 'Social Media', sub: 'Instagram, LinkedIn, Community' },
+  { icon: Target, name: 'Brand Strategist', sub: 'Identity, Positioning, Insights' },
 ];
 
 const nicheMap: Record<string, string[]> = {
