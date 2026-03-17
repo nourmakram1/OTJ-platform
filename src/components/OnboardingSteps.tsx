@@ -72,6 +72,25 @@ const nicheMap: Record<string, string[]> = {
   'Space Design': ['Interior Design', 'Architecture', 'Visual Merchandising', 'Exhibition Design', 'Set Design'],
 };
 
+const skillsMap: Record<string, string[]> = {
+  'Photography': ['Editing', 'Retouching', 'Color Grading', 'Lighting', 'Studio', 'Outdoor', 'Drone', 'Composition'],
+  'Videography': ['Editing', 'Color Grading', 'Motion Graphics', 'Sound Design', 'Drone', 'Lighting', 'Directing'],
+  'Design & Branding': ['Illustrator', 'Photoshop', 'Figma', 'InDesign', 'After Effects', 'Typography', 'Packaging'],
+  'AI Creator': ['Midjourney', 'Stable Diffusion', 'ChatGPT', 'Runway', 'ComfyUI', 'LoRA Training'],
+  'Talents': ['Acting', 'Modeling', 'Voice Over', 'Dancing', 'Singing', 'Presenting'],
+  'Tech Development': ['React', 'Node.js', 'Python', 'TypeScript', 'AWS', 'Flutter', 'UI/UX'],
+  'Business & Marketing': ['SEO', 'Google Ads', 'Meta Ads', 'Analytics', 'CRM', 'Copywriting', 'Strategy'],
+  'MUA & Styling': ['Bridal MUA', 'SFX', 'Fashion Styling', 'Hair Styling', 'Wardrobe', 'Color Theory'],
+  'Creative Writing': ['Screenwriting', 'Copywriting', 'Blogging', 'Storytelling', 'Script Editing', 'Research'],
+  'Creation Production': ['Art Direction', 'Project Management', 'Budgeting', 'Casting', 'Storyboarding'],
+  'Event Producers': ['Logistics', 'Vendor Management', 'Stage Design', 'Catering', 'Audio/Visual'],
+  'Space Design': ['AutoCAD', 'SketchUp', '3ds Max', 'Revit', 'Mood Boards', 'Material Selection'],
+  'Voice & Audio': ['Podcasting', 'Mixing', 'Mastering', 'Voice Acting', 'Sound Design', 'Music Production'],
+  'Content Creator': ['Video Editing', 'Thumbnails', 'Scripting', 'Analytics', 'Community', 'Live Streaming'],
+  'Social Media': ['Content Calendar', 'Community Management', 'Analytics', 'Reels', 'Stories', 'Ads'],
+  'Brand Strategist': ['Research', 'Positioning', 'Tone of Voice', 'Consumer Insights', 'Competitive Analysis'],
+};
+
 interface StepPanelProps {
   onNext: () => void;
   onBack?: () => void;
