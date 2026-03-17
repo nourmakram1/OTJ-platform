@@ -175,7 +175,10 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
   const availableSkills = skillsMap[selectedProf] || [];
   
   const q = search.toLowerCase();
-  const filteredProfessions = q ? professions.filter(p => p.name.toLowerCase().includes(q)) : professions;
+  const filteredCategories = professionCategories.map(cat => ({
+    ...cat,
+    items: q ? cat.items.filter(p => p.name.toLowerCase().includes(q) || p.sub.toLowerCase().includes(q)) : cat.items,
+  })).filter(cat => cat.items.length > 0);
   const filteredNiches = q ? availableNiches.filter(n => n.toLowerCase().includes(q)) : availableNiches;
 
   const handleProfChange = (name: string) => {
