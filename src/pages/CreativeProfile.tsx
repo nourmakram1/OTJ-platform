@@ -275,11 +275,13 @@ const CreativeProfile = () => {
                     </div>
                   </div>
                   <p className="text-[13px] text-otj-text leading-[1.65] mb-2.5">{r.text}</p>
-                  <div className="flex gap-1.5 flex-wrap">
-                    {r.tags.map(tag => (
-                      <span key={tag} className="text-[10px] font-semibold px-2 py-[3px] rounded-full bg-otj-off border border-border text-otj-text">{tag}</span>
-                    ))}
-                  </div>
+                  {r.tags && r.tags.length > 0 && (
+                    <div className="flex gap-1.5 flex-wrap">
+                      {r.tags.map(tag => (
+                        <span key={tag} className="text-[10px] font-semibold px-2 py-[3px] rounded-full bg-otj-off border border-border text-otj-text">{tag}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             })}
