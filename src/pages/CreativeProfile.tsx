@@ -150,9 +150,9 @@ const CreativeProfile = () => {
               <div className="flex-1 min-w-0 pt-0.5">
                 <div className="flex flex-wrap items-center gap-1.5 mb-[3px]">
                   <h1 className="text-[20px] font-extrabold tracking-[-0.04em] leading-tight">{displayName}</h1>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="shrink-0">
-                    <path d="M12 2l2.09 1.91 2.83-.35.35 2.83L19.18 8.5l-1.91 2.09 1.91 2.09-1.91 2.09.35 2.83-2.83.35L12 22l-2.09-1.91-2.83.35-.35-2.83L4.82 15.5l1.91-2.09L4.82 11.5 6.73 9.41l-.35-2.83 2.83-.35z" fill="hsl(var(--primary))" />
-                    <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <svg width="18" height="18" viewBox="0 0 22 22" fill="none" className="shrink-0 -mt-px">
+                    <circle cx="11" cy="11" r="11" fill="hsl(var(--primary))" />
+                    <path d="M7 11.5l2.5 2.5L15 8.5" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
                   </svg>
                 </div>
                 <div className="text-[12.5px] text-otj-text mb-1.5">{displayTagline}</div>
