@@ -103,7 +103,12 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
 
   const handleNicheToggle = (n: string) => {
     const next = new Set(selectedNiches);
-    next.has(n) ? next.delete(n) : next.add(n);
+    if (next.has(n)) {
+      next.delete(n);
+    } else {
+      if (next.size >= 3) { showToast('Max 3 niches allowed'); return; }
+      next.add(n);
+    }
     setSelectedNiches(next);
     onSelectionsChange?.(selectedProf, Array.from(next));
   };
