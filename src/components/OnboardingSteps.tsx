@@ -121,7 +121,8 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
 
   const handleProfChange = (name: string) => {
     setSelectedProf(name);
-    setSelectedNiches(new Set()); // Reset niches when profession changes
+    setSelectedNiches(new Set());
+    setSelectedSkills(new Set());
     showToast('Profession set: ' + name);
     onSelectionsChange?.(name, []);
   };
