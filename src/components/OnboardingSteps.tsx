@@ -191,6 +191,36 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
         )}
       </div>
 
+      <div className="mb-8">
+        <div className="text-[14px] font-bold tracking-[-0.02em] text-foreground mb-0.5 flex items-center gap-1.5">Select Your Skills <span className="text-[11px] font-medium text-otj-muted">· Pick 6 Max</span></div>
+        <div className="h-px bg-border mb-4" />
+        {availableSkills.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {availableSkills.map(s => (
+              <div
+                key={s}
+                onClick={() => {
+                  const next = new Set(selectedSkills);
+                  if (next.has(s)) { next.delete(s); }
+                  else { if (next.size >= 6) { showToast('Max 6 skills allowed'); return; } next.add(s); }
+                  setSelectedSkills(next);
+                }}
+                className={`text-[12.5px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all duration-150 tracking-[-0.01em] select-none flex items-center gap-1.5 active:scale-95 ${
+                  selectedSkills.has(s)
+                    ? 'bg-primary border-primary text-primary-foreground'
+                    : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground hover:bg-otj-off'
+                }`}
+              >
+                {s}
+                {selectedSkills.has(s) && <span className="w-[5px] h-[5px] rounded-full bg-primary-foreground/50" />}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-[12.5px] text-otj-muted py-4">Select a profession first</div>
+        )}
+      </div>
+
       <div className="mb-7">
         <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2"><MapPin size={14} className="text-otj-muted shrink-0" /> Location & Experience</div>
         <div className="grid grid-cols-2 gap-3.5">
