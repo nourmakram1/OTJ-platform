@@ -99,7 +99,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
         {/* 1 — Identity + rating */}
         <div className="flex items-start justify-between gap-1.5">
           <div className="min-w-0 flex-1">
-            <div className="text-[12.5px] font-bold tracking-[-0.025em] truncate leading-snug">{c.name}</div>
+            <div className="text-[14px] font-bold tracking-[-0.025em] truncate leading-snug">{c.name}</div>
             <div className="text-[10px] text-otj-text truncate mt-[1px] tracking-[-0.01em]">{c.role}</div>
           </div>
           <div className="flex items-center gap-[4px] shrink-0 pt-[1.5px]">
