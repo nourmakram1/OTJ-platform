@@ -44,9 +44,9 @@ const CreativeProfile = () => {
   const heroNext = (e: React.MouseEvent) => { e.stopPropagation(); setHeroSlide(i => (i === heroSlides.length - 1 ? 0 : i + 1)); };
 
   const reviews = [
-    { name: 'Sarah Chen', company: 'CEO, Stellar Creative Studio', rating: 5, text: 'Exceptional work! Alex delivered beyond our expectations. The branding project was completed on time with incredible attention to detail. Communication was seamless throughout.', date: 'Jan 2026' },
-    { name: 'Randa Hatem', company: 'Marketing Director, Edita Group', rating: 5, text: 'Nour delivered beyond expectations. The product shots were stunning and delivered on time. Highly recommend!', date: 'Feb 2026' },
-    { name: 'Ahmed Karim', company: 'Brand Manager, CIB', rating: 4, text: 'Amazing work on our campaign shoot. Very organized, creative, and easy to work with.', date: 'Jan 2026' },
+    { name: 'Sarah Chen', company: 'CEO, Stellar Creative Studio', rating: 5, text: 'Exceptional work! Alex delivered beyond our expectations. The branding project was completed on time with incredible attention to detail. Communication was seamless throughout.', tags: ['Professional', 'On Time', 'Great Quality'], date: 'Jan 2026' },
+    { name: 'Randa Hatem', company: 'Marketing Director, Edita Group', rating: 5, text: 'Nour delivered beyond expectations. The product shots were stunning and delivered on time. Highly recommend!', tags: ['Creative', 'Organised', 'Responsive'], date: 'Feb 2026' },
+    { name: 'Ahmed Karim', company: 'Brand Manager, CIB', rating: 4, text: 'Amazing work on our campaign shoot. Very organized, creative, and easy to work with.', tags: ['Detail-Oriented', 'Professional'], date: 'Jan 2026' },
   ];
 
   const totalReviews = 47;
