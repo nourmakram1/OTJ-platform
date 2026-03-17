@@ -38,25 +38,19 @@ const LinksSection: React.FC = () => {
     </div>
   );
 };
-const professions: { icon: React.ElementType; name: string }[] = [
-  { icon: Camera, name: 'Photographer' },
-  { icon: Film, name: 'Videographer' },
-  { icon: Palette, name: 'Graphic Designer' },
-  { icon: Sparkles, name: 'Motion Designer' },
-  { icon: Briefcase, name: 'Business & Marketing' },
-  { icon: Building2, name: 'Space Design' },
-  { icon: Monitor, name: 'Tech Development' },
-  { icon: Bot, name: 'AI Creator' },
-  { icon: Smartphone, name: 'Content Creator' },
-  { icon: Mic, name: 'Talent' },
-  { icon: FileText, name: 'Script Writer' },
-  { icon: PenLine, name: 'Copywriter' },
-  { icon: Target, name: 'Brand Strategist' },
-  { icon: Share2, name: 'Social Media' },
-  { icon: Scissors, name: 'MUA & Stylist' },
-  { icon: Clapperboard, name: 'Creative Director' },
-  { icon: Calendar, name: 'Event Producer' },
-  { icon: Plus, name: 'Other' },
+const professions: { icon: React.ElementType; name: string; sub: string }[] = [
+  { icon: Camera, name: 'Photography', sub: 'Wedding, Portrait, Editorial, Events' },
+  { icon: Film, name: 'Videography', sub: 'Film, Commercial, Documentary' },
+  { icon: Palette, name: 'Design & Branding', sub: 'Branding, Brand Identity, Packaging, Digital' },
+  { icon: Bot, name: 'AI Creator', sub: 'Video, Images, Prompt, Avatars' },
+  { icon: Sparkles, name: 'Talents', sub: 'Models, UGC, Voice Over, Musician' },
+  { icon: Monitor, name: 'Tech Development', sub: 'Web, App, Frontend, Backend' },
+  { icon: Briefcase, name: 'Business & Marketing', sub: 'Web, App, Frontend, Backend' },
+  { icon: Scissors, name: 'MUA & Styling', sub: 'Web, App, Frontend, Backend' },
+  { icon: PenLine, name: 'Creative Writing', sub: 'Models, UGC, Voice Over, Musician' },
+  { icon: Clapperboard, name: 'Creation Production', sub: 'Web, App, Frontend, Backend' },
+  { icon: Calendar, name: 'Event Producers', sub: 'Wedding, Corporate, Festivals, Live' },
+  { icon: Building2, name: 'Space Design', sub: 'Interior, Architecture, Exhibition, Set' },
 ];
 
 const nicheMap: Record<string, string[]> = {
