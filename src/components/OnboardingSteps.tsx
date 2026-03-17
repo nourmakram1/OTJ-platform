@@ -160,10 +160,9 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
         )}
       </div>
 
-      <div className="mb-7">
-        <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">
-          <Tag size={14} className="text-otj-muted shrink-0" /> Your Niches <span className="text-[11px] font-medium text-otj-text">— pick all that apply</span>
-        </div>
+      <div className="mb-8">
+        <div className="text-[14px] font-bold tracking-[-0.02em] text-foreground mb-0.5 flex items-center gap-1.5">Your Niche <span className="text-[11px] font-medium text-otj-muted">· Pick 3 Max</span></div>
+        <div className="h-px bg-border mb-4" />
         {filteredNiches.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {filteredNiches.map(n => (
