@@ -90,6 +90,7 @@ interface Step2PanelProps extends StepPanelProps {
 export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChange }) => {
   const [selectedProf, setSelectedProf] = useState('Photography');
   const [selectedNiches, setSelectedNiches] = useState(new Set<string>());
+  const [selectedSkills, setSelectedSkills] = useState(new Set<string>());
   const [search, setSearch] = useState('');
 
   const availableNiches = nicheMap[selectedProf] || [];
