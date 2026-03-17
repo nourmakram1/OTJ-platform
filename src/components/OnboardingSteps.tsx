@@ -39,62 +39,32 @@ const LinksSection: React.FC = () => {
     </div>
   );
 };
-interface Profession { icon: React.ElementType; name: string; sub: string }
-interface ProfessionCategory { category: string; items: Profession[] }
-
-const professionCategories: ProfessionCategory[] = [
-  {
-    category: '📸 Visual & Film',
-    items: [
-      { icon: Camera, name: 'Photography', sub: 'Wedding, Portrait, Editorial, Events' },
-      { icon: Film, name: 'Videography', sub: 'Film, Commercial, Documentary' },
-      { icon: Clapperboard, name: 'Cinematography', sub: 'Narrative, Commercial, Music Videos' },
-      { icon: Play, name: 'Reel Videos & Edit', sub: 'Short-Form, Reels, TikTok Edits' },
-    ],
-  },
-  {
-    category: '🎬 Production & Direction',
-    items: [
-      { icon: Eye, name: 'Directors', sub: 'Film, Commercial, Music Video' },
-      { icon: Calendar, name: 'Producers', sub: 'Film, Commercial, Event, Digital' },
-      { icon: Armchair, name: 'Art Director', sub: 'Sets, Visual Identity, Campaigns' },
-      { icon: Clapperboard, name: 'Creation Production', sub: 'Art Direction, Campaigns, Brand' },
-      { icon: Calendar, name: 'Event Producers', sub: 'Wedding, Corporate, Festivals, Live' },
-    ],
-  },
-  {
-    category: '🎨 Design & Creative',
-    items: [
-      { icon: Palette, name: 'Design & Branding', sub: 'Branding, Brand Identity, Packaging, Digital' },
-      { icon: Bot, name: 'AI Creator', sub: 'Video, Images, Prompt, Avatars' },
-      { icon: Sparkles, name: 'Talents', sub: 'Models, UGC, Voice Over, Musician' },
-      { icon: Scissors, name: 'MUA & Styling', sub: 'Bridal, Editorial, Personal Styling' },
-      { icon: Building2, name: 'Space Design', sub: 'Interior, Architecture, Exhibition, Set' },
-    ],
-  },
-  {
-    category: '✏️ Writing & Content',
-    items: [
-      { icon: PenLine, name: 'Creative Writing', sub: 'Scriptwriting, Copy, Content' },
-      { icon: FileText, name: 'Script Writers', sub: 'Film, TV, Ads, YouTube, Podcasts' },
-      { icon: Smartphone, name: 'Content Creator', sub: 'YouTube, TikTok, Reels, Streaming' },
-      { icon: Mic, name: 'Voice & Audio', sub: 'Podcasting, Voice Over, Music' },
-    ],
-  },
-  {
-    category: '📊 Marketing & Strategy',
-    items: [
-      { icon: Briefcase, name: 'Business & Marketing', sub: 'Strategy, Growth, SEO, PR' },
-      { icon: Share2, name: 'Social Media', sub: 'Instagram, LinkedIn, Community' },
-      { icon: Megaphone, name: 'Media Buyers', sub: 'Paid Media, Google, Meta, TikTok Ads' },
-      { icon: ImagePlus, name: 'Ads Campaign Creative', sub: 'Ad Creative, Banners, Video Ads' },
-      { icon: Target, name: 'Brand Strategist', sub: 'Identity, Positioning, Insights' },
-      { icon: Monitor, name: 'Tech Development', sub: 'Web, App, Frontend, Backend' },
-    ],
-  },
+const professions: Profession[] = [
+  { icon: Camera, name: 'Photography', sub: 'Wedding, Portrait, Editorial, Events' },
+  { icon: Film, name: 'Videography', sub: 'Film, Commercial, Documentary' },
+  { icon: Clapperboard, name: 'Cinematography', sub: 'Narrative, Commercial, Music Videos' },
+  { icon: Play, name: 'Reel Videos & Edit', sub: 'Short-Form, Reels, TikTok Edits' },
+  { icon: Eye, name: 'Directors', sub: 'Film, Commercial, Music Video' },
+  { icon: Calendar, name: 'Producers', sub: 'Film, Commercial, Event, Digital' },
+  { icon: Armchair, name: 'Art Director', sub: 'Sets, Visual Identity, Campaigns' },
+  { icon: Clapperboard, name: 'Creation Production', sub: 'Art Direction, Campaigns, Brand' },
+  { icon: Calendar, name: 'Event Producers', sub: 'Wedding, Corporate, Festivals, Live' },
+  { icon: Palette, name: 'Design & Branding', sub: 'Branding, Brand Identity, Packaging, Digital' },
+  { icon: Bot, name: 'AI Creator', sub: 'Video, Images, Prompt, Avatars' },
+  { icon: Sparkles, name: 'Talents', sub: 'Models, UGC, Voice Over, Musician' },
+  { icon: Scissors, name: 'MUA & Styling', sub: 'Bridal, Editorial, Personal Styling' },
+  { icon: Building2, name: 'Space Design', sub: 'Interior, Architecture, Exhibition, Set' },
+  { icon: PenLine, name: 'Creative Writing', sub: 'Scriptwriting, Copy, Content' },
+  { icon: FileText, name: 'Script Writers', sub: 'Film, TV, Ads, YouTube, Podcasts' },
+  { icon: Smartphone, name: 'Content Creator', sub: 'YouTube, TikTok, Reels, Streaming' },
+  { icon: Mic, name: 'Voice & Audio', sub: 'Podcasting, Voice Over, Music' },
+  { icon: Briefcase, name: 'Business & Marketing', sub: 'Strategy, Growth, SEO, PR' },
+  { icon: Share2, name: 'Social Media', sub: 'Instagram, LinkedIn, Community' },
+  { icon: Megaphone, name: 'Media Buyers', sub: 'Paid Media, Google, Meta, TikTok Ads' },
+  { icon: ImagePlus, name: 'Ads Campaign Creative', sub: 'Ad Creative, Banners, Video Ads' },
+  { icon: Target, name: 'Brand Strategist', sub: 'Identity, Positioning, Insights' },
+  { icon: Monitor, name: 'Tech Development', sub: 'Web, App, Frontend, Backend' },
 ];
-
-const allProfessions = professionCategories.flatMap(c => c.items);
 
 const nicheMap: Record<string, string[]> = {
   'Photography': ['Wedding', 'Fashion', 'E-Commerce', 'Product', 'Food & Beverage', 'Corporate & Event', 'Portraits'],
