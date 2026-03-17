@@ -110,9 +110,9 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
 
   return (
     <div className="animate-fade-up">
-      <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-otj-blue mb-2.5">Step 1 of 7</div>
-      <div className="text-[clamp(40px,5vw,60px)] font-extrabold tracking-[-0.05em] leading-[0.9] text-foreground mb-2.5">WHO<br/>ARE YOU?</div>
-      <div className="text-sm text-otj-text leading-relaxed max-w-[560px] mb-6">Pick your primary profession and the niches you specialise in. This shapes how clients find you.</div>
+      <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-otj-muted mb-2.5">Build Your Profile · <span className="text-foreground">Step 1 of 5</span></div>
+      <div className="text-[clamp(36px,5vw,56px)] font-extrabold tracking-[-0.04em] leading-[0.95] text-foreground mb-2.5">What do you ✦ create?</div>
+      <div className="text-sm text-otj-text leading-relaxed max-w-[660px] mb-8">Pick your primary profession and the niches you specialise in. This shapes how clients find you — you can edit later.</div>
 
       {/* Search bar */}
       <div className="relative mb-7">
