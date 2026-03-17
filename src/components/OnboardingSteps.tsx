@@ -142,19 +142,19 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
         <div className="text-[14px] font-bold tracking-[-0.02em] text-foreground mb-1 flex items-center gap-2">Your Profession</div>
         <div className="h-px bg-border mb-4" />
         {filteredProfessions.length > 0 ? (
-          <div className="grid grid-rows-3 grid-flow-col auto-cols-[220px] gap-2.5 overflow-x-auto hide-scrollbar snap-x pb-2">
+          <div className="grid grid-rows-3 grid-flow-col auto-cols-[minmax(240px,1fr)] gap-2.5 overflow-x-auto hide-scrollbar snap-x pb-2">
             {filteredProfessions.map(p => (
               <div
                 key={p.name}
                 onClick={() => handleProfChange(p.name)}
-                className={`snap-start p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 flex items-center gap-3 active:scale-[0.98] ${
+                className={`snap-start px-5 py-4 rounded-2xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 flex items-center gap-4 active:scale-[0.98] ${
                   selectedProf === p.name ? 'border-foreground bg-primary text-primary-foreground' : 'border-border hover:border-otj-muted hover:bg-otj-off'
                 }`}
               >
-                <p.icon size={20} className="shrink-0" />
+                <p.icon size={26} strokeWidth={1.5} className="shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-[12.5px] font-bold tracking-[-0.02em] leading-tight">{p.name}</div>
-                  <div className={`text-[10.5px] leading-snug mt-0.5 ${
+                  <div className="text-[13.5px] font-bold tracking-[-0.02em] leading-tight">{p.name}</div>
+                  <div className={`text-[11px] leading-snug mt-0.5 ${
                     selectedProf === p.name ? 'text-primary-foreground/60' : 'text-otj-muted'
                   }`}>{p.sub}</div>
                 </div>
