@@ -194,7 +194,7 @@ const DashboardPreview = () => {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
             {[
-              { label: 'Hired Projects', val: String(activeProjects.filter(p => p.myRole !== 'as-client').length), delta: activeProjects.length > 0 ? 'Working on' : 'None yet', deltaClass: 'text-otj-green' },
+              { label: 'Hired Projects', val: String(activeProjects.filter(p => (p.myRole as string) !== 'as-client').length), delta: activeProjects.length > 0 ? 'Working on' : 'None yet', deltaClass: 'text-otj-green' },
               { label: 'My Bookings', val: '0', delta: 'None yet', deltaClass: 'text-otj-blue' },
               { label: 'Revenue (Mar)', val: state === 'empty' ? '—' : '14K', delta: state === 'empty' ? 'No data yet' : '↑ 23% vs Feb', deltaClass: 'text-otj-green' },
               { label: 'Pending Briefs', val: String(pendingBriefs.length), delta: pendingBriefs.length > 0 ? 'Need response' : 'All clear', deltaClass: 'text-otj-text' },

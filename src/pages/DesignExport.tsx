@@ -559,10 +559,10 @@ function OBPage({ step, children }: { step: number; children: React.ReactNode })
   );
 }
 
-function StepLabel({ label }: { label: string }) {
+function StepLabel({ label, children }: { label?: string; children?: React.ReactNode }) {
   return (
     <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-otj-blue mb-2.5">
-      {label}
+      {label || children}
     </div>
   );
 }
