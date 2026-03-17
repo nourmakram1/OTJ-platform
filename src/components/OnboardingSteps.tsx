@@ -54,24 +54,18 @@ const professions: { icon: React.ElementType; name: string; sub: string }[] = [
 ];
 
 const nicheMap: Record<string, string[]> = {
-  'Photographer': ['Fashion Editorial', 'E-Commerce', 'Product Photography', 'Architecture', 'Lifestyle', 'Sports & Action', 'Food & Beverage', 'Corporate & Events', 'Weddings', 'Portraits', 'Street & Documentary', 'Beauty & Cosmetics'],
-  'Videographer': ['Music Videos', 'Commercials', 'Documentary', 'Weddings', 'Corporate', 'Events', 'Social Media'],
-  'Graphic Designer': ['Branding', 'Print Design', 'Digital Design', 'Packaging', 'Illustration', 'Typography'],
-  'Motion Designer': ['2D Animation', '3D Animation', 'VFX', 'UI/UX Animation', 'Explainer Videos'],
-  'Business & Marketing': ['Digital Marketing', 'SEO', 'Content Strategy', 'Growth Hacking', 'Email Marketing', 'Market Research', 'PR'],
-  'Space Design': ['Interior Design', 'Architecture', 'Visual Merchandising', 'Exhibition Design', 'Set Design'],
-  'Tech Development': ['Frontend', 'Backend', 'Full Stack', 'Mobile Apps', 'Web3/Crypto', 'DevOps'],
+  'Photography': ['Wedding', 'Fashion', 'E-Commerce', 'Product', 'Food & Beverage', 'Corporate & Event', 'Portraits'],
+  'Videography': ['Music Videos', 'Commercials', 'Documentary', 'Weddings', 'Corporate', 'Events', 'Social Media'],
+  'Design & Branding': ['Branding', 'Print Design', 'Digital Design', 'Packaging', 'Illustration', 'Typography'],
   'AI Creator': ['Prompt Engineering', 'AI Video', 'AI Image Generation', 'Custom Models', 'AI Avatars'],
-  'Content Creator': ['YouTube', 'TikTok', 'Instagram Reels', 'Podcasting', 'Live Streaming', 'Gaming Content'],
-  'Talent': ['Models', 'UGC Creator', 'Singer', 'Musician', 'Voice Over', 'Dancer'],
-  'Script Writer': ['Film/TV', 'Commercials', 'Video Games', 'YouTube', 'Podcasts'],
-  'Copywriter': ['Ad Copy', 'Website Copy', 'Email Copy', 'Product Descriptions', 'SEO Copywriting'],
-  'Brand Strategist': ['Brand Identity', 'Market Positioning', 'Consumer Insights', 'Tone of Voice'],
-  'Social Media': ['Instagram', 'TikTok', 'LinkedIn', 'Community Management', 'Content Calendar'],
-  'MUA & Stylist': ['Bridal', 'Editorial', 'Special FX', 'Personal Styling', 'Wardrobe'],
-  'Creative Director': ['Art Direction', 'Campaigns', 'Brand Vision', 'Team Leadership'],
-  'Event Producer': ['Corporate Events', 'Festivals', 'Exhibitions', 'Weddings', 'Live Shows'],
-  'Other': ['General'],
+  'Talents': ['Models', 'UGC Creator', 'Singer', 'Musician', 'Voice Over', 'Dancer'],
+  'Tech Development': ['Frontend', 'Backend', 'Full Stack', 'Mobile Apps', 'Web3/Crypto', 'DevOps'],
+  'Business & Marketing': ['Digital Marketing', 'SEO', 'Content Strategy', 'Growth Hacking', 'Email Marketing', 'Market Research', 'PR'],
+  'MUA & Styling': ['Bridal', 'Editorial', 'Special FX', 'Personal Styling', 'Wardrobe'],
+  'Creative Writing': ['Film/TV', 'Commercials', 'Video Games', 'YouTube', 'Podcasts'],
+  'Creation Production': ['Art Direction', 'Campaigns', 'Brand Vision', 'Team Leadership'],
+  'Event Producers': ['Corporate Events', 'Festivals', 'Exhibitions', 'Weddings', 'Live Shows'],
+  'Space Design': ['Interior Design', 'Architecture', 'Visual Merchandising', 'Exhibition Design', 'Set Design'],
 };
 
 interface StepPanelProps {
