@@ -19,7 +19,7 @@ const ImageCarousel = ({ bg, emoji }: { bg: string; emoji: string }) => {
   const next = (e: React.MouseEvent) => { e.stopPropagation(); setCurrent(i => (i === slides.length - 1 ? 0 : i + 1)); };
 
   return (
-    <div className="aspect-[4/3] relative overflow-hidden rounded-[11px] group/carousel">
+    <div className="aspect-[4/3] relative overflow-hidden group/carousel">
       <div
         className="flex h-full transition-transform duration-300 ease-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
