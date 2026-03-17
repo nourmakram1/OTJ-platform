@@ -9,19 +9,19 @@ import { ProfileCompletenessCard } from '../components/ProfileCompleteness';
 
 /* ── Hero carousel data ─────────────────────────────────────── */
 const heroSlides = [
-  { grad: 'from-[#1a1a2e] to-[#16213e]', emoji: '📸' },
-  { grad: 'from-[#2d1b4e] to-[#11998e]', emoji: '' },
-  { grad: 'from-[#2c3e50] to-[#3498db]', emoji: '' },
-  { grad: 'from-[#1a1a2e] to-[#e44d26]', emoji: '' },
-  { grad: 'from-[#0f2027] to-[#2c5364]', emoji: '' },
-];
+{ grad: 'from-[#1a1a2e] to-[#16213e]', emoji: '📸' },
+{ grad: 'from-[#2d1b4e] to-[#11998e]', emoji: '' },
+{ grad: 'from-[#2c3e50] to-[#3498db]', emoji: '' },
+{ grad: 'from-[#1a1a2e] to-[#e44d26]', emoji: '' },
+{ grad: 'from-[#0f2027] to-[#2c5364]', emoji: '' }];
+
 
 
 const reviews = [
-  { name: 'Randa Hatem', company: 'Edita Group', rating: 5, text: 'Nour delivered beyond expectations. The product shots were stunning and delivered on time. Highly recommend!', tags: ['Professional', 'On Time', 'Great Quality'], date: 'Feb 2026' },
-  { name: 'Ahmed Karim', company: 'CIB', rating: 5, text: 'Amazing work on our campaign shoot. Very organised, creative, and easy to work with.', tags: ['Creative', 'Organised', 'Responsive'], date: 'Jan 2026' },
-  { name: 'Tarek Saad', company: 'Vodafone', rating: 4, text: 'Great photographer with a keen eye for detail. Would book again for future campaigns.', tags: ['Detail-Oriented', 'Professional'], date: 'Jan 2026' },
-];
+{ name: 'Randa Hatem', company: 'Edita Group', rating: 5, text: 'Nour delivered beyond expectations. The product shots were stunning and delivered on time. Highly recommend!', tags: ['Professional', 'On Time', 'Great Quality'], date: 'Feb 2026' },
+{ name: 'Ahmed Karim', company: 'CIB', rating: 5, text: 'Amazing work on our campaign shoot. Very organised, creative, and easy to work with.', tags: ['Creative', 'Organised', 'Responsive'], date: 'Jan 2026' },
+{ name: 'Tarek Saad', company: 'Vodafone', rating: 4, text: 'Great photographer with a keen eye for detail. Would book again for future campaigns.', tags: ['Detail-Oriented', 'Professional'], date: 'Jan 2026' }];
+
 
 /* ── Component ─────────────────────────────────────────────── */
 const CreativeProfile = () => {
@@ -32,29 +32,29 @@ const CreativeProfile = () => {
   const [heroSlide, setHeroSlide] = useState(0);
   const { profile } = useCreativeProfile();
 
-  const displayName    = isOwnProfile ? profile.name    : 'Nour Makram';
+  const displayName = isOwnProfile ? profile.name : 'Nour Makram';
   const displayTagline = isOwnProfile ? profile.tagline : 'Fashion · E-Commerce · Studio Photography';
-  const displayBio     = isOwnProfile ? profile.bio     : 'Cairo-based fashion and e-commerce photographer with 7+ years of experience. Specialising in product photography, lifestyle campaigns, and brand content for leading Egyptian and MENA brands.';
-  const displaySkills  = isOwnProfile ? profile.skills  : ['Photography', 'Product', 'Fashion', 'E-Commerce', 'Lifestyle', 'Branding'];
-  const displayCity    = isOwnProfile ? profile.city    : 'Cairo, EG';
+  const displayBio = isOwnProfile ? profile.bio : 'Cairo-based fashion and e-commerce photographer with 7+ years of experience. Specialising in product photography, lifestyle campaigns, and brand content for leading Egyptian and MENA brands.';
+  const displaySkills = isOwnProfile ? profile.skills : ['Photography', 'Product', 'Fashion', 'E-Commerce', 'Lifestyle', 'Branding'];
+  const displayCity = isOwnProfile ? profile.city : 'Cairo, EG';
 
   const initials = displayName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
-  const heroPrev = (e: React.MouseEvent) => { e.stopPropagation(); setHeroSlide(i => (i === 0 ? heroSlides.length - 1 : i - 1)); };
-  const heroNext = (e: React.MouseEvent) => { e.stopPropagation(); setHeroSlide(i => (i === heroSlides.length - 1 ? 0 : i + 1)); };
+  const heroPrev = (e: React.MouseEvent) => {e.stopPropagation();setHeroSlide((i) => i === 0 ? heroSlides.length - 1 : i - 1);};
+  const heroNext = (e: React.MouseEvent) => {e.stopPropagation();setHeroSlide((i) => i === heroSlides.length - 1 ? 0 : i + 1);};
 
   const reviews = [
-    { name: 'Sarah Chen', company: 'CEO, Stellar Creative Studio', rating: 5, text: 'Exceptional work! Alex delivered beyond our expectations. The branding project was completed on time with incredible attention to detail. Communication was seamless throughout.', tags: ['Professional', 'On Time', 'Great Quality'], date: 'Jan 2026' },
-    { name: 'Randa Hatem', company: 'Marketing Director, Edita Group', rating: 5, text: 'Nour delivered beyond expectations. The product shots were stunning and delivered on time. Highly recommend!', tags: ['Creative', 'Organised', 'Responsive'], date: 'Feb 2026' },
-    { name: 'Ahmed Karim', company: 'Brand Manager, CIB', rating: 4, text: 'Amazing work on our campaign shoot. Very organized, creative, and easy to work with.', tags: ['Detail-Oriented', 'Professional'], date: 'Jan 2026' },
-  ];
+  { name: 'Sarah Chen', company: 'CEO, Stellar Creative Studio', rating: 5, text: 'Exceptional work! Alex delivered beyond our expectations. The branding project was completed on time with incredible attention to detail. Communication was seamless throughout.', tags: ['Professional', 'On Time', 'Great Quality'], date: 'Jan 2026' },
+  { name: 'Randa Hatem', company: 'Marketing Director, Edita Group', rating: 5, text: 'Nour delivered beyond expectations. The product shots were stunning and delivered on time. Highly recommend!', tags: ['Creative', 'Organised', 'Responsive'], date: 'Feb 2026' },
+  { name: 'Ahmed Karim', company: 'Brand Manager, CIB', rating: 4, text: 'Amazing work on our campaign shoot. Very organized, creative, and easy to work with.', tags: ['Detail-Oriented', 'Professional'], date: 'Jan 2026' }];
+
 
   const totalReviews = 47;
   const avgRating = 4.9;
   const ratingBreakdown = [
-    { stars: 5, count: 43 },
-    { stars: 4, count: 4 },
-  ];
+  { stars: 5, count: 43 },
+  { stars: 4, count: 4 }];
+
 
   return (
     <>
@@ -66,13 +66,13 @@ const CreativeProfile = () => {
         {/* Slides */}
         <div
           className="flex h-full transition-transform duration-300 ease-out"
-          style={{ transform: `translateX(-${heroSlide * 100}%)` }}
-        >
-          {heroSlides.map((s, i) => (
-            <div key={i} className={`min-w-full h-full bg-gradient-to-br ${s.grad} flex items-center justify-center`}>
+          style={{ transform: `translateX(-${heroSlide * 100}%)` }}>
+          
+          {heroSlides.map((s, i) =>
+          <div key={i} className={`min-w-full h-full bg-gradient-to-br ${s.grad} flex items-center justify-center`}>
               {s.emoji && <span className="text-7xl">{s.emoji}</span>}
             </div>
-          ))}
+          )}
         </div>
 
         {/* Tap zones */}
@@ -91,45 +91,45 @@ const CreativeProfile = () => {
         <div className="absolute top-0 left-0 right-0 pt-[62px] px-4 flex items-center justify-between z-[3]">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-[11px] font-semibold text-white/90 bg-black/35 backdrop-blur-md px-3 py-[5px] rounded-full border border-white/10 cursor-pointer hover:bg-black/50 transition-colors"
-          >
+            className="flex items-center gap-1.5 text-[11px] font-semibold text-white/90 bg-black/35 backdrop-blur-md px-3 py-[5px] rounded-full border border-white/10 cursor-pointer hover:bg-black/50 transition-colors">
+            
             <ArrowLeft size={11} strokeWidth={2.5} />
             Explore
           </button>
           <div className="flex items-center gap-1.5">
             <button
-              onClick={() => { navigator.clipboard.writeText(window.location.href); showToast('Profile link copied!'); }}
-              className="w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-sm cursor-pointer hover:bg-white transition-colors active:scale-95"
-            >
+              onClick={() => {navigator.clipboard.writeText(window.location.href);showToast('Profile link copied!');}}
+              className="w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-sm cursor-pointer hover:bg-white transition-colors active:scale-95">
+              
               <Share2 size={13} className="text-gray-800" />
             </button>
-            {isOwnProfile ? (
-              <button
-                onClick={() => navigate('/settings')}
-                className="w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-sm cursor-pointer hover:bg-white transition-colors active:scale-95"
-              >
+            {isOwnProfile ?
+            <button
+              onClick={() => navigate('/settings')}
+              className="w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-sm cursor-pointer hover:bg-white transition-colors active:scale-95">
+              
                 <Pencil size={13} className="text-gray-800" />
-              </button>
-            ) : (
-              <button
-                onClick={() => { setSaved(v => !v); showToast(saved ? 'Removed from Collections' : '♥ Saved to Collections'); }}
-                className="w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-sm cursor-pointer hover:bg-white transition-colors active:scale-95"
-              >
+              </button> :
+
+            <button
+              onClick={() => {setSaved((v) => !v);showToast(saved ? 'Removed from Collections' : '♥ Saved to Collections');}}
+              className="w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-sm cursor-pointer hover:bg-white transition-colors active:scale-95">
+              
                 <Heart size={13} className={saved ? 'fill-red-500 text-red-500' : 'text-gray-800'} />
               </button>
-            )}
+            }
           </div>
         </div>
 
         {/* Dot indicators */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1 items-center z-[3]">
-          {heroSlides.map((_, i) => (
-            <button
-              key={i}
-              onClick={(e) => { e.stopPropagation(); setHeroSlide(i); }}
-              className={`h-[3px] rounded-full transition-all duration-300 ${i === heroSlide ? 'bg-white w-3.5' : 'bg-white/45 w-[5px]'}`}
-            />
-          ))}
+          {heroSlides.map((_, i) =>
+          <button
+            key={i}
+            onClick={(e) => {e.stopPropagation();setHeroSlide(i);}}
+            className={`h-[3px] rounded-full transition-all duration-300 ${i === heroSlide ? 'bg-white w-3.5' : 'bg-white/45 w-[5px]'}`} />
+
+          )}
         </div>
       </div>
 
@@ -150,7 +150,7 @@ const CreativeProfile = () => {
               <div className="flex-1 min-w-0 pt-0.5">
                 <div className="flex flex-wrap items-baseline gap-2 mb-[3px]">
                   <h1 className="text-[20px] font-extrabold tracking-[-0.04em] leading-tight">{displayName}</h1>
-                  <span className="text-[9.5px] font-bold px-2 py-[2px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border shrink-0">Verified</span>
+                  
                 </div>
                 <div className="text-[12.5px] text-otj-text mb-1.5">{displayTagline}</div>
                 {/* Inline meta — city · rating · response */}
@@ -183,9 +183,9 @@ const CreativeProfile = () => {
 
             {/* Skill tags */}
             <div className="flex flex-wrap gap-1.5 mt-3">
-              {displaySkills.map((s: string) => (
-                <span key={s} className="text-[11px] font-semibold px-2.5 py-[3.5px] rounded-full bg-otj-off border border-border text-otj-text">{s}</span>
-              ))}
+              {displaySkills.map((s: string) =>
+              <span key={s} className="text-[11px] font-semibold px-2.5 py-[3.5px] rounded-full bg-otj-off border border-border text-otj-text">{s}</span>
+              )}
             </div>
 
             <div className="border-t border-border my-4" />
@@ -194,14 +194,14 @@ const CreativeProfile = () => {
             <div className="flex gap-2">
               <button
                 onClick={() => showToast('Opening Quick Brief…')}
-                className="flex-1 text-[12.5px] font-bold py-[10px] rounded-full bg-foreground text-background border-none cursor-pointer transition-all hover:opacity-85 active:scale-[0.98]"
-              >
+                className="flex-1 text-[12.5px] font-bold py-[10px] rounded-full bg-foreground text-background border-none cursor-pointer transition-all hover:opacity-85 active:scale-[0.98]">
+                
                 Book Now
               </button>
               <button
                 onClick={() => window.open('https://nourmakram.com', '_blank')}
-                className="flex-1 text-[12.5px] font-bold py-[10px] rounded-full border-[1.5px] border-border text-otj-text cursor-pointer transition-all hover:border-foreground hover:text-foreground active:scale-[0.98] flex items-center justify-center gap-1.5"
-              >
+                className="flex-1 text-[12.5px] font-bold py-[10px] rounded-full border-[1.5px] border-border text-otj-text cursor-pointer transition-all hover:border-foreground hover:text-foreground active:scale-[0.98] flex items-center justify-center gap-1.5">
+                
                 <ExternalLink size={13} />
                 Portfolio
               </button>
@@ -237,26 +237,26 @@ const CreativeProfile = () => {
                 </div>
                 <div className="flex-1">
                   {[5, 4, 3, 2, 1].map((star) => {
-                    const pct = star === 5 ? 82 : star === 4 ? 14 : star === 3 ? 3 : 1;
-                    return (
-                      <div key={star} className="flex items-center gap-2 mb-1">
+                  const pct = star === 5 ? 82 : star === 4 ? 14 : star === 3 ? 3 : 1;
+                  return (
+                    <div key={star} className="flex items-center gap-2 mb-1">
                         <span className="text-[10px] text-otj-muted w-2 shrink-0">{star}</span>
                         <div className="flex-1 h-[5px] bg-otj-off rounded-full overflow-hidden">
                           <div className="h-full bg-otj-yellow rounded-full" style={{ width: `${pct}%` }} />
                         </div>
                         <span className="text-[10px] text-otj-muted w-6 text-right shrink-0">{pct}%</span>
-                      </div>
-                    );
-                  })}
+                      </div>);
+
+                })}
                 </div>
               </div>
             </div>
 
             {/* Individual reviews */}
             {reviews.map((r, i) => {
-              const rev_initials = r.name.split(' ').map(n => n[0]).join('').slice(0, 2);
-              return (
-                <div key={i} className="bg-card border border-border rounded-[14px] p-4">
+            const rev_initials = r.name.split(' ').map((n) => n[0]).join('').slice(0, 2);
+            return (
+              <div key={i} className="bg-card border border-border rounded-[14px] p-4">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-9 h-9 rounded-full bg-otj-off border border-border flex items-center justify-center shrink-0">
                       <span className="text-[11px] font-extrabold text-otj-muted">{rev_initials}</span>
@@ -275,22 +275,22 @@ const CreativeProfile = () => {
                     </div>
                   </div>
                   <p className="text-[13px] text-otj-text leading-[1.65] mb-2.5">{r.text}</p>
-                  {r.tags && r.tags.length > 0 && (
-                    <div className="flex gap-1.5 flex-wrap">
-                      {r.tags.map(tag => (
-                        <span key={tag} className="text-[10px] font-semibold px-2 py-[3px] rounded-full bg-otj-off border border-border text-otj-text">{tag}</span>
-                      ))}
-                    </div>
+                  {r.tags && r.tags.length > 0 &&
+                <div className="flex gap-1.5 flex-wrap">
+                      {r.tags.map((tag) =>
+                  <span key={tag} className="text-[10px] font-semibold px-2 py-[3px] rounded-full bg-otj-off border border-border text-otj-text">{tag}</span>
                   )}
-                </div>
-              );
-            })}
+                    </div>
+                }
+                </div>);
+
+          })}
         </div>
       </div>
 
       <Toast />
-    </>
-  );
+    </>);
+
 };
 
 export default CreativeProfile;
