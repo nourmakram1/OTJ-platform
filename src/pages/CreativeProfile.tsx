@@ -148,9 +148,13 @@ const CreativeProfile = () => {
               </div>
 
               <div className="flex-1 min-w-0 pt-0.5">
-                <div className="flex flex-wrap items-baseline gap-2 mb-[3px]">
+                <div className="flex flex-wrap items-center gap-1.5 mb-[3px]">
                   <h1 className="text-[20px] font-extrabold tracking-[-0.04em] leading-tight">{displayName}</h1>
-                  
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                    <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 2l2.09 1.91 2.83-.35.35 2.83L19.18 8.5l-1.91 2.09 1.91 2.09-1.91 2.09-.35 2.83-2.83.35L12 22l-2.09-1.91-2.83.35-.35-2.83L4.82 15.5l1.91-2.09L4.82 11.32l1.91-2.09.35-2.83 2.83-.35L12 2z" fill="hsl(var(--primary))" stroke="hsl(var(--primary))" strokeWidth="1.5"/>
+                    <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </div>
                 <div className="text-[12.5px] text-otj-text mb-1.5">{displayTagline}</div>
                 {/* Inline meta — city · rating · response */}
