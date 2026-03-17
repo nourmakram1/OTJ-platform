@@ -142,15 +142,11 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
               <div
                 key={p.name}
                 onClick={() => handleProfChange(p.name)}
-                className={`p-3.5 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 flex items-start gap-3 active:scale-[0.98] ${
+                className={`p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 flex items-center gap-3 active:scale-[0.98] ${
                   selectedProf === p.name ? 'border-foreground bg-primary text-primary-foreground' : 'border-border hover:border-otj-muted hover:bg-otj-off'
                 }`}
               >
-                <div className={`w-8 h-8 rounded-lg border-[1.5px] flex items-center justify-center shrink-0 ${
-                  selectedProf === p.name ? 'border-primary-foreground/30' : 'border-border'
-                }`}>
-                  <p.icon size={16} />
-                </div>
+                <p.icon size={20} className="shrink-0" />
                 <div className="min-w-0">
                   <div className="text-[12.5px] font-bold tracking-[-0.02em] leading-tight">{p.name}</div>
                   <div className={`text-[10.5px] leading-snug mt-0.5 ${
