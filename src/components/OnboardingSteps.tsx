@@ -39,7 +39,7 @@ const LinksSection: React.FC = () => {
     </div>
   );
 };
-const professions: Profession[] = [
+const professions: { icon: React.ElementType; name: string; sub: string }[] = [
   { icon: Camera, name: 'Photography', sub: 'Wedding, Portrait, Editorial, Events' },
   { icon: Film, name: 'Videography', sub: 'Film, Commercial, Documentary' },
   { icon: Clapperboard, name: 'Cinematography', sub: 'Narrative, Commercial, Music Videos' },
