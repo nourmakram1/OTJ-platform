@@ -44,9 +44,9 @@ const CreativeProfile = () => {
   const heroNext = (e: React.MouseEvent) => { e.stopPropagation(); setHeroSlide(i => (i === heroSlides.length - 1 ? 0 : i + 1)); };
 
   const reviews = [
-    { name: 'Sarah Chen', company: 'CEO, Stellar Creative Studio', rating: 5, text: 'Exceptional work! Alex delivered beyond our expectations. The branding project was completed on time with incredible attention to detail. Communication was seamless throughout.', date: 'Jan 2026' },
-    { name: 'Randa Hatem', company: 'Marketing Director, Edita Group', rating: 5, text: 'Nour delivered beyond expectations. The product shots were stunning and delivered on time. Highly recommend!', date: 'Feb 2026' },
-    { name: 'Ahmed Karim', company: 'Brand Manager, CIB', rating: 4, text: 'Amazing work on our campaign shoot. Very organized, creative, and easy to work with.', date: 'Jan 2026' },
+    { name: 'Sarah Chen', company: 'CEO, Stellar Creative Studio', rating: 5, text: 'Exceptional work! Alex delivered beyond our expectations. The branding project was completed on time with incredible attention to detail. Communication was seamless throughout.', tags: ['Professional', 'On Time', 'Great Quality'], date: 'Jan 2026' },
+    { name: 'Randa Hatem', company: 'Marketing Director, Edita Group', rating: 5, text: 'Nour delivered beyond expectations. The product shots were stunning and delivered on time. Highly recommend!', tags: ['Creative', 'Organised', 'Responsive'], date: 'Feb 2026' },
+    { name: 'Ahmed Karim', company: 'Brand Manager, CIB', rating: 4, text: 'Amazing work on our campaign shoot. Very organized, creative, and easy to work with.', tags: ['Detail-Oriented', 'Professional'], date: 'Jan 2026' },
   ];
 
   const totalReviews = 47;
@@ -275,11 +275,13 @@ const CreativeProfile = () => {
                     </div>
                   </div>
                   <p className="text-[13px] text-otj-text leading-[1.65] mb-2.5">{r.text}</p>
-                  <div className="flex gap-1.5 flex-wrap">
-                    {r.tags.map(tag => (
-                      <span key={tag} className="text-[10px] font-semibold px-2 py-[3px] rounded-full bg-otj-off border border-border text-otj-text">{tag}</span>
-                    ))}
-                  </div>
+                  {r.tags && r.tags.length > 0 && (
+                    <div className="flex gap-1.5 flex-wrap">
+                      {r.tags.map(tag => (
+                        <span key={tag} className="text-[10px] font-semibold px-2 py-[3px] rounded-full bg-otj-off border border-border text-otj-text">{tag}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             })}
