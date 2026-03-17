@@ -73,7 +73,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
       style={{ fontFamily: "'Neue Haas Grotesk Display Pro','NeueHaasDisplay','Helvetica Neue',Helvetica,Arial,sans-serif" }}
     >
       {/* ── Inset image ─────────────────────────────────────────────── */}
-      <div className="p-[7px] pb-0 relative">
+      <div className="relative">
         <ImageCarousel bg={c.bg} emoji={c.emoji} />
 
         {/* Availability — frosted badge top-left */}
