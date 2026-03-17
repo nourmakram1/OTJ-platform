@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { showToast } from './Toast';
 import { useProjects } from '../context/ProjectContext';
+import { MessageCircle, CreditCard, Calendar, FileText, CheckCircle, Paperclip, X as XIcon } from 'lucide-react';
+
+const notifIconMap: Record<string, React.ReactNode> = {
+  message: <MessageCircle className="w-4 h-4" />,
+  payment: <CreditCard className="w-4 h-4" />,
+  booking: <Calendar className="w-4 h-4" />,
+  brief: <FileText className="w-4 h-4" />,
+  'counter-accepted': <CheckCircle className="w-4 h-4" />,
+};
 
 // Quick Brief Popup
 interface QuickBriefPopupProps {
@@ -10,14 +19,15 @@ interface QuickBriefPopupProps {
 }
 
 const creativeData: Record<string, { av: string; name: string; role: string; rating: string }> = {
-  nour: { av: '👩‍🎨', name: 'Nour Makram', role: 'Fashion Photographer · Cairo', rating: '⭐ 4.9 · 127 jobs · Available' },
-  karim: { av: '✏️', name: 'Karim Samy', role: 'Script Writer · Cairo', rating: '⭐ 4.8 · 89 jobs · Available' },
-  sara: { av: '🎨', name: 'Sara Ahmed', role: 'Brand Designer · Cairo', rating: '⭐ 5.0 · 54 jobs · Next week' },
-  omar: { av: '🎥', name: 'Omar Hassan', role: 'Cinematographer · Cairo', rating: '⭐ 4.7 · 203 jobs · Available' },
+  nour: { av: 'NM', name: 'Nour Makram', role: 'Fashion Photographer · Cairo', rating: '4.9 · 127 jobs · Available' },
+  karim: { av: 'KS', name: 'Karim Samy', role: 'Script Writer · Cairo', rating: '4.8 · 89 jobs · Available' },
+  sara: { av: 'SA', name: 'Sara Ahmed', role: 'Brand Designer · Cairo', rating: '5.0 · 54 jobs · Next week' },
+  omar: { av: 'OH', name: 'Omar Hassan', role: 'Cinematographer · Cairo', rating: '4.7 · 203 jobs · Available' },
 };
 
 export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClose, creativeId }) => {
   const [step, setStep] = useState(1);
+  const [projectType, setProjectType] = useState('');
   const [budgetType, setBudgetType] = useState<'price' | 'range' | 'negotiate'>('price');
   const [budgetMin, setBudgetMin] = useState('');
   const [budgetMax, setBudgetMax] = useState('');
@@ -32,7 +42,7 @@ export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClo
     'Where will the content be used? (Social, print, ads…)',
   ];
 
-  const c = creativeId && creativeData[creativeId] ? creativeData[creativeId] : { av: '👥', name: 'New Brief', role: 'Select creatives below', rating: '' };
+  const c = creativeId && creativeData[creativeId] ? creativeData[creativeId] : { av: 'NB', name: 'New Brief', role: 'Select creatives below', rating: '' };
 
   const inputClass = "w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-card text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card placeholder:text-otj-muted";
   const labelClass = "text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-[5px]";
@@ -40,6 +50,8 @@ export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClo
   const handleClose = () => {
     onClose();
     setStep(1);
+    setProjectType('');
+    setSurveyAnswers(['', '', '', '', '']);
   };
 
   return (
@@ -47,7 +59,7 @@ export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClo
       <div className={`bg-card border border-border rounded-2xl md:rounded-3xl shadow-[0_32px_80px_rgba(0,0,0,0.18)] w-full max-w-[520px] overflow-hidden transition-all duration-300 max-h-[85vh] overflow-y-auto ${visible ? 'translate-y-0 scale-100' : 'translate-y-4 scale-[0.98]'}`}>
         {/* Header */}
         <div className="p-4 md:p-5 px-4 md:px-[22px] pb-3 flex items-center gap-2.5 md:gap-3 border-b border-border">
-          <div className="w-10 h-10 md:w-[52px] md:h-[52px] rounded-xl md:rounded-[14px] bg-otj-off flex items-center justify-center text-xl md:text-[28px] shrink-0">{c.av}</div>
+          <div className="w-10 h-10 md:w-[52px] md:h-[52px] rounded-xl md:rounded-[14px] bg-otj-off flex items-center justify-center shrink-0"><span className="text-[13px] md:text-[16px] font-extrabold text-muted-foreground">{c.av}</span></div>
           <div className="flex-1 min-w-0">
             <div className="text-sm md:text-base font-extrabold tracking-[-0.03em] text-foreground truncate">{c.name}</div>
             <div className="text-[11px] md:text-xs text-otj-text truncate">{c.role}</div>
@@ -68,8 +80,19 @@ export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClo
               </div>
 
               <div>
+                <div className={labelClass}>Project Type</div>
+                <input
+                  type="text"
+                  value={projectType}
+                  onChange={e => setProjectType(e.target.value)}
+                  placeholder="e.g. Full Day Campaign Shoot, Brand Photography…"
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
                 <div className={labelClass}>Description</div>
-                <textarea rows={3} placeholder="Describe your project — mood, deliverables, references…" className={`${inputClass} resize-none leading-relaxed`} />
+                <textarea rows={2} placeholder="Describe your project — mood, deliverables, references…" className={`${inputClass} resize-none leading-relaxed`} />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
@@ -115,7 +138,7 @@ export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClo
                 )}
                 {budgetType === 'negotiate' && (
                   <div className="text-[11px] md:text-xs text-otj-text bg-otj-off rounded-lg md:rounded-[10px] p-2.5 md:p-3 text-center border border-border">
-                    💬 You'll discuss pricing with the creative
+                    You'll discuss pricing with the creative
                   </div>
                 )}
               </div>
@@ -129,43 +152,61 @@ export const QuickBriefPopup: React.FC<QuickBriefPopupProps> = ({ visible, onClo
           </>
         )}
 
-        {step === 2 && (
-          <>
-            {/* Step 2: Survey Questions */}
-            <div className="px-4 md:px-[22px] py-3 md:py-4 pb-4 md:pb-5 flex flex-col gap-2.5 md:gap-3">
-              <div className="text-[12px] md:text-[13px] font-bold tracking-[-0.02em] text-foreground pb-2 md:pb-2.5 border-b border-border flex items-center gap-2 flex-wrap">
-                📋 Brief Questions <span className="text-[10px] md:text-[11px] font-medium text-otj-text">— answer for creative</span>
-              </div>
-              {surveyQuestions.map((q, i) => (
-                <div key={i}>
-                  <div className="flex items-start gap-2 mb-1.5">
-                    <div className="w-5 h-5 md:w-[22px] md:h-[22px] rounded-md bg-otj-off border border-border flex items-center justify-center text-[9px] md:text-[10px] font-bold text-otj-muted shrink-0 mt-0.5">{i + 1}</div>
-                    <div className="text-[11px] md:text-[12.5px] font-semibold text-foreground leading-snug">{q}</div>
-                  </div>
-                  <textarea
-                    rows={2}
-                    value={surveyAnswers[i]}
-                    onChange={e => { const next = [...surveyAnswers]; next[i] = e.target.value; setSurveyAnswers(next); }}
-                    placeholder="Type your answer…"
-                    className={`${inputClass} resize-none leading-relaxed text-[12px] md:text-[13.5px]`}
-                  />
+        {step === 2 && (() => {
+          const answered = surveyAnswers.filter(Boolean).length;
+          return (
+            <>
+              {/* Step 2 header */}
+              <div className="px-4 md:px-[22px] pt-4 pb-3 border-b border-border flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-[13px] font-extrabold tracking-[-0.03em]">Brief Questions</div>
+                  <div className="text-[11px] text-otj-muted mt-[2px]">Answer so the creative understands your project</div>
                 </div>
-              ))}
-            </div>
-
-            <div className="px-4 md:px-[22px] pb-4 md:pb-5 flex flex-col gap-2">
-              <div className="flex gap-2">
-                <button onClick={() => setStep(1)} className="flex-1 py-2.5 md:py-3 rounded-full border-[1.5px] border-border bg-card text-otj-text text-[12px] md:text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">
-                  ← Back
-                </button>
-                <button onClick={() => { handleClose(); showToast('✓ Brief sent! Creative has 2hrs to confirm'); }} className="flex-[2] py-2.5 md:py-3 rounded-full border-none bg-foreground text-card text-[12px] md:text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-1.5 md:gap-2 hover:opacity-90 group">
-                  Send Brief <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
-                </button>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {surveyQuestions.map((_, i) => (
+                    <div key={i} className={`w-[6px] h-[6px] rounded-full transition-all duration-200 ${surveyAnswers[i] ? 'bg-otj-green scale-110' : 'bg-border'}`} />
+                  ))}
+                </div>
               </div>
-              <div className="text-[10px] md:text-[11px] text-otj-muted text-center leading-relaxed">🔒 50% deposit in escrow · Creative has 2hrs to confirm</div>
-            </div>
-          </>
-        )}
+
+              {/* Questions */}
+              <div className="px-4 md:px-[22px] py-4 flex flex-col gap-5">
+                {surveyQuestions.map((q, i) => (
+                  <div key={i}>
+                    <div className="text-[12px] font-semibold text-foreground leading-snug mb-2">{q}</div>
+                    <textarea
+                      rows={2}
+                      value={surveyAnswers[i]}
+                      onChange={e => { const next = [...surveyAnswers]; next[i] = e.target.value; setSurveyAnswers(next); }}
+                      placeholder="Type your answer…"
+                      className={`${inputClass} resize-none leading-relaxed text-[13px]`}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Footer */}
+              <div className="px-4 md:px-[22px] pb-4 md:pb-5 flex flex-col gap-2.5">
+                <div className="flex gap-2">
+                  <button onClick={() => setStep(1)} className="flex-1 py-2.5 rounded-full border-[1.5px] border-border bg-card text-otj-text text-[12px] font-bold cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">
+                    ← Back
+                  </button>
+                  <button
+                    onClick={() => { handleClose(); showToast('Brief sent! Creative has 2hrs to confirm'); }}
+                    className="flex-[2] py-2.5 rounded-full border-none bg-foreground text-card text-[12px] font-bold cursor-pointer transition-all duration-150 flex items-center justify-center gap-1.5 hover:opacity-90 group active:scale-[0.98]"
+                  >
+                    Send Brief
+                    <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
+                  </button>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-[10px] text-otj-muted">
+                  <span className="w-[5px] h-[5px] rounded-full bg-otj-green shrink-0" />
+                  50% deposit held in escrow · Creative confirms within 2hrs
+                </div>
+              </div>
+            </>
+          );
+        })()}
       </div>
     </div>
   );
@@ -239,7 +280,7 @@ export const NotifPopup: React.FC<NotifPopupProps> = ({ visible, onClose, onAcce
       {/* Featured brief request */}
       {briefNotif && (
         <div className="p-3 md:p-3.5 px-3.5 md:px-4 bg-[hsl(var(--otj-yellow-bg))] border-[1.5px] border-[hsl(var(--otj-yellow-border))] rounded-xl mx-2 md:mx-2.5 my-2">
-          <div className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.08em] text-[hsl(var(--otj-yellow))] mb-1 md:mb-1.5">📋 New Brief · {briefNotif.time}</div>
+          <div className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.08em] text-[hsl(var(--otj-yellow))] mb-1 md:mb-1.5">New Brief · {briefNotif.time}</div>
           <div className="text-[13px] md:text-sm font-extrabold tracking-[-0.03em] mb-1">{briefNotif.clientName} wants to book you</div>
           <div className="text-[11px] md:text-xs text-muted-foreground leading-relaxed mb-2 md:mb-2.5">{briefNotif.name} · {briefNotif.budget}</div>
           <div className="flex gap-1 md:gap-1.5">
@@ -265,7 +306,7 @@ export const NotifPopup: React.FC<NotifPopupProps> = ({ visible, onClose, onAcce
             }
           }} className="px-3.5 md:px-4 py-2 md:py-2.5 cursor-pointer transition-colors duration-150 border-b border-border last:border-b-0 hover:bg-muted">
             <div className="flex items-start gap-2 md:gap-2.5">
-              <div className={`w-8 h-8 md:w-[34px] md:h-[34px] rounded-lg md:rounded-[10px] flex items-center justify-center text-sm md:text-base shrink-0 ${n.bg}`}>{n.icon}</div>
+              <div className={`w-8 h-8 md:w-[34px] md:h-[34px] rounded-lg md:rounded-[10px] flex items-center justify-center shrink-0 ${n.bg}`}>{notifIconMap[n.type] || <FileText className="w-4 h-4" />}</div>
               <div className="flex-1 min-w-0">
                 <div className={`text-[11px] md:text-[12.5px] font-bold tracking-[-0.01em] mb-px truncate ${n.type === 'counter-accepted' ? 'text-[hsl(var(--otj-green))]' : 'text-foreground'}`}>{n.title}</div>
                 <div className="text-[10px] md:text-[11.5px] text-muted-foreground leading-snug truncate">{n.sub}</div>

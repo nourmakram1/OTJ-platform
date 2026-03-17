@@ -14,10 +14,13 @@ export interface BriefData {
   budget: string;
   deliverables: string;
   date: string;
+  location?: string;
+  description?: string;
   tags: string[];
   time: string;
   moodAesthetic: string;
   usageRights: string;
+  surveyAnswers?: string[];
   myRole?: ProjectRole;
 }
 
@@ -92,8 +95,12 @@ export interface ProjectData {
   deliverables: string;
   date: string;
   deadline: string;
+  location?: string;
+  description?: string;
+  tags?: string[];
   moodAesthetic: string;
   usageRights: string;
+  surveyAnswers?: string[];
   status: 'proposal' | 'pending-deposit' | 'active' | 'complete';
   phases: PhaseData[];
   proposalDeliverables: string[];
@@ -147,11 +154,11 @@ export interface ClientData {
   teamSize?: string;
   joinedDate: string;
   projectsCompleted: number;
-  
   avgResponseTime: string;
   paymentReliability: number; // 0-100
   verified: boolean;
   reviews: ClientReviewData[];
+  coverGrad?: string; // Tailwind gradient classes for profile hero
 }
 
 export type UserRole = 'client' | 'creative';
@@ -206,10 +213,19 @@ const defaultBriefs: BriefData[] = [
     budget: '3,500 EGP',
     deliverables: '40 edited photos (20 product, 10 lifestyle, 10 BTS)',
     date: 'Mar 15',
+    location: 'Cairo, Egypt',
+    description: 'We are launching a Ramadan-themed campaign for our seasonal snack range. Looking for a photographer who can capture both studio product shots and lifestyle moments with models. The shoot will take place over one full day at our Cairo studio.',
     tags: ['Full Day', '3,500 EGP', 'Mar 15'],
     time: '3m ago',
     moodAesthetic: 'Clean, modern, high-contrast product photography with lifestyle elements',
     usageRights: 'Social media + print ads · 12 months',
+    surveyAnswers: [
+      'Ramadan promotional campaign for Edita Group\'s seasonal snack product range — goal is to drive sales and brand awareness across Egypt.',
+      'Clean, modern, high-contrast look. Think editorial product photography with warm Ramadan tones — golden light, soft shadows, celebratory mood.',
+      'Edita snack products (BiscoMisr, Molto) alongside lifestyle scenes with 2–3 models in a home setting.',
+      '40 final edited photos: 20 hero product shots, 10 lifestyle scenes, 10 BTS behind-the-scenes.',
+      'Instagram, Facebook, out-of-home print ads, and in-store displays. Usage rights needed for 12 months.',
+    ],
     myRole: 'as-creative',
   },
   {
@@ -224,10 +240,19 @@ const defaultBriefs: BriefData[] = [
     budget: 'Negotiable',
     deliverables: '120 shots minimum — event coverage, product close-ups, speaker portraits',
     date: 'Mar 22–24',
+    location: 'Cairo, Egypt',
+    description: 'Vodafone Egypt is launching a new product line over a 3-day press and consumer event. We need a photographer who can handle both the formal press conference moments and the energetic consumer activation areas.',
     tags: ['3 Days', 'Negotiable', 'Mar 22–24'],
     time: '1h ago',
     moodAesthetic: 'Corporate but energetic, brand-aligned colors, candid + posed mix',
     usageRights: 'All platforms · Unlimited',
+    surveyAnswers: [
+      'Vodafone Egypt product launch event — 3 days covering press day, consumer activation, and influencer evening. Goal is full PR and media coverage.',
+      'Corporate but energetic. Brand-aligned reds and whites. Mix of candid candid energy shots and polished posed portraits.',
+      'New Vodafone devices and accessories, keynote speakers on stage, brand activation booths, and event attendees.',
+      '120 shots minimum — 40 per day covering event keynote, product close-ups, speaker portraits, and crowd energy.',
+      'All digital and print platforms — PR releases, social media, internal reports, and Vodafone\'s global brand library. Unlimited usage.',
+    ],
     myRole: 'as-creative',
   },
   {
@@ -242,10 +267,19 @@ const defaultBriefs: BriefData[] = [
     budget: '4,000 EGP',
     deliverables: 'Logo, brand guidelines, social media templates',
     date: 'Mar 28',
+    location: 'Cairo, Egypt',
+    description: 'I am a portrait and fashion photographer based in Cairo and need a complete brand identity that reflects my work style. I want something that stands out and feels premium but approachable.',
     tags: ['Branding', '4,000 EGP', 'Mar 28'],
     time: '25m ago',
     moodAesthetic: 'Minimalist, contemporary, bold typography',
     usageRights: 'Full ownership transfer',
+    surveyAnswers: [
+      'Complete brand identity for my photography business — Omar El-Sherif Photography. Goal is to attract high-end clients in fashion and portrait segments.',
+      'Minimalist, contemporary, bold serif or modern sans-serif typography. References: Misan Harriman, Paolo Roversi. Dark or neutral palette.',
+      'My name as the primary brand mark, supported by a secondary logomark. All brand assets for a photography business.',
+      'Primary logo, secondary logomark, brand guidelines document (10–15 pages), and 5 customizable social media post templates.',
+      'Full ownership and usage rights transferred. Will be used across website, social media, print, and all business materials.',
+    ],
     myRole: 'as-client',
   },
 ];
@@ -257,8 +291,20 @@ const defaultActiveProjects: ProjectData[] = [
     clientName: 'Randa Hatem', clientCompany: 'Edita Group',
     clientEmail: 'randa.hatem@editagroup.com', clientPhone: '+20 100 123 4567',
     projectType: 'Full Day Campaign Shoot', budget: '3,500 EGP',
-    deliverables: '40 edited photos', date: 'Mar 5', deadline: 'Mar 20',
-    moodAesthetic: '', usageRights: '',
+    deliverables: '40 edited photos (20 product, 10 lifestyle, 10 BTS)',
+    date: 'Mar 5', deadline: 'Mar 20',
+    location: 'Cairo, Egypt',
+    description: 'A full-day campaign shoot for Edita Group\'s summer product line. The focus is on creating a cohesive visual identity across product and lifestyle imagery that can be used across digital and print channels.',
+    tags: ['Photography', 'Campaign', 'Product', 'Lifestyle'],
+    moodAesthetic: 'Clean, modern, high-contrast product photography with bright natural light and minimal props. Think premium FMCG.',
+    usageRights: 'Social media + print ads · 12 months',
+    surveyAnswers: [
+      'Summer product launch campaign for Edita\'s new snack line — targeting young adults on social media.',
+      'Clean, modern, high-contrast look with bright natural light and minimal props. Think premium FMCG.',
+      '12 SKUs across 3 product variants — packaged snack products, both individual and multipack formats.',
+      '40 final edited images: 20 product hero shots, 10 lifestyle setups, 10 BTS stills.',
+      'Instagram feed, Facebook ads, and print POS materials across Egypt.',
+    ],
     status: 'active',
     proposalDeliverables: ['40 edited photos', '10 lifestyle shots', '10 BTS shots'],
     proposalPrice: '3,500 EGP',
@@ -307,8 +353,20 @@ const defaultActiveProjects: ProjectData[] = [
     clientName: 'Ahmed Karim', clientCompany: 'CIB',
     clientEmail: 'ahmed.karim@cib.com.eg', clientPhone: '+20 102 555 7890',
     projectType: 'Campaign Video', budget: '5,200 EGP',
-    deliverables: 'Campaign video assets', date: 'Mar 10', deadline: 'Mar 25',
-    moodAesthetic: '', usageRights: '',
+    deliverables: '1 hero campaign video (60s), 3 cut-downs (30s, 15s, 9s), 5 static key visuals',
+    date: 'Mar 10', deadline: 'Mar 25',
+    location: 'Cairo, Egypt',
+    description: 'CIB needs a full campaign video suite for their upcoming financial product launch. The deliverables include a hero spot and platform-optimised cut-downs for TV, digital, and social media.',
+    tags: ['Video', 'Campaign', 'Finance', 'Social Media'],
+    moodAesthetic: 'Corporate but human — warm, trustworthy tones with motion graphics overlays. Think premium banking but approachable.',
+    usageRights: 'All platforms · TV + Digital · Unlimited',
+    surveyAnswers: [
+      'Campaign launch for CIB\'s new digital banking product — goal is to drive app downloads and increase brand trust among 25–40 year olds.',
+      'Corporate but warm and human. Premium feel with motion graphics. Reference: CIB\'s existing brand palette — navy, white, gold accents.',
+      'CIB branding, app UI screens, diverse talent (professionals aged 25–45), and urban Cairo lifestyle settings.',
+      '1 hero video (60s), 3 cut-downs (30s/15s/9s for social), and 5 static key visuals adapted from video frames.',
+      'TV broadcast, YouTube pre-roll, Instagram & TikTok ads, digital out-of-home screens, and internal communications.',
+    ],
     status: 'active',
     proposalDeliverables: ['Campaign video assets'],
     proposalPrice: '5,200 EGP',
@@ -337,8 +395,20 @@ const defaultActiveProjects: ProjectData[] = [
     clientName: 'Tarek Saad', clientCompany: 'Vodafone',
     clientEmail: 'tarek.saad@vodafone.eg', clientPhone: '+20 101 987 6543',
     projectType: 'Brand Photography', budget: '4,800 EGP',
-    deliverables: 'Brand refresh photos', date: 'Mar 20', deadline: 'Apr 5',
-    moodAesthetic: '', usageRights: '',
+    deliverables: '60 brand photos: team portraits, office environment, product lifestyle',
+    date: 'Mar 20', deadline: 'Apr 5',
+    location: 'Cairo, Egypt',
+    description: 'Vodafone Egypt is refreshing its brand imagery for the upcoming year. We need a photographer to capture authentic, modern portraits of our team alongside energetic workspace and product-in-use lifestyle photography.',
+    tags: ['Photography', 'Brand', 'Corporate', 'Lifestyle'],
+    moodAesthetic: 'Bold, energetic, human-centered. Vodafone red accents, bright modern office spaces, diverse talent aged 20–35.',
+    usageRights: 'All platforms · Internal + external · 24 months',
+    surveyAnswers: [
+      'Brand refresh for Vodafone Egypt — new visual identity imagery for website, social media, and internal comms for 2026.',
+      'Bold and human. Vodafone red accents throughout. Modern, energetic, diverse — capture real moments not staged poses.',
+      'Vodafone Egypt staff (20–35), office and meeting spaces, Vodafone devices and accessories in real-use scenarios.',
+      '60 final edited photos: 20 team portraits, 20 workspace environment shots, 20 product lifestyle images.',
+      'Corporate website refresh, LinkedIn, Instagram, internal presentations, and print materials for retail stores across Egypt.',
+    ],
     status: 'active',
     proposalDeliverables: ['Brand refresh photos'],
     proposalPrice: '4,800 EGP',
@@ -365,8 +435,20 @@ const defaultActiveProjects: ProjectData[] = [
     clientName: 'Yara Mansour', clientCompany: 'Freelance',
     clientEmail: 'yara.mansour@gmail.com', clientPhone: '+20 112 345 6789',
     projectType: 'UI/UX Design', budget: '6,000 EGP',
-    deliverables: 'Full portfolio website redesign', date: 'Mar 8', deadline: 'Apr 1',
-    moodAesthetic: '', usageRights: '',
+    deliverables: 'Full portfolio website redesign — desktop + mobile, up to 8 pages, design handoff file',
+    date: 'Mar 8', deadline: 'Apr 1',
+    location: 'Cairo, Egypt',
+    description: 'Yara is a fashion and portrait photographer looking to redesign her online portfolio. She needs a clean, editorial-style website that showcases her work and converts visitors into clients.',
+    tags: ['UI/UX', 'Design', 'Portfolio', 'Web'],
+    moodAesthetic: 'Minimal editorial — large imagery, generous whitespace, refined typography. References: Tim Walker, Petra Collins portfolio sites.',
+    usageRights: 'Full ownership transfer to client',
+    surveyAnswers: [
+      'Redesign my photography portfolio website to attract high-end fashion and portrait clients in Cairo and internationally.',
+      'Minimal editorial — think luxury fashion magazine online. Large full-bleed images, minimal text, elegant serif typography, mostly black and white with occasional color pops.',
+      'My photography portfolio — fashion, portrait, and editorial work. Approximately 80 images across 5 gallery series.',
+      'Full website design: home, about, portfolio galleries (x3), services/rates page, contact — desktop and mobile responsive. Plus Figma handoff file.',
+      'Primary use is my public website (yaramsour.com). Will also share on Instagram bio and LinkedIn. No print usage needed.',
+    ],
     status: 'active',
     proposalDeliverables: ['Portfolio website redesign', 'Mobile responsive design'],
     proposalPrice: '6,000 EGP',
@@ -407,9 +489,9 @@ export const useProjects = () => {
 };
 
 const defaultNotifications: NotificationData[] = [
-  { id: 'notif-1', icon: '💬', bg: 'bg-muted', title: 'Ahmed Karim sent you a message', sub: 'Can we schedule a call for Thursday?', time: '12m ago', unread: true, type: 'message' },
-  { id: 'notif-2', icon: '💳', bg: 'bg-[hsl(var(--otj-green-bg))]', title: 'Payment released — 3,325 EGP', sub: 'Edita Campaign · Phase 2 approved by client', time: '2h ago', unread: true, type: 'payment' },
-  { id: 'notif-3', icon: '📅', bg: 'bg-[hsl(var(--otj-blue-bg))]', title: 'Booking confirmed · March 15', sub: 'Edita Group campaign — added to your calendar', time: 'Yesterday', unread: false, type: 'booking' },
+  { id: 'notif-1', icon: '', bg: 'bg-muted', title: 'Ahmed Karim sent you a message', sub: 'Can we schedule a call for Thursday?', time: '12m ago', unread: true, type: 'message' },
+  { id: 'notif-2', icon: '', bg: 'bg-[hsl(var(--otj-green-bg))]', title: 'Payment released — 3,325 EGP', sub: 'Edita Campaign · Phase 2 approved by client', time: '2h ago', unread: true, type: 'payment' },
+  { id: 'notif-3', icon: '', bg: 'bg-[hsl(var(--otj-blue-bg))]', title: 'Booking confirmed · March 15', sub: 'Edita Group campaign — added to your calendar', time: 'Yesterday', unread: false, type: 'booking' },
 ];
 
 const defaultClients: ClientData[] = [
@@ -432,6 +514,7 @@ const defaultClients: ClientData[] = [
     avgResponseTime: '< 2 hours',
     paymentReliability: 96,
     verified: true,
+    coverGrad: 'from-[#c8452a] via-[#e8703a] to-[#f5a623]',
     reviews: [
       { id: 'cr-1', creativeAvatar: '🎥', creativeName: 'Omar Hassan', rating: 5, comment: 'Randa is an amazing client to work with. Clear briefs, fast payments, and gives great creative freedom. Highly recommend!', projectName: 'Ramadan Campaign 2025', createdAt: 'Feb 2025' },
       { id: 'cr-2', creativeAvatar: '🎨', creativeName: 'Sara Ahmed', rating: 4, comment: 'Professional and responsive. Sometimes tight deadlines but always fair on budget. Would work with again.', projectName: 'Bake Rolz Rebrand', createdAt: 'Jan 2025' },
@@ -453,6 +536,7 @@ const defaultClients: ClientData[] = [
     avgResponseTime: '< 4 hours',
     paymentReliability: 88,
     verified: true,
+    coverGrad: 'from-[#0f2027] via-[#203a43] to-[#2c5364]',
     reviews: [
       { id: 'cr-3', creativeAvatar: '📸', creativeName: 'Nour Makram', rating: 4, comment: 'Good communicator and pays on time. Briefs could be more detailed but overall a great experience.', projectName: 'Product Shoot', createdAt: 'Dec 2024' },
     ],
@@ -476,6 +560,7 @@ const defaultClients: ClientData[] = [
     avgResponseTime: '< 1 hour',
     paymentReliability: 100,
     verified: true,
+    coverGrad: 'from-[#1a1a2e] via-[#16213e] to-[#0f3460]',
     reviews: [],
   },
 ];
@@ -509,8 +594,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       deliverables: brief.deliverables,
       date: dateStr,
       deadline: brief.date,
+      location: brief.location,
+      description: brief.description,
+      tags: brief.tags,
       moodAesthetic: brief.moodAesthetic,
       usageRights: brief.usageRights,
+      surveyAnswers: brief.surveyAnswers,
       status: 'proposal',
       phases: [],
       proposalDeliverables: [],
@@ -586,7 +675,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return {
         ...p,
         meetings: [...p.meetings, newMeeting],
-        timeline: [...p.timeline, { label: `📅 ${meeting.title}`, date: meeting.date, status: 'upcoming' as const }],
+        timeline: [...p.timeline, { label: meeting.title, date: meeting.date, status: 'upcoming' as const }],
       };
     }));
   }, []);
@@ -668,7 +757,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     // Simulate client accepting the counter offer after 4 seconds
     setTimeout(() => {
       const acceptNotif: Omit<NotificationData, 'id'> = {
-        icon: '🎉',
+        icon: '',
         bg: 'bg-[hsl(var(--otj-green-bg))]',
         title: `Counter offer accepted!`,
         sub: `${clientName} accepted your counter for ${briefName} at ${budget}`,
@@ -716,7 +805,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const proj = activeProjects.find(p => p.id === projectId);
     const phaseName = proj?.phases.find(ph => ph.num === phaseNum)?.title || `Phase ${phaseNum}`;
     addNotification({
-      icon: '✅',
+      icon: '',
       bg: 'bg-[hsl(var(--otj-green-bg))]',
       title: `Phase ${phaseNum} approved`,
       sub: `${phaseName} on ${proj?.name || 'project'} has been approved`,
@@ -747,7 +836,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const numericPrice = parseInt(proj?.budget.replace(/[^0-9]/g, '') || '0') || 0;
     const amount = milestone && numericPrice > 0 ? `${Math.round(numericPrice * milestone.percentage / 100).toLocaleString()} EGP` : '';
     addNotification({
-      icon: '💳',
+      icon: '',
       bg: 'bg-[hsl(var(--otj-green-bg))]',
       title: `Payment released — ${amount}`,
       sub: `${milestone?.label || 'Milestone'} for ${proj?.name || 'project'}`,
@@ -772,7 +861,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const numericPrice = parseInt(proj?.budget.replace(/[^0-9]/g, '') || '0') || 0;
     const amount = milestone && numericPrice > 0 ? `${Math.round(numericPrice * milestone.percentage / 100).toLocaleString()} EGP` : '';
     addNotification({
-      icon: '📎',
+      icon: '',
       bg: 'bg-[hsl(var(--otj-blue-bg))]',
       title: `Payment proof uploaded — ${amount}`,
       sub: `${proj?.clientName || 'Client'} attached a bank transfer screenshot for ${milestone?.label || 'milestone'} on ${proj?.name || 'project'}. Please confirm receipt.`,
@@ -797,7 +886,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const numericPrice = parseInt(proj?.budget.replace(/[^0-9]/g, '') || '0') || 0;
     const amount = milestone && numericPrice > 0 ? `${Math.round(numericPrice * milestone.percentage / 100).toLocaleString()} EGP` : '';
     addNotification({
-      icon: '✅',
+      icon: '',
       bg: 'bg-[hsl(var(--otj-green-bg))]',
       title: `Payment confirmed — ${amount}`,
       sub: `Creative confirmed receipt of ${milestone?.label || 'milestone'} for ${proj?.name || 'project'}`,
@@ -821,7 +910,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       };
     }));
     addNotification({
-      icon: '🎉',
+      icon: '',
       bg: 'bg-[hsl(var(--otj-green-bg))]',
       title: 'Proposal accepted!',
       sub: `You accepted the proposal for ${activeProjects.find(p => p.id === projectId)?.name || 'project'}`,
@@ -843,7 +932,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       };
     }));
     addNotification({
-      icon: '❌',
+      icon: '',
       bg: 'bg-destructive/10',
       title: 'Proposal rejected',
       sub: `You rejected the proposal for ${activeProjects.find(p => p.id === projectId)?.name || 'project'}`,

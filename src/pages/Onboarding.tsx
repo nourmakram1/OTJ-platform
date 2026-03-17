@@ -63,10 +63,10 @@ const Onboarding = () => {
           <div className="text-5xl font-extrabold tracking-[-0.05em] text-foreground leading-[0.9] mb-3">PROFILE<br/>COMPLETE.</div>
           <div className="text-sm text-otj-text max-w-[400px] leading-relaxed mb-8">Your profile is built. You decide when the world can find you — go live when you're ready.</div>
           <div className="flex gap-2.5">
-            <button onClick={() => showToast('Previewing your profile…')} className="text-[13.5px] font-bold px-6 py-3 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">
+            <button onClick={() => showToast('Previewing your profile…')} className="text-[13.5px] font-bold px-6 py-3 rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground active:scale-95">
               👁 Preview Profile
             </button>
-            <button onClick={() => navigate('/booking')} className="text-sm font-bold px-8 py-[13px] rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90">
+            <button onClick={() => navigate('/booking')} className="text-sm font-bold px-8 py-[13px] rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90 active:scale-[0.98]">
               🟢 Go Live Now
             </button>
           </div>
@@ -87,7 +87,7 @@ const Onboarding = () => {
             <button
               key={s}
               onClick={() => goToStep(s)}
-              className={`shrink-0 w-8 h-8 rounded-full text-[11px] font-bold border-[1.5px] transition-all duration-150 ${
+              className={`shrink-0 w-10 h-10 rounded-full text-[11px] font-bold border-[1.5px] transition-all duration-150 ${
                 doneSteps.has(s)
                   ? 'border-otj-green bg-otj-green-bg text-otj-green'
                   : currentStep === s

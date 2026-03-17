@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Briefcase, MessageCircle, Package, Lock, FileText, Phone, Video, Users, Clock, CreditCard, Paperclip, AlertTriangle, Star, MapPin, CheckCircle2, ArrowLeft, Share2 } from 'lucide-react';
 import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
@@ -11,6 +12,14 @@ import { ReviewModal, ReviewPayload } from '../components/ReviewModal';
 import { ClientProposalReview, ClientPhaseApproval, ClientPaymentTab } from '../components/ClientProjectActions';
 
 const tabs = ['Phases & Tasks', 'Brief', 'Schedule', 'Deliverables', 'Payments'];
+
+const surveyQuestions = [
+  'What is the shoot purpose or campaign goal?',
+  'What mood or aesthetic are you going for?',
+  'What is the subject or product being shot?',
+  'How many final deliverables do you need?',
+  'Where will the content be used? (Social, print, ads…)',
+];
 
 const ProjectProfile = () => {
   const navigate = useNavigate();
@@ -44,7 +53,7 @@ const ProjectProfile = () => {
       const size = sizeKB > 1024 ? `${(sizeKB / 1024).toFixed(1)} MB` : `${Math.round(sizeKB)} KB`;
       addAttachment(id, { name: file.name, size, type: file.type, url: URL.createObjectURL(file), uploadedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), icon });
     });
-    showToast(`📎 ${files.length} file${files.length > 1 ? 's' : ''} uploaded`);
+    showToast(`${files.length} file${files.length > 1 ? 's' : ''} uploaded`);
     e.target.value = '';
   };
 
@@ -64,8 +73,18 @@ const ProjectProfile = () => {
     deliverables: '40 edited photos (20 product, 10 lifestyle, 10 BTS)',
     date: 'March 5, 2026',
     deadline: 'March 20, 2026',
+    location: 'Cairo, EG',
+    description: 'A full-day campaign shoot for Edita Group\'s summer product line. The focus is on creating a cohesive visual identity across product and lifestyle imagery that can be used across digital and print channels.',
+    tags: ['Photography', 'Campaign', 'Product', 'Lifestyle'],
     moodAesthetic: 'Clean, modern, high-contrast product photography with lifestyle elements',
     usageRights: 'Social media + print ads · 12 months',
+    surveyAnswers: [
+      'Summer product launch campaign for Edita\'s new snack line — targeting young adults on social media.',
+      'Clean, modern, high-contrast look with bright natural light and minimal props. Think premium FMCG.',
+      '12 SKUs across 3 product variants — packaged snack products, both individual and multipack formats.',
+      '40 final edited images: 20 product hero shots, 10 lifestyle setups, 10 BTS stills.',
+      'Instagram feed, Facebook ads, and print POS materials across Egypt.',
+    ],
     status: 'active' as const,
     proposalDeliverables: [] as string[],
     paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' as const }, { label: '50% On Completion', percentage: 50, status: 'held' as const }],
@@ -125,7 +144,7 @@ const ProjectProfile = () => {
 
   const handleCompleteProject = () => {
     completeProject(proj.id);
-    showToast('🎉 Project completed!');
+    showToast('Project completed!');
     setReviewType('client');
     setShowReviewModal(true);
   };
@@ -167,52 +186,51 @@ const ProjectProfile = () => {
   return (
     <>
       <NavBar />
-      {/* Hero */}
+
+      {/* ── Hero card ── */}
       <div className="bg-card border-b border-border">
         <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 pt-[72px]">
-          <div className="flex items-center gap-2 text-[12px] text-otj-text mb-4 cursor-pointer" onClick={() => navigate('/dashboard')}>
+          <div className="flex items-center gap-2 text-[12px] text-otj-text mb-4 cursor-pointer hover:text-foreground transition-colors active:opacity-70" onClick={() => navigate('/dashboard')}>
             ← Dashboard / Projects
           </div>
           <div className="flex flex-col md:flex-row md:items-start gap-4">
-            <div className="w-12 h-12 md:w-14 md:h-14 rounded-[14px] bg-otj-off flex items-center justify-center text-[24px] md:text-[28px] shrink-0">{proj.icon}</div>
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1">
                 <div className="text-[18px] md:text-[22px] font-extrabold tracking-[-0.04em] text-foreground">{proj.name}</div>
-                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${statusClass}`}>{statusLabel}</span>
+                <span className={`text-[11px] font-bold px-2.5 py-[3px] rounded-full ${statusClass}`}>{statusLabel}</span>
+                {proj.status === 'complete' && <CheckCircle2 className="w-4 h-4 text-[hsl(var(--otj-green))]" />}
               </div>
               <div className="text-[12px] md:text-[13px] text-otj-text">Client: <span className="cursor-pointer hover:underline text-foreground font-semibold" onClick={() => navigateToClient(proj.clientName)}>{proj.clientName}</span> · {proj.clientCompany}</div>
             </div>
-            {!isProposal && proj.status !== 'complete' && (
-              <div className="flex gap-2 shrink-0 flex-wrap">
-                <button onClick={() => navigate('/messages')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">💬 Message</button>
-                {isClient ? (
-                  <button onClick={() => setActiveTab(0)} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">📦 Review Deliverables</button>
+            <div className="flex gap-2 shrink-0 flex-wrap mt-3 md:mt-0">
+              <button onClick={() => navigate('/messages')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off active:scale-[0.98] flex items-center gap-1.5"><MessageCircle className="w-3.5 h-3.5" /> Message</button>
+              {!isProposal && proj.status !== 'complete' && (
+                isClient ? (
+                  <button onClick={() => setActiveTab(0)} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off active:scale-[0.98] flex items-center gap-1.5"><Package className="w-3.5 h-3.5" /> Review Deliverables</button>
                 ) : (
                   <>
-                    <button onClick={() => showToast('Opening deliverables…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">📦 Deliverables</button>
-                    <button onClick={handleCompleteProject} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90">✓ Complete Project</button>
+                    <button onClick={() => showToast('Opening deliverables…')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off active:scale-[0.98] flex items-center gap-1.5"><Package className="w-3.5 h-3.5" /> Deliverables</button>
+                    <button onClick={handleCompleteProject} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90 active:scale-[0.98]">✓ Complete Project</button>
                   </>
-                )}
-              </div>
-            )}
-            {proj.status === 'complete' && (
-              <div className="flex gap-2 shrink-0 flex-wrap">
-                <button onClick={() => { setReviewType('client'); setShowReviewModal(true); }} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off">⭐ Leave Review</button>
-              </div>
-            )}
+                )
+              )}
+              {proj.status === 'complete' && (
+                <button onClick={() => { setReviewType('client'); setShowReviewModal(true); }} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-transparent text-foreground cursor-pointer transition-all duration-150 hover:bg-otj-off active:scale-[0.98] flex items-center gap-1.5"><Star className="w-3.5 h-3.5" /> Leave Review</button>
+              )}
+            </div>
           </div>
           {!isProposal && (
             <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mt-5 pt-4 border-t border-border">
               {[
-                { label: '% Complete', val: `${pctComplete}%` },
-                { label: 'Days Left', val: String(daysLeft) },
+                { label: '% Complete', val: proj.status === 'complete' ? '100%' : `${pctComplete}%`, green: proj.status === 'complete' },
+                { label: 'Days Left', val: proj.status === 'complete' ? 'Done ✓' : String(daysLeft), green: proj.status === 'complete' },
                 { label: 'Brief Status', val: 'Approved ✓' },
-                { label: 'Phase', val: `${currentPhase?.num || 1} of ${phaseTotal}` },
+                { label: 'Phase', val: `${currentPhase?.num || phaseTotal} of ${phaseTotal}` },
                 { label: 'Total Value', val: proj.budget },
               ].map((s, i) => (
                 <div key={i}>
                   <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-0.5">{s.label}</div>
-                  <div className="text-[14px] font-extrabold tracking-[-0.02em] text-foreground">{s.val}</div>
+                  <div className={`text-[14px] font-extrabold tracking-[-0.02em] ${'green' in s && s.green ? 'text-[hsl(var(--otj-green))]' : 'text-foreground'}`}>{s.val}</div>
                 </div>
               ))}
             </div>
@@ -227,7 +245,7 @@ const ProjectProfile = () => {
             <ClientProposalReview project={proj} />
           ) : isClient ? (
             <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-6 text-center">
-              <div className="text-2xl mb-2">📝</div>
+              <div className="w-10 h-10 rounded-full bg-otj-blue/20 flex items-center justify-center mx-auto mb-2"><FileText className="w-5 h-5 text-otj-blue" /></div>
               <div className="text-[14px] font-bold text-otj-blue mb-1">Waiting for Creative's Proposal</div>
               <div className="text-[12px] text-otj-text">The creative is preparing their proposal. You'll be notified when it's ready for review.</div>
             </div>
@@ -238,10 +256,10 @@ const ProjectProfile = () => {
       ) : (
         <>
           {/* Tab bar */}
-          <div className="border-b border-border bg-card sticky top-[52px] z-10">
+          <div className="border-b border-border bg-card sticky top-[52px] z-[50]">
             <div className="max-w-[1100px] mx-auto px-4 md:px-8 flex gap-1 overflow-x-auto hide-scrollbar py-2">
               {tabs.map((t, i) => (
-                <button key={t} onClick={() => setActiveTab(i)} className={`text-[12.5px] font-semibold px-4 py-[7px] rounded-full border-[1.5px] cursor-pointer whitespace-nowrap transition-all duration-150 shrink-0 ${
+                <button key={t} onClick={() => setActiveTab(i)} className={`text-[12.5px] font-semibold px-4 py-[7px] rounded-full border-[1.5px] cursor-pointer whitespace-nowrap shrink-0 transition-all duration-150 ${
                   activeTab === i ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground'
                 }`}>{t}</button>
               ))}
@@ -264,7 +282,7 @@ const ProjectProfile = () => {
                       : p.status === 'active'
                         ? 'bg-otj-blue-bg text-otj-blue'
                         : 'bg-otj-off text-otj-muted';
-                    const phaseStatusLabel = p.status === 'complete' ? '✓ Complete' : p.status === 'active' ? '● In Progress' : '🔒 Locked';
+                    const phaseStatusLabel = p.status === 'complete' ? '✓ Complete' : p.status === 'active' ? '● In Progress' : 'Locked';
 
                     return (
                       <div key={p.num} className={`bg-card border-[1.5px] ${borderColor} rounded-[14px] overflow-hidden transition-all duration-200`}>
@@ -277,7 +295,7 @@ const ProjectProfile = () => {
                           <div className="flex-1">
                             <div className="text-[13.5px] font-extrabold tracking-[-0.02em]">Phase {p.num} — {p.title}</div>
                           </div>
-                          <span className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full ${statusBadge}`}>{phaseStatusLabel}</span>
+                          <span className={`text-[11px] font-bold px-2.5 py-[3px] rounded-full ${statusBadge}`}>{phaseStatusLabel}</span>
                           {p.status !== 'locked' && <span className="text-otj-muted text-sm">{isExpanded ? '▾' : '▸'}</span>}
                         </div>
                         {isExpanded && p.status !== 'locked' && (
@@ -287,7 +305,7 @@ const ProjectProfile = () => {
                                 <div className={`w-[18px] h-[18px] rounded shrink-0 flex items-center justify-center ${task.done ? 'bg-otj-green' : 'border-[1.5px] border-border'}`}>
                                   {task.done && <span className="text-primary-foreground text-[10px]">✓</span>}
                                 </div>
-                                <div className={`flex-1 text-[13px] font-medium ${task.done ? 'text-otj-muted line-through' : 'text-foreground'}`}>{task.text}</div>
+                                <div className={`flex-1 min-w-0 break-words text-[13px] font-medium ${task.done ? 'text-otj-muted line-through' : 'text-foreground'}`}>{task.text}</div>
                                 <div className="text-[11px] text-otj-muted">{task.due}</div>
                               </div>
                             ))}
@@ -295,7 +313,7 @@ const ProjectProfile = () => {
                         )}
                         {p.status === 'locked' && (
                           <div className="px-4 pb-3.5 border-t border-border pt-3">
-                            <div className="text-[12px] text-otj-muted bg-otj-off rounded-lg p-2.5 px-3">⚠️ Milestone Gate — Client must approve Phase {p.num - 1} before this unlocks</div>
+                            <div className="text-[12px] text-otj-muted bg-otj-off rounded-lg p-2.5 px-3 flex items-center gap-2"><AlertTriangle className="w-3.5 h-3.5 shrink-0" /> Milestone Gate — Client must approve Phase {p.num - 1} before this unlocks</div>
                           </div>
                         )}
                       </div>
@@ -305,119 +323,190 @@ const ProjectProfile = () => {
               )}
 
               {activeTab === 1 && (
-                <div className="animate-fade-up flex flex-col gap-5">
-                  {/* Brief Header */}
-                  <div>
-                    <div className="text-lg font-extrabold tracking-[-0.04em] mb-1">Brief Details</div>
-                    <div className="text-[12px] text-otj-muted">Submitted {proj.createdAt}</div>
-                  </div>
+                <div className="animate-fade-up flex flex-col gap-4">
 
-                  {/* Client Information */}
-                  <div className="bg-card border border-border rounded-[14px] p-4">
-                    <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">👤 Client Information</div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div>
-                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Client Name</div>
-                        <div className="text-[13px] font-semibold text-foreground cursor-pointer hover:underline" onClick={() => navigateToClient(proj.clientName)}>{proj.clientName}</div>
+                  {/* ── Brief overview card (mirrors BriefProfile hero) ── */}
+                  <div className="bg-card border border-border rounded-[14px] overflow-hidden">
+
+                    {/* Header: title + badge + date */}
+                    <div className="px-5 pt-5 pb-4">
+                      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 mb-2">
+                        <h2 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.04em] text-foreground leading-tight">{proj.name}</h2>
+                        {proj.status === 'active' && (
+                          <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border shrink-0 self-center">Active</span>
+                        )}
+                        {proj.status === 'complete' && (
+                          <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border shrink-0 self-center">Completed</span>
+                        )}
+                        {proj.status === 'pending-deposit' && (
+                          <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-yellow-bg text-otj-yellow border border-otj-yellow-border shrink-0 self-center">Awaiting Deposit</span>
+                        )}
+                        {proj.status === 'proposal' && (
+                          <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-blue-bg text-otj-blue border border-otj-blue-border shrink-0 self-center">Proposal Pending</span>
+                        )}
+                        <span className="text-[11px] text-otj-muted self-center">Submitted {proj.createdAt}</span>
                       </div>
-                      <div>
-                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Company</div>
-                        <div className="text-[13px] font-semibold text-foreground">{proj.clientCompany}</div>
+
+                      {/* Client + location */}
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-otj-text mb-3.5">
+                        <span>
+                          <span
+                            className="font-semibold text-foreground cursor-pointer hover:underline"
+                            onClick={() => navigateToClient(proj.clientName)}
+                          >{proj.clientName}</span>
+                          {proj.clientCompany && <span> · {proj.clientCompany}</span>}
+                        </span>
+                        {proj.location && (
+                          <span className="flex items-center gap-1 text-otj-muted">
+                            <MapPin size={11} strokeWidth={2} />
+                            {proj.location}
+                          </span>
+                        )}
                       </div>
-                      {(proj.status === 'active' || proj.status === 'complete') ? (
-                        <>
-                          <div>
-                            <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Email</div>
-                            <div className="text-[13px] font-semibold text-foreground">{proj.clientEmail}</div>
-                          </div>
-                          <div>
-                            <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Phone</div>
-                            <div className="text-[13px] font-semibold text-foreground">{proj.clientPhone}</div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div>
-                            <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Email</div>
-                            <div className="text-[12px] text-muted-foreground italic">Available after budget is finalized</div>
-                          </div>
-                          <div>
-                            <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Phone</div>
-                            <div className="text-[12px] text-muted-foreground italic">Available after budget is finalized</div>
-                          </div>
-                        </>
+
+                      {/* Tags */}
+                      {proj.tags && proj.tags.length > 0 && (
+                        <div className="flex gap-1.5 flex-wrap">
+                          {proj.tags.map((t, j) => (
+                            <span key={j} className="text-[11px] font-semibold px-2.5 py-[3px] rounded-full bg-otj-off border border-border text-otj-text">{t}</span>
+                          ))}
+                        </div>
                       )}
                     </div>
+
+                    {/* Stats strip inside card */}
+                    <div className="border-t border-border px-5 py-4 bg-otj-off">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        {[
+                          { label: 'Budget',       value: proj.budget },
+                          { label: 'Deadline',     value: proj.deadline },
+                          { label: 'Project Type', value: proj.projectType },
+                          { label: 'Usage Rights', value: proj.usageRights || '—' },
+                        ].map((s) => (
+                          <div key={s.label} className="bg-card border border-border rounded-[12px] px-3.5 py-2.5">
+                            <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-0.5">{s.label}</div>
+                            <div className="text-[13px] font-extrabold tracking-[-0.02em] text-foreground leading-snug">{s.value}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Project Overview */}
-                  <div className="bg-card border border-border rounded-[14px] p-4">
-                    <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">📋 Project Overview</div>
-                    <div className="flex flex-col gap-3">
-                      <div>
-                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Project Type</div>
-                        <div className="text-[13px] text-foreground">{proj.projectType}</div>
+                  {/* ── Project Description ── */}
+                  {(proj.description || proj.moodAesthetic) && (
+                    <div className="bg-card border border-border rounded-[14px] overflow-hidden">
+                      <div className="px-5 py-3 border-b border-border">
+                        <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-otj-muted">Project Description</div>
                       </div>
-                      <div>
-                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Description</div>
-                        <div className="text-[13px] text-foreground leading-relaxed">
-                          {proj.name} project for {proj.clientCompany}. This involves creating high-quality deliverables that align with the client's brand vision and marketing objectives.
+                      <div className="px-5 py-4 flex flex-col gap-4">
+                        {proj.description && (
+                          <p className="text-[14px] text-foreground leading-[1.7] tracking-[-0.01em]">{proj.description}</p>
+                        )}
+                        {proj.moodAesthetic && (
+                          <div>
+                            <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1">Mood & Aesthetic</div>
+                            <p className="text-[13px] text-foreground leading-relaxed">{proj.moodAesthetic}</p>
+                          </div>
+                        )}
+                        {proj.deliverables && (
+                          <div>
+                            <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1">Deliverables</div>
+                            <p className="text-[13px] text-foreground leading-relaxed">{proj.deliverables}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── Brief Survey ── */}
+                  {proj.surveyAnswers && proj.surveyAnswers.length > 0 && (() => {
+                    const answered = proj.surveyAnswers!.filter(Boolean).length;
+                    return (
+                      <div className="bg-card border border-border rounded-[14px] overflow-hidden">
+                        <div className="px-5 py-4 border-b border-border flex items-center justify-between gap-3">
+                          <div>
+                            <div className="text-[13px] font-extrabold tracking-[-0.03em]">Brief Survey</div>
+                            <div className="text-[11px] text-otj-muted mt-[2px]">{answered} of {surveyQuestions.length} questions answered</div>
+                          </div>
+                          <span className={`text-[11px] font-bold px-2.5 py-[3px] rounded-full border shrink-0 ${
+                            answered === surveyQuestions.length
+                              ? 'bg-otj-green-bg text-otj-green border-otj-green-border'
+                              : 'bg-otj-yellow-bg text-otj-yellow border-otj-yellow-border'
+                          }`}>
+                            {answered === surveyQuestions.length ? 'Complete' : `${answered}/${surveyQuestions.length}`}
+                          </span>
+                        </div>
+                        <div className="divide-y divide-border">
+                          {surveyQuestions.map((q, i) => {
+                            const answer = proj.surveyAnswers?.[i];
+                            return (
+                              <div key={i} className="px-5 py-4">
+                                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">{q}</div>
+                                {answer ? (
+                                  <p className="text-[14px] text-foreground leading-[1.75] tracking-[-0.015em]">{answer}</p>
+                                ) : (
+                                  <div className="flex items-center gap-1.5">
+                                    <div className="h-[3px] w-5 rounded-full bg-border" />
+                                    <span className="text-[12px] text-otj-muted italic">Not answered</span>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
-                    </div>
-                  </div>
+                    );
+                  })()}
 
-                  {/* Creative Requirements */}
-                  <div className="bg-card border border-border rounded-[14px] p-4">
-                    <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">🎨 Creative Requirements</div>
-                    <div className="flex flex-col gap-3">
-                      <div>
-                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Mood & Aesthetic</div>
-                        <div className="text-[13px] text-foreground">{proj.moodAesthetic || 'Not specified'}</div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Deliverables</div>
-                        <div className="text-[13px] text-foreground">{proj.deliverables}</div>
-                      </div>
-                      <div>
-                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Usage Rights</div>
-                        <div className="text-[13px] text-foreground">{proj.usageRights || 'Not specified'}</div>
-                      </div>
+                  {/* ── Client ── */}
+                  <div className="bg-card border border-border rounded-[14px] overflow-hidden">
+                    <div className="px-5 py-3 border-b border-border">
+                      <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-otj-muted">Client</div>
                     </div>
-                  </div>
-
-                  {/* Timeline & Budget */}
-                  <div className="bg-card border border-border rounded-[14px] p-4">
-                    <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">📅 Timeline & Budget</div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="p-5 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-4">
                       <div>
-                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Shoot / Start Date</div>
-                        <div className="text-[13px] font-semibold text-foreground">{proj.date}</div>
+                        <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1">Name</div>
+                        <div
+                          className="text-[13px] font-semibold text-foreground cursor-pointer hover:underline"
+                          onClick={() => navigateToClient(proj.clientName)}
+                        >{proj.clientName}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Final Deadline</div>
-                        <div className="text-[13px] font-semibold text-foreground">{proj.deadline}</div>
+                        <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1">Company</div>
+                        <div className="text-[13px] font-semibold text-foreground">{proj.clientCompany}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Proposed Budget</div>
-                        <div className="text-[13px] font-extrabold text-otj-green">{proj.budget}</div>
+                        <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1">Email</div>
+                        {(proj.status === 'active' || proj.status === 'complete')
+                          ? <div className="text-[13px] font-semibold text-foreground">{proj.clientEmail}</div>
+                          : <div className="flex items-center gap-1 text-[12px] text-otj-muted"><Lock className="w-3 h-3" /> Unlocked on accept</div>
+                        }
+                      </div>
+                      <div>
+                        <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1">Phone</div>
+                        {(proj.status === 'active' || proj.status === 'complete')
+                          ? <div className="text-[13px] font-semibold text-foreground">{proj.clientPhone}</div>
+                          : <div className="flex items-center gap-1 text-[12px] text-otj-muted"><Lock className="w-3 h-3" /> Unlocked on accept</div>
+                        }
                       </div>
                     </div>
                   </div>
 
-                  {/* Reference Materials (if attachments exist) */}
+                  {/* ── Reference Materials ── */}
                   {proj.attachments && proj.attachments.length > 0 && (
-                    <div className="bg-card border border-border rounded-[14px] p-4">
-                      <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">📎 Reference Materials</div>
-                      <div className="flex flex-wrap gap-2">
+                    <div className="bg-card border border-border rounded-[14px] overflow-hidden">
+                      <div className="px-5 py-3 border-b border-border">
+                        <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-otj-muted">Reference Materials</div>
+                      </div>
+                      <div className="px-5 py-4 flex flex-wrap gap-2">
                         {proj.attachments.slice(0, 4).map((att) => (
-                          <div key={att.id} className="flex items-center gap-2 bg-otj-off rounded-lg px-3 py-2 text-[12px]">
-                            <span>{att.icon}</span>
+                          <div key={att.id} className="flex items-center gap-2 bg-otj-off border border-border rounded-[10px] px-3 py-2 text-[12px]">
+                            <Paperclip className="w-3.5 h-3.5 text-otj-muted" />
                             <span className="font-medium truncate max-w-[120px]">{att.name}</span>
                           </div>
                         ))}
                         {proj.attachments.length > 4 && (
-                          <div className="flex items-center gap-2 bg-otj-off rounded-lg px-3 py-2 text-[12px] text-otj-muted">
+                          <div className="flex items-center gap-2 bg-otj-off border border-border rounded-[10px] px-3 py-2 text-[12px] text-otj-muted">
                             +{proj.attachments.length - 4} more
                           </div>
                         )}
@@ -425,42 +514,14 @@ const ProjectProfile = () => {
                     </div>
                   )}
 
-                  {/* Status Banner */}
-                  {proj.status !== 'pending-deposit' && proj.status !== 'proposal' && (
-                    <div className="bg-otj-green-bg border border-otj-green-border rounded-[14px] p-4 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-otj-green flex items-center justify-center text-primary-foreground text-lg">✓</div>
-                      <div>
-                        <div className="text-[13px] font-bold text-otj-green">Brief Approved</div>
-                        <div className="text-[11px] text-otj-green/80">Client has approved this brief and the project is active</div>
-                      </div>
-                    </div>
-                  )}
-                  {proj.status === 'pending-deposit' && (
-                    <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[14px] p-4 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-otj-yellow flex items-center justify-center text-primary-foreground text-lg">⏳</div>
-                      <div>
-                        <div className="text-[13px] font-bold text-otj-yellow">Awaiting Deposit</div>
-                        <div className="text-[11px] text-otj-yellow/80">Client must pay 50% deposit before the project can begin</div>
-                      </div>
-                    </div>
-                  )}
-                  {proj.status === 'proposal' && (
-                    <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-otj-blue flex items-center justify-center text-primary-foreground text-lg">📝</div>
-                      <div>
-                        <div className="text-[13px] font-bold text-otj-blue">Pending Your Proposal</div>
-                        <div className="text-[11px] text-otj-blue/80">Review this brief and submit your proposal with phases, tasks, and pricing</div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
 
               {activeTab === 2 && (
                 <div className="animate-fade-up">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="text-lg font-extrabold tracking-[-0.04em]">📅 Schedule</div>
-                    <button onClick={() => showToast('Schedule a meeting from Messages')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-card cursor-pointer hover:border-foreground">+ Add Meeting</button>
+                    <div className="text-lg font-extrabold tracking-[-0.04em]">Schedule</div>
+                    <button onClick={() => showToast('Schedule a meeting from Messages')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border border-border bg-card cursor-pointer hover:border-foreground active:scale-[0.98]">+ Add Meeting</button>
                   </div>
 
                   {/* Meetings */}
@@ -470,8 +531,8 @@ const ProjectProfile = () => {
                       <div className="flex flex-col gap-2">
                         {proj.meetings.map((m, i) => (
                           <div key={i} className="bg-card border border-border rounded-[10px] p-3.5 px-4 flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-otj-green-bg flex items-center justify-center text-sm shrink-0">
-                              {m.type === 'call' ? '📞' : m.type === 'shoot' ? '📸' : '🤝'}
+                            <div className="w-8 h-8 rounded-lg bg-otj-green-bg flex items-center justify-center shrink-0">
+                              {m.type === 'call' ? <Phone className="w-4 h-4 text-otj-green" /> : m.type === 'shoot' ? <Video className="w-4 h-4 text-otj-green" /> : <Users className="w-4 h-4 text-otj-green" />}
                             </div>
                             <div className="flex-1">
                               <div className="text-[13px] font-bold">{m.title}</div>
@@ -523,7 +584,7 @@ const ProjectProfile = () => {
                         </div>
                       ))}
                       {proj.phases.flatMap(ph => ph.tasks.filter(t => !t.done)).length === 0 && (
-                        <div className="text-[12px] text-otj-muted text-center py-3">All tasks complete 🎉</div>
+                        <div className="text-[12px] text-otj-muted text-center py-3">All tasks complete</div>
                       )}
                     </div>
                   </div>
@@ -538,7 +599,7 @@ const ProjectProfile = () => {
                       <div className="flex flex-col gap-2">
                         {proj.proposalDeliverables.map((d, i) => (
                           <div key={i} className="bg-card border border-border rounded-[10px] p-3.5 px-4 flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-otj-off flex items-center justify-center text-sm">📦</div>
+                            <div className="w-8 h-8 rounded-lg bg-otj-off flex items-center justify-center"><Package className="w-4 h-4 text-otj-muted" /></div>
                             <div className="text-[13px] font-medium text-foreground flex-1">{d}</div>
                             <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-otj-off text-otj-muted">Pending</span>
                           </div>
@@ -548,13 +609,13 @@ const ProjectProfile = () => {
                   ) : (
                     <>
                       <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[14px] p-4 mb-4">
-                        <div className="text-[13px] font-bold text-otj-yellow mb-1">🔒 Deliverables Locked</div>
+                        <div className="text-[13px] font-bold text-otj-yellow mb-1 flex items-center gap-1.5"><Lock className="w-3.5 h-3.5" /> Deliverables Locked</div>
                         <div className="text-[12px] text-otj-text">Deliverables will be available after Phase 3 (Editing & Delivery) is complete and approved by the client.</div>
                       </div>
                       <div className="grid grid-cols-3 gap-2.5">
                         {['Final Product Shots', 'Lifestyle Gallery', 'BTS Content'].map((f, i) => (
                           <div key={i} className="bg-otj-off border border-border rounded-xl p-4 text-center opacity-50">
-                            <div className="text-2xl mb-2">🔒</div>
+                            <div className="flex justify-center mb-2"><Lock className="w-6 h-6 text-otj-muted" /></div>
                             <div className="text-[12px] font-bold text-otj-muted">{f}</div>
                           </div>
                         ))}
@@ -605,7 +666,7 @@ const ProjectProfile = () => {
                     </div>
                     <div className={`text-[10px] font-bold ${
                       p.status === 'complete' ? 'text-otj-green' : p.status === 'active' ? 'text-otj-blue' : 'text-otj-muted'
-                    }`}>{p.status === 'complete' ? '✓' : p.status === 'active' ? '●' : '🔒'}</div>
+                    }`}>{p.status === 'complete' ? '✓' : p.status === 'active' ? '●' : '○'}</div>
                   </div>
                 ))}
                 {proj.phases.length === 0 && (
@@ -660,10 +721,10 @@ const CreativePaymentView: React.FC<{
 
   return (
     <div className="animate-fade-up">
-      <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">💰 Payment Milestones</div>
+      <div className="text-lg font-extrabold tracking-[-0.04em] mb-4">Payment Milestones</div>
       {project.paymentMilestones.map((m, i) => {
         const amount = numericPrice > 0 ? `${Math.round(numericPrice * m.percentage / 100).toLocaleString()} EGP` : '—';
-        const statusLabel = m.status === 'paid' ? 'Received ✓' : m.status === 'proof-submitted' ? '📎 Proof Uploaded — Confirm?' : 'Awaiting Payment';
+        const statusLabel = m.status === 'paid' ? 'Received ✓' : m.status === 'proof-submitted' ? 'Proof Uploaded — Confirm?' : 'Awaiting Payment';
         const statusClass = m.status === 'paid' ? 'text-otj-green' : m.status === 'proof-submitted' ? 'text-otj-blue' : 'text-otj-muted';
 
         return (
@@ -679,7 +740,7 @@ const CreativePaymentView: React.FC<{
             {/* Show proof screenshot from client */}
             {m.status === 'proof-submitted' && m.proofUrl && (
               <div className="border-t border-border pt-3">
-                <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue mb-2">📎 Client's Transfer Proof</div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue mb-2">Client's Transfer Proof</div>
                 <div className="flex items-center gap-3 bg-otj-blue-bg border border-otj-blue-border rounded-[10px] p-3">
                   <img src={m.proofUrl} alt="Transfer proof" className="w-16 h-16 rounded-lg object-cover border border-border cursor-pointer" onClick={() => window.open(m.proofUrl, '_blank')} />
                   <div className="flex-1">
@@ -711,9 +772,9 @@ const CreativePaymentView: React.FC<{
         <div className="bg-otj-off rounded-[10px] p-3.5 px-4 mt-3">
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Your Payment Method</div>
           {project.paymentMethod.type === 'instapay' ? (
-            <div className="text-[13px] font-bold">📱 InstaPay — {project.paymentMethod.instapayHandle}</div>
+            <div className="text-[13px] font-bold">InstaPay — {project.paymentMethod.instapayHandle}</div>
           ) : (
-            <div className="text-[13px] font-bold">🏦 {project.paymentMethod.bankName} — {project.paymentMethod.accountName} · {project.paymentMethod.accountNumber}</div>
+            <div className="text-[13px] font-bold">{project.paymentMethod.bankName} — {project.paymentMethod.accountName} · {project.paymentMethod.accountNumber}</div>
           )}
         </div>
       )}

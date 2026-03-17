@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { NotifPopup } from './BookingModals';
 import { showToast } from './Toast';
-import { Search, X, Bell, MessageCircle } from 'lucide-react';
+import { Search, X, Bell, MessageCircle, User, Settings, LogOut, Menu } from 'lucide-react';
 import { useProjects } from '../context/ProjectContext';
 
 interface NavBarProps {
@@ -15,7 +15,7 @@ interface NavBarProps {
 const NotifBell = ({ onClick }: { onClick: () => void }) => {
   const { unreadCount, userRole } = useProjects();
   return (
-    <div onClick={onClick} className="relative cursor-pointer p-2 rounded-lg transition-all duration-150 hover:bg-muted">
+    <div onClick={onClick} className="relative cursor-pointer p-2 rounded-lg transition-all duration-150 hover:bg-muted active:scale-95">
       <Bell className="w-[18px] h-[18px] text-foreground" />
       {unreadCount > 0 && (
         <div className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full bg-destructive flex items-center justify-center px-1">
@@ -50,7 +50,7 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[100] h-[52px] backdrop-blur-[12px] border-b border-border flex items-center px-4 md:px-6 gap-3 md:gap-4 bg-card">
+      <nav className="fixed top-0 left-0 right-0 z-[100] h-[52px] backdrop-blur-[12px] border-b border-border flex items-center px-4 md:px-6 gap-2 md:gap-4 bg-card overflow-hidden">
         {/* Logo */}
         <div onClick={() => navigate('/explore')} className="text-[17px] font-extrabold tracking-[-0.05em] text-foreground cursor-pointer">
           OTJ<sup className="text-[7px] align-super">™</sup>
@@ -77,7 +77,7 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
 
         {/* Desktop search bar (explore only) */}
         {isExplore && (
-          <div className="hidden md:flex items-center flex-1 ml-2">
+          <div className="hidden md:flex items-center flex-1 ml-2 min-w-0">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-otj-muted" />
               <input
@@ -104,9 +104,9 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
               setUserRole(newRole);
               showToast(`Switched to ${newRole} view`);
             }}
-            className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-dashed border-border bg-muted text-muted-foreground cursor-pointer hover:border-foreground hover:text-foreground transition-all duration-150"
+            className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-dashed border-border bg-muted text-muted-foreground cursor-pointer hover:border-foreground hover:text-foreground transition-all duration-150 shrink-0 active:scale-95"
           >
-            {userRole === 'client' ? '🏢 Client' : '🎨 Creative'}
+            {userRole === 'client' ? 'Client' : 'Creative'}
           </button>
 
           {/* Mobile search toggle (explore only) */}
@@ -119,23 +119,28 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
             </button>
           )}
           {/* Messages icon */}
-          <div onClick={() => navigate('/messages')} className="relative cursor-pointer p-2 rounded-lg transition-all duration-150 hover:bg-muted">
+          <button onClick={() => navigate('/messages')} className="relative cursor-pointer p-2 rounded-lg transition-all duration-150 hover:bg-muted active:scale-95">
             <MessageCircle className="w-[18px] h-[18px] text-foreground" />
             <div className="absolute top-1 right-1 w-[8px] h-[8px] rounded-full bg-destructive border-2 border-card" />
-          </div>
+          </button>
 
           {/* Notifications */}
           <NotifBell onClick={() => setShowNotif((prev) => !prev)} />
 
           {/* Profile avatar */}
           <div onClick={() => setShowProfileMenu((prev) => !prev)} className="relative">
-            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-sm cursor-pointer border-2 border-border hover:border-foreground transition-all duration-150">{userRole === 'client' ? '🏢' : '👩‍🎨'}</div>
+            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center cursor-pointer border-2 border-border hover:border-foreground transition-all duration-150 active:scale-95">
+              <User className="w-4 h-4 text-muted-foreground" />
+            </div>
+            {showProfileMenu && (
+              <div className="fixed inset-0 z-[150]" onClick={() => setShowProfileMenu(false)} />
+            )}
             {showProfileMenu && (
               <div className="absolute top-10 right-0 w-[180px] bg-card border border-border rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.1)] py-1.5 z-[200]">
-                <div onClick={() => { setShowProfileMenu(false); navigate('/creative/nour'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-foreground cursor-pointer hover:bg-otj-off">👤 My Profile</div>
-                <div onClick={() => { setShowProfileMenu(false); navigate('/settings'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-foreground cursor-pointer hover:bg-otj-off">⚙️ Settings</div>
+                <div onClick={() => { setShowProfileMenu(false); navigate('/creative/nour'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-foreground cursor-pointer hover:bg-otj-off flex items-center gap-2"><User className="w-3.5 h-3.5 text-otj-muted" /> My Profile</div>
+                <div onClick={() => { setShowProfileMenu(false); navigate('/settings'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-foreground cursor-pointer hover:bg-otj-off flex items-center gap-2"><Settings className="w-3.5 h-3.5 text-otj-muted" /> Settings</div>
                 <div className="h-px bg-border mx-2 my-1" />
-                <div onClick={() => { setShowProfileMenu(false); navigate('/login'); showToast('Logged out'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-otj-text cursor-pointer hover:bg-otj-off">↩ Log Out</div>
+                <div onClick={() => { setShowProfileMenu(false); navigate('/login'); showToast('Logged out'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-otj-text cursor-pointer hover:bg-otj-off flex items-center gap-2"><LogOut className="w-3.5 h-3.5 text-otj-muted" /> Log Out</div>
               </div>
             )}
           </div>
@@ -143,8 +148,8 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
           {/* Mobile hamburger */}
           <button
             onClick={() => setShowMobileMenu(prev => !prev)}
-            className="md:hidden w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-sm"
-          >☰</button>
+            className="md:hidden w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer active:scale-95 shrink-0"
+          ><Menu className="w-4 h-4 text-foreground" /></button>
         </div>
       </nav>
 
@@ -178,7 +183,7 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
       {showMobileMenu && (
         <div className="md:hidden fixed top-[52px] left-0 right-0 bg-card border-b border-border z-[99] p-3 animate-fade-up shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
           {navTabs.map(tab => (
-            <div key={tab.path} onClick={() => { navigate(tab.path); setShowMobileMenu(false); }} className={`px-4 py-3 rounded-xl text-[13px] font-semibold cursor-pointer transition-colors ${isActive(tab.path) ? 'bg-otj-off text-foreground' : 'text-otj-text hover:bg-otj-off'}`}>
+            <div key={tab.path} onClick={() => { navigate(tab.path); setShowMobileMenu(false); }} className={`px-4 py-3 rounded-xl text-[13px] font-semibold cursor-pointer transition-colors active:bg-accent ${isActive(tab.path) ? 'bg-otj-off text-foreground' : 'text-otj-text hover:bg-otj-off'}`}>
               {tab.label}
             </div>
           ))}

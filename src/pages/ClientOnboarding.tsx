@@ -99,7 +99,7 @@ const ClientOnboarding = () => {
   }, [navigate]);
 
   const inputClass = "px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 w-full focus:border-foreground focus:bg-card placeholder:text-otj-muted";
-  const chipClass = (active: boolean) => `text-[12.5px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all duration-150 tracking-[-0.01em] select-none flex items-center gap-1.5 ${
+  const chipClass = (active: boolean) => `text-[12.5px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all duration-150 tracking-[-0.01em] select-none flex items-center gap-1.5 active:scale-95 ${
     active ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground hover:bg-otj-off'
   }`;
 
@@ -114,10 +114,10 @@ const ClientOnboarding = () => {
         <div className="text-xs font-semibold text-otj-text hidden md:block">
           Client Setup · <strong className="text-foreground">Step {currentStep} of {TOTAL_STEPS}</strong>
         </div>
-        <div className="text-[10px] font-semibold text-otj-text md:hidden">Step {currentStep}/{TOTAL_STEPS}</div>
+        <div className="text-[11px] font-semibold text-otj-text md:hidden">Step {currentStep}/{TOTAL_STEPS}</div>
         <div className="ml-auto flex items-center gap-1.5 md:gap-2.5">
-          <button onClick={handleSkip} className="text-[10px] md:text-xs font-semibold text-otj-text px-2.5 md:px-3.5 py-1.5 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">Skip</button>
-          <button onClick={handleFinish} className={`text-[10px] md:text-xs font-bold px-3 md:px-4 py-1.5 rounded-full border-none cursor-pointer transition-all duration-150 flex items-center gap-1 md:gap-1.5 ${
+          <button onClick={handleSkip} className="text-[11px] md:text-xs font-semibold text-otj-text px-2.5 md:px-3.5 py-1.5 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">Skip</button>
+          <button onClick={handleFinish} className={`text-[11px] md:text-xs font-bold px-3 md:px-4 py-1.5 rounded-full border-none cursor-pointer transition-all duration-150 flex items-center gap-1 md:gap-1.5 active:scale-[0.98] ${
             isReady ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-otj-light text-otj-muted cursor-not-allowed'
           }`}>
             {isReady ? '✓ Finish Setup' : '🔒 Not Ready'}
@@ -179,7 +179,7 @@ const ClientOnboarding = () => {
           {stepsMeta.map((_, i) => {
             const num = i + 1;
             return (
-              <button key={num} onClick={() => setCurrentStep(num)} className={`shrink-0 w-8 h-8 rounded-full text-[11px] font-bold border-[1.5px] transition-all duration-150 ${
+              <button key={num} onClick={() => setCurrentStep(num)} className={`shrink-0 w-10 h-10 rounded-full text-[11px] font-bold border-[1.5px] transition-all duration-150 ${
                 doneSteps.has(num) ? 'border-otj-green bg-otj-green-bg text-otj-green' : currentStep === num ? 'border-foreground bg-otj-off text-foreground' : 'border-border bg-card text-otj-muted'
               }`}>{doneSteps.has(num) ? '✓' : num}</button>
             );
@@ -201,7 +201,7 @@ const ClientOnboarding = () => {
                     { key: 'individual' as const, icon: '👤', label: 'Individual', sub: 'Personal projects' },
                     { key: 'company' as const, icon: '🏢', label: 'Company', sub: 'Business projects' },
                   ]).map(t => (
-                    <div key={t.key} onClick={() => setCompanyType(t.key)} className={`p-4 rounded-xl border-[1.5px] cursor-pointer transition-all duration-150 text-center flex flex-col items-center justify-center gap-1 ${
+                    <div key={t.key} onClick={() => setCompanyType(t.key)} className={`p-4 rounded-xl border-[1.5px] cursor-pointer transition-all duration-150 text-center flex flex-col items-center justify-center gap-1 active:scale-95 ${
                       companyType === t.key ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
                     }`}>
                       <div className="text-2xl mb-1">{t.icon}</div>
@@ -242,7 +242,7 @@ const ClientOnboarding = () => {
                 <button onClick={() => {
                   if (!fullName.trim() || !companyType || !industry) { showToast('Fill in all required fields'); return; }
                   nextStep(1);
-                }} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 group">
+                }} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 active:scale-[0.98] group">
                   Save & Continue <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
                 </button>
               </div>
@@ -295,11 +295,11 @@ const ClientOnboarding = () => {
               </div>
 
               <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
-                <button onClick={() => prevStep(2)} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">← Back</button>
+                <button onClick={() => prevStep(2)} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground active:scale-95">← Back</button>
                 <button onClick={() => {
                   if (!email.trim() || !phone.trim()) { showToast('Email and phone are required'); return; }
                   nextStep(2);
-                }} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 group">
+                }} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 active:scale-[0.98] group">
                   Save & Continue <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
                 </button>
               </div>
@@ -362,8 +362,8 @@ const ClientOnboarding = () => {
               )}
 
               <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
-                <button onClick={() => prevStep(3)} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground">← Back</button>
-                <button onClick={handleFinish} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:opacity-90 group">
+                <button onClick={() => prevStep(3)} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground active:scale-95">← Back</button>
+                <button onClick={handleFinish} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:opacity-90 active:scale-[0.98] group">
                   ✓ Finish Setup <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
                 </button>
               </div>

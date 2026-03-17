@@ -2,9 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Neue Haas Grotesk Display Pro ──────────────────────────────────────────
+   Falls back to Helvetica Neue / system stack when the font is not installed.
+   To activate: install the font on the OS or drop the .woff2 files in
+   /public/fonts/ and uncomment the @font-face block below.
+─────────────────────────────────────────────────────────────────────────── */
+/*
+@font-face {
+  font-family: 'Neue Haas Grotesk Display Pro';
+  src: url('/fonts/NeueHaasDisplayPro-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Haas Grotesk Display Pro';
+  src: url('/fonts/NeueHaasDisplayPro-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Haas Grotesk Display Pro';
+  src: url('/fonts/NeueHaasDisplayPro-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
 @layer base {
   :root {
-    --background: 30 10% 96%;
+    --background: 30 9% 96.1%; /* #F6F5F4 */
     --foreground: 0 0% 7%;
 
     --card: 0 0% 100%;
@@ -36,7 +65,7 @@
 
     /* OTJ custom tokens */
     --otj-white: 0 0% 100%;
-    --otj-off: 30 10% 96%;
+    --otj-off: 30 9% 96.1%; /* #F6F5F4 */
     --otj-light: 0 0% 92%;
     --otj-border: 30 5% 88%;
     --otj-muted: 0 0% 73%;
@@ -76,8 +105,13 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
   body {
     @apply bg-background text-foreground;

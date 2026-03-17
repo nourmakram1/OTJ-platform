@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { format, parseISO, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, getWeek } from 'date-fns';
 import { showToast } from './Toast';
 import { useProjects, MeetingData } from '../context/ProjectContext';
+import { Star, PartyPopper, Zap, Sparkles, Calendar, Users2, CheckSquare2, Clock, Plus, Briefcase } from 'lucide-react';
 import { ProfileCompletenessCard, useProfileCompleteness } from './ProfileCompleteness';
 
 interface DashboardScreenProps {
@@ -24,16 +25,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
       {/* Welcome header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-5 gap-3">
         <div>
-          <div className="text-[20px] md:text-[22px] font-extrabold tracking-[-0.04em]">Good morning, Nour 👋</div>
+          <div className="text-[20px] md:text-[22px] font-extrabold tracking-[-0.04em]">Good morning, Nour</div>
           <div className="text-[12px] md:text-[13px] text-otj-text mt-0.5">Monday, March 2 · {pendingBriefs.length > 0 ? `${pendingBriefs.length} briefs need your attention` : 'All caught up!'}</div>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 text-[12px] font-bold text-otj-yellow">
-            <span>⭐</span>
+            <Star size={12} className="fill-current" />
             <span className="text-muted-foreground">4.9</span>
             <span className="text-otj-muted font-medium">(127)</span>
           </div>
-          <button onClick={() => showToast('Profile link copied!')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer">Share Profile</button>
+          <button onClick={() => showToast('Profile link copied!')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer active:scale-95">Share Profile</button>
         </div>
       </div>
       {/* Profile Completeness */}
@@ -55,7 +56,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
             { label: 'Pending Briefs', val: String(pendingBriefs.length), delta: pendingBriefs.length > 0 ? 'Need response' : 'All clear', deltaClass: 'text-otj-text' },
           ];
         })().map((s, i) => (
-          <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4">
+          <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 hover:shadow-sm transition-shadow">
             <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">{s.label}</div>
             <div className="text-[26px] font-extrabold tracking-[-0.05em] leading-none text-foreground">{s.val}</div>
             <div className={`text-[11px] font-bold mt-1 ${s.deltaClass}`}>{s.delta}</div>
@@ -74,7 +75,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                 { key: 'active' as const, label: `Active (${activeProjects.length})` },
                 { key: 'complete' as const, label: `Complete (${completedProjects.length})` },
               ].map((tab) => (
-                <button key={tab.key} onClick={() => setProjectTab(tab.key)} className={`text-[12px] font-semibold px-3.5 py-[5px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 ${
+                <button key={tab.key} onClick={() => setProjectTab(tab.key)} className={`text-[12px] font-semibold px-3.5 py-[5px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 active:scale-95 ${
                   projectTab === tab.key ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-otj-text hover:border-foreground'
                 }`}>{tab.label}</button>
               ))}
@@ -85,7 +86,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                 { key: 'hired' as const, label: 'Hired' },
                 { key: 'booked' as const, label: 'My Bookings' },
               ].map((f) => (
-                <button key={f.key} onClick={() => setRoleFilter(f.key)} className={`text-[11px] font-semibold px-2.5 py-[4px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 ${
+                <button key={f.key} onClick={() => setRoleFilter(f.key)} className={`text-[11px] font-semibold px-2.5 py-[4px] rounded-full border-[1.5px] cursor-pointer transition-all duration-150 active:scale-95 ${
                   roleFilter === f.key ? 'bg-muted border-border text-foreground' : 'bg-transparent border-transparent text-otj-muted hover:text-foreground'
                 }`}>{f.label}</button>
               ))}
@@ -100,47 +101,48 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
           <div className="flex flex-col gap-2 animate-fade-up">
             {filtered.length === 0 && (
               <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
-                <div className="text-[48px]">🎉</div>
+                <PartyPopper size={40} className="text-otj-muted" />
                 <div className="text-[14px] font-extrabold text-foreground">No pending briefs!</div>
                 <div className="text-[12px] text-muted-foreground max-w-[260px]">You're all caught up — sit back and relax until the next opportunity rolls in.</div>
               </div>
             )}
             {filtered.map((brief) => (
-              <div key={brief.id} className="bg-card border border-border rounded-[14px] p-3.5 px-4 transition-all duration-150 flex flex-col md:flex-row md:items-center gap-3 hover:shadow-md hover:border-otj-muted">
+              <div key={brief.id} className="bg-card border border-border rounded-[14px] p-3.5 px-4 transition-all duration-150 flex flex-col md:flex-row md:items-center gap-2.5 hover:shadow-md hover:border-otj-muted active:shadow-sm cursor-pointer">
                 {/* Content */}
-                <div className="flex gap-3 items-start flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/brief/${brief.id}`)}>
-                  <div className="w-10 h-10 rounded-[10px] bg-otj-yellow-bg flex items-center justify-center text-xl shrink-0">{brief.icon}</div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate mb-0.5 flex items-center gap-1.5">
-                      {brief.name}
+                <div className="flex-1 min-w-0" onClick={() => navigate(`/brief/${brief.id}`)}>
+                  <div className="flex items-center justify-between gap-2 mb-0.5">
+                    <span className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate min-w-0">{brief.name}</span>
+                    <div className="flex items-center gap-1.5 shrink-0">
                       {brief.myRole && (
                         <span className={`text-[9px] font-bold px-1.5 py-[1px] rounded-full border shrink-0 ${
-                          brief.myRole === 'as-client' 
-                            ? 'bg-otj-blue-bg text-otj-blue border-otj-blue-border' 
+                          brief.myRole === 'as-client'
+                            ? 'bg-otj-blue-bg text-otj-blue border-otj-blue-border'
                             : 'bg-otj-green-bg text-otj-green border-otj-green-border'
                         }`}>
                           {brief.myRole === 'as-client' ? 'Booked by you' : 'Hired'}
                         </span>
                       )}
-                    </div>
-                    <div className="text-[11.5px] text-otj-text mb-1.5">From: {brief.clientName} · {brief.clientCompany}</div>
-                    <div className="flex gap-[5px] flex-wrap">
-                      {brief.tags.map((t, j) => <span key={j} className="text-[10.5px] font-semibold px-2 py-0.5 rounded-full bg-otj-off border border-border text-otj-text">{t}</span>)}
+                      {/* Time — mobile only, plain text */}
+                      <span className="md:hidden text-[10.5px] text-otj-muted whitespace-nowrap">{brief.time}</span>
                     </div>
                   </div>
+                  <div className="text-[11.5px] text-otj-text mb-1.5">From: {brief.clientName} · {brief.clientCompany}</div>
+                  <div className="flex gap-[5px] flex-wrap">
+                    {brief.tags.map((t, j) => <span key={j} className="text-[10.5px] font-semibold px-2 py-0.5 rounded-full bg-otj-off border border-border text-otj-text">{t}</span>)}
+                  </div>
                 </div>
-                {/* Right: Time above buttons (desktop) */}
+                {/* Desktop: time above buttons, right-aligned */}
                 <div className="hidden md:flex flex-col items-end gap-1.5 shrink-0">
-                  <div className="text-[10.5px] text-otj-muted whitespace-nowrap">{brief.time}</div>
+                  <span className="text-[10.5px] text-otj-muted whitespace-nowrap">{brief.time}</span>
                   <div className="flex items-center gap-[5px]">
-                    <button onClick={(e) => { e.stopPropagation(); navigate(`/brief/${brief.id}`); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer transition-all duration-150 whitespace-nowrap">View Brief</button>
-                    <button onClick={(e) => { e.stopPropagation(); showToast('Brief declined'); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card text-muted-foreground cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground whitespace-nowrap">Decline</button>
+                    <button onClick={(e) => { e.stopPropagation(); navigate(`/brief/${brief.id}`); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer transition-all duration-150 whitespace-nowrap active:scale-[0.98]">View Brief</button>
+                    <button onClick={(e) => { e.stopPropagation(); showToast('Brief declined'); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card text-muted-foreground cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground whitespace-nowrap active:scale-95">Decline</button>
                   </div>
                 </div>
-                {/* Mobile buttons at bottom */}
-                <div className="flex md:hidden items-center gap-[5px] flex-wrap ml-[52px]">
-                  <button onClick={() => navigate(`/brief/${brief.id}`)} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer">View Brief</button>
-                  <button onClick={() => showToast('Brief declined')} className="text-[10px] font-bold px-2.5 py-[4px] rounded-full border-[1.5px] border-border bg-card text-muted-foreground cursor-pointer hover:border-foreground hover:text-foreground">Decline</button>
+                {/* Mobile: buttons below content */}
+                <div className="flex md:hidden items-center gap-[5px]">
+                  <button onClick={(e) => { e.stopPropagation(); navigate(`/brief/${brief.id}`); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full bg-primary border-[1.5px] border-primary text-primary-foreground cursor-pointer transition-all duration-150 whitespace-nowrap active:scale-[0.98]">View Brief</button>
+                  <button onClick={(e) => { e.stopPropagation(); showToast('Brief declined'); }} className="text-[11.5px] font-bold px-3 py-[5px] rounded-full border-[1.5px] border-border bg-card text-muted-foreground cursor-pointer transition-all duration-150 hover:border-foreground hover:text-foreground whitespace-nowrap active:scale-95">Decline</button>
                 </div>
               </div>
             ))}
@@ -154,7 +156,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
           <div className="flex flex-col gap-2 animate-fade-up">
             {filtered.length === 0 && (
               <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
-                <div className="text-[48px]">🚀</div>
+                <Zap size={40} className="text-otj-muted" />
                 <div className="text-[14px] font-extrabold text-foreground">No {roleFilter === 'booked' ? 'bookings' : 'projects'} yet</div>
                 <div className="text-[12px] text-muted-foreground max-w-[260px]">{roleFilter === 'booked' ? 'Book a creative and your projects will show here.' : 'Accept a brief and watch the magic begin!'}</div>
               </div>
@@ -168,23 +170,25 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
               const statusClass = proj.status === 'pending-deposit' ? 'bg-otj-yellow-bg text-otj-yellow' : 'bg-otj-blue-bg text-otj-blue';
 
               return (
-                <div key={proj.id} onClick={() => navigate(`/project/${proj.id}`)} className="bg-card border border-border rounded-[14px] p-3.5 px-4 cursor-pointer transition-all duration-150 flex gap-3 items-start hover:shadow-md hover:border-otj-muted">
-                  <div className="w-10 h-10 rounded-[10px] bg-otj-off flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
-                  <div className="flex-1">
-                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5 flex items-center gap-1.5">
-                      {proj.name}
-                      {proj.myRole && (
-                        <span className={`text-[9px] font-bold px-1.5 py-[1px] rounded-full border shrink-0 ${
-                          proj.myRole === 'as-client' 
-                            ? 'bg-otj-blue-bg text-otj-blue border-otj-blue-border' 
-                            : 'bg-otj-green-bg text-otj-green border-otj-green-border'
-                        }`}>
-                          {proj.myRole === 'as-client' ? 'Booked by you' : 'Hired'}
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-[11.5px] text-otj-text mb-1.5">{proj.myRole === 'as-client' ? 'Creative' : 'Client'}: {proj.clientName} · {proj.clientCompany}</div>
-                    <div className="flex gap-[3px] mb-1.5">
+                <div key={proj.id} onClick={() => navigate(`/project/${proj.id}`)} className="bg-card border border-border rounded-[14px] p-3.5 px-4 cursor-pointer transition-all duration-150 hover:shadow-md hover:border-otj-muted active:shadow-sm">
+                  {/* Row 1: Name + role badge right-aligned */}
+                  <div className="flex items-center justify-between gap-2 mb-0.5">
+                    <span className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate min-w-0">{proj.name}</span>
+                    {proj.myRole && (
+                      <span className={`text-[9px] font-bold px-1.5 py-[1px] rounded-full border shrink-0 ${
+                        proj.myRole === 'as-client'
+                          ? 'bg-otj-blue-bg text-otj-blue border-otj-blue-border'
+                          : 'bg-otj-green-bg text-otj-green border-otj-green-border'
+                      }`}>
+                        {proj.myRole === 'as-client' ? 'Booked by you' : 'Hired'}
+                      </span>
+                    )}
+                  </div>
+                  {/* Row 2: Client info */}
+                  <div className="text-[11.5px] text-otj-text mb-1.5">{proj.myRole === 'as-client' ? 'Creative' : 'Client'}: {proj.clientName} · {proj.clientCompany}</div>
+                  {/* Row 3: Progress bars + percentage at the end */}
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <div className="flex gap-[3px] flex-1">
                       {proj.phases.map((phase) => (
                         <div key={phase.num} className={`h-1 flex-1 rounded-full ${
                           phase.status === 'complete' ? 'bg-otj-green' :
@@ -192,14 +196,15 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
                         }`} />
                       ))}
                     </div>
+                    <span className="text-[11px] font-extrabold text-foreground shrink-0">{pct}%</span>
+                  </div>
+                  {/* Row 4: Phase tag + due date (left) + budget (right) */}
+                  <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <div className={`text-[10.5px] font-bold px-2 py-0.5 rounded-full ${statusClass}`}>{statusLabel}</div>
+                      <div className={`text-[11px] font-bold px-2.5 py-[3px] rounded-full ${statusClass}`}>{statusLabel}</div>
                       <div className="text-[10.5px] text-otj-muted">Due {proj.deadline}</div>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-[13px] font-extrabold text-foreground">{pct}%</div>
-                    <div className="text-[11px] text-otj-text mt-0.5">{proj.budget}</div>
+                    <div className="text-[12px] font-extrabold text-foreground shrink-0">{proj.budget}</div>
                   </div>
                 </div>
               );
@@ -212,23 +217,20 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
           <div className="flex flex-col gap-2 animate-fade-up">
             {completedProjects.length === 0 && (
               <div className="bg-card border border-border rounded-[14px] p-10 text-center flex flex-col items-center gap-2">
-                <div className="text-[48px]">✨</div>
+                <Sparkles size={40} className="text-otj-muted" />
                 <div className="text-[14px] font-extrabold text-foreground">No completed projects yet</div>
                 <div className="text-[12px] text-muted-foreground max-w-[260px]">Your finished masterpieces will live here — keep creating amazing work!</div>
               </div>
             )}
             {completedProjects.map((proj, i) => (
-              <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex flex-col md:flex-row gap-2 md:gap-3 md:items-center cursor-pointer transition-all duration-150 hover:shadow-md hover:border-otj-muted">
-                <div className="flex gap-3 items-center flex-1">
-                  <div className="w-10 h-10 rounded-[10px] bg-otj-green-bg flex items-center justify-center text-xl shrink-0">{proj.icon}</div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5 truncate">{proj.name}</div>
-                    <div className="text-[11.5px] text-otj-text">{proj.client}</div>
-                  </div>
+              <div key={i} onClick={() => showToast('Project archived — full details coming soon')} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex items-start justify-between gap-3 cursor-pointer transition-all duration-150 hover:shadow-md hover:border-otj-muted active:shadow-sm">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5 truncate">{proj.name}</div>
+                  <div className="text-[11.5px] text-otj-text">{proj.client}</div>
                 </div>
-                <div className="flex items-center gap-3 ml-13 md:ml-0">
-                  <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border whitespace-nowrap">✓ Complete</span>
-                  <div className="text-[13px] font-extrabold text-otj-green whitespace-nowrap">Earned {proj.earned}</div>
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border whitespace-nowrap">Complete</span>
+                  <div className="text-[12px] font-extrabold text-otj-green whitespace-nowrap">{proj.earned}</div>
                 </div>
               </div>
             ))}
@@ -247,13 +249,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {[
-            { name: 'Ramadan Campaign', count: '4 creatives saved', icons: ['👩‍🎨', '✏️', '🎥', '🎨'] },
-            { name: 'Product Launch', count: '2 creatives saved', icons: ['🎥', '🎨', '', ''] },
-            { name: 'Fashion Week', count: '3 creatives saved', icons: ['👗', '📸', '💄', ''] },
+            { name: 'Ramadan Campaign', count: '4 creatives saved', colors: ['bg-otj-purple-bg','bg-otj-blue-bg','bg-otj-green-bg','bg-otj-yellow-bg'] },
+            { name: 'Product Launch', count: '2 creatives saved', colors: ['bg-otj-green-bg','bg-otj-blue-bg','bg-otj-off','bg-otj-off'] },
+            { name: 'Fashion Week', count: '3 creatives saved', colors: ['bg-otj-orange-bg','bg-otj-purple-bg','bg-otj-blue-bg','bg-otj-off'] },
           ].map((coll, i) => (
             <div key={i} onClick={() => showToast(`Opening ${coll.name} board…`)} className="bg-card border border-border rounded-xl overflow-hidden cursor-pointer transition-all duration-150 hover:border-foreground">
               <div className="grid grid-cols-2 h-[60px]">
-                {coll.icons.map((ic, j) => <div key={j} className="flex items-center justify-center text-[18px] bg-otj-off border-r border-b border-border last:border-r-0">{ic}</div>)}
+                {coll.colors.map((bg, j) => <div key={j} className={`${bg} border-r border-b border-border last:border-r-0`} />)}
               </div>
               <div className="p-2 px-2.5">
                 <div className="text-xs font-extrabold tracking-[-0.02em] mb-px">{coll.name}</div>
@@ -262,7 +264,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
             </div>
           ))}
           <div onClick={() => showToast('Create new board…')} className="border-[1.5px] border-dashed border-border rounded-xl flex flex-col items-center justify-center gap-1 min-h-[96px] cursor-pointer hover:border-foreground">
-            <div className="text-2xl">＋</div>
+            <Plus className="w-5 h-5 text-otj-muted" />
             <div className="text-[11px] font-semibold text-otj-text">New Board</div>
           </div>
         </div>
@@ -283,11 +285,11 @@ type ScheduleItem = {
   duration: number; // hours
 };
 
-const typeConfig: Record<string, { bg: string; border: string; text: string; dot: string; label: string; icon: string }> = {
-  meeting: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Meeting', icon: '👥' },
-  task: { bg: 'bg-otj-green-bg', border: 'border-otj-green-border', text: 'text-otj-green', dot: 'bg-otj-green', label: 'Task', icon: '✅' },
-  phase: { bg: 'bg-otj-yellow-bg', border: 'border-otj-yellow-border', text: 'text-otj-yellow', dot: 'bg-otj-yellow', label: 'Due', icon: '⏰' },
-  call: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Call', icon: '📞' },
+const typeConfig: Record<string, { bg: string; border: string; text: string; dot: string; label: string }> = {
+  meeting: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Meeting' },
+  task: { bg: 'bg-otj-green-bg', border: 'border-otj-green-border', text: 'text-otj-green', dot: 'bg-otj-green', label: 'Task' },
+  phase: { bg: 'bg-otj-yellow-bg', border: 'border-otj-yellow-border', text: 'text-otj-yellow', dot: 'bg-otj-yellow', label: 'Due' },
+  call: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Call' },
 };
 
 const DAY_LABELS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
@@ -349,7 +351,7 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
       <div className="bg-card border border-border rounded-[16px] overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between p-3 md:p-4 px-4 md:px-5 gap-2">
           <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-            <span className="text-lg">📅</span>
+            <Calendar className="w-[17px] h-[17px] text-foreground shrink-0" />
             <span className="text-[17px] font-extrabold tracking-[-0.04em]">Schedule</span>
             <div className="flex items-center gap-1 md:gap-2 ml-1 md:ml-3">
               <button onClick={() => setWeekStart(subWeeks(weekStart, 1))} className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150 text-sm">‹</button>
@@ -382,7 +384,7 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
               const isToday = isSameDay(day, today);
               const dayEvents = scheduleItems.filter(item => isSameDay(item.deadline, day));
               return (
-                <div key={i} className={`flex-1 min-w-[48px] md:min-w-[80px] text-center py-2.5 md:py-3 border-r border-border last:border-r-0 ${isToday ? 'bg-otj-blue-bg' : ''}`}>
+                <div key={i} className={`flex-1 min-w-[48px] md:min-w-[80px] text-center py-2.5 md:py-3 border-r border-border last:border-r-0 cursor-pointer active:scale-95 transition-transform duration-100 ${isToday ? 'bg-otj-blue-bg' : ''}`}>
                   <div className={`text-[9px] md:text-[10px] font-bold uppercase ${isToday ? 'text-otj-blue' : 'text-otj-muted'}`}>{DAY_LABELS[i]}</div>
                   <div className={`text-[15px] md:text-[18px] font-extrabold mt-0.5 ${isToday ? 'text-otj-blue' : 'text-foreground'}`}>{format(day, 'd')}</div>
                   {dayEvents.length > 0 && <div className="flex justify-center mt-1 gap-[2px]">{dayEvents.slice(0, 3).map((ev, j) => <div key={j} className={`w-[5px] h-[5px] md:w-[6px] md:h-[6px] rounded-full ${typeConfig[ev.type]?.dot}`} />)}</div>}
@@ -409,23 +411,29 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
         </div>
 
         {/* Summary footer */}
-        <div className="flex items-center gap-4 md:gap-8 p-3 md:p-4 px-4 md:px-5 border-t border-border flex-wrap">
-          <div className="flex items-center gap-2">
-            <span className="text-lg">👥</span>
+        <div className="flex items-center gap-5 md:gap-8 p-3 md:p-4 px-4 md:px-5 border-t border-border flex-wrap">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-otj-blue-bg flex items-center justify-center shrink-0">
+              <Users2 className="w-[15px] h-[15px] text-otj-blue" />
+            </div>
             <div>
               <div className="text-[13px] md:text-[14px] font-extrabold tracking-[-0.02em]">{meetingCount} Meeting{meetingCount !== 1 ? 's' : ''}</div>
               <div className="text-[10px] text-otj-text font-semibold">This week</div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-lg">✅</span>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-otj-green-bg flex items-center justify-center shrink-0">
+              <CheckSquare2 className="w-[15px] h-[15px] text-otj-green" />
+            </div>
             <div>
               <div className="text-[13px] md:text-[14px] font-extrabold tracking-[-0.02em]">{taskCount} Task{taskCount !== 1 ? 's' : ''}</div>
               <div className="text-[10px] text-otj-text font-semibold">Scheduled</div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-lg">⏰</span>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-otj-yellow-bg flex items-center justify-center shrink-0">
+              <Clock className="w-[15px] h-[15px] text-otj-yellow" />
+            </div>
             <div>
               <div className="text-[13px] md:text-[14px] font-extrabold tracking-[-0.02em]">{dueCount} Due Date{dueCount !== 1 ? 's' : ''}</div>
               <div className="text-[10px] text-otj-text font-semibold">Coming up</div>

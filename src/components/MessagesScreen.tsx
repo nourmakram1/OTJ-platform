@@ -7,9 +7,9 @@ import { showToast } from './Toast';
 import { useProjects } from '../context/ProjectContext';
 
 const threads = [
-  { id: 'randa', name: 'Randa Hatem', emoji: '👩‍💼', preview: 'Can we do 3,200 EGP?', time: '10:35 AM', unread: 2, projectId: 'proj-existing-1', clientId: 'client-randa' },
-  { id: 'ahmed', name: 'Ahmed Karim', emoji: '👨‍💼', preview: 'Photos look great! Can we schedule…', time: 'Yesterday', unread: 1, projectId: 'proj-existing-2', clientId: 'client-ahmed' },
-  { id: 'sara', name: 'Sara M.', emoji: '🎨', preview: 'Sent you the brand guidelines', time: 'Mon', unread: 0, projectId: 'proj-existing-3', clientId: 'client-sara' },
+  { id: 'randa', name: 'Randa Hatem', initials: 'RH', preview: 'Can we do 3,200 EGP?', time: '10:35 AM', unread: 2, projectId: 'proj-existing-1', clientId: 'client-randa' },
+  { id: 'ahmed', name: 'Ahmed Karim', initials: 'AK', preview: 'Photos look great! Can we schedule…', time: 'Yesterday', unread: 1, projectId: 'proj-existing-2', clientId: 'client-ahmed' },
+  { id: 'sara', name: 'Sara M.', initials: 'SM', preview: 'Sent you the brand guidelines', time: 'Mon', unread: 0, projectId: 'proj-existing-3', clientId: 'client-sara' },
 ];
 
 interface Message {
@@ -69,7 +69,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
 
       setTimeout(() => {
         setMessages(prev => [...prev, {
-          text: `📅 Schedule detected: "${meetingTitle}"`,
+          text: `Schedule detected: "${meetingTitle}"`,
           isMe: false,
           time: '',
           type: 'calendar',
@@ -90,9 +90,9 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
         projectId,
         clientName: currentThread?.name,
       });
-      showToast('📅 Meeting added to project schedule & calendar');
+      showToast('Meeting added to project schedule & calendar');
     } else {
-      showToast('📅 Added to calendar');
+      showToast('Added to calendar');
     }
   };
 
@@ -109,7 +109,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
         projectId,
         clientName: currentThread?.name,
       });
-      showToast('📞 Call scheduled & synced to calendar');
+      showToast('Call scheduled & synced to calendar');
     }
     setShowPlusMenu(false);
   };
@@ -148,7 +148,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
       });
     });
 
-    showToast(`📎 ${files.length} file${files.length > 1 ? 's' : ''} added to project`);
+    showToast(`${files.length} file${files.length > 1 ? 's' : ''} added to project`);
     e.target.value = '';
   };
 
@@ -180,7 +180,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
         projectId,
         clientName: currentThread?.name,
       });
-      showToast('🎥 Zoom call scheduled & synced to calendar');
+      showToast('Zoom call scheduled & synced to calendar');
     }
     setShowZoomPicker(false);
   };
@@ -202,11 +202,11 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
           <div
             key={t.id}
             onClick={() => { setActiveThread(t.id); setMobileShowChat(true); }}
-            className={`p-3 px-4 border-b border-border cursor-pointer transition-colors duration-150 flex gap-2.5 items-start ${
+            className={`p-3 px-4 border-b border-border cursor-pointer transition-colors duration-150 flex gap-2.5 items-start active:bg-accent ${
               activeThread === t.id ? 'bg-otj-blue-bg' : 'hover:bg-otj-off'
             }`}
           >
-            <div onClick={(e) => { e.stopPropagation(); navigate(`/client/${t.clientId}`); }} className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg shrink-0 cursor-pointer hover:ring-2 hover:ring-primary transition-all">{t.emoji}</div>
+            <div onClick={(e) => { e.stopPropagation(); navigate(`/client/${t.clientId}`); }} className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-[11px] font-bold text-otj-text shrink-0 cursor-pointer hover:ring-2 hover:ring-primary transition-all">{t.initials}</div>
             <div className="flex-1 min-w-0">
               <div className="text-[12.5px] font-bold mb-px">{t.name}</div>
               <div className="text-[11.5px] text-otj-text whitespace-nowrap overflow-hidden text-ellipsis">{t.preview}</div>
@@ -225,7 +225,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
         <div className="p-3.5 px-[18px] border-b border-border bg-card flex items-center gap-3">
           {/* Mobile back button */}
           <button onClick={() => setMobileShowChat(false)} className="md:hidden w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-sm text-otj-text shrink-0">←</button>
-          <div onClick={() => navigate(`/client/${currentThread?.clientId}`)} className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-lg cursor-pointer hover:ring-2 hover:ring-primary transition-all">{currentThread?.emoji || '👩‍💼'}</div>
+          <div onClick={() => navigate(`/client/${currentThread?.clientId}`)} className="w-9 h-9 rounded-full bg-otj-off flex items-center justify-center text-[11px] font-bold text-otj-text cursor-pointer hover:ring-2 hover:ring-primary transition-all">{currentThread?.initials || 'RH'}</div>
           <div
             onClick={() => setShowCollabPanel(prev => !prev)}
             className="cursor-pointer hover:opacity-70 transition-opacity"
@@ -240,19 +240,19 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
             <div className="relative">
               <button
                 onClick={() => setShowPlusMenu(prev => !prev)}
-                className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-base text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150"
+                className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer text-base text-otj-text hover:border-foreground hover:text-foreground transition-all duration-150 active:scale-95"
               >+</button>
               {showPlusMenu && (
                 <div className="absolute top-10 right-0 w-[200px] bg-card border border-border rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.1)] py-1.5 z-[200] animate-fade-up">
                   <div onClick={openZoomPicker} className="px-3.5 py-2.5 text-[12px] font-semibold text-foreground cursor-pointer hover:bg-otj-off flex items-center gap-2">
-                    🎥 Schedule Zoom Call
+                    Schedule Zoom Call
                   </div>
                   <div onClick={handleScheduleCall} className="px-3.5 py-2.5 text-[12px] font-semibold text-foreground cursor-pointer hover:bg-otj-off flex items-center gap-2">
-                    📞 Schedule Phone Call
+                    Schedule Phone Call
                   </div>
                   <div className="h-px bg-border mx-2 my-1" />
                   <div onClick={handleAddAttachment} className="px-3.5 py-2.5 text-[12px] font-semibold text-foreground cursor-pointer hover:bg-otj-off flex items-center gap-2">
-                    📎 Add Attachment to Project
+                    Add Attachment to Project
                   </div>
                 </div>
               )}
@@ -272,7 +272,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
           offerLocked ? 'border-otj-green-border bg-otj-green-bg' : 'border-otj-yellow-border bg-otj-yellow-bg'
         }`}>
           <div className={`text-[10px] font-bold uppercase tracking-[0.1em] mb-2 flex items-center gap-1.5 ${offerLocked ? 'text-otj-green' : 'text-otj-yellow'}`}>
-            {offerLocked ? '🔒 OFFER LOCKED · READY TO PAY' : '📋 ACTIVE BRIEF · NEGOTIATING'}
+            {offerLocked ? 'OFFER LOCKED · READY TO PAY' : 'ACTIVE BRIEF · NEGOTIATING'}
           </div>
           <div className="grid grid-cols-3 gap-2 mb-2.5 text-center md:text-left">
             <div><div className="text-[9.5px] uppercase tracking-[0.08em] text-otj-text mb-0.5">Package</div><div className="text-[13px] font-extrabold tracking-[-0.02em]">Full Day</div></div>
@@ -281,14 +281,14 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
           </div>
           {offerLocked ? (
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
-              <div className="text-xs font-bold text-otj-green flex items-center gap-1.5 flex-wrap">✓ Both parties agreed · 3,500 EGP · 5 days · 40 photos</div>
-              <button onClick={() => showToast('Opening payment… 50% deposit: 1,750 EGP')} className="px-3 py-[7px] rounded-full bg-primary border-primary text-primary-foreground text-xs font-bold cursor-pointer whitespace-nowrap shrink-0">Pay 50% Deposit →</button>
+              <div className="text-xs font-bold text-otj-green flex items-center gap-1.5 flex-wrap">Both parties agreed · 3,500 EGP · 5 days · 40 photos</div>
+              <button onClick={() => showToast('Opening payment… 50% deposit: 1,750 EGP')} className="px-3 py-[7px] rounded-full bg-primary border-primary text-primary-foreground text-xs font-bold cursor-pointer whitespace-nowrap shrink-0 active:scale-[0.98]">Pay 50% Deposit →</button>
             </div>
           ) : (
             <div className="flex gap-1.5">
-              <button onClick={() => { setOfferLocked(true); showToast('🔒 Offer locked!'); }} className="flex-1 py-[7px] rounded-full text-xs font-bold cursor-pointer transition-all duration-150 bg-primary border-primary text-primary-foreground hover:bg-primary/90">✓ Accept</button>
-              <button onClick={onOpenCounter} className="flex-1 py-[7px] rounded-full text-xs font-bold cursor-pointer transition-all duration-150 border-[1.5px] border-otj-yellow text-otj-yellow bg-card hover:bg-otj-yellow-bg">↕ Counter</button>
-              <button onClick={() => showToast('Brief declined')} className="flex-1 py-[7px] rounded-full text-xs font-bold cursor-pointer transition-all duration-150 border-[1.5px] border-border bg-card hover:border-foreground">✕ Decline</button>
+              <button onClick={() => { setOfferLocked(true); showToast('Offer locked!'); }} className="flex-1 py-[7px] rounded-full text-xs font-bold cursor-pointer transition-all duration-150 bg-primary border-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]">Accept</button>
+              <button onClick={onOpenCounter} className="flex-1 py-[7px] rounded-full text-xs font-bold cursor-pointer transition-all duration-150 border-[1.5px] border-otj-yellow text-otj-yellow bg-card hover:bg-otj-yellow-bg active:scale-[0.98]">Counter</button>
+              <button onClick={() => showToast('Brief declined')} className="flex-1 py-[7px] rounded-full text-xs font-bold cursor-pointer transition-all duration-150 border-[1.5px] border-border bg-card hover:border-foreground active:scale-[0.98]">Decline</button>
             </div>
           )}
         </div>
@@ -298,14 +298,13 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
           {messages.map((msg, i) => msg.type === 'calendar' ? (
             <div key={i} className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-3 px-4 max-w-[320px] self-start">
               <div className="flex items-center gap-1.5 mb-1.5">
-                <span className="text-[14px]">📅</span>
                 <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue">Calendar Mention Detected</span>
               </div>
               <div className="text-[14px] font-extrabold tracking-[-0.02em] text-foreground mb-2">
                 {msg.meetingData ? `${msg.meetingData.title} · ${msg.meetingData.date}, ${msg.meetingData.time}` : msg.text}
               </div>
               <div className="flex gap-2">
-                <button onClick={() => msg.meetingData && handleAddMeeting(msg.meetingData)} className="flex-1 text-[12px] font-bold py-[7px] rounded-full cursor-pointer transition-all duration-150 bg-otj-blue text-primary-foreground">+ Add to Calendar</button>
+                <button onClick={() => msg.meetingData && handleAddMeeting(msg.meetingData)} className="flex-1 text-[12px] font-bold py-[7px] rounded-full cursor-pointer transition-all duration-150 bg-otj-blue text-primary-foreground active:scale-[0.98]">+ Add to Calendar</button>
                 <button className="flex-1 text-[12px] font-bold py-[7px] rounded-full cursor-pointer transition-all duration-150 border-[1.5px] border-otj-blue-border text-otj-blue bg-card">Dismiss</button>
               </div>
             </div>
@@ -324,10 +323,9 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
         {/* Input + Zoom picker side by side */}
         <div className="border-t border-border bg-card">
           {showZoomPicker && (
-            <div className="mx-3 mt-3 p-4 bg-otj-blue-bg border border-otj-blue-border rounded-[14px] animate-fade-up">
+            <div className="mx-3 mt-3 p-4 bg-otj-blue-bg border border-otj-blue-border rounded-[14px] animate-fade-up overflow-x-hidden">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-base">🎥</span>
                   <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-otj-blue">Schedule Zoom Call</span>
                 </div>
                 <button onClick={() => setShowZoomPicker(false)} className="w-6 h-6 rounded-full border border-otj-blue-border flex items-center justify-center text-[10px] text-otj-blue cursor-pointer hover:bg-card">✕</button>
@@ -392,9 +390,9 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
               placeholder="Type a message… (mention a date to auto-sync to calendar)"
               rows={1}
-              className="flex-1 px-3.5 py-2.5 rounded-xl border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none resize-none transition-all duration-150 leading-relaxed focus:border-foreground focus:bg-card"
+              className="flex-1 px-3.5 py-2.5 rounded-xl border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none resize-none transition-all duration-150 leading-relaxed focus:border-foreground focus:bg-card min-h-[44px]"
             />
-            <button onClick={sendMessage} className="w-9 h-9 rounded-full border-none bg-primary text-primary-foreground cursor-pointer text-base flex items-center justify-center shrink-0 transition-all duration-150 hover:bg-primary/90">↑</button>
+            <button onClick={sendMessage} className="w-9 h-9 rounded-full border-none bg-primary text-primary-foreground cursor-pointer text-base flex items-center justify-center shrink-0 transition-all duration-150 hover:bg-primary/90 active:scale-95">↑</button>
           </div>
         </div>
       </div>
@@ -412,11 +410,10 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
             {/* Client Profile */}
             <div className="mb-6">
               <div className="flex items-center gap-1.5 mb-3">
-                <span className="text-sm">👤</span>
                 <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Client Profile</span>
               </div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 rounded-full bg-otj-off flex items-center justify-center text-2xl">{currentThread?.emoji}</div>
+                <div className="w-12 h-12 rounded-full bg-otj-off flex items-center justify-center text-[13px] font-bold text-otj-text">{currentThread?.initials}</div>
                 <div>
                   <div className="text-[14px] font-extrabold tracking-[-0.02em]">{currentThread?.name}</div>
                   <div className="text-[11px] text-otj-text">Creative Director</div>
@@ -440,8 +437,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
             {linkedProj && (
               <div className="mb-6">
                 <div className="flex items-center gap-1.5 mb-3">
-                  <span className="text-sm">🏢</span>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Project Overview</span>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Project Overview</span>
                 </div>
                 <div className="text-[15px] font-extrabold tracking-[-0.02em] mb-1.5">{linkedProj.name}</div>
                 <div className="flex items-center gap-1.5 mb-2.5">
@@ -453,17 +449,14 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
                 </div>
                 <div className="flex flex-col gap-2 mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">🕐</span>
                     <span className="text-[11px] font-semibold text-otj-muted">Start:</span>
                     <span className="text-[11.5px] font-semibold text-foreground">Feb 15, 2026</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">📅</span>
                     <span className="text-[11px] font-semibold text-otj-muted">Deadline:</span>
                     <span className="text-[11.5px] font-semibold text-foreground">{linkedProj.deadline}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">💰</span>
                     <span className="text-[11px] font-semibold text-otj-muted">Budget:</span>
                     <span className="text-[11.5px] font-extrabold text-foreground">{linkedProj.budget}</span>
                   </div>
@@ -490,7 +483,6 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
             {/* Upcoming Schedule */}
             <div className="mb-5">
               <div className="flex items-center gap-1.5 mb-3">
-                <span className="text-sm">📅</span>
                 <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Upcoming</span>
               </div>
               {(() => {
@@ -524,8 +516,8 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
 
             {/* Quick actions */}
             <div className="flex flex-col gap-1.5">
-              <button onClick={openZoomPicker} className="text-[11.5px] font-bold w-full py-2 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">🎥 Schedule Zoom</button>
-              <button onClick={handleAddAttachment} className="text-[11.5px] font-bold w-full py-2 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">📎 Add Attachment</button>
+              <button onClick={openZoomPicker} className="text-[11.5px] font-bold w-full py-2 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">Schedule Zoom</button>
+              <button onClick={handleAddAttachment} className="text-[11.5px] font-bold w-full py-2 rounded-full border border-border bg-card cursor-pointer transition-all duration-150 hover:border-foreground">Add Attachment</button>
             </div>
           </div>
         </div>

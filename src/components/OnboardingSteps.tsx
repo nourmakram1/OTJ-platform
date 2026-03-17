@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { showToast } from './Toast';
+import {
+  Camera, Film, Palette, Sparkles, Briefcase, Building2, Monitor,
+  Bot, Smartphone, Mic, FileText, PenLine, Target, Share2, Scissors,
+  Clapperboard, Calendar, Plus, Search, X, Tag, MapPin, Crosshair,
+} from 'lucide-react';
 
 // Reusable links section for adding multiple hyperlinks
 const LinksSection: React.FC = () => {
@@ -20,36 +25,38 @@ const LinksSection: React.FC = () => {
             placeholder="https://..."
           />
           {links.length > 1 && (
-            <span onClick={() => setLinks(links.filter((_, j) => j !== i))} className="text-[11px] text-otj-muted cursor-pointer px-2 py-0.5 rounded-md border border-border transition-all duration-150 hover:text-destructive hover:border-destructive">✕</span>
+            <span onClick={() => setLinks(links.filter((_, j) => j !== i))} className="text-otj-muted cursor-pointer px-1.5 py-1 rounded-md border border-border transition-all duration-150 hover:text-destructive hover:border-destructive flex items-center justify-center">
+              <X size={11} />
+            </span>
           )}
         </div>
       ))}
       <button onClick={() => setLinks([...links, { label: '', url: '' }])}
-        className="text-[12px] font-semibold text-otj-blue cursor-pointer bg-transparent border-none text-left hover:underline">
-        ＋ Add another link
+        className="text-[12px] font-semibold text-otj-blue cursor-pointer bg-transparent border-none text-left hover:underline flex items-center gap-1">
+        <Plus size={12} /> Add another link
       </button>
     </div>
   );
 };
-const professions = [
-  { icon: '📸', name: 'Photographer' },
-  { icon: '🎥', name: 'Videographer' },
-  { icon: '🎨', name: 'Graphic Designer' },
-  { icon: '✨', name: 'Motion Designer' },
-  { icon: '💼', name: 'Business & Marketing' },
-  { icon: '🏗️', name: 'Space Design' },
-  { icon: '💻', name: 'Tech Development' },
-  { icon: '🤖', name: 'AI Creator' },
-  { icon: '📱', name: 'Content Creator' },
-  { icon: '🎤', name: 'Talent' },
-  { icon: '✏️', name: 'Script Writer' },
-  { icon: '📝', name: 'Copywriter' },
-  { icon: '🎯', name: 'Brand Strategist' },
-  { icon: '📱', name: 'Social Media' },
-  { icon: '💄', name: 'MUA & Stylist' },
-  { icon: '🎬', name: 'Creative Director' },
-  { icon: '🎪', name: 'Event Producer' },
-  { icon: '➕', name: 'Other' },
+const professions: { icon: React.ElementType; name: string }[] = [
+  { icon: Camera, name: 'Photographer' },
+  { icon: Film, name: 'Videographer' },
+  { icon: Palette, name: 'Graphic Designer' },
+  { icon: Sparkles, name: 'Motion Designer' },
+  { icon: Briefcase, name: 'Business & Marketing' },
+  { icon: Building2, name: 'Space Design' },
+  { icon: Monitor, name: 'Tech Development' },
+  { icon: Bot, name: 'AI Creator' },
+  { icon: Smartphone, name: 'Content Creator' },
+  { icon: Mic, name: 'Talent' },
+  { icon: FileText, name: 'Script Writer' },
+  { icon: PenLine, name: 'Copywriter' },
+  { icon: Target, name: 'Brand Strategist' },
+  { icon: Share2, name: 'Social Media' },
+  { icon: Scissors, name: 'MUA & Stylist' },
+  { icon: Clapperboard, name: 'Creative Director' },
+  { icon: Calendar, name: 'Event Producer' },
+  { icon: Plus, name: 'Other' },
 ];
 
 const nicheMap: Record<string, string[]> = {
@@ -121,7 +128,7 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
 
       {/* Search bar */}
       <div className="relative mb-7">
-        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-otj-muted text-[14px] pointer-events-none">🔍</span>
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-otj-muted pointer-events-none flex items-center"><Search size={14} /></span>
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -129,23 +136,23 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
           className="w-full pl-9 pr-9 py-2.5 rounded-[12px] border-[1.5px] border-border bg-card text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground placeholder:text-otj-muted"
         />
         {search && (
-          <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-otj-muted hover:text-foreground transition-colors duration-150">✕</button>
+          <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-otj-muted hover:text-foreground transition-colors duration-150 flex items-center justify-center w-5 h-5"><X size={12} /></button>
         )}
       </div>
 
       <div className="mb-7">
-        <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">🎯 Your Profession</div>
+        <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2"><Crosshair size={14} className="text-otj-muted shrink-0" /> Your Profession</div>
         {filteredProfessions.length > 0 ? (
           <div className="grid grid-rows-3 grid-flow-col auto-cols-[140px] gap-2.5 mb-7 pb-4 overflow-x-auto hide-scrollbar snap-x">
             {filteredProfessions.map(p => (
               <div
                 key={p.name}
                 onClick={() => handleProfChange(p.name)}
-                className={`snap-start w-full p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center flex flex-col items-center justify-center ${
+                className={`snap-start w-full p-4 rounded-xl border-[1.5px] bg-card cursor-pointer transition-all duration-150 text-center flex flex-col items-center justify-center active:scale-95 ${
                   selectedProf === p.name ? 'border-foreground bg-otj-off' : 'border-border hover:border-otj-muted hover:bg-otj-off'
                 }`}
               >
-                <div className="text-2xl mb-1">{p.icon}</div>
+                <div className="mb-2 text-foreground flex items-center justify-center"><p.icon size={22} /></div>
                 <div className="text-[12px] font-bold tracking-[-0.02em] text-foreground leading-tight">{p.name}</div>
               </div>
             ))}
@@ -157,7 +164,7 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
 
       <div className="mb-7">
         <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">
-          🏷️ Your Niches <span className="text-[11px] font-medium text-otj-text">— pick all that apply</span>
+          <Tag size={14} className="text-otj-muted shrink-0" /> Your Niches <span className="text-[11px] font-medium text-otj-text">— pick all that apply</span>
         </div>
         {filteredNiches.length > 0 ? (
           <div className="flex flex-wrap gap-2">
@@ -165,7 +172,7 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
               <div
                 key={n}
                 onClick={() => handleNicheToggle(n)}
-                className={`text-[12.5px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all duration-150 tracking-[-0.01em] select-none flex items-center gap-1.5 ${
+                className={`text-[12.5px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all duration-150 tracking-[-0.01em] select-none flex items-center gap-1.5 active:scale-95 ${
                   selectedNiches.has(n)
                     ? 'bg-primary border-primary text-primary-foreground'
                     : 'bg-card border-border text-otj-text hover:border-otj-muted hover:text-foreground hover:bg-otj-off'
@@ -182,7 +189,7 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
       </div>
 
       <div className="mb-7">
-        <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2">📍 Location & Experience</div>
+        <div className="text-[13px] font-bold tracking-[-0.02em] text-foreground mb-3.5 pb-2.5 border-b border-border flex items-center gap-2"><MapPin size={14} className="text-otj-muted shrink-0" /> Location & Experience</div>
         <div className="grid grid-cols-2 gap-3.5">
           <div className="flex flex-col gap-1.5">
             <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">City <span className="text-destructive">*</span></div>
@@ -201,7 +208,7 @@ export const Step1Panel: React.FC<Step1PanelProps> = ({ onNext, onSelectionsChan
 
       <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
         <div />
-        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 group">
+        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 active:scale-[0.98] group">
           Save & Continue <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
         </button>
       </div>
@@ -237,7 +244,7 @@ export const Step2Panel: React.FC<Step2PanelProps> = ({ onNext, onBack, selected
         <div className="flex items-center gap-5 mb-2">
           <div
             onClick={() => { setAvatarUploaded(true); showToast('Photo uploaded ✓'); }}
-            className="w-24 h-24 rounded-full border-2 border-dashed border-border bg-otj-off flex flex-col items-center justify-center cursor-pointer transition-all duration-200 shrink-0 relative overflow-hidden hover:border-foreground hover:bg-otj-light"
+            className="w-24 h-24 rounded-full border-2 border-dashed border-border bg-otj-off flex flex-col items-center justify-center cursor-pointer transition-all duration-200 shrink-0 relative overflow-hidden hover:border-foreground hover:bg-otj-light active:opacity-80"
           >
             {avatarUploaded ? (
               <div className="absolute inset-0 bg-otj-light flex items-center justify-center text-5xl">👩‍🎨</div>
@@ -290,8 +297,8 @@ export const Step2Panel: React.FC<Step2PanelProps> = ({ onNext, onBack, selected
       </div>
 
       <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
-        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">← Back</button>
-        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 group">
+        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground active:scale-95">← Back</button>
+        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 active:scale-[0.98] group">
           Save & Continue <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
         </button>
       </div>
@@ -325,7 +332,7 @@ export const Step3Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
                 setFilledSlots(next);
                 showToast('Photo added ✓');
               }}
-              className={`aspect-[4/3] rounded-xl border-[1.5px] flex flex-col items-center justify-center cursor-pointer transition-all duration-200 relative overflow-hidden ${
+              className={`aspect-[4/3] rounded-xl border-[1.5px] flex flex-col items-center justify-center cursor-pointer transition-all duration-200 relative overflow-hidden active:opacity-80 ${
                 filledSlots.has(i)
                   ? 'border-solid border-border'
                   : 'border-dashed border-border hover:border-foreground hover:bg-otj-light'
@@ -347,8 +354,8 @@ export const Step3Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
 
 
       <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
-        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">← Back</button>
-        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 group">
+        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground active:scale-95">← Back</button>
+        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 active:scale-[0.98] group">
           Save & Continue <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
         </button>
       </div>
@@ -394,7 +401,7 @@ export const Step4Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
             <div key={i} className="bg-card border-[1.5px] border-border rounded-[14px] p-[18px]">
               <div className="flex items-center justify-between mb-3.5">
                 <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">
-                  Package {i + 1}{i === 1 ? ' — Standard ⭐ Most Booked' : i === 0 ? ' — Starter' : ''}
+                  Package {i + 1}{i === 1 ? ' — Standard · Most Booked' : i === 0 ? ' — Starter' : ''}
                 </div>
                 <span onClick={() => { setPackages(packages.filter((_, j) => j !== i)); showToast('Package removed'); }} className="text-[11px] text-otj-muted cursor-pointer px-2 py-0.5 rounded-md border border-border transition-all duration-150 hover:text-destructive hover:border-destructive">Remove</span>
               </div>
@@ -480,8 +487,8 @@ export const Step4Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
       </div>
 
       <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
-        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">← Back</button>
-        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 group">
+        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground active:scale-95">← Back</button>
+        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 active:scale-[0.98] group">
           Save & Continue <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
         </button>
       </div>
@@ -532,8 +539,8 @@ export const Step5Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
       </div>
 
       <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
-        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">← Back</button>
-        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 group">
+        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground active:scale-95">← Back</button>
+        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 active:scale-[0.98] group">
           Save & Continue <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
         </button>
       </div>
@@ -608,8 +615,8 @@ export const Step6Panel: React.FC<StepPanelProps> = ({ onNext, onBack }) => {
       </div>
 
       <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
-        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">← Back</button>
-        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 group">
+        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground active:scale-95">← Back</button>
+        <button onClick={onNext} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-primary text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:bg-primary/90 active:scale-[0.98] group">
           Save & Continue <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
         </button>
       </div>
@@ -702,8 +709,8 @@ export const Step7Panel: React.FC<StepPanelProps & { onFinish: () => void }> = (
       </div>
 
       <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
-        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground">← Back</button>
-        <button onClick={onFinish} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:opacity-90">
+        <button onClick={onBack} className="text-[13px] font-bold px-5 py-[11px] rounded-full border-[1.5px] border-border bg-card text-otj-text cursor-pointer transition-all duration-150 tracking-[-0.01em] hover:border-foreground hover:text-foreground active:scale-95">← Back</button>
+        <button onClick={onFinish} className="text-[13.5px] font-bold px-7 py-3 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center gap-2 hover:opacity-90 active:scale-[0.98]">
           Finish Setup ✓
         </button>
       </div>

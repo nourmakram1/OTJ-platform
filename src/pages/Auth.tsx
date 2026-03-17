@@ -51,7 +51,7 @@ const Auth = () => {
     }
   };
 
-  const inputClass = "w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card placeholder:text-otj-muted";
+  const inputClass = "w-full px-3.5 py-2.5 rounded-[10px] border-[1.5px] border-border bg-otj-off text-[13.5px] text-foreground outline-none transition-all duration-150 focus:border-foreground focus:bg-card placeholder:text-otj-muted appearance-none";
 
   return (
     <>
@@ -72,7 +72,7 @@ const Auth = () => {
                 key={m}
                 onClick={() => setMode(m)}
                 className={`flex-1 py-2.5 rounded-full text-[13px] font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] ${
-                  mode === m ? 'bg-primary text-primary-foreground' : 'bg-transparent text-otj-text'
+                  mode === m ? 'bg-primary text-primary-foreground' : 'bg-transparent text-otj-text hover:bg-otj-off active:bg-otj-light'
                 }`}
               >
                 {m === 'signup' ? 'Sign Up' : 'Log In'}
@@ -86,7 +86,7 @@ const Auth = () => {
                 {/* Social sign-in buttons */}
                 <button
                   onClick={() => handleSocialSignIn('google')}
-                  className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2.5 hover:border-foreground hover:text-foreground"
+                  className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2.5 hover:border-foreground hover:text-foreground active:scale-[0.98]"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" className="shrink-0">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -99,7 +99,7 @@ const Auth = () => {
 
                 <button
                   onClick={() => handleSocialSignIn('apple')}
-                  className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2.5 hover:border-foreground hover:text-foreground"
+                  className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2.5 hover:border-foreground hover:text-foreground active:scale-[0.98]"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
                     <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
@@ -136,11 +136,11 @@ const Auth = () => {
                         onClick={() => setUserType(t)}
                         className={`flex-1 py-3 rounded-full border-[1.5px] text-[13px] font-bold cursor-pointer transition-all duration-150 capitalize ${
                           userType === t
-                            ? 'bg-primary border-primary text-primary-foreground'
-                            : 'bg-card border-border text-otj-text hover:border-foreground hover:text-foreground'
+                            ? 'bg-primary border-primary text-primary-foreground active:scale-95'
+                            : 'bg-card border-border text-otj-text hover:border-foreground hover:text-foreground active:scale-95'
                         }`}
                       >
-                        {t === 'client' ? '🏢 Client' : '🎨 Creative'}
+                        {t === 'client' ? 'Client' : 'Creative'}
                       </button>
                     ))}
                   </div>
@@ -152,7 +152,7 @@ const Auth = () => {
                   <span className="text-xs text-otj-text leading-relaxed">I agree to OTJ's <span className="text-foreground font-semibold underline cursor-pointer">Terms of Service</span> and <span className="text-foreground font-semibold underline cursor-pointer">Privacy Policy</span></span>
                 </label>
 
-                <button onClick={handleSubmit} className="w-full py-3 rounded-full border-none bg-primary text-primary-foreground text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-2 hover:bg-primary/90 group mt-1">
+                <button onClick={handleSubmit} className="w-full py-3 rounded-full border-none bg-primary text-primary-foreground text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-2 hover:bg-primary/90 active:scale-[0.98] group mt-1">
                   Create Account <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
                 </button>
               </div>
@@ -160,7 +160,7 @@ const Auth = () => {
               <div className="animate-fade-up flex flex-col gap-4">
                 <button
                   onClick={() => handleSocialSignIn('google')}
-                  className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2.5 hover:border-foreground hover:text-foreground"
+                  className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2.5 hover:border-foreground hover:text-foreground active:scale-[0.98]"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" className="shrink-0">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -173,7 +173,7 @@ const Auth = () => {
 
                 <button
                   onClick={() => handleSocialSignIn('apple')}
-                  className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2.5 hover:border-foreground hover:text-foreground"
+                  className="w-full py-2.5 rounded-full border-[1.5px] border-border bg-card text-[13px] font-bold text-otj-text cursor-pointer transition-all duration-150 flex items-center justify-center gap-2.5 hover:border-foreground hover:text-foreground active:scale-[0.98]"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="shrink-0">
                     <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
@@ -199,7 +199,7 @@ const Auth = () => {
                   </div>
                 </div>
 
-                <button onClick={handleSubmit} className="w-full py-3 rounded-full border-none bg-primary text-primary-foreground text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-2 hover:bg-primary/90 group">
+                <button onClick={handleSubmit} className="w-full py-3 rounded-full border-none bg-primary text-primary-foreground text-sm font-bold cursor-pointer transition-all duration-150 tracking-[-0.01em] flex items-center justify-center gap-2 hover:bg-primary/90 active:scale-[0.98] group">
                   Log In <span className="transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
                 </button>
               </div>

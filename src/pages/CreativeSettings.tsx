@@ -7,24 +7,24 @@ import { ProfileCompletenessCard } from '../components/ProfileCompleteness';
 import { Camera, LayoutGrid, Star, Bell, Settings, Shield, HelpCircle, LogOut, Trash2, ChevronRight, Crown, Check, X } from 'lucide-react';
 
 const professions = [
-  { icon: '📸', name: 'Photographer' },
-  { icon: '🎥', name: 'Videographer' },
-  { icon: '🎨', name: 'Graphic Designer' },
-  { icon: '✨', name: 'Motion Designer' },
-  { icon: '💼', name: 'Business & Marketing' },
-  { icon: '🏗️', name: 'Space Design' },
-  { icon: '💻', name: 'Tech Development' },
-  { icon: '🤖', name: 'AI Creator' },
-  { icon: '📱', name: 'Content Creator' },
-  { icon: '🎤', name: 'Talent' },
-  { icon: '✏️', name: 'Script Writer' },
-  { icon: '📝', name: 'Copywriter' },
-  { icon: '🎯', name: 'Brand Strategist' },
-  { icon: '📱', name: 'Social Media' },
-  { icon: '💄', name: 'MUA & Stylist' },
-  { icon: '🎬', name: 'Creative Director' },
-  { icon: '🎪', name: 'Event Producer' },
-  { icon: '➕', name: 'Other' },
+  { name: 'Photographer' },
+  { name: 'Videographer' },
+  { name: 'Graphic Designer' },
+  { name: 'Motion Designer' },
+  { name: 'Business & Marketing' },
+  { name: 'Space Design' },
+  { name: 'Tech Development' },
+  { name: 'AI Creator' },
+  { name: 'Content Creator' },
+  { name: 'Talent' },
+  { name: 'Script Writer' },
+  { name: 'Copywriter' },
+  { name: 'Brand Strategist' },
+  { name: 'Social Media' },
+  { name: 'MUA & Stylist' },
+  { name: 'Creative Director' },
+  { name: 'Event Producer' },
+  { name: 'Other' },
 ];
 
 const nicheMap: Record<string, string[]> = {
@@ -147,7 +147,7 @@ const CreativeSettings = () => {
                 <div
                   key={item.key}
                   onClick={() => setActiveSection(item.key)}
-                  className={`flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-accent ${i < menuItems.length - 1 ? 'border-b border-border' : ''}`}
+                  className={`flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-accent active:bg-accent ${i < menuItems.length - 1 ? 'border-b border-border' : ''}`}
                 >
                   <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shrink-0">
                     <item.icon className="w-[18px] h-[18px] text-muted-foreground" />
@@ -167,7 +167,7 @@ const CreativeSettings = () => {
                 <div
                   key={item.key}
                   onClick={() => setActiveSection(item.key)}
-                  className={`flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-accent ${i < menuItems2.length - 1 ? 'border-b border-border' : ''}`}
+                  className={`flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-accent active:bg-accent ${i < menuItems2.length - 1 ? 'border-b border-border' : ''}`}
                 >
                   <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shrink-0">
                     <item.icon className="w-[18px] h-[18px] text-muted-foreground" />
@@ -185,7 +185,7 @@ const CreativeSettings = () => {
             <div className="bg-card rounded-2xl border border-border overflow-hidden mb-4">
               <div
                 onClick={handleSignOut}
-                className="flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-accent border-b border-border"
+                className="flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-accent active:bg-accent border-b border-border"
               >
                 <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shrink-0">
                   <LogOut className="w-[18px] h-[18px] text-muted-foreground" />
@@ -196,7 +196,7 @@ const CreativeSettings = () => {
               </div>
               <div
                 onClick={handleDeleteAccount}
-                className="flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-destructive/5"
+                className="flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-destructive/5 active:bg-accent"
               >
                 <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
                   <Trash2 className="w-[18px] h-[18px] text-destructive" />
@@ -229,7 +229,7 @@ const CreativeSettings = () => {
   // Sub-section header with back button
   const SectionHeader = ({ title }: { title: string }) => (
     <div className="flex items-center gap-3 mb-6">
-      <button onClick={() => setActiveSection('hub')} className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer hover:bg-accent transition-colors text-foreground text-sm">←</button>
+      <button onClick={() => setActiveSection('hub')} className="w-8 h-8 rounded-full border border-border bg-card flex items-center justify-center cursor-pointer hover:bg-accent transition-colors text-foreground text-sm active:scale-95">←</button>
       <div className="text-lg font-extrabold tracking-[-0.03em] text-foreground">{title}</div>
     </div>
   );
@@ -256,10 +256,9 @@ const CreativeSettings = () => {
                 <div className="grid grid-cols-3 gap-2 mb-4">
                   {filteredProfessions.map(p => (
                     <div key={p.name} onClick={() => { setProfession(p.name); setSelectedNiches(new Set()); }}
-                      className={`p-3 rounded-xl border-[1.5px] cursor-pointer transition-all text-center ${
+                      className={`p-3 rounded-xl border-[1.5px] cursor-pointer transition-all text-center active:scale-95 ${
                         profession === p.name ? 'border-foreground bg-accent' : 'border-border hover:border-muted-foreground'
                       }`}>
-                      <div className="text-xl mb-0.5">{p.icon}</div>
                       <div className="text-[11px] font-bold text-foreground leading-tight">{p.name}</div>
                     </div>
                   ))}
@@ -269,7 +268,7 @@ const CreativeSettings = () => {
                 <div className="flex flex-wrap gap-1.5">
                   {filteredNiches.map(n => (
                     <div key={n} onClick={() => { const next = new Set(selectedNiches); next.has(n) ? next.delete(n) : next.add(n); setSelectedNiches(next); }}
-                      className={`text-[12px] font-semibold px-3.5 py-1.5 rounded-full border-[1.5px] cursor-pointer transition-all select-none ${
+                      className={`text-[12px] font-semibold px-3.5 py-1.5 rounded-full border-[1.5px] cursor-pointer transition-all select-none active:scale-95 ${
                         selectedNiches.has(n) ? 'bg-primary border-primary text-primary-foreground' : 'bg-card border-border text-muted-foreground hover:border-muted-foreground'
                       }`}>{n}</div>
                   ))}
@@ -302,9 +301,11 @@ const CreativeSettings = () => {
                   <div onClick={() => { setAvatarUploaded(true); showToast('Photo updated ✓'); }}
                     className="w-20 h-20 rounded-full border-2 border-dashed border-border bg-accent flex items-center justify-center cursor-pointer transition-all shrink-0 relative overflow-hidden hover:border-foreground">
                     {avatarUploaded ? (
-                      <div className="absolute inset-0 bg-accent flex items-center justify-center text-4xl">👩‍🎨</div>
+                      <div className="absolute inset-0 bg-accent flex items-center justify-center">
+                        <span className="text-[20px] font-extrabold text-muted-foreground">NM</span>
+                      </div>
                     ) : (
-                      <div className="text-2xl">📷</div>
+                      <Camera className="w-6 h-6 text-muted-foreground" />
                     )}
                   </div>
                   <div className="text-xs text-muted-foreground">Square photo, min 400×400px</div>
@@ -353,13 +354,13 @@ const CreativeSettings = () => {
                     </div>
                   ))}
                   <button onClick={() => setLinks([...links, { label: '', url: '' }])}
-                    className="text-[12px] font-semibold text-primary cursor-pointer bg-transparent border-none text-left hover:underline">
+                    className="text-[12px] font-semibold text-primary cursor-pointer bg-transparent border-none text-left hover:underline active:scale-95">
                     ＋ Add link
                   </button>
                 </div>
               </div>
 
-              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none">
+              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none active:scale-[0.98]">
                 Save Changes
               </button>
             </div>
@@ -374,14 +375,14 @@ const CreativeSettings = () => {
                 <div className="text-[12px] text-muted-foreground mb-4">First image becomes your cover on Explore.</div>
                 <div className="grid grid-cols-3 gap-2 mb-3">
                   {[0,1,2,3,4,5,6,7,8,9,10,11].map(i => {
-                    const emojis = ['🌆','👗','🎭','🌸','🔥','⚡','📸','🎨','🌊','🏙️','🌿','✨'];
+                    const gradients = ['from-[#1a1a2e] to-[#16213e]','from-[#2d1b4e] to-[#11998e]','from-[#2c3e50] to-[#3498db]','from-[#1a1a2e] to-[#e44d26]','from-[#0f2027] to-[#2c5364]','from-[#373b44] to-[#4286f4]','from-[#1a1a2e] to-[#16213e]','from-[#2c3e50] to-[#3498db]','from-[#0f2027] to-[#2c5364]','from-[#2d1b4e] to-[#11998e]','from-[#1a1a2e] to-[#e44d26]','from-[#373b44] to-[#4286f4]'];
                     return (
                       <div key={i} onClick={() => { const next = new Set(filledSlots); next.has(i) ? next.delete(i) : next.add(i); setFilledSlots(next); }}
                         className={`aspect-[4/3] rounded-xl border-[1.5px] flex items-center justify-center cursor-pointer transition-all relative overflow-hidden ${
                           filledSlots.has(i) ? 'border-border' : 'border-dashed border-border hover:border-foreground'
                         } bg-accent`}>
                         {filledSlots.has(i) ? (
-                          <div className="text-[32px]">{emojis[i]}</div>
+                          <div className={`absolute inset-0 bg-gradient-to-br ${gradients[i]}`} />
                         ) : (
                           <div className="text-xl text-muted-foreground">+</div>
                         )}
@@ -390,7 +391,7 @@ const CreativeSettings = () => {
                   })}
                 </div>
               </div>
-              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none">
+              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none active:scale-[0.98]">
                 Save Changes
               </button>
             </div>
@@ -409,7 +410,7 @@ const CreativeSettings = () => {
                   <div key={key} className="flex items-center justify-between py-3 border-b border-border last:border-0">
                     <div className="text-[13px] text-foreground capitalize">{key === 'marketing' ? 'Marketing & tips' : key}</div>
                     <button onClick={() => setNotifEmail(p => ({ ...p, [key]: !p[key as keyof typeof p] }))}
-                      className={`w-10 h-6 rounded-full transition-colors cursor-pointer border-none relative ${val ? 'bg-primary' : 'bg-muted'}`}>
+                      className={`w-10 h-6 rounded-full transition-colors cursor-pointer border-none relative active:scale-95 ${val ? 'bg-primary' : 'bg-muted'}`}>
                       <div className={`absolute top-1 w-4 h-4 rounded-full bg-card transition-all ${val ? 'left-5' : 'left-1'}`} />
                     </button>
                   </div>
@@ -424,7 +425,7 @@ const CreativeSettings = () => {
                   <div key={key} className="flex items-center justify-between py-3 border-b border-border last:border-0">
                     <div className="text-[13px] text-foreground capitalize">{key === 'marketing' ? 'Marketing & tips' : key}</div>
                     <button onClick={() => setNotifPush(p => ({ ...p, [key]: !p[key as keyof typeof p] }))}
-                      className={`w-10 h-6 rounded-full transition-colors cursor-pointer border-none relative ${val ? 'bg-primary' : 'bg-muted'}`}>
+                      className={`w-10 h-6 rounded-full transition-colors cursor-pointer border-none relative active:scale-95 ${val ? 'bg-primary' : 'bg-muted'}`}>
                       <div className={`absolute top-1 w-4 h-4 rounded-full bg-card transition-all ${val ? 'left-5' : 'left-1'}`} />
                     </button>
                   </div>
@@ -439,14 +440,14 @@ const CreativeSettings = () => {
                   <div key={key} className="flex items-center justify-between py-3 border-b border-border last:border-0">
                     <div className="text-[13px] text-foreground capitalize">{key === 'marketing' ? 'Marketing & tips' : key}</div>
                     <button onClick={() => setNotifInApp(p => ({ ...p, [key]: !p[key as keyof typeof p] }))}
-                      className={`w-10 h-6 rounded-full transition-colors cursor-pointer border-none relative ${val ? 'bg-primary' : 'bg-muted'}`}>
+                      className={`w-10 h-6 rounded-full transition-colors cursor-pointer border-none relative active:scale-95 ${val ? 'bg-primary' : 'bg-muted'}`}>
                       <div className={`absolute top-1 w-4 h-4 rounded-full bg-card transition-all ${val ? 'left-5' : 'left-1'}`} />
                     </button>
                   </div>
                 ))}
               </div>
 
-              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none">
+              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none active:scale-[0.98]">
                 Save Preferences
               </button>
             </div>
@@ -504,7 +505,7 @@ const CreativeSettings = () => {
                 <div className="text-[13px] font-bold text-foreground mb-1">Payment Method</div>
                 <div className="text-[12px] text-muted-foreground mb-4">How clients pay you for completed work</div>
                 <div className="flex flex-col gap-3">
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {['instapay', 'bank', 'vodafone-cash'].map(m => (
                       <button key={m} onClick={() => setPaymentMethod(m)}
                         className={`text-[12px] font-semibold px-4 py-2 rounded-full border-[1.5px] cursor-pointer transition-all ${
@@ -524,7 +525,7 @@ const CreativeSettings = () => {
                 </div>
               </div>
 
-              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none">
+              <button onClick={handleSave} className="w-full text-[13.5px] font-bold py-3 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none active:scale-[0.98]">
                 Save Changes
               </button>
             </div>
@@ -541,7 +542,7 @@ const CreativeSettings = () => {
                   <div className={`text-[11px] font-bold uppercase tracking-[0.08em] px-3 py-1 rounded-full ${
                     currentPlan === 'pro' ? 'bg-primary text-primary-foreground' : 'bg-accent text-muted-foreground'
                   }`}>
-                    {currentPlan === 'pro' ? '⭐ Pro' : 'Free'}
+                    {currentPlan === 'pro' ? 'Pro' : 'Free'}
                   </div>
                 </div>
                 <div className="text-[13px] text-muted-foreground mt-2">
@@ -570,7 +571,7 @@ const CreativeSettings = () => {
                         ) : (
                           <X className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0" />
                         )}
-                        <span className={`text-[12px] ${f.included ? 'text-foreground' : 'text-muted-foreground/50'}`}>{f.text}</span>
+                        <span className={`text-[11px] sm:text-[12px] break-words ${f.included ? 'text-foreground' : 'text-muted-foreground/50'}`}>{f.text}</span>
                       </div>
                     ))}
                   </div>
@@ -597,15 +598,15 @@ const CreativeSettings = () => {
                     ].map((f, i) => (
                       <div key={i} className="flex items-center gap-2">
                         <Check className="w-3.5 h-3.5 text-foreground shrink-0" />
-                        <span className="text-[12px] text-foreground">{f}</span>
+                        <span className="text-[11px] sm:text-[12px] break-words text-foreground">{f}</span>
                       </div>
                     ))}
                   </div>
                   {currentPlan === 'pro' ? (
                     <div className="mt-4 text-[11px] font-bold text-center text-muted-foreground uppercase tracking-[0.08em]">Current plan</div>
                   ) : (
-                    <button onClick={() => { setCurrentPlan('pro'); showToast('🎉 Upgraded to Pro!'); }}
-                      className="mt-4 w-full text-[12.5px] font-bold py-2.5 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none">
+                    <button onClick={() => { setCurrentPlan('pro'); showToast('Upgraded to Pro!'); }}
+                      className="mt-4 w-full text-[12.5px] font-bold py-2.5 rounded-full bg-primary text-primary-foreground cursor-pointer transition-colors hover:bg-primary/90 border-none active:scale-[0.98]">
                       Upgrade to Pro
                     </button>
                   )}
