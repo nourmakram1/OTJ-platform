@@ -325,21 +325,36 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
 
       {/* Right sidebar — Brief summary + Schedule preview */}
       <div className="flex flex-col gap-4 order-1 md:order-2">
-        <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-4">
-          <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-blue mb-3">Client's Brief</div>
-          {[
-            { label: 'Project Type', val: project.projectType },
-            { label: 'Mood & Aesthetic', val: project.moodAesthetic || 'Not specified' },
-            { label: 'Requested Deliverables', val: project.deliverables },
-            { label: 'Usage Rights', val: project.usageRights || 'Not specified' },
-            { label: 'Budget', val: project.budget },
-            { label: 'Date', val: project.deadline },
-          ].map((f, i) => (
-            <div key={i} className="mb-2.5 last:mb-0">
-              <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-0.5">{f.label}</div>
-              <div className="text-[12px] font-medium text-foreground leading-snug">{f.val}</div>
+        <div className="bg-card border border-border rounded-[14px] overflow-hidden">
+          <div className="px-4 py-3 border-b border-border">
+            <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-otj-muted">Client's Brief</div>
+          </div>
+          <div className="px-4 py-3">
+            {/* Key stats grid */}
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              {[
+                { label: 'Budget', val: project.budget },
+                { label: 'Deadline', val: project.deadline },
+                { label: 'Project Type', val: project.projectType },
+                { label: 'Usage Rights', val: project.usageRights || '—' },
+              ].map((stat) => (
+                <div key={stat.label} className="bg-otj-off border border-border rounded-[10px] px-3 py-2">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-0.5">{stat.label}</div>
+                  <div className="text-[12px] font-extrabold tracking-[-0.02em] text-foreground leading-snug">{stat.val}</div>
+                </div>
+              ))}
             </div>
-          ))}
+            {/* Detail fields */}
+            {[
+              { label: 'Mood & Aesthetic', val: project.moodAesthetic || 'Not specified' },
+              { label: 'Requested Deliverables', val: project.deliverables },
+            ].map((f, i) => (
+              <div key={i} className="mb-3 last:mb-0">
+                <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1">{f.label}</div>
+                <p className="text-[12px] text-foreground leading-relaxed">{f.val}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Schedule preview */}
