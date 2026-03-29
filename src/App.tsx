@@ -16,6 +16,7 @@ import ClientProfile from "./pages/ClientProfile";
 import CreativeSettings from "./pages/CreativeSettings";
 import DesignExport from "./pages/DesignExport";
 import DashboardPreview from "./pages/DashboardPreview";
+import Archive from "./pages/Archive";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/client/:id" element={<ClientProfile />} />
               <Route path="/settings" element={<CreativeSettings />} />
               <Route path="/designs" element={<DesignExport />} />
+              <Route path="/archive" element={<Archive />} />
               <Route path="/dashboard-preview" element={<DashboardPreview />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
