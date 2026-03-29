@@ -380,6 +380,13 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
           </div>
         )}
 
+const surveyQuestions = [
+  'What is the shoot purpose or campaign goal?',
+  'What mood or aesthetic are you going for?',
+  'What is the subject or product being shot?',
+  'How many final deliverables do you need?',
+  'Where will the content be used? (Social, print, ads…)',
+];
 
         <div className="bg-card border border-border rounded-[14px] p-4">
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">📅 Schedule Preview</div>
