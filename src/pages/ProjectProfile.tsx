@@ -325,13 +325,12 @@ const ProjectProfile = () => {
               {activeTab === 1 && (
                 <div className="animate-fade-up flex flex-col gap-4">
 
-                  {/* ── Brief overview card (mirrors BriefProfile hero) ── */}
+                  {/* ── Brief Hero (matches BriefProfile) ── */}
                   <div className="bg-card border border-border rounded-[14px] overflow-hidden">
-
-                    {/* Header: title + badge + date */}
                     <div className="px-5 pt-5 pb-4">
+                      {/* Title + badge + date */}
                       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 mb-2">
-                        <h2 className="text-[22px] md:text-[24px] font-extrabold tracking-[-0.04em] text-foreground leading-tight">{proj.name}</h2>
+                        <h2 className="text-[24px] md:text-[28px] font-extrabold tracking-[-0.04em] text-foreground leading-tight">{proj.name}</h2>
                         {proj.status === 'active' && (
                           <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border shrink-0 self-center">Active</span>
                         )}
@@ -344,11 +343,11 @@ const ProjectProfile = () => {
                         {proj.status === 'proposal' && (
                           <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-blue-bg text-otj-blue border border-otj-blue-border shrink-0 self-center">Proposal Pending</span>
                         )}
-                        <span className="text-[11px] text-otj-muted self-center">Submitted {proj.createdAt}</span>
+                        <span className="text-[11px] text-otj-muted self-center">{proj.createdAt}</span>
                       </div>
 
                       {/* Client + location */}
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-otj-text mb-3.5">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-otj-text mb-4">
                         <span>
                           <span
                             className="font-semibold text-foreground cursor-pointer hover:underline"
@@ -373,23 +372,21 @@ const ProjectProfile = () => {
                         </div>
                       )}
                     </div>
+                  </div>
 
-                    {/* Stats strip inside card */}
-                    <div className="border-t border-border px-5 py-4 bg-otj-off">
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        {[
-                          { label: 'Budget',       value: proj.budget },
-                          { label: 'Deadline',     value: proj.deadline },
-                          { label: 'Project Type', value: proj.projectType },
-                          { label: 'Usage Rights', value: proj.usageRights || '—' },
-                        ].map((s) => (
-                          <div key={s.label} className="bg-card border border-border rounded-[12px] px-3.5 py-2.5">
-                            <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-0.5">{s.label}</div>
-                            <div className="text-[13px] font-extrabold tracking-[-0.02em] text-foreground leading-snug">{s.value}</div>
-                          </div>
-                        ))}
+                  {/* ── Key Stats Strip (separate like BriefProfile) ── */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    {[
+                      { label: 'Budget', value: proj.budget },
+                      { label: 'Deadline', value: proj.deadline },
+                      { label: 'Project Type', value: proj.projectType },
+                      { label: 'Usage Rights', value: proj.usageRights || '—' },
+                    ].map((stat) => (
+                      <div key={stat.label} className="bg-otj-off border border-border rounded-[12px] px-3.5 py-2.5">
+                        <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-0.5">{stat.label}</div>
+                        <div className="text-[13px] font-extrabold tracking-[-0.02em] text-foreground leading-snug">{stat.value}</div>
                       </div>
-                    </div>
+                    ))}
                   </div>
 
                   {/* ── Project Description ── */}
@@ -426,7 +423,7 @@ const ProjectProfile = () => {
                         <div className="px-5 py-4 border-b border-border flex items-center justify-between gap-3">
                           <div>
                             <div className="text-[13px] font-extrabold tracking-[-0.03em]">Brief Survey</div>
-                            <div className="text-[11px] text-otj-muted mt-[2px]">{answered} of {surveyQuestions.length} questions answered</div>
+                            <div className="text-[11px] text-otj-muted mt-[2px]">{answered} of {surveyQuestions.length} questions answered by client</div>
                           </div>
                           <span className={`text-[11px] font-bold px-2.5 py-[3px] rounded-full border shrink-0 ${
                             answered === surveyQuestions.length
@@ -440,7 +437,7 @@ const ProjectProfile = () => {
                           {surveyQuestions.map((q, i) => {
                             const answer = proj.surveyAnswers?.[i];
                             return (
-                              <div key={i} className="px-5 py-4">
+                              <div key={i} className="px-5 py-5">
                                 <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">{q}</div>
                                 {answer ? (
                                   <p className="text-[14px] text-foreground leading-[1.75] tracking-[-0.015em]">{answer}</p>
