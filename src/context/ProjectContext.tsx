@@ -168,7 +168,8 @@ interface ProjectContextType {
   setUserRole: (role: UserRole) => void;
   pendingBriefs: BriefData[];
   activeProjects: ProjectData[];
-  completedProjects: { icon: string; name: string; client: string; earned: string; creativeName?: string; creativeId?: string }[];
+  completedProjects: CompletedProjectData[];
+  getCompletedProject: (id: string) => CompletedProjectData | undefined;
   acceptBrief: (briefId: string) => string;
   getBrief: (id: string) => BriefData | undefined;
   getProject: (id: string) => ProjectData | undefined;
