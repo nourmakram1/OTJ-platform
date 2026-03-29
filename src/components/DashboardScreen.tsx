@@ -19,6 +19,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
   const { percentage } = useProfileCompleteness();
   const [projectTab, setProjectTab] = useState<'pending' | 'active' | 'complete'>('pending');
   const [roleFilter, setRoleFilter] = useState<'all' | 'hired' | 'booked'>('all');
+  const [selectedCompleted, setSelectedCompleted] = useState<typeof completedProjects[number] | null>(null);
 
   return (
     <div className="max-w-[1100px] mx-auto p-4 md:p-6 pb-20 md:pb-6">
