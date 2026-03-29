@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { format, parseISO, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, getWeek } from 'date-fns';
 import { showToast } from './Toast';
 import { useProjects, MeetingData } from '../context/ProjectContext';
-import { Star, PartyPopper, Zap, Sparkles, Calendar, Users2, CheckSquare2, Clock, Plus, Briefcase, Lock, RotateCcw } from 'lucide-react';
+import { Star, PartyPopper, Zap, Sparkles, Calendar, Users2, CheckSquare2, Clock, Plus, Briefcase, Lock, RotateCcw, X } from 'lucide-react';
 import { ProfileCompletenessCard, useProfileCompleteness } from './ProfileCompleteness';
 
 interface DashboardScreenProps {
