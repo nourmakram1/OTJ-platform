@@ -1081,8 +1081,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setClients(prev => prev.map(c => c.id === clientId ? { ...c, ...updates } : c));
   }, []);
 
+  const getCompletedProject = useCallback((id: string) => completedProjects.find(p => p.id === id), [completedProjects]);
+
   return (
-    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, updateClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask }}>
+    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, getCompletedProject, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, updateClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask }}>
       {children}
     </ProjectContext.Provider>
   );
