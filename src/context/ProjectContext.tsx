@@ -116,6 +116,33 @@ export interface ProjectData {
   myRole?: ProjectRole;
 }
 
+export interface CompletedProjectData {
+  id: string;
+  icon: string;
+  name: string;
+  client: string;
+  earned: string;
+  creativeName?: string;
+  creativeId?: string;
+  clientName: string;
+  clientCompany: string;
+  clientEmail: string;
+  clientPhone: string;
+  projectType: string;
+  location?: string;
+  description?: string;
+  tags?: string[];
+  moodAesthetic: string;
+  deliverables: string;
+  proposalDeliverables: string[];
+  phases: PhaseData[];
+  paymentMilestones: PaymentMilestone[];
+  paymentMethod?: PaymentMethod;
+  completedDate: string;
+  startedDate: string;
+  reviews: ReviewData[];
+}
+
 export interface NotificationData {
   id: string;
   icon: string;
