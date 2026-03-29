@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { format, parseISO, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, getWeek } from 'date-fns';
 import { showToast } from './Toast';
 import { useProjects, MeetingData } from '../context/ProjectContext';
-import { Star, PartyPopper, Zap, Sparkles, Calendar, Users2, CheckSquare2, Clock, Plus, Briefcase, Lock, RotateCcw } from 'lucide-react';
+import { Star, PartyPopper, Zap, Sparkles, Calendar, Users2, CheckSquare2, Clock, Plus, Briefcase, Lock, RotateCcw, X } from 'lucide-react';
 import { ProfileCompletenessCard, useProfileCompleteness } from './ProfileCompleteness';
 
 interface DashboardScreenProps {
@@ -19,6 +19,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
   const { percentage } = useProfileCompleteness();
   const [projectTab, setProjectTab] = useState<'pending' | 'active' | 'complete'>('pending');
   const [roleFilter, setRoleFilter] = useState<'all' | 'hired' | 'booked'>('all');
+  const [selectedCompleted, setSelectedCompleted] = useState<typeof completedProjects[number] | null>(null);
 
   return (
     <div className="max-w-[1100px] mx-auto p-4 md:p-6 pb-20 md:pb-6">
@@ -223,34 +224,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
               </div>
             )}
             {completedProjects.map((proj, i) => (
-              <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex items-start justify-between gap-3 transition-all duration-150 hover:shadow-md hover:border-otj-muted group">
+              <div key={i} onClick={() => setSelectedCompleted(proj)} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex items-start justify-between gap-3 cursor-pointer transition-all duration-150 hover:shadow-md hover:border-otj-muted active:shadow-sm">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate">{proj.name}</span>
                     <Lock size={11} className="text-otj-muted shrink-0" />
                   </div>
                   <div className="text-[11.5px] text-otj-text">{proj.client}</div>
-                  {proj.creativeName && (
-                    <div
-                      className="text-[11.5px] text-[hsl(var(--otj-blue))] font-semibold mt-0.5 cursor-pointer hover:underline w-fit"
-                      onClick={() => navigate(`/creative/${proj.creativeId}`)}
-                    >
-                      {proj.creativeName} →
-                    </div>
-                  )}
                 </div>
-                <div className="flex flex-col items-end gap-1.5 shrink-0">
+                <div className="flex flex-col items-end gap-1 shrink-0">
                   <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border whitespace-nowrap">Complete</span>
                   <div className="text-[12px] font-extrabold text-otj-green whitespace-nowrap">{proj.earned}</div>
-                  {proj.creativeName && (
-                    <button
-                      onClick={() => navigate(`/creative/${proj.creativeId}`)}
-                      className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-primary text-primary-foreground border-none cursor-pointer transition-all duration-150 hover:opacity-90 opacity-0 group-hover:opacity-100"
-                    >
-                      <RotateCcw size={9} />
-                      Rebook
-                    </button>
-                  )}
                 </div>
               </div>
             ))}
@@ -289,6 +273,87 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
           </div>
         </div>
       </div>
+
+      {/* Completed Project Detail Modal */}
+      {selectedCompleted && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setSelectedCompleted(null)}>
+          <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" />
+          <div
+            className="relative bg-card border border-border rounded-[16px] w-full max-w-[440px] overflow-hidden animate-fade-up shadow-xl"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="px-5 py-4 border-b border-border flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[16px]">{selectedCompleted.icon}</span>
+                  <h2 className="text-[16px] font-extrabold tracking-[-0.03em] text-foreground truncate">{selectedCompleted.name}</h2>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border">Complete</span>
+                  <Lock size={11} className="text-otj-muted" />
+                  <span className="text-[11px] text-otj-muted">Archived</span>
+                </div>
+              </div>
+              <button onClick={() => setSelectedCompleted(null)} className="p-1.5 rounded-lg hover:bg-muted transition-colors cursor-pointer">
+                <X size={16} className="text-otj-muted" />
+              </button>
+            </div>
+
+            {/* Details */}
+            <div className="px-5 py-4 flex flex-col gap-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-otj-off border border-border rounded-[10px] px-3 py-2">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-0.5">Earned</div>
+                  <div className="text-[14px] font-extrabold text-otj-green">{selectedCompleted.earned}</div>
+                </div>
+                <div className="bg-otj-off border border-border rounded-[10px] px-3 py-2">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-0.5">Status</div>
+                  <div className="text-[14px] font-extrabold text-foreground">{selectedCompleted.client}</div>
+                </div>
+              </div>
+
+              {/* Creative — clickable */}
+              {selectedCompleted.creativeName && (
+                <div className="bg-otj-off border border-border rounded-[10px] px-3 py-3">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Creative</div>
+                  <div
+                    className="text-[14px] font-bold text-[hsl(var(--otj-blue))] cursor-pointer hover:underline w-fit"
+                    onClick={() => {
+                      setSelectedCompleted(null);
+                      navigate(`/creative/${selectedCompleted.creativeId}`);
+                    }}
+                  >
+                    {selectedCompleted.creativeName} →
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-5 py-3 border-t border-border flex items-center justify-between gap-2">
+              <button
+                onClick={() => setSelectedCompleted(null)}
+                className="text-[12px] font-bold px-4 py-2 rounded-full border border-border bg-transparent text-otj-text cursor-pointer hover:text-foreground hover:border-foreground transition-all duration-150"
+              >
+                Close
+              </button>
+              {selectedCompleted.creativeName && (
+                <button
+                  onClick={() => {
+                    setSelectedCompleted(null);
+                    navigate(`/creative/${selectedCompleted.creativeId}`);
+                  }}
+                  className="flex items-center gap-1.5 text-[12px] font-bold px-4 py-2 rounded-full bg-primary text-primary-foreground border-none cursor-pointer hover:opacity-90 transition-all duration-150"
+                >
+                  <RotateCcw size={11} />
+                  Rebook Creative
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
