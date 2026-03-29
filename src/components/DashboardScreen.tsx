@@ -223,34 +223,30 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
               </div>
             )}
             {completedProjects.map((proj, i) => (
-              <div key={i} onClick={() => navigate(`/completed/${proj.id}`)} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex items-start justify-between gap-3 transition-all duration-150 hover:shadow-md hover:border-otj-muted group cursor-pointer">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate">{proj.name}</span>
-                    <Lock size={11} className="text-otj-muted shrink-0" />
-                  </div>
-                  <div className="text-[11.5px] text-otj-text">{proj.client}</div>
-                  {proj.creativeName && (
-                    <div
-                      className="text-[11.5px] text-[hsl(var(--otj-blue))] font-semibold mt-0.5 cursor-pointer hover:underline w-fit"
-                      onClick={() => navigate(`/creative/${proj.creativeId}`)}
-                    >
-                      {proj.creativeName} →
-                    </div>
-                  )}
+              <div key={i} onClick={() => navigate(`/completed/${proj.id}`)} className="bg-card border border-border rounded-[14px] p-3.5 px-4 cursor-pointer transition-all duration-150 hover:shadow-md hover:border-otj-muted active:shadow-sm">
+                {/* Row 1: Name + complete badge */}
+                <div className="flex items-center justify-between gap-2 mb-0.5">
+                  <span className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate min-w-0">{proj.name}</span>
+                  <span className="text-[9px] font-bold px-1.5 py-[1px] rounded-full border shrink-0 bg-otj-green-bg text-otj-green border-otj-green-border">Complete</span>
                 </div>
-                <div className="flex flex-col items-end gap-1.5 shrink-0">
-                  <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border whitespace-nowrap">Complete</span>
-                  <div className="text-[12px] font-extrabold text-otj-green whitespace-nowrap">{proj.earned}</div>
-                  {proj.creativeName && (
-                    <button
-                      onClick={() => navigate(`/creative/${proj.creativeId}`)}
-                      className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-primary text-primary-foreground border-none cursor-pointer transition-all duration-150 hover:opacity-90 opacity-0 group-hover:opacity-100"
-                    >
-                      <RotateCcw size={9} />
-                      Rebook
-                    </button>
-                  )}
+                {/* Row 2: Client info */}
+                <div className="text-[11.5px] text-otj-text mb-1.5">Client: {proj.clientName} · {proj.clientCompany}</div>
+                {/* Row 3: Progress bars — all green */}
+                <div className="flex items-center gap-2 mb-1.5">
+                  <div className="flex gap-[3px] flex-1">
+                    {proj.phases.map((phase) => (
+                      <div key={phase.num} className="h-1 flex-1 rounded-full bg-otj-green" />
+                    ))}
+                  </div>
+                  <span className="text-[11px] font-extrabold text-foreground shrink-0">100%</span>
+                </div>
+                {/* Row 4: Status tag + completed date (left) + earned (right) */}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green">All Phases Done ✓</div>
+                    <div className="text-[10.5px] text-otj-muted">{proj.client}</div>
+                  </div>
+                  <div className="text-[12px] font-extrabold text-foreground shrink-0">{proj.earned}</div>
                 </div>
               </div>
             ))}
