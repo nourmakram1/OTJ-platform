@@ -50,7 +50,7 @@ const CompletedProjectProfile = () => {
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1">
                 <div className="text-[18px] md:text-[22px] font-extrabold tracking-[-0.04em] text-foreground">{proj.name}</div>
-                <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border">Completed ✓</span>
+                <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border">Completed</span>
                 <CheckCircle2 className="w-4 h-4 text-[hsl(var(--otj-green))]" />
                 <Lock size={13} className="text-otj-muted" />
               </div>
