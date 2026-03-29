@@ -242,7 +242,7 @@ const CompletedProjectProfile = () => {
                   <div key={i} className="bg-card border border-border rounded-[10px] p-3.5 px-4 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-otj-green-bg flex items-center justify-center"><Package className="w-4 h-4 text-otj-green" /></div>
                     <div className="text-[13px] font-medium text-foreground flex-1">{d}</div>
-                    <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-otj-green-bg text-otj-green">Delivered ✓</span>
+                    <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-otj-green-bg text-otj-green">Delivered</span>
                   </div>
                 ))}
               </div>
