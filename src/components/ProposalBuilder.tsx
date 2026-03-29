@@ -7,6 +7,14 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { PhaseData, ProjectData, PaymentMilestone, PaymentMethod } from '../context/ProjectContext';
 
+const surveyQuestions = [
+  'What is the shoot purpose or campaign goal?',
+  'What mood or aesthetic are you going for?',
+  'What is the subject or product being shot?',
+  'How many final deliverables do you need?',
+  'Where will the content be used? (Social, print, ads…)',
+];
+
 interface ProposalBuilderProps {
   project: ProjectData;
   onSubmit: (phases: PhaseData[], deliverables: string[], price: string, milestones: PaymentMilestone[], paymentMethod: PaymentMethod) => void;
@@ -357,7 +365,37 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
           </div>
         </div>
 
-        {/* Schedule preview */}
+        {/* Brief Survey */}
+        {project.surveyAnswers && project.surveyAnswers.filter(Boolean).length > 0 && (
+          <div className="bg-card border border-border rounded-[14px] overflow-hidden">
+            <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-otj-muted">Brief Survey</div>
+              <span className="text-[10px] font-bold px-2 py-[2px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border">
+                {project.surveyAnswers.filter(Boolean).length}/{surveyQuestions.length}
+              </span>
+            </div>
+            <div className="divide-y divide-border">
+              {surveyQuestions.map((q, i) => {
+                const answer = project.surveyAnswers?.[i];
+                return answer ? (
+                  <div key={i} className="px-4 py-3">
+                    <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1">{q}</div>
+                    <p className="text-[12px] text-foreground leading-relaxed">{answer}</p>
+                  </div>
+                ) : null;
+              })}
+            </div>
+          </div>
+        )}
+
+const surveyQuestions = [
+  'What is the shoot purpose or campaign goal?',
+  'What mood or aesthetic are you going for?',
+  'What is the subject or product being shot?',
+  'How many final deliverables do you need?',
+  'Where will the content be used? (Social, print, ads…)',
+];
+
         <div className="bg-card border border-border rounded-[14px] p-4">
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">📅 Schedule Preview</div>
           {phases.filter(p => p.title.trim()).length === 0 ? (
