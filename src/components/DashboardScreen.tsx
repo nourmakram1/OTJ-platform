@@ -223,7 +223,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
               </div>
             )}
             {completedProjects.map((proj, i) => (
-              <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex items-start justify-between gap-3 transition-all duration-150 hover:shadow-md hover:border-otj-muted group">
+              <div key={i} onClick={() => navigate(`/completed/${proj.id}`)} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex items-start justify-between gap-3 transition-all duration-150 hover:shadow-md hover:border-otj-muted group cursor-pointer">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate">{proj.name}</span>

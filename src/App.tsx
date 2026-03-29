@@ -15,6 +15,7 @@ import CreativeProfile from "./pages/CreativeProfile";
 import ClientProfile from "./pages/ClientProfile";
 import CreativeSettings from "./pages/CreativeSettings";
 import DesignExport from "./pages/DesignExport";
+import CompletedProjectProfile from "./pages/CompletedProjectProfile";
 import DashboardPreview from "./pages/DashboardPreview";
 import Archive from "./pages/Archive";
 import NotFound from "./pages/NotFound";
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/creative/:id" element={<CreativeProfile />} />
               <Route path="/client/:id" element={<ClientProfile />} />
               <Route path="/settings" element={<CreativeSettings />} />
+              <Route path="/completed/:id" element={<CompletedProjectProfile />} />
               <Route path="/designs" element={<DesignExport />} />
               <Route path="/archive" element={<Archive />} />
               <Route path="/dashboard-preview" element={<DashboardPreview />} />

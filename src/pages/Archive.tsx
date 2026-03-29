@@ -127,7 +127,8 @@ const Archive = () => {
             {filtered.map((item, i) => (
               <div
                 key={i}
-                className="bg-card border border-border rounded-[14px] p-4 hover:shadow-sm transition-all duration-150 group"
+                className="bg-card border border-border rounded-[14px] p-4 hover:shadow-sm transition-all duration-150 group cursor-pointer"
+                onClick={() => item.status === 'completed' && 'id' in item && navigate(`/completed/${(item as any).id}`)}
               >
                 <div className="flex items-start gap-3">
                   {/* Icon */}
