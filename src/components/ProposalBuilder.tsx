@@ -7,7 +7,15 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { PhaseData, ProjectData, PaymentMilestone, PaymentMethod } from '../context/ProjectContext';
 
-interface ProposalBuilderProps {
+const surveyQuestions = [
+  'What is the shoot purpose or campaign goal?',
+  'What mood or aesthetic are you going for?',
+  'What is the subject or product being shot?',
+  'How many final deliverables do you need?',
+  'Where will the content be used? (Social, print, ads…)',
+];
+
+
   project: ProjectData;
   onSubmit: (phases: PhaseData[], deliverables: string[], price: string, milestones: PaymentMilestone[], paymentMethod: PaymentMethod) => void;
 }
