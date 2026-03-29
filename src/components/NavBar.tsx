@@ -46,6 +46,7 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
   const navTabs = [
     { label: 'Explore', path: '/explore' },
     { label: 'Dashboard', path: '/dashboard' },
+    { label: 'Archive', path: '/archive' },
   ];
 
   return (

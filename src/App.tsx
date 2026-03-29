@@ -44,6 +44,7 @@ const App = () => (
               <Route path="/client/:id" element={<ClientProfile />} />
               <Route path="/settings" element={<CreativeSettings />} />
               <Route path="/designs" element={<DesignExport />} />
+              <Route path="/archive" element={<Archive />} />
               <Route path="/dashboard-preview" element={<DashboardPreview />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
