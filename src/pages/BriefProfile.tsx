@@ -256,34 +256,27 @@ const BriefProfile = () => {
         )}
 
         {/* Survey Q&A */}
-        {brief.surveyAnswers && brief.surveyAnswers.length > 0 && (() => {
-          const answered = brief.surveyAnswers!.filter(Boolean).length;
-          return (
+        {brief.surveyAnswers && brief.surveyAnswers.filter(Boolean).length > 0 && (
             <div className="bg-card border border-border rounded-[14px] overflow-hidden">
-              {/* Section header */}
               <div className="px-5 py-4 border-b border-border flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[13px] font-extrabold tracking-[-0.03em]">Brief Survey</div>
-                  <div className="text-[11px] text-otj-muted mt-[2px]">{answered} of {surveyQuestions.length} questions answered by client</div>
+                  <div className="text-[11px] text-otj-muted mt-[2px]">{brief.surveyAnswers.filter(Boolean).length} of {surveyQuestions.length} questions answered by client</div>
                 </div>
                 <span className={`text-[11px] font-bold px-2.5 py-[3px] rounded-full border shrink-0 ${
-                  answered === surveyQuestions.length
+                  brief.surveyAnswers.filter(Boolean).length === surveyQuestions.length
                     ? 'bg-otj-green-bg text-otj-green border-otj-green-border'
                     : 'bg-otj-yellow-bg text-otj-yellow border-otj-yellow-border'
                 }`}>
-                  {answered === surveyQuestions.length ? 'Complete' : `${answered}/${surveyQuestions.length}`}
+                  {brief.surveyAnswers.filter(Boolean).length === surveyQuestions.length ? 'Complete' : `${brief.surveyAnswers.filter(Boolean).length}/${surveyQuestions.length}`}
                 </span>
               </div>
-
-              {/* Questions */}
               <div className="divide-y divide-border">
-                {surveyQuestions.map((q, i) => {
-                  const answer = brief.surveyAnswers?.[i];
-                  return (
+                {surveyQuestions.map((q, i) => (
                     <div key={i} className="px-5 py-5">
                       <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">{q}</div>
-                      {answer ? (
-                        <p className="text-[14px] text-foreground leading-[1.75] tracking-[-0.015em]">{answer}</p>
+                      {brief.surveyAnswers?.[i] ? (
+                        <p className="text-[14px] text-foreground leading-[1.75] tracking-[-0.015em]">{brief.surveyAnswers[i]}</p>
                       ) : (
                         <div className="flex items-center gap-1.5">
                           <div className="h-[3px] w-5 rounded-full bg-border" />
@@ -291,12 +284,10 @@ const BriefProfile = () => {
                         </div>
                       )}
                     </div>
-                  );
-                })}
+                ))}
               </div>
             </div>
-          );
-        })()}
+        )}
 
         {/* Client info */}
         <div className="bg-card border border-border rounded-[14px] overflow-hidden">
