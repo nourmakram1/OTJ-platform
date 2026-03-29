@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { format, parseISO, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, getWeek } from 'date-fns';
 import { showToast } from './Toast';
 import { useProjects, MeetingData } from '../context/ProjectContext';
-import { Star, PartyPopper, Zap, Sparkles, Calendar, Users2, CheckSquare2, Clock, Plus, Briefcase } from 'lucide-react';
+import { Star, PartyPopper, Zap, Sparkles, Calendar, Users2, CheckSquare2, Clock, Plus, Briefcase, Lock, RotateCcw } from 'lucide-react';
 import { ProfileCompletenessCard, useProfileCompleteness } from './ProfileCompleteness';
 
 interface DashboardScreenProps {
@@ -223,14 +223,34 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
               </div>
             )}
             {completedProjects.map((proj, i) => (
-              <div key={i} onClick={() => showToast('Project archived — full details coming soon')} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex items-start justify-between gap-3 cursor-pointer transition-all duration-150 hover:shadow-md hover:border-otj-muted active:shadow-sm">
+              <div key={i} className="bg-card border border-border rounded-[14px] p-3.5 px-4 flex items-start justify-between gap-3 transition-all duration-150 hover:shadow-md hover:border-otj-muted group">
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13.5px] font-extrabold tracking-[-0.02em] mb-0.5 truncate">{proj.name}</div>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[13.5px] font-extrabold tracking-[-0.02em] truncate">{proj.name}</span>
+                    <Lock size={11} className="text-otj-muted shrink-0" />
+                  </div>
                   <div className="text-[11.5px] text-otj-text">{proj.client}</div>
+                  {proj.creativeName && (
+                    <div
+                      className="text-[11.5px] text-[hsl(var(--otj-blue))] font-semibold mt-0.5 cursor-pointer hover:underline w-fit"
+                      onClick={() => navigate(`/creative/${proj.creativeId}`)}
+                    >
+                      {proj.creativeName} →
+                    </div>
+                  )}
                 </div>
-                <div className="flex flex-col items-end gap-1 shrink-0">
+                <div className="flex flex-col items-end gap-1.5 shrink-0">
                   <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green border border-otj-green-border whitespace-nowrap">Complete</span>
                   <div className="text-[12px] font-extrabold text-otj-green whitespace-nowrap">{proj.earned}</div>
+                  {proj.creativeName && (
+                    <button
+                      onClick={() => navigate(`/creative/${proj.creativeId}`)}
+                      className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-primary text-primary-foreground border-none cursor-pointer transition-all duration-150 hover:opacity-90 opacity-0 group-hover:opacity-100"
+                    >
+                      <RotateCcw size={9} />
+                      Rebook
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
