@@ -16,6 +16,7 @@ import ClientProfile from "./pages/ClientProfile";
 import CreativeSettings from "./pages/CreativeSettings";
 import DesignExport from "./pages/DesignExport";
 import DashboardPreview from "./pages/DashboardPreview";
+import Archive from "./pages/Archive";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
