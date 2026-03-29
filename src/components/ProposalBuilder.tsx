@@ -44,6 +44,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
   ]);
   const [deliverables, setDeliverables] = useState<string[]>(['']);
   const [price, setPrice] = useState(project.budget.replace(/[^0-9]/g, ''));
+  const [projectDescription, setProjectDescription] = useState(project.description || '');
   const [notes, setNotes] = useState('');
   const [selectedSplit, setSelectedSplit] = useState(0);
   const [milestones, setMilestones] = useState<DraftMilestone[]>(PRESET_SPLITS[0].milestones);
@@ -134,6 +135,19 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
           <div className="text-[14px] font-extrabold text-otj-yellow mb-1">📝 Write Your Proposal</div>
           <div className="text-[12px] text-otj-text leading-relaxed">
             Define phases, tasks, deliverables and pricing. Deadlines sync to your dashboard schedule. Drag phases to reorder.
+          </div>
+        </div>
+
+        {/* Project Description */}
+        <div>
+          <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em] mb-2">Project Description</div>
+          <div className="bg-card border border-border rounded-[14px] p-4">
+            <textarea
+              value={projectDescription}
+              onChange={e => setProjectDescription(e.target.value)}
+              placeholder="Describe the project scope, objectives, and your approach…"
+              className="w-full min-h-[100px] text-[13px] text-foreground leading-relaxed bg-transparent border-none outline-none resize-none placeholder:text-otj-muted"
+            />
           </div>
         </div>
 
