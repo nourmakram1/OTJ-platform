@@ -15,7 +15,7 @@ const surveyQuestions = [
   'Where will the content be used? (Social, print, ads…)',
 ];
 
-
+interface ProposalBuilderProps {
   project: ProjectData;
   onSubmit: (phases: PhaseData[], deliverables: string[], price: string, milestones: PaymentMilestone[], paymentMethod: PaymentMethod) => void;
 }
