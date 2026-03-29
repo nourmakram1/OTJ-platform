@@ -15,6 +15,7 @@ import CreativeProfile from "./pages/CreativeProfile";
 import ClientProfile from "./pages/ClientProfile";
 import CreativeSettings from "./pages/CreativeSettings";
 import DesignExport from "./pages/DesignExport";
+import CompletedProjectProfile from "./pages/CompletedProjectProfile";
 import DashboardPreview from "./pages/DashboardPreview";
 import Archive from "./pages/Archive";
 import NotFound from "./pages/NotFound";
