@@ -137,6 +137,19 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
           </div>
         </div>
 
+        {/* Project Description */}
+        <div>
+          <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em] mb-2">Project Description</div>
+          <div className="bg-card border border-border rounded-[14px] p-4">
+            <textarea
+              value={projectDescription}
+              onChange={e => setProjectDescription(e.target.value)}
+              placeholder="Describe the project scope, objectives, and your approach…"
+              className="w-full min-h-[100px] text-[13px] text-foreground leading-relaxed bg-transparent border-none outline-none resize-none placeholder:text-otj-muted"
+            />
+          </div>
+        </div>
+
         {/* Phases */}
         <div>
           <div className="flex items-center justify-between mb-3">
