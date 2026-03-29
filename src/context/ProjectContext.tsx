@@ -473,11 +473,11 @@ const defaultActiveProjects: ProjectData[] = [
 ];
 
 const defaultCompleted = [
-  { icon: '📸', name: 'Pepsi Ramadan Campaign', client: 'Completed Feb 10', earned: '3,500 EGP' },
-  { icon: '🎥', name: 'OPPO Brand Launch Video', client: 'Completed Feb 2', earned: '5,200 EGP' },
-  { icon: '👗', name: 'Cairo Fashion Week SS26', client: 'Completed Jan 25', earned: '6,000 EGP' },
-  { icon: '📸', name: 'Edita Product Shoot Q4', client: 'Completed Jan 14', earned: '2,800 EGP' },
-  { icon: '📱', name: 'Juhayna Social Campaign', client: 'Completed Jan 7', earned: '4,100 EGP' },
+  { icon: '📸', name: 'Pepsi Ramadan Campaign', client: 'Completed Feb 10', earned: '3,500 EGP', creativeName: 'Omar Hassan', creativeId: 'omar-hassan' },
+  { icon: '🎥', name: 'OPPO Brand Launch Video', client: 'Completed Feb 2', earned: '5,200 EGP', creativeName: 'Layla Mostafa', creativeId: 'layla-mostafa' },
+  { icon: '👗', name: 'Cairo Fashion Week SS26', client: 'Completed Jan 25', earned: '6,000 EGP', creativeName: 'Sara Ahmed', creativeId: 'sara-ahmed' },
+  { icon: '📸', name: 'Edita Product Shoot Q4', client: 'Completed Jan 14', earned: '2,800 EGP', creativeName: 'Nour Makram', creativeId: 'nour-makram' },
+  { icon: '📱', name: 'Juhayna Social Campaign', client: 'Completed Jan 7', earned: '4,100 EGP', creativeName: 'Ahmed Karim', creativeId: 'ahmed-karim' },
 ];
 
 const ProjectContext = createContext<ProjectContextType | null>(null);
