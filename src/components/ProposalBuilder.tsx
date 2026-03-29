@@ -44,6 +44,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
   ]);
   const [deliverables, setDeliverables] = useState<string[]>(['']);
   const [price, setPrice] = useState(project.budget.replace(/[^0-9]/g, ''));
+  const [projectDescription, setProjectDescription] = useState(project.description || '');
   const [notes, setNotes] = useState('');
   const [selectedSplit, setSelectedSplit] = useState(0);
   const [milestones, setMilestones] = useState<DraftMilestone[]>(PRESET_SPLITS[0].milestones);
