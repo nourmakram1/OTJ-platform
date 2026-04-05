@@ -226,9 +226,18 @@ const MockDashboardCard = () => (
         </div>
       ))}
     </div>
+    <div className="bg-background border border-border rounded-lg p-2.5 flex items-start gap-2">
+      <div className="w-5 h-5 rounded-full bg-muted flex items-center justify-center flex-shrink-0 mt-0.5">
+        <Users className="w-2.5 h-2.5 text-muted-foreground" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="text-[9px] font-bold text-foreground">Sarah El-Naggar</div>
+        <div className="text-[9px] text-muted-foreground truncate">Updated concepts attached ✓</div>
+      </div>
+      <div className="text-[8px] text-muted-foreground flex-shrink-0">2m ago</div>
+    </div>
   </div>
 );
-
 const MockCompletedCard = () => (
   <div className="bg-card border border-border rounded-xl p-4 space-y-3 shadow-sm">
     <div className="flex items-center justify-between">
