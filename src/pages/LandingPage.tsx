@@ -282,9 +282,21 @@ interface StepProps {
 }
 
 const StepSection: React.FC<StepProps> = ({ number, title, description, bullets, children, reverse }) => (
-  <div className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 md:gap-12 items-center`}>
+  <motion.div
+    initial={{ opacity: 0, y: 40 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-80px" }}
+    transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+    className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 md:gap-12 items-center`}
+  >
     {/* Text side */}
-    <div className="flex-1 space-y-4">
+    <motion.div
+      initial={{ opacity: 0, x: reverse ? 30 : -30 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.5, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+      className="flex-1 space-y-4"
+    >
       <div className="text-[clamp(3rem,8vw,5rem)] font-black text-border leading-none tracking-[-0.04em]">
         {number}
       </div>
@@ -302,14 +314,19 @@ const StepSection: React.FC<StepProps> = ({ number, title, description, bullets,
           </li>
         ))}
       </ul>
-    </div>
+    </motion.div>
     {/* Mock UI side */}
-    <div className="flex-1 w-full max-w-[440px]">
+    <motion.div
+      initial={{ opacity: 0, x: reverse ? -30 : 30 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.5, delay: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+      className="flex-1 w-full max-w-[440px]"
+    >
       {children}
-    </div>
-  </div>
+    </motion.div>
+  </motion.div>
 );
-
 /* ══════════════════════════════════════════════════════════════════════
    LANDING PAGE
    ══════════════════════════════════════════════════════════════════════ */
