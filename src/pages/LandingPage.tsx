@@ -407,6 +407,7 @@ const LandingPage = () => {
           <div className="space-y-3">
             <MockCreativeCard />
             <MockBriefCard />
+            <MockSurveyCard />
           </div>
         </StepSection>
 
