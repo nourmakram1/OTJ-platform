@@ -38,26 +38,79 @@ const MockBriefCard = () => (
         STEP 1/2
       </span>
     </div>
-    {['PROJECT NAME', 'PROJECT TYPE'].map((label) => (
-      <div key={label}>
-        <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-1">{label}</div>
-        <div className="w-full h-8 rounded-lg border border-border bg-background" />
+    {[
+      { label: 'PROJECT NAME', value: 'Re-brand Campaign' },
+      { label: 'PROJECT TYPE', value: 'Branding' },
+    ].map((field) => (
+      <div key={field.label}>
+        <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-1">{field.label}</div>
+        <div className="w-full h-8 rounded-lg border border-border bg-background flex items-center px-3">
+          <span className="text-[10px] text-muted-foreground/60">{field.value}</span>
+        </div>
       </div>
     ))}
     <div>
       <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-1">BUDGET RANGE</div>
       <div className="flex gap-2">
-        <div className="flex-1 h-8 rounded-lg border border-border bg-background" />
-        <div className="flex-1 h-8 rounded-lg border border-border bg-background" />
+        <div className="flex-1 h-8 rounded-lg border border-border bg-background flex items-center px-3">
+          <span className="text-[10px] text-muted-foreground/60">8,000 EGP</span>
+        </div>
+        <div className="flex-1 h-8 rounded-lg border border-border bg-background flex items-center px-3">
+          <span className="text-[10px] text-muted-foreground/60">12,000 EGP</span>
+        </div>
       </div>
     </div>
     <div>
       <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-1">DESCRIPTION</div>
-      <div className="w-full h-14 rounded-lg border border-border bg-background" />
+      <div className="w-full h-14 rounded-lg border border-border bg-background flex items-start px-3 pt-2">
+        <span className="text-[10px] text-muted-foreground/60 leading-relaxed">Full visual identity refresh including logo, color palette, and brand guidelines…</span>
+      </div>
     </div>
   </div>
 );
 
+const MockSurveyCard = () => (
+  <div className="bg-card border border-border rounded-xl p-4 space-y-3 shadow-sm scale-[0.97] -mt-1 relative z-10">
+    <div className="flex items-center justify-between">
+      <span className="text-[9px] font-black tracking-wider text-muted-foreground/50 uppercase">Creative's Survey</span>
+      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full border border-otj-blue-border bg-otj-blue-bg text-otj-blue">
+        STEP 2/2
+      </span>
+    </div>
+    <div>
+      <div className="text-[10px] font-bold text-foreground mb-1">What's your brand personality?</div>
+      <div className="flex gap-1.5 flex-wrap">
+        {['Bold & Edgy', 'Minimal & Clean', 'Warm & Organic'].map((opt, i) => (
+          <div key={opt} className={`text-[9px] px-2.5 py-1 rounded-full border ${i === 0 ? 'border-foreground bg-foreground text-background font-bold' : 'border-border text-muted-foreground'}`}>
+            {opt}
+          </div>
+        ))}
+      </div>
+    </div>
+    <div>
+      <div className="text-[10px] font-bold text-foreground mb-1">Do you have existing brand guidelines?</div>
+      <div className="flex gap-3">
+        {['Yes', 'No'].map((opt, i) => (
+          <div key={opt} className="flex items-center gap-1.5">
+            <div className={`w-3 h-3 rounded-full border-2 ${i === 0 ? 'border-foreground' : 'border-border'} flex items-center justify-center`}>
+              {i === 0 && <div className="w-1.5 h-1.5 rounded-full bg-foreground" />}
+            </div>
+            <span className="text-[9px] text-foreground">{opt}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div>
+      <div className="text-[10px] font-bold text-foreground mb-1">Preferred visual style?</div>
+      <div className="w-full h-8 rounded-lg border border-border bg-background flex items-center px-3">
+        <span className="text-[10px] text-muted-foreground/60">Modern European with Arabic influences…</span>
+      </div>
+    </div>
+    <button className="w-full h-8 rounded-lg bg-foreground text-background text-[10px] font-bold cursor-default">
+      Send Brief →
+    </button>
+  </div>
+);
 const MockCreativeCard = () => (
   <div className="bg-card border border-border rounded-xl p-3 shadow-sm">
     <div className="w-full h-28 rounded-lg bg-gradient-to-br from-muted to-accent mb-3" />
