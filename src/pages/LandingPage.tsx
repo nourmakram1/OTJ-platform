@@ -5,7 +5,9 @@ import {
   Camera, Film, Palette, Sparkles, Code, TrendingUp,
   Scissors, PenTool, Package, CalendarDays, Building2,
   Search, Star, MapPin, ChevronRight, Check, Download,
-  FileText, CreditCard, Clock, Users
+  FileText, CreditCard, Clock, Users, Share2, Link2,
+  Instagram, Mail, HelpCircle, MessageCircle, Filter,
+  ChevronDown
 } from 'lucide-react';
 
 /* ── Category Data ── */
