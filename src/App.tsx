@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProjectProvider } from "./context/ProjectContext";
 import { CreativeProfileProvider } from "./context/CreativeProfileContext";
+import LandingPage from "./pages/LandingPage";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import ClientOnboarding from "./pages/ClientOnboarding";
@@ -31,7 +32,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Auth />} />
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Auth />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/client-onboarding" element={<ClientOnboarding />} />
