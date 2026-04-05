@@ -483,7 +483,161 @@ const LandingPage = () => {
       {/* ── Divider ── */}
       <div className="border-t border-border" />
 
-      {/* ── 5. Manifesto ── */}
+      {/* ── 5. Share Your Profile ── */}
+      <motion.section
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+        className="max-w-[1200px] mx-auto px-6 py-20 md:py-28"
+      >
+        <div className="flex flex-col md:flex-row gap-10 md:gap-16 items-center">
+          <div className="flex-1 space-y-4">
+            <div className="text-[11px] font-extrabold tracking-[0.15em] uppercase text-muted-foreground">Your Profile, Everywhere</div>
+            <h2 className="text-[clamp(1.6rem,4vw,2.8rem)] font-black tracking-[-0.04em] leading-tight text-foreground">
+              Share Your OTJ<br />Profile Link
+            </h2>
+            <p className="text-[13px] md:text-[14px] text-muted-foreground leading-relaxed max-w-[420px]">
+              Every creative gets a shareable profile link. Drop it in your Instagram bio, LinkedIn, Twitter, or email signature — clients land on your full portfolio and can book you instantly.
+            </p>
+            <ul className="space-y-2">
+              {[
+                'One link for your entire creative portfolio',
+                'Put it in your bio, stories, or email signature',
+                'Clients see your work, reviews & availability',
+                'Book directly — no DMs, no back-and-forth',
+              ].map((b) => (
+                <li key={b} className="flex items-start gap-2 text-[12px] text-foreground font-medium">
+                  <Check className="w-3.5 h-3.5 mt-0.5 text-otj-green flex-shrink-0" strokeWidth={2.5} />
+                  {b}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="flex-1 w-full max-w-[440px]">
+            <div className="bg-card border border-border rounded-xl p-4 space-y-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-muted to-accent flex items-center justify-center">
+                  <span className="text-[14px] font-black text-foreground">SE</span>
+                </div>
+                <div>
+                  <div className="text-[13px] font-extrabold text-foreground">Sarah El-Naggar</div>
+                  <div className="text-[10px] text-muted-foreground">Brand Designer · Cairo</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-background border border-border rounded-lg px-3 py-2.5">
+                <Link2 className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                <span className="text-[11px] text-foreground font-medium flex-1 truncate">otj.co/sarah-elnaggar</span>
+                <button className="text-[9px] font-bold px-2.5 py-1 rounded-full bg-foreground text-background cursor-default">Copy</button>
+              </div>
+              <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Share on</div>
+              <div className="flex gap-2">
+                {[
+                  { icon: Instagram, label: 'Instagram' },
+                  { icon: Share2, label: 'LinkedIn' },
+                  { icon: MessageCircle, label: 'WhatsApp' },
+                  { icon: Mail, label: 'Email' },
+                ].map((s) => (
+                  <div key={s.label} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border border-border text-[9px] font-semibold text-muted-foreground hover:border-foreground hover:text-foreground transition-all cursor-default">
+                    <s.icon className="w-3 h-3" />
+                    {s.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* ── Divider ── */}
+      <div className="border-t border-border" />
+
+      {/* ── 6. Filtration System / Niche Discovery ── */}
+      <motion.section
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+        className="max-w-[1200px] mx-auto px-6 py-20 md:py-28"
+      >
+        <div className="text-center mb-12">
+          <div className="text-[11px] font-extrabold tracking-[0.15em] uppercase text-muted-foreground mb-3">
+            Smart Discovery
+          </div>
+          <h2 className="text-[clamp(1.6rem,4vw,2.8rem)] font-black tracking-[-0.04em] leading-tight text-foreground mb-3">
+            Find Exactly Who You Need
+          </h2>
+          <p className="text-[13px] md:text-[14px] text-muted-foreground max-w-[500px] mx-auto leading-relaxed">
+            Not just "photographer" — filter by niche, skill set, location, availability, and budget. Every creative is categorized by what they actually do.
+          </p>
+        </div>
+
+        {/* Mock filter UI */}
+        <div className="max-w-[600px] mx-auto">
+          <div className="bg-card border border-border rounded-xl p-5 shadow-sm space-y-5">
+            {/* Category selector */}
+            <div>
+              <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Category</div>
+              <div className="flex gap-1.5 flex-wrap">
+                {['Photography', 'Videography', 'Design', 'Writing'].map((cat, i) => (
+                  <div key={cat} className={`text-[10px] font-bold px-3 py-1.5 rounded-full border cursor-default transition-all ${i === 0 ? 'border-foreground bg-foreground text-background' : 'border-border text-muted-foreground'}`}>
+                    {cat}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Niche drill-down */}
+            <div>
+              <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Niche</div>
+              <div className="flex gap-1.5 flex-wrap">
+                {['Fashion', 'Product', 'Food', 'E-commerce', 'Event', 'Real Estate', 'Jewelry'].map((n, i) => (
+                  <div key={n} className={`text-[10px] font-semibold px-3 py-1.5 rounded-full border cursor-default transition-all ${i === 0 ? 'border-otj-blue bg-otj-blue-bg text-otj-blue' : 'border-border text-muted-foreground'}`}>
+                    {n}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Skills */}
+            <div>
+              <div className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Skills</div>
+              <div className="flex gap-1.5 flex-wrap">
+                {['Lighting', 'Retouching', 'Studio', 'Color Grading', 'Editorial', 'Posing Direction'].map((s, i) => (
+                  <div key={s} className={`text-[10px] font-semibold px-3 py-1.5 rounded-full border cursor-default transition-all ${i < 2 ? 'border-otj-green bg-otj-green-bg text-otj-green' : 'border-border text-muted-foreground'}`}>
+                    {s}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Filters row */}
+            <div className="flex gap-2">
+              {['Cairo', 'Available Now', '3,000–8,000 EGP'].map((f) => (
+                <div key={f} className="flex items-center gap-1 text-[9px] font-semibold px-2.5 py-1.5 rounded-lg border border-border text-muted-foreground">
+                  <Filter className="w-2.5 h-2.5" />
+                  {f}
+                </div>
+              ))}
+            </div>
+
+            {/* Results hint */}
+            <div className="border-t border-border pt-3 flex items-center justify-between">
+              <span className="text-[10px] text-muted-foreground">
+                <span className="font-bold text-foreground">23</span> Fashion Photographers in Cairo
+              </span>
+              <span className="text-[9px] font-bold px-2.5 py-1 rounded-full bg-foreground text-background cursor-default">
+                View Results →
+              </span>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* ── Divider ── */}
+      <div className="border-t border-border" />
+
+      {/* ── 7. Manifesto ── */}
       <section className="max-w-[1200px] mx-auto px-6 py-20 md:py-28">
         <p className="text-[clamp(1rem,2.5vw,1.35rem)] font-extrabold tracking-[-0.02em] leading-snug uppercase max-w-[700px]">
           The brief shouldn't be a PDF attachment. The booking shouldn't be
@@ -499,7 +653,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* ── 6. CTA ── */}
+      {/* ── 8. CTA ── */}
       <section className="border-t border-border">
         <div className="max-w-[1200px] mx-auto px-6 py-20 md:py-28">
           <div className="max-w-[600px] mx-auto md:mx-0">
@@ -530,14 +684,85 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* ── 7. Footer ── */}
+      {/* ── 9. Footer ── */}
       <footer className="border-t border-border">
-        <div className="max-w-[1200px] mx-auto px-6 py-8 flex items-center justify-between">
-          <div className="text-[18px] font-extrabold tracking-[-0.04em]">
-            OTJ<sup className="text-[7px] align-super font-bold">™</sup>
+        <div className="max-w-[1200px] mx-auto px-6 py-12 md:py-16">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-10">
+            {/* Brand */}
+            <div className="md:col-span-1">
+              <div className="text-[22px] font-extrabold tracking-[-0.04em] mb-3">
+                OTJ<sup className="text-[8px] align-super font-bold">™</sup>
+              </div>
+              <p className="text-[11px] text-muted-foreground leading-relaxed max-w-[240px]">
+                The operating system for Egypt's creative economy. From first brief to final file.
+              </p>
+            </div>
+
+            {/* Platform */}
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground mb-3">Platform</div>
+              <ul className="space-y-2">
+                {['How It Works', 'Explore Creatives', 'Pricing', 'For Businesses'].map((item) => (
+                  <li key={item} className="text-[12px] text-foreground font-medium cursor-pointer hover:text-muted-foreground transition-colors">{item}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground mb-3">Support</div>
+              <ul className="space-y-2">
+                {['Contact Us', 'FAQ', 'Terms of Service', 'Privacy Policy'].map((item) => (
+                  <li key={item} className="text-[12px] text-foreground font-medium cursor-pointer hover:text-muted-foreground transition-colors">{item}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Get in Touch */}
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground mb-3">Get in Touch</div>
+              <ul className="space-y-2.5">
+                <li className="flex items-center gap-2 text-[12px] text-foreground font-medium">
+                  <Mail className="w-3.5 h-3.5 text-muted-foreground" /> hello@otj.co
+                </li>
+                <li className="flex items-center gap-2 text-[12px] text-foreground font-medium">
+                  <Instagram className="w-3.5 h-3.5 text-muted-foreground" /> @otj.egypt
+                </li>
+                <li className="flex items-center gap-2 text-[12px] text-foreground font-medium">
+                  <MessageCircle className="w-3.5 h-3.5 text-muted-foreground" /> WhatsApp Support
+                </li>
+              </ul>
+            </div>
           </div>
-          <div className="text-[11px] text-muted-foreground">
-            Built for Egypt's creative economy
+
+          {/* FAQ Teaser */}
+          <div className="border-t border-border pt-8 mb-8">
+            <div className="text-[11px] font-extrabold tracking-[0.12em] uppercase text-muted-foreground mb-4 flex items-center gap-2">
+              <HelpCircle className="w-3.5 h-3.5" /> Frequently Asked Questions
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {[
+                { q: 'Is OTJ free for creatives?', a: 'Yes — creating your profile, receiving briefs, and managing projects is completely free.' },
+                { q: 'How do payments work?', a: 'Clients deposit funds in escrow. Payments are released as milestones are completed.' },
+                { q: 'Can I set my own prices?', a: 'Absolutely. You set your rates, and clients can accept or negotiate.' },
+                { q: 'What if a project goes wrong?', a: 'OTJ provides dispute resolution and escrow protection for both sides.' },
+              ].map((faq) => (
+                <div key={faq.q} className="bg-card border border-border rounded-lg p-3.5">
+                  <div className="text-[11px] font-bold text-foreground mb-1">{faq.q}</div>
+                  <div className="text-[10px] text-muted-foreground leading-relaxed">{faq.a}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Copyright */}
+          <div className="border-t border-border pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+            <div className="text-[11px] text-muted-foreground">
+              © 2026 One Time Job. All rights reserved.
+            </div>
+            <div className="text-[11px] text-muted-foreground">
+              Built for Egypt's creative economy
+            </div>
           </div>
         </div>
       </footer>
