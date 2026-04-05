@@ -69,66 +69,46 @@ const MockBriefCard = () => (
   </div>
 );
 
-const MockSurveyCard = () => (
-  <div className="bg-card border border-border rounded-xl p-4 space-y-3 shadow-sm scale-[0.97] -mt-1 relative z-10">
-    <div className="flex items-center justify-between">
-      <span className="text-[9px] font-black tracking-wider text-muted-foreground/50 uppercase">Creative's Survey</span>
-      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full border border-otj-blue-border bg-otj-blue-bg text-otj-blue">
-        STEP 2/2
-      </span>
-    </div>
-    <div>
-      <div className="text-[10px] font-bold text-foreground mb-1">What's your brand personality?</div>
-      <div className="flex gap-1.5 flex-wrap">
-        {['Bold & Edgy', 'Minimal & Clean', 'Warm & Organic'].map((opt, i) => (
-          <div key={opt} className={`text-[9px] px-2.5 py-1 rounded-full border ${i === 0 ? 'border-foreground bg-foreground text-background font-bold' : 'border-border text-muted-foreground'}`}>
-            {opt}
-          </div>
+const MockSurveyCard = () => {
+  const questions = [
+    { q: 'What is the shoot purpose or campaign goal?', a: 'Ramadan campaign for social media + OOH' },
+    { q: 'What mood or aesthetic are you going for?', a: 'Warm, earthy tones — modern Egyptian feel' },
+    { q: 'How many final deliverables do you need?', a: '40 edited photos + 5 hero shots' },
+    { q: 'Where will the content be used?', a: '' },
+  ];
+  return (
+    <div className="bg-card border border-border rounded-xl p-4 space-y-2.5 shadow-sm scale-[0.97] -mt-1 relative z-10">
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-[9px] font-black tracking-wider text-muted-foreground/50 uppercase">Brief Questions</span>
+        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full border border-otj-blue-border bg-otj-blue-bg text-otj-blue">
+          STEP 2/2
+        </span>
+      </div>
+      <div className="text-[9px] text-muted-foreground leading-snug">
+        Answer so the creative understands your project
+      </div>
+      <div className="flex items-center gap-1">
+        {questions.map((_, i) => (
+          <div key={i} className={`w-[5px] h-[5px] rounded-full ${i < 3 ? 'bg-otj-green' : 'bg-border'}`} />
         ))}
+        <span className="text-[8px] text-muted-foreground ml-1">3/4</span>
       </div>
-    </div>
-    <div>
-      <div className="text-[10px] font-bold text-foreground mb-1">Do you have existing brand guidelines?</div>
-      <div className="flex gap-3">
-        {['Yes', 'No'].map((opt, i) => (
-          <div key={opt} className="flex items-center gap-1.5">
-            <div className={`w-3 h-3 rounded-full border-2 ${i === 0 ? 'border-foreground' : 'border-border'} flex items-center justify-center`}>
-              {i === 0 && <div className="w-1.5 h-1.5 rounded-full bg-foreground" />}
-            </div>
-            <span className="text-[9px] text-foreground">{opt}</span>
+      {questions.map((item, i) => (
+        <div key={i}>
+          <div className="text-[10px] font-semibold text-foreground mb-1">{item.q}</div>
+          <div className="w-full min-h-[28px] rounded-lg border border-border bg-background flex items-center px-3 py-1.5">
+            <span className={`text-[9px] leading-relaxed ${item.a ? 'text-foreground' : 'text-muted-foreground/40'}`}>
+              {item.a || 'Type your answer…'}
+            </span>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
+      <button className="w-full h-8 rounded-full bg-foreground text-background text-[10px] font-bold cursor-default flex items-center justify-center gap-1">
+        Send Brief <span>→</span>
+      </button>
     </div>
-    <div>
-      <div className="text-[10px] font-bold text-foreground mb-1">Preferred visual style?</div>
-      <div className="w-full h-8 rounded-lg border border-border bg-background flex items-center px-3">
-        <span className="text-[10px] text-muted-foreground/60">Modern European with Arabic influences…</span>
-      </div>
-    </div>
-    <button className="w-full h-8 rounded-lg bg-foreground text-background text-[10px] font-bold cursor-default">
-      Send Brief →
-    </button>
-  </div>
-);
-const MockCreativeCard = () => (
-  <div className="bg-card border border-border rounded-xl p-3 shadow-sm">
-    <div className="w-full h-28 rounded-lg bg-gradient-to-br from-muted to-accent mb-3" />
-    <div className="flex items-start justify-between">
-      <div>
-        <div className="text-[12px] font-extrabold text-foreground">Sarah El-Naggar</div>
-        <div className="text-[10px] text-muted-foreground">Brand Designer</div>
-      </div>
-      <div className="flex items-center gap-0.5 text-[10px] font-bold text-foreground">
-        <Star className="w-3 h-3 fill-current" /> 4.9
-      </div>
-    </div>
-    <div className="flex items-center gap-1 mt-1 text-[9px] text-muted-foreground">
-      <MapPin className="w-2.5 h-2.5" /> Cairo · 3 yrs
-    </div>
-  </div>
-);
-
+  );
+};
 const MockProposalCard = () => (
   <div className="bg-card border border-border rounded-xl p-4 space-y-3 shadow-sm">
     <div className="flex items-center justify-between">
