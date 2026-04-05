@@ -159,9 +159,12 @@ const MockProposalCard = () => (
         <div className="text-[12px] font-bold text-foreground">50 / 25 / 25</div>
       </div>
     </div>
+    <div className="flex items-center gap-2 bg-muted/50 border border-border rounded-lg px-3 py-2">
+      <PenTool className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+      <span className="text-[9px] text-muted-foreground">Counter-offer sent — <span className="font-bold text-foreground">10,500 EGP</span></span>
+    </div>
   </div>
 );
-
 const MockCalendarCard = () => (
   <div className="bg-card border border-border rounded-xl p-4 shadow-sm">
     <div className="text-[11px] font-extrabold text-foreground mb-3">April 2026</div>
