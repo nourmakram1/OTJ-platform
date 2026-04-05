@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   Camera, Film, Palette, Sparkles, Code, TrendingUp,
   Scissors, PenTool, Package, CalendarDays, Building2,
