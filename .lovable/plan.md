@@ -1,49 +1,37 @@
 
 
-## Landing Page Redesign Plan
+## Enrich Mock UI Cards Across All 4 Steps
 
-### Problem
-The current landing page is cluttered — the feature showcase cards (Brief Survey, Dashboard, Project Overview) are repetitive and don't clearly walk users through the platform's value. The structure lacks a narrative flow.
+### What changes
 
-### New Structure
+The mock UI cards in the "How It Works" walkthrough will be upgraded to be more descriptive and showcase deeper platform features. The biggest change is Step 01, but all steps get improvements.
 
-The page will be reorganized into a clear storytelling arc with 7 distinct sections, each serving a purpose:
+### Step 01 — Discover & Brief (biggest upgrade)
 
-**1. Nav** — Same OTJ nav, keep as-is.
+Add a **third card**: a "Custom Survey" mock showing that creatives can set up their own intake questions that clients fill out. This is a key differentiator.
 
-**2. Hero** — Bold headline + subtitle + dual CTAs (Sign Up / Log In). Tighter copy: "Where Egypt's Creative Work Gets Done." Remove the separate subtitle section.
+Current cards: CreativeCard + BriefCard → New cards: **CreativeCard + BriefCard + SurveyCard**
 
-**3. Category Grid** — Moved up, right after hero. Same 11 categories but presented as pill-style buttons (rounded-full, border, icon + name only — no sub-text). Compact, scannable, acts as social proof of scope.
+The **MockSurveyCard** will show:
+- Header: "Creative's Survey" with a "STEP 2/2" badge (matching the brief's "STEP 1/2")
+- 3-4 pre-filled sample questions like "What's your brand personality?", "Do you have existing brand guidelines?", "Preferred visual style?" with radio/checkbox/text mock inputs
+- A "Send Brief →" button at the bottom
+- This tells the story: the creative customizes their intake, the client fills it out
 
-**4. How It Works — 4-Step Walkthrough** — The core redesign. Each step gets a full-width section with:
-- Step number + title on the left
-- Description paragraph
-- A realistic mini UI mockup card on the right (like the reference style — floating cards with subtle shadows)
+Also refine the **MockBriefCard** to feel more filled-in — add faint placeholder text inside the input fields (e.g., "Re-brand campaign", "Branding", "8,000 – 12,000 EGP") so it reads more like a real form.
 
-The 4 steps, based on actual platform features:
+### Step 02 — Book & Confirm (minor upgrade)
 
-| Step | Title | Mock UI |
-|------|-------|---------|
-| 01 | Discover & Brief | Creative card + brief form fields (project name, type, budget, timeline) |
-| 02 | Book & Confirm | Calendar selection + proposal summary (phases, price, milestones) |
-| 03 | Manage & Track | Dashboard stats + active project card with progress bars |
-| 04 | Deliver & Archive | Completed project card with green status + deliverables list + review stars |
+Add a small **"Counter Offer" badge/row** to the ProposalCard showing the negotiation feature — e.g., a row that says "✎ Counter-offer sent — 10,500 EGP" to show both sides can negotiate.
 
-Each step section alternates layout (left text / right card, then right text / left card) for visual rhythm.
+### Step 03 — Manage & Track (minor upgrade)
 
-**5. Manifesto** — Keep the bold statement block but refine the copy.
+Add a **mini messaging preview** row inside the DashboardCard — a small chat bubble snippet showing "Sarah: Updated concepts attached ✓" to hint at built-in messaging.
 
-**6. CTA Section** — "Hello, Welcome to One Time Job" with Sign Up / Log In buttons.
+### Step 04 — Deliver & Archive (no change)
 
-**7. Footer** — Same as current.
-
-### Visual Style
-- Same OTJ tokens (otj-off, otj-blue, otj-green, border, foreground)
-- Mock UI cards use `bg-card border border-border rounded-2xl` with inner nested cards — matching the reference's floating card aesthetic
-- Category pills use `rounded-full border border-border` with icon + name, hover to foreground
-- Step numbers in large bold text (e.g., "01") as an accent
-- No images — all UI is built with Tailwind components
+Already descriptive enough with deliverables list + review stars.
 
 ### File Changes
-- **`src/pages/LandingPage.tsx`** — Full rewrite with the new structure
+- **`src/pages/LandingPage.tsx`** — Add `MockSurveyCard` component, update `MockBriefCard` with placeholder text, add counter-offer row to `MockProposalCard`, add messaging snippet to `MockDashboardCard`, update Step 01's children to include all 3 cards.
 
