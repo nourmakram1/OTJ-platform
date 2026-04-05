@@ -109,6 +109,24 @@ const MockSurveyCard = () => {
     </div>
   );
 };
+const MockCreativeCard = () => (
+  <div className="bg-card border border-border rounded-xl p-3 shadow-sm">
+    <div className="w-full h-28 rounded-lg bg-gradient-to-br from-muted to-accent mb-3" />
+    <div className="flex items-start justify-between">
+      <div>
+        <div className="text-[12px] font-extrabold text-foreground">Sarah El-Naggar</div>
+        <div className="text-[10px] text-muted-foreground">Brand Designer</div>
+      </div>
+      <div className="flex items-center gap-0.5 text-[10px] font-bold text-foreground">
+        <Star className="w-3 h-3 fill-current" /> 4.9
+      </div>
+    </div>
+    <div className="flex items-center gap-1 mt-1 text-[9px] text-muted-foreground">
+      <MapPin className="w-2.5 h-2.5" /> Cairo · 3 yrs
+    </div>
+  </div>
+);
+
 const MockProposalCard = () => (
   <div className="bg-card border border-border rounded-xl p-4 space-y-3 shadow-sm">
     <div className="flex items-center justify-between">
