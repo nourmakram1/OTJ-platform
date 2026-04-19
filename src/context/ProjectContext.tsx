@@ -1109,6 +1109,50 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const requestAmends = useCallback((projectId: string, phaseNum: number, note: string, newDeadline?: string) => {
+    const nowIso = new Date().toISOString();
+    let projName = '';
+    let phaseTitle = '';
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      projName = p.name;
+      const updatedPhases = p.phases.map(ph => {
+        if (ph.num !== phaseNum) return ph;
+        phaseTitle = ph.title;
+        const existing = ph.amends || [];
+        const newRound: AmendRequest = {
+          round: existing.length + 1,
+          note,
+          newDeadline: newDeadline || undefined,
+          previousDeadline: ph.deadline,
+          requestedAt: nowIso,
+        };
+        return {
+          ...ph,
+          readyForReview: false,
+          deadline: newDeadline || ph.deadline,
+          amends: [...existing, newRound],
+        };
+      });
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      return {
+        ...p,
+        phases: updatedPhases,
+        timeline: [...p.timeline, { label: `Amends requested on Phase ${phaseNum}`, date: today, status: 'complete' as const }],
+      };
+    }));
+    addNotification({
+      icon: '',
+      bg: 'bg-[hsl(var(--otj-yellow-bg))]',
+      title: `Amends requested — Phase ${phaseNum}`,
+      sub: `Client requested changes on ${phaseTitle || `Phase ${phaseNum}`} for ${projName}`,
+      time: 'Just now',
+      unread: true,
+      type: 'brief',
+      projectId,
+    });
+  }, [addNotification]);
+
   const updateClient = useCallback((clientId: string, updates: Partial<ClientData>) => {
     setClients(prev => prev.map(c => c.id === clientId ? { ...c, ...updates } : c));
   }, []);
