@@ -17,9 +17,10 @@ interface Message {
   text: string;
   isMe: boolean;
   time: string;
-  type?: 'calendar' | 'attachment' | 'amend-request' | 'amend-deadline-confirmed';
+  type?: 'calendar' | 'attachment' | 'amend-request' | 'amend-deadline-confirmed' | 'phase-ready' | 'phase-approved';
   meetingData?: { title: string; date: string; time: string };
   amendData?: ProjectMessage['amendData'];
+  phaseData?: ProjectMessage['phaseData'];
 }
 
 const initialMessages: Message[] = [
@@ -67,6 +68,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
       time: `${senderLabel} · ${fmtTime(pm.createdAt)}${isMe ? ' · ✓' : ''}`,
       type: pm.type,
       amendData: pm.amendData,
+      phaseData: pm.phaseData,
     };
   }) : [];
   const mergedMessages: Message[] = [...messages, ...projectChatMessages];
