@@ -340,21 +340,21 @@ const defaultActiveProjects: ProjectData[] = [
     proposalDeliverables: ['40 edited photos', '10 lifestyle shots', '10 BTS shots'],
     proposalPrice: '3,500 EGP',
     phases: [
-      { num: 1, title: 'Pre-Production', status: 'complete', tasks: [
+      { num: 1, title: 'Pre-Production', status: 'complete', description: 'Locked in the shoot location, finalised the mood board with the client, and prepped the full equipment checklist so the team can hit the ground running on shoot day.', tasks: [
         { text: 'Confirm shoot location', done: true, due: 'Mar 5' },
         { text: 'Finalize mood board', done: true, due: 'Mar 7' },
         { text: 'Equipment checklist', done: true, due: 'Mar 8' },
       ]},
-      { num: 2, title: 'Shoot Day', status: 'active', tasks: [
+      { num: 2, title: 'Shoot Day', status: 'active', description: 'Capturing the full set on location — 20 product hero shots in studio lighting, 10 lifestyle setups with talent, plus behind-the-scenes content for the client\'s social channels.', tasks: [
         { text: 'Product shots (20 items)', done: true, due: 'Mar 15' },
         { text: 'Lifestyle shots (10 setups)', done: false, due: 'Mar 15' },
         { text: 'Behind-the-scenes content', done: false, due: 'Mar 15' },
       ]},
-      { num: 3, title: 'Editing & Delivery', status: 'locked', tasks: [
+      { num: 3, title: 'Editing & Delivery', status: 'locked', description: 'Color grading every selected frame to match the campaign look, then retouching the hero images for print and digital use.', tasks: [
         { text: 'Color grade all selects', done: false, due: 'Mar 18' },
         { text: 'Retouch hero images', done: false, due: 'Mar 19' },
       ]},
-      { num: 4, title: 'Final Delivery', status: 'locked', tasks: [
+      { num: 4, title: 'Final Delivery', status: 'locked', description: 'Uploading the final files to the shared drive and walking the client through the gallery for sign-off.', tasks: [
         { text: 'Upload final files', done: false, due: 'Mar 20' },
         { text: 'Client sign-off', done: false, due: 'Mar 20' },
       ]},
