@@ -227,6 +227,12 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPay
                             ) : null}
                           </div>
                           <p className="text-[12px] text-foreground leading-[1.55] whitespace-pre-wrap">{a.note}</p>
+                          {a.acceptedNote && (
+                            <div className="mt-1.5 pt-1.5 border-t border-border">
+                              <div className="text-[9.5px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Note from creative</div>
+                              <p className="text-[11.5px] text-foreground leading-[1.5] whitespace-pre-wrap italic">{a.acceptedNote}</p>
+                            </div>
+                          )}
                         </div>
                       );
                     })}
