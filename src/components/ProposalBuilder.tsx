@@ -22,7 +22,7 @@ interface ProposalBuilderProps {
 
 interface DraftPhase {
   title: string;
-  tasks: string[];
+  description: string;
   deadline?: Date;
 }
 
