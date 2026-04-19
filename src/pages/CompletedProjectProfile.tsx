@@ -107,7 +107,7 @@ const CompletedProjectProfile = () => {
       <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-6 pb-20 md:pb-6 flex flex-col md:grid md:grid-cols-[1fr_300px] gap-6">
         <div className="order-1 md:order-none">
 
-          {/* Phases & Tasks — read-only, all complete */}
+          {/* Phases — read-only, all complete */}
           {activeTab === 0 && (
             <div className="flex flex-col gap-3 animate-fade-up">
               {proj.phases.map(p => (
@@ -119,17 +119,11 @@ const CompletedProjectProfile = () => {
                     </div>
                     <span className="text-[11px] font-bold px-2.5 py-[3px] rounded-full bg-otj-green-bg text-otj-green">✓ Complete</span>
                   </div>
-                  <div className="px-4 pb-3.5 flex flex-col gap-1.5 border-t border-border pt-3">
-                    {p.tasks.map((task, j) => (
-                      <div key={j} className="flex items-center gap-2.5 p-2 px-3 rounded-[9px]">
-                        <div className="w-[18px] h-[18px] rounded shrink-0 flex items-center justify-center bg-otj-green">
-                          <span className="text-primary-foreground text-[10px]">✓</span>
-                        </div>
-                        <div className="flex-1 min-w-0 break-words text-[13px] font-medium text-otj-muted line-through">{task.text}</div>
-                        <div className="text-[11px] text-otj-muted">{task.due}</div>
-                      </div>
-                    ))}
-                  </div>
+                  {p.description && (
+                    <div className="px-4 pb-4 border-t border-border pt-3">
+                      <p className="text-[13px] text-foreground leading-[1.7] tracking-[-0.005em]">{p.description}</p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
