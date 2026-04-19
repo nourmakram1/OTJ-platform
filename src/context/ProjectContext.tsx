@@ -276,6 +276,8 @@ interface ProjectContextType {
   setPhaseReady: (projectId: string, phaseNum: number, ready: boolean) => void;
   requestAmends: (projectId: string, phaseNum: number, note: string, proposedDeadline?: string) => void;
   setAmendDeadline: (projectId: string, phaseNum: number, round: number, acceptedDeadline: string) => void;
+  projectMessages: Record<string, ProjectMessage[]>;
+  addProjectMessage: (projectId: string, msg: Omit<ProjectMessage, 'id' | 'createdAt'>) => void;
 }
 
 const defaultBriefs: BriefData[] = [
@@ -744,6 +746,20 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [completedProjects] = useState(defaultCompleted);
   const [notifications, setNotifications] = useState<NotificationData[]>(defaultNotifications);
   const [clients, setClients] = useState<ClientData[]>(defaultClients);
+  const [projectMessages, setProjectMessages] = useState<Record<string, ProjectMessage[]>>({});
+
+  const addProjectMessage = useCallback((projectId: string, msg: Omit<ProjectMessage, 'id' | 'createdAt'>) => {
+    setProjectMessages(prev => {
+      const list = prev[projectId] || [];
+      return {
+        ...prev,
+        [projectId]: [
+          ...list,
+          { ...msg, id: `pm-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, createdAt: new Date().toISOString() },
+        ],
+      };
+    });
+  }, []);
 
   const acceptBrief = useCallback((briefId: string): string => {
     const brief = pendingBriefs.find(b => b.id === briefId);
