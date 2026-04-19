@@ -248,7 +248,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
             onClick={(e) => {e.stopPropagation();onOpenBrief(c.id);}}
             className="flex-1 flex items-center justify-center gap-[3px] py-[6.5px] rounded-full bg-foreground text-background text-[9.5px] font-bold tracking-[-0.01em] cursor-pointer hover:opacity-85 active:scale-[0.97] transition-all">
             
-            Book Now <ArrowUpRight className="w-[9px] h-[9px] opacity-80" strokeWidth={2.5} />
+            Book Now
           </button>
           <button
             onClick={(e) => {e.stopPropagation();navigate(`/creative/${c.id}`);}}
