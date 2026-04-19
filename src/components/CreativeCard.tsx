@@ -77,13 +77,6 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
         <ImageCarousel bg={c.bg} emoji={c.emoji} />
 
 
-        {/* Save — white circle top-right */}
-        <button
-          onClick={(e) => {e.stopPropagation();onToggleSave(e, c.id);showToast(saved ? 'Removed from Collections' : '♥ Saved');}}
-          className="absolute top-[15px] right-[15px] w-[26px] h-[26px] rounded-full bg-white shadow-sm flex items-center justify-center z-[4] transition-all hover:scale-110 active:scale-95">
-          
-          <Heart className={`w-[12px] h-[12px] transition-all ${saved ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
-        </button>
       </div>
 
       {/* ── Info — clear 4-level hierarchy ──────────────────────────── */}
