@@ -1155,6 +1155,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const nowIso = new Date().toISOString();
     let projName = '';
     let phaseTitle = '';
+    let round = 1;
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
       projName = p.name;
@@ -1162,8 +1163,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (ph.num !== phaseNum) return ph;
         phaseTitle = ph.title;
         const existing = ph.amends || [];
+        round = existing.length + 1;
         const newRound: AmendRequest = {
-          round: existing.length + 1,
+          round,
           note,
           proposedDeadline: proposedDeadline || undefined,
           // Don't update phase.deadline yet — creative confirms the binding deadline.
@@ -1193,21 +1195,51 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       type: 'brief',
       projectId,
     });
-  }, [addNotification]);
+    // Mirror into project chat
+    addProjectMessage(projectId, {
+      sender: 'client',
+      type: 'amend-request',
+      amendData: {
+        phaseNum,
+        phaseTitle: phaseTitle || `Phase ${phaseNum}`,
+        round,
+        note,
+        proposedDeadline: proposedDeadline || undefined,
+      },
+    });
+  }, [addNotification, addProjectMessage]);
 
   const setAmendDeadline = useCallback((projectId: string, phaseNum: number, round: number, acceptedDeadline: string) => {
+    let phaseTitle = '';
+    let wasAlreadySet = false;
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
       const updatedPhases = p.phases.map(ph => {
         if (ph.num !== phaseNum) return ph;
-        const updatedAmends = (ph.amends || []).map(a =>
-          a.round === round ? { ...a, acceptedDeadline } : a
-        );
+        phaseTitle = ph.title;
+        const updatedAmends = (ph.amends || []).map(a => {
+          if (a.round !== round) return a;
+          if (a.acceptedDeadline) wasAlreadySet = true;
+          return { ...a, acceptedDeadline };
+        });
         return { ...ph, amends: updatedAmends, deadline: acceptedDeadline };
       });
       return { ...p, phases: updatedPhases };
     }));
-  }, []);
+    // Only mirror the first time the deadline is confirmed for this round.
+    if (!wasAlreadySet) {
+      addProjectMessage(projectId, {
+        sender: 'creative',
+        type: 'amend-deadline-confirmed',
+        amendData: {
+          phaseNum,
+          phaseTitle: phaseTitle || `Phase ${phaseNum}`,
+          round,
+          acceptedDeadline,
+        },
+      });
+    }
+  }, [addProjectMessage]);
 
   const updateClient = useCallback((clientId: string, updates: Partial<ClientData>) => {
     setClients(prev => prev.map(c => c.id === clientId ? { ...c, ...updates } : c));
@@ -1216,7 +1248,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const getCompletedProject = useCallback((id: string) => completedProjects.find(p => p.id === id), [completedProjects]);
 
   return (
-    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, getCompletedProject, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, updateClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask, setPhaseReady, requestAmends, setAmendDeadline }}>
+    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, getCompletedProject, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, updateClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask, setPhaseReady, requestAmends, setAmendDeadline, projectMessages, addProjectMessage }}>
       {children}
     </ProjectContext.Provider>
   );
