@@ -295,7 +295,7 @@ type ScheduleItem = {
   sublabel: string;
   projectId: string;
   deadline: Date;
-  type: 'phase' | 'task' | 'meeting' | 'call';
+  type: 'phase' | 'task' | 'meeting' | 'call' | 'deadline';
   status: string;
   hour: number; // 0-23
   duration: number; // hours

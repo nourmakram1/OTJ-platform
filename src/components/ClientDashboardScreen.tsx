@@ -253,7 +253,7 @@ type ClientScheduleItem = {
   sublabel: string;
   projectId: string;
   deadline: Date;
-  type: 'phase' | 'meeting' | 'call';
+  type: 'phase' | 'meeting' | 'call' | 'deadline';
   hour: number;
   duration: number;
 };
