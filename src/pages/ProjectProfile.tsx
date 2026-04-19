@@ -280,9 +280,13 @@ const ProjectProfile = () => {
                     const statusBadge = p.status === 'complete'
                       ? 'bg-otj-green-bg text-otj-green'
                       : p.status === 'active'
-                        ? 'bg-otj-blue-bg text-otj-blue'
+                        ? (p.readyForReview ? 'bg-otj-yellow-bg text-otj-yellow' : 'bg-otj-blue-bg text-otj-blue')
                         : 'bg-otj-off text-otj-muted';
-                    const phaseStatusLabel = p.status === 'complete' ? '✓ Complete' : p.status === 'active' ? '● In Progress' : 'Locked';
+                    const phaseStatusLabel = p.status === 'complete'
+                      ? '✓ Complete'
+                      : p.status === 'active'
+                        ? (p.readyForReview ? '⏳ Awaiting Client Review' : '● In Progress')
+                        : 'Locked';
 
                     return (
                       <div key={p.num} className={`bg-card border-[1.5px] ${borderColor} rounded-[14px] overflow-hidden transition-all duration-200`}>
@@ -299,16 +303,31 @@ const ProjectProfile = () => {
                           {p.status !== 'locked' && <span className="text-otj-muted text-sm">{isExpanded ? '▾' : '▸'}</span>}
                         </div>
                         {isExpanded && p.status !== 'locked' && (
-                          <div className="px-4 pb-3.5 flex flex-col gap-1.5 border-t border-border pt-3">
-                            {p.tasks.map((task, j) => (
-                              <div key={j} onClick={() => { if (!task.done && p.status === 'active') { toggleTask(proj.id, p.num, j); showToast('Task marked done ✓'); } }} className={`flex items-center gap-2.5 p-2 px-3 rounded-[9px] transition-all duration-150 hover:bg-otj-off ${!task.done && p.status === 'active' ? 'cursor-pointer' : ''}`}>
-                                <div className={`w-[18px] h-[18px] rounded shrink-0 flex items-center justify-center ${task.done ? 'bg-otj-green' : 'border-[1.5px] border-border'}`}>
-                                  {task.done && <span className="text-primary-foreground text-[10px]">✓</span>}
+                          <div className="px-4 pb-4 border-t border-border pt-3 flex flex-col gap-3">
+                            {p.description ? (
+                              <p className="text-[13px] text-foreground leading-[1.7] tracking-[-0.005em]">{p.description}</p>
+                            ) : (
+                              <p className="text-[12.5px] text-otj-muted italic">No description provided for this phase.</p>
+                            )}
+                            {p.deadline && (
+                              <div className="text-[11px] text-otj-muted">Deadline: <span className="font-semibold text-otj-text">{new Date(p.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span></div>
+                            )}
+                            {p.status === 'active' && (
+                              p.readyForReview ? (
+                                <div className="flex items-center gap-2">
+                                  <div className="flex-1 text-[11.5px] text-otj-text bg-otj-yellow-bg border border-otj-yellow-border rounded-lg p-2.5 px-3">⏳ Marked ready — waiting for client to approve.</div>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); setPhaseReady(proj.id, p.num, false); showToast('Phase reopened'); }}
+                                    className="text-[11.5px] font-bold px-3 py-2 rounded-full border border-border bg-card cursor-pointer hover:border-foreground"
+                                  >Undo</button>
                                 </div>
-                                <div className={`flex-1 min-w-0 break-words text-[13px] font-medium ${task.done ? 'text-otj-muted line-through' : 'text-foreground'}`}>{task.text}</div>
-                                <div className="text-[11px] text-otj-muted">{task.due}</div>
-                              </div>
-                            ))}
+                              ) : (
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); setPhaseReady(proj.id, p.num, true); showToast('Marked ready for client review ✓'); }}
+                                  className="w-full text-[12px] font-bold py-2.5 rounded-full border-none bg-otj-blue text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90"
+                                >✓ Mark Phase Ready for Client Review</button>
+                              )
+                            )}
                           </div>
                         )}
                         {p.status === 'locked' && (
