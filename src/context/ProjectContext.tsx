@@ -29,6 +29,11 @@ export interface PhaseData {
   title: string;
   status: 'complete' | 'active' | 'locked';
   deadline?: string; // ISO date string
+  /** Paragraph describing what this phase covers — preferred over `tasks` for display. */
+  description?: string;
+  /** Creative has marked this phase as ready for client review/approval. */
+  readyForReview?: boolean;
+  /** Legacy task checklist. Kept for backward compatibility but no longer rendered in phase views. */
   tasks: { text: string; done: boolean; due: string }[];
 }
 
@@ -226,6 +231,7 @@ interface ProjectContextType {
   acceptProposal: (projectId: string) => void;
   rejectProposal: (projectId: string) => void;
   toggleTask: (projectId: string, phaseNum: number, taskIndex: number) => void;
+  setPhaseReady: (projectId: string, phaseNum: number, ready: boolean) => void;
 }
 
 const defaultBriefs: BriefData[] = [
@@ -337,21 +343,21 @@ const defaultActiveProjects: ProjectData[] = [
     proposalDeliverables: ['40 edited photos', '10 lifestyle shots', '10 BTS shots'],
     proposalPrice: '3,500 EGP',
     phases: [
-      { num: 1, title: 'Pre-Production', status: 'complete', tasks: [
+      { num: 1, title: 'Pre-Production', status: 'complete', description: 'Locked in the shoot location, finalised the mood board with the client, and prepped the full equipment checklist so the team can hit the ground running on shoot day.', tasks: [
         { text: 'Confirm shoot location', done: true, due: 'Mar 5' },
         { text: 'Finalize mood board', done: true, due: 'Mar 7' },
         { text: 'Equipment checklist', done: true, due: 'Mar 8' },
       ]},
-      { num: 2, title: 'Shoot Day', status: 'active', tasks: [
+      { num: 2, title: 'Shoot Day', status: 'active', description: 'Capturing the full set on location — 20 product hero shots in studio lighting, 10 lifestyle setups with talent, plus behind-the-scenes content for the client\'s social channels.', tasks: [
         { text: 'Product shots (20 items)', done: true, due: 'Mar 15' },
         { text: 'Lifestyle shots (10 setups)', done: false, due: 'Mar 15' },
         { text: 'Behind-the-scenes content', done: false, due: 'Mar 15' },
       ]},
-      { num: 3, title: 'Editing & Delivery', status: 'locked', tasks: [
+      { num: 3, title: 'Editing & Delivery', status: 'locked', description: 'Color grading every selected frame to match the campaign look, then retouching the hero images for print and digital use.', tasks: [
         { text: 'Color grade all selects', done: false, due: 'Mar 18' },
         { text: 'Retouch hero images', done: false, due: 'Mar 19' },
       ]},
-      { num: 4, title: 'Final Delivery', status: 'locked', tasks: [
+      { num: 4, title: 'Final Delivery', status: 'locked', description: 'Uploading the final files to the shared drive and walking the client through the gallery for sign-off.', tasks: [
         { text: 'Upload final files', done: false, due: 'Mar 20' },
         { text: 'Client sign-off', done: false, due: 'Mar 20' },
       ]},
@@ -399,12 +405,12 @@ const defaultActiveProjects: ProjectData[] = [
     proposalDeliverables: ['Campaign video assets'],
     proposalPrice: '5,200 EGP',
     phases: [
-      { num: 1, title: 'Pre-Production', status: 'complete', tasks: [] },
-      { num: 2, title: 'Production', status: 'complete', tasks: [] },
-      { num: 3, title: 'Post-Production', status: 'active', tasks: [
+      { num: 1, title: 'Pre-Production', status: 'complete', description: 'Aligned with the CIB marketing team on creative direction, locked the storyboard, cast diverse on-camera talent, and scouted urban Cairo locations for the campaign shoot.', tasks: [] },
+      { num: 2, title: 'Production', status: 'complete', description: 'Two-day production across three locations capturing the hero spot footage, B-roll for the cut-downs, and key visual stills.', tasks: [] },
+      { num: 3, title: 'Post-Production', status: 'active', description: 'Editing the rough cut of the 60s hero film, layering in motion graphics, and preparing the platform-optimised cut-downs for client review.', tasks: [
         { text: 'Edit rough cut', done: false, due: 'Mar 22' },
       ]},
-      { num: 4, title: 'Final Delivery', status: 'locked', tasks: [] },
+      { num: 4, title: 'Final Delivery', status: 'locked', description: 'Final color grade, sound mix, master exports for TV and digital, and handoff of all source files to CIB.', tasks: [] },
     ],
     paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'held' }],
     escrow: { total: '5,200 EGP', deposited: '2,600 EGP', held: '2,600 EGP', fee: '260 EGP' },
@@ -441,12 +447,12 @@ const defaultActiveProjects: ProjectData[] = [
     proposalDeliverables: ['Brand refresh photos'],
     proposalPrice: '4,800 EGP',
     phases: [
-      { num: 1, title: 'Pre-Production', status: 'active', tasks: [
+      { num: 1, title: 'Pre-Production', status: 'active', description: 'Reviewing the brand brief with Vodafone, mapping shot lists across team portraits, workspace, and product lifestyle, and casting internal talent for authentic on-camera moments.', tasks: [
         { text: 'Creative brief review', done: false, due: 'Mar 22' },
       ]},
-      { num: 2, title: 'Shoot Day', status: 'locked', tasks: [] },
-      { num: 3, title: 'Editing', status: 'locked', tasks: [] },
-      { num: 4, title: 'Final Delivery', status: 'locked', tasks: [] },
+      { num: 2, title: 'Shoot Day', status: 'locked', description: 'Multi-day on-site shoot across Vodafone\'s Cairo HQ — capturing 20 portraits, 20 environment shots, and 20 product-in-use lifestyle frames with Vodafone red threaded throughout.', tasks: [] },
+      { num: 3, title: 'Editing', status: 'locked', description: 'Selecting the strongest 60 frames, retouching portraits, and color-grading the full set to match Vodafone\'s refreshed brand palette.', tasks: [] },
+      { num: 4, title: 'Final Delivery', status: 'locked', description: 'Packaging the final assets in web, social, and print resolutions and walking the marketing team through usage guidelines.', tasks: [] },
     ],
     paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'held' }],
     escrow: { total: '4,800 EGP', deposited: '2,400 EGP', held: '2,400 EGP', fee: '240 EGP' },
@@ -481,13 +487,13 @@ const defaultActiveProjects: ProjectData[] = [
     proposalDeliverables: ['Portfolio website redesign', 'Mobile responsive design'],
     proposalPrice: '6,000 EGP',
     phases: [
-      { num: 1, title: 'Discovery', status: 'complete', tasks: [
+      { num: 1, title: 'Discovery', status: 'complete', description: 'Audited the existing portfolio site, interviewed Yara about her ideal clients, and defined the editorial direction for the redesign.', tasks: [
         { text: 'Review current portfolio', done: true, due: 'Mar 10' },
       ]},
-      { num: 2, title: 'Design', status: 'active', tasks: [
+      { num: 2, title: 'Design', status: 'active', description: 'Designing the full website in Figma — homepage, three gallery series, services page, and contact — with a minimal editorial layout system and refined typography.', tasks: [
         { text: 'Wireframes approval', done: false, due: 'Mar 20' },
       ]},
-      { num: 3, title: 'Development', status: 'locked', tasks: [] },
+      { num: 3, title: 'Development', status: 'locked', description: 'Building out the responsive site, integrating the galleries, and prepping the Figma handoff file with components and design tokens.', tasks: [] },
     ],
     paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'held' }],
     escrow: { total: '6,000 EGP', deposited: '3,000 EGP', held: '3,000 EGP', fee: '300 EGP' },
@@ -512,10 +518,10 @@ const defaultCompleted: CompletedProjectData[] = [
     deliverables: '30 edited photos (15 product, 10 lifestyle, 5 BTS)',
     proposalDeliverables: ['15 product hero shots', '10 lifestyle setups', '5 BTS stills', 'Final Lightroom presets'],
     phases: [
-      { num: 1, title: 'Pre-Production', status: 'complete', tasks: [{ text: 'Mood board finalization', done: true, due: 'Jan 20' }, { text: 'Location scout', done: true, due: 'Jan 22' }] },
-      { num: 2, title: 'Shoot Day', status: 'complete', tasks: [{ text: 'Product shots', done: true, due: 'Jan 28' }, { text: 'Lifestyle setups', done: true, due: 'Jan 28' }] },
-      { num: 3, title: 'Post-Production', status: 'complete', tasks: [{ text: 'Color grading', done: true, due: 'Feb 5' }, { text: 'Retouching', done: true, due: 'Feb 7' }] },
-      { num: 4, title: 'Final Delivery', status: 'complete', tasks: [{ text: 'Upload finals', done: true, due: 'Feb 9' }, { text: 'Client sign-off', done: true, due: 'Feb 10' }] },
+      { num: 1, title: 'Pre-Production', status: 'complete', description: 'Finalised the Ramadan mood board with the Edita team and scouted the location to lock in the festive set design ahead of the shoot.', tasks: [{ text: 'Mood board finalization', done: true, due: 'Jan 20' }, { text: 'Location scout', done: true, due: 'Jan 22' }] },
+      { num: 2, title: 'Shoot Day', status: 'complete', description: 'Captured the full Pepsi Ramadan set in one day — product hero shots and warm communal lifestyle setups featuring the campaign talent.', tasks: [{ text: 'Product shots', done: true, due: 'Jan 28' }, { text: 'Lifestyle setups', done: true, due: 'Jan 28' }] },
+      { num: 3, title: 'Post-Production', status: 'complete', description: 'Color graded all selects to match the festive Ramadan palette and retouched the hero images for both digital and print use.', tasks: [{ text: 'Color grading', done: true, due: 'Feb 5' }, { text: 'Retouching', done: true, due: 'Feb 7' }] },
+      { num: 4, title: 'Final Delivery', status: 'complete', description: 'Delivered the final 30 edited frames plus a Lightroom preset pack, and walked the client through the gallery for sign-off.', tasks: [{ text: 'Upload finals', done: true, due: 'Feb 9' }, { text: 'Client sign-off', done: true, due: 'Feb 10' }] },
     ],
     paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'paid' }],
     paymentMethod: { type: 'instapay', instapayHandle: '@nour.creative' },
@@ -533,9 +539,9 @@ const defaultCompleted: CompletedProjectData[] = [
     deliverables: '1 hero video (60s), 3 cutdowns (15s), BTS reel',
     proposalDeliverables: ['60s hero video', '3x 15s social cutdowns', 'BTS reel', 'Raw footage drive'],
     phases: [
-      { num: 1, title: 'Creative Brief & Storyboard', status: 'complete', tasks: [{ text: 'Storyboard approval', done: true, due: 'Jan 10' }] },
-      { num: 2, title: 'Production', status: 'complete', tasks: [{ text: 'Shoot day 1', done: true, due: 'Jan 18' }, { text: 'Shoot day 2', done: true, due: 'Jan 19' }] },
-      { num: 3, title: 'Post-Production', status: 'complete', tasks: [{ text: 'Rough cut', done: true, due: 'Jan 25' }, { text: 'Final edit + color', done: true, due: 'Jan 30' }] },
+      { num: 1, title: 'Creative Brief & Storyboard', status: 'complete', description: 'Aligned with OPPO on the launch narrative, locked the storyboard and shot list, and cast Gen Z talent for the hero film.', tasks: [{ text: 'Storyboard approval', done: true, due: 'Jan 10' }] },
+      { num: 2, title: 'Production', status: 'complete', description: 'Two-day production with full crew capturing the hero spot, BTS reel, and additional coverage for the social cut-downs.', tasks: [{ text: 'Shoot day 1', done: true, due: 'Jan 18' }, { text: 'Shoot day 2', done: true, due: 'Jan 19' }] },
+      { num: 3, title: 'Post-Production', status: 'complete', description: 'Edited the rough cut, locked picture with OPPO, then color-graded and sound-designed the final hero film plus all three social cut-downs.', tasks: [{ text: 'Rough cut', done: true, due: 'Jan 25' }, { text: 'Final edit + color', done: true, due: 'Jan 30' }] },
     ],
     paymentMilestones: [{ label: '30% Deposit', percentage: 30, status: 'paid' }, { label: '40% On Rough Cut', percentage: 40, status: 'paid' }, { label: '30% Final Delivery', percentage: 30, status: 'paid' }],
     paymentMethod: { type: 'bank', bankName: 'CIB', accountName: 'Nour Makram', accountNumber: '1234567890' },
@@ -553,9 +559,9 @@ const defaultCompleted: CompletedProjectData[] = [
     deliverables: '150 edited photos, 20 hero selects, social media gallery',
     proposalDeliverables: ['150 edited event photos', '20 hero selects', 'Social media gallery package', 'Press-ready high-res files'],
     phases: [
-      { num: 1, title: 'Pre-Event Prep', status: 'complete', tasks: [{ text: 'Schedule walkthrough', done: true, due: 'Jan 15' }] },
-      { num: 2, title: 'Event Coverage', status: 'complete', tasks: [{ text: 'Day 1 runway', done: true, due: 'Jan 20' }, { text: 'Day 2 backstage', done: true, due: 'Jan 21' }] },
-      { num: 3, title: 'Editing & Delivery', status: 'complete', tasks: [{ text: 'Cull & select', done: true, due: 'Jan 23' }, { text: 'Final delivery', done: true, due: 'Jan 25' }] },
+      { num: 1, title: 'Pre-Event Prep', status: 'complete', description: 'Walked through the full CFW schedule with the producer, mapped runway and backstage angles, and coordinated press accreditation across all designer shows.', tasks: [{ text: 'Schedule walkthrough', done: true, due: 'Jan 15' }] },
+      { num: 2, title: 'Event Coverage', status: 'complete', description: 'Two full days of coverage — runway shows, backstage candid moments with designers and models, plus VIP arrivals and front-row portraits.', tasks: [{ text: 'Day 1 runway', done: true, due: 'Jan 20' }, { text: 'Day 2 backstage', done: true, due: 'Jan 21' }] },
+      { num: 3, title: 'Editing & Delivery', status: 'complete', description: 'Culled and edited 150 final frames, picked 20 hero selects for press use, and packaged the social media gallery for immediate publishing.', tasks: [{ text: 'Cull & select', done: true, due: 'Jan 23' }, { text: 'Final delivery', done: true, due: 'Jan 25' }] },
     ],
     paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Delivery', percentage: 50, status: 'paid' }],
     completedDate: 'January 25, 2026', startedDate: 'January 10, 2026',
@@ -572,9 +578,9 @@ const defaultCompleted: CompletedProjectData[] = [
     deliverables: '25 edited product shots',
     proposalDeliverables: ['25 product hero shots', 'White background packshots', 'Lifestyle flatlays'],
     phases: [
-      { num: 1, title: 'Setup & Prep', status: 'complete', tasks: [{ text: 'Product inventory', done: true, due: 'Jan 5' }] },
-      { num: 2, title: 'Shoot', status: 'complete', tasks: [{ text: 'Packshots', done: true, due: 'Jan 8' }, { text: 'Lifestyle shots', done: true, due: 'Jan 9' }] },
-      { num: 3, title: 'Delivery', status: 'complete', tasks: [{ text: 'Editing & delivery', done: true, due: 'Jan 14' }] },
+      { num: 1, title: 'Setup & Prep', status: 'complete', description: 'Took inventory of all 25 SKUs, prepped the white cyc and lighting setup, and locked the shot list with the Edita brand team.', tasks: [{ text: 'Product inventory', done: true, due: 'Jan 5' }] },
+      { num: 2, title: 'Shoot', status: 'complete', description: 'Two days of clean white-background packshots followed by complementary lifestyle flatlays styled to match the Q4 brand refresh.', tasks: [{ text: 'Packshots', done: true, due: 'Jan 8' }, { text: 'Lifestyle shots', done: true, due: 'Jan 9' }] },
+      { num: 3, title: 'Delivery', status: 'complete', description: 'Edited and color-corrected all 25 final frames and delivered web-ready and print-ready versions to the Edita team.', tasks: [{ text: 'Editing & delivery', done: true, due: 'Jan 14' }] },
     ],
     paymentMilestones: [{ label: 'Full Payment', percentage: 100, status: 'paid' }],
     paymentMethod: { type: 'instapay', instapayHandle: '@nour.creative' },
@@ -592,9 +598,9 @@ const defaultCompleted: CompletedProjectData[] = [
     deliverables: '20 social posts, 5 reels, content calendar',
     proposalDeliverables: ['20 static posts', '5 short-form reels', 'Content calendar', 'Caption copy'],
     phases: [
-      { num: 1, title: 'Strategy & Planning', status: 'complete', tasks: [{ text: 'Content calendar', done: true, due: 'Dec 20' }] },
-      { num: 2, title: 'Content Creation', status: 'complete', tasks: [{ text: 'Photo shoot', done: true, due: 'Dec 28' }, { text: 'Reel production', done: true, due: 'Jan 2' }] },
-      { num: 3, title: 'Final Delivery', status: 'complete', tasks: [{ text: 'All assets delivered', done: true, due: 'Jan 7' }] },
+      { num: 1, title: 'Strategy & Planning', status: 'complete', description: 'Built a six-week winter content calendar across Instagram and TikTok, aligning posts with Juhayna\'s seasonal product push and key cultural moments.', tasks: [{ text: 'Content calendar', done: true, due: 'Dec 20' }] },
+      { num: 2, title: 'Content Creation', status: 'complete', description: 'Full studio shoot for the static posts followed by a separate reel production day capturing short-form recipe and lifestyle content.', tasks: [{ text: 'Photo shoot', done: true, due: 'Dec 28' }, { text: 'Reel production', done: true, due: 'Jan 2' }] },
+      { num: 3, title: 'Final Delivery', status: 'complete', description: 'Delivered all 20 static posts, 5 final reels, written captions, and the scheduled content calendar ready for Juhayna\'s social team to publish.', tasks: [{ text: 'All assets delivered', done: true, due: 'Jan 7' }] },
     ],
     paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'paid' }],
     completedDate: 'January 7, 2026', startedDate: 'December 15, 2025',
@@ -1077,6 +1083,14 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const setPhaseReady = useCallback((projectId: string, phaseNum: number, ready: boolean) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const updatedPhases = p.phases.map(ph => ph.num === phaseNum ? { ...ph, readyForReview: ready } : ph);
+      return { ...p, phases: updatedPhases };
+    }));
+  }, []);
+
   const updateClient = useCallback((clientId: string, updates: Partial<ClientData>) => {
     setClients(prev => prev.map(c => c.id === clientId ? { ...c, ...updates } : c));
   }, []);
@@ -1084,7 +1098,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const getCompletedProject = useCallback((id: string) => completedProjects.find(p => p.id === id), [completedProjects]);
 
   return (
-    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, getCompletedProject, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, updateClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask }}>
+    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, getCompletedProject, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, updateClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask, setPhaseReady }}>
       {children}
     </ProjectContext.Provider>
   );

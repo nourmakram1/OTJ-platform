@@ -142,15 +142,18 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPay
     <div className="flex flex-col gap-3 animate-fade-up">
       {project.phases.map(p => {
         const isExpanded = expandedPhase === p.num;
-        const allDone = p.tasks.length > 0 && p.tasks.every(t => t.done);
-        const canApprove = p.status === 'active' && allDone;
+        const canApprove = p.status === 'active' && !!p.readyForReview;
         const borderColor = p.status === 'complete' ? 'border-otj-green' : p.status === 'active' ? 'border-otj-blue' : 'border-border';
         const statusBadge = p.status === 'complete'
           ? 'bg-otj-green-bg text-otj-green'
           : p.status === 'active'
-            ? 'bg-otj-blue-bg text-otj-blue'
+            ? (p.readyForReview ? 'bg-otj-yellow-bg text-otj-yellow' : 'bg-otj-blue-bg text-otj-blue')
             : 'bg-otj-off text-otj-muted';
-        const phaseStatusLabel = p.status === 'complete' ? '✓ Approved' : p.status === 'active' ? '● In Progress' : '🔒 Locked';
+        const phaseStatusLabel = p.status === 'complete'
+          ? '✓ Approved'
+          : p.status === 'active'
+            ? (p.readyForReview ? '⏳ Ready for Review' : '● In Progress')
+            : '🔒 Locked';
 
         return (
           <div key={p.num} className={`bg-card border-[1.5px] ${borderColor} rounded-[14px] overflow-hidden transition-all duration-200`}>
@@ -167,18 +170,15 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPay
               {p.status !== 'locked' && <span className="text-otj-muted text-sm">{isExpanded ? '▾' : '▸'}</span>}
             </div>
             {isExpanded && p.status !== 'locked' && (
-              <div className="px-4 pb-3.5 border-t border-border pt-3">
-                <div className="flex flex-col gap-1.5 mb-3">
-                  {p.tasks.map((task, j) => (
-                    <div key={j} className="flex items-center gap-2.5 p-2 px-3 rounded-[9px] bg-otj-off">
-                      <div className={`w-[18px] h-[18px] rounded shrink-0 flex items-center justify-center ${task.done ? 'bg-otj-green' : 'border-[1.5px] border-border'}`}>
-                        {task.done && <span className="text-primary-foreground text-[10px]">✓</span>}
-                      </div>
-                      <div className={`flex-1 text-[13px] font-medium ${task.done ? 'text-otj-muted line-through' : 'text-foreground'}`}>{task.text}</div>
-                      <div className="text-[11px] text-otj-muted">{task.due}</div>
-                    </div>
-                  ))}
-                </div>
+              <div className="px-4 pb-4 border-t border-border pt-3 flex flex-col gap-3">
+                {p.description ? (
+                  <p className="text-[13px] text-foreground leading-[1.7] tracking-[-0.005em]">{p.description}</p>
+                ) : (
+                  <p className="text-[12.5px] text-otj-muted italic">The creative hasn't added a description for this phase yet.</p>
+                )}
+                {p.deadline && (
+                  <div className="text-[11px] text-otj-muted">Deadline: <span className="font-semibold text-otj-text">{new Date(p.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span></div>
+                )}
                 {canApprove && (
                   <button
                     onClick={(e) => { e.stopPropagation(); handleApprovePhase(p.num); }}
@@ -187,9 +187,9 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPay
                     ✓ Approve Phase {p.num}
                   </button>
                 )}
-                {p.status === 'active' && !allDone && (
+                {p.status === 'active' && !canApprove && (
                   <div className="text-[11px] text-otj-muted text-center py-2 bg-otj-off rounded-lg">
-                    ⏳ Waiting for creative to complete all tasks before you can approve
+                    ⏳ Waiting for the creative to mark this phase as ready for your review
                   </div>
                 )}
               </div>

@@ -22,7 +22,7 @@ interface ProposalBuilderProps {
 
 interface DraftPhase {
   title: string;
-  tasks: string[];
+  description: string;
   deadline?: Date;
 }
 
@@ -40,7 +40,7 @@ const PRESET_SPLITS = [
 
 export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSubmit }) => {
   const [phases, setPhases] = useState<DraftPhase[]>([
-    { title: 'Pre-Production', tasks: [''], deadline: undefined },
+    { title: 'Pre-Production', description: '', deadline: undefined },
   ]);
   const [deliverables, setDeliverables] = useState<string[]>(['']);
   const [price, setPrice] = useState(project.budget.replace(/[^0-9]/g, ''));
@@ -55,13 +55,11 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
   const [accountNumber, setAccountNumber] = useState('');
 
   // Phase helpers
-  const addPhase = () => setPhases(prev => [...prev, { title: '', tasks: [''], deadline: undefined }]);
+  const addPhase = () => setPhases(prev => [...prev, { title: '', description: '', deadline: undefined }]);
   const removePhase = (idx: number) => { if (phases.length > 1) setPhases(prev => prev.filter((_, i) => i !== idx)); };
   const updatePhaseTitle = (idx: number, title: string) => setPhases(prev => prev.map((p, i) => i === idx ? { ...p, title } : p));
   const updatePhaseDeadline = (idx: number, date: Date | undefined) => setPhases(prev => prev.map((p, i) => i === idx ? { ...p, deadline: date } : p));
-  const addTask = (pi: number) => setPhases(prev => prev.map((p, i) => i === pi ? { ...p, tasks: [...p.tasks, ''] } : p));
-  const removeTask = (pi: number, ti: number) => setPhases(prev => prev.map((p, i) => { if (i !== pi || p.tasks.length <= 1) return p; return { ...p, tasks: p.tasks.filter((_, j) => j !== ti) }; }));
-  const updateTask = (pi: number, ti: number, text: string) => setPhases(prev => prev.map((p, i) => { if (i !== pi) return p; return { ...p, tasks: p.tasks.map((t, j) => j === ti ? text : t) }; }));
+  const updatePhaseDescription = (idx: number, description: string) => setPhases(prev => prev.map((p, i) => i === idx ? { ...p, description } : p));
 
   // Deliverable helpers
   const addDeliverable = () => setDeliverables(prev => [...prev, '']);
@@ -94,7 +92,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
   const numericPrice = parseInt(price) || 0;
   const paymentMethodValid = paymentType === 'instapay' ? instapayHandle.trim().length > 0 : (bankName.trim() && accountName.trim() && accountNumber.trim());
 
-  const canSubmit = phases.every(p => p.title.trim() && p.tasks.some(t => t.trim())) &&
+  const canSubmit = phases.every(p => p.title.trim() && p.description.trim()) &&
     deliverables.some(d => d.trim()) &&
     price.trim() &&
     totalPercentage === 100 &&
@@ -108,11 +106,8 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
       title: p.title,
       status: 'locked' as const,
       deadline: p.deadline ? p.deadline.toISOString() : undefined,
-      tasks: p.tasks.filter(t => t.trim()).map(t => ({
-        text: t,
-        done: false,
-        due: p.deadline ? format(p.deadline, 'MMM d') : project.deadline,
-      })),
+      description: p.description.trim(),
+      tasks: [],
     }));
     const cleanDeliverables = deliverables.filter(d => d.trim());
     const paymentMilestones: PaymentMilestone[] = milestones.map(m => ({
@@ -134,7 +129,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
         <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[14px] p-3 md:p-4">
           <div className="text-[14px] font-extrabold text-otj-yellow mb-1">📝 Write Your Proposal</div>
           <div className="text-[12px] text-otj-text leading-relaxed">
-            Define phases, tasks, deliverables and pricing. Deadlines sync to your dashboard schedule. Drag phases to reorder.
+            Define phases, deliverables and pricing. Each phase gets a short paragraph describing the work. Deadlines sync to your dashboard schedule. Drag phases to reorder.
           </div>
         </div>
 
@@ -154,7 +149,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
         {/* Phases */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em]">Phases & Tasks</div>
+            <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em]">Phases</div>
             <button onClick={addPhase} className="text-[10px] md:text-[11.5px] font-bold px-2.5 md:px-3.5 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground transition-all duration-150">+ Add Phase</button>
           </div>
           <div className="flex flex-col gap-3">
@@ -192,17 +187,13 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
                     )}
                   </div>
                 </div>
-                <div className="p-4 flex flex-col gap-2">
-                  {phase.tasks.map((task, ti) => (
-                    <div key={ti} className="flex items-center gap-2.5">
-                      <div className="w-[18px] h-[18px] rounded border-[1.5px] border-border shrink-0" />
-                      <input type="text" value={task} onChange={e => updateTask(pi, ti, e.target.value)} placeholder="Add a task…" className="flex-1 text-[13px] font-medium bg-transparent border-none outline-none placeholder:text-otj-muted" />
-                      {phase.tasks.length > 1 && (
-                        <button onClick={() => removeTask(pi, ti)} className="text-otj-muted hover:text-foreground text-xs cursor-pointer">✕</button>
-                      )}
-                    </div>
-                  ))}
-                  <button onClick={() => addTask(pi)} className="text-[11.5px] font-semibold text-otj-blue cursor-pointer text-left mt-1 hover:underline">+ Add task</button>
+                <div className="p-4">
+                  <textarea
+                    value={phase.description}
+                    onChange={e => updatePhaseDescription(pi, e.target.value)}
+                    placeholder="Describe what this phase covers — what you'll deliver and how the work will progress…"
+                    className="w-full min-h-[90px] text-[13px] text-foreground leading-[1.6] bg-transparent border-none outline-none resize-none placeholder:text-otj-muted"
+                  />
                 </div>
               </div>
             ))}
@@ -447,7 +438,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">Proposal Summary</div>
           {[
             { label: 'Phases', val: String(phases.filter(p => p.title.trim()).length) },
-            { label: 'Total Tasks', val: String(phases.reduce((acc, p) => acc + p.tasks.filter(t => t.trim()).length, 0)) },
+            { label: 'Phases Described', val: `${phases.filter(p => p.description.trim()).length} of ${phases.length}` },
             { label: 'Deliverables', val: String(deliverables.filter(d => d.trim()).length) },
             { label: 'Payment Split', val: milestones.map(m => `${m.percentage}%`).join(' / ') },
             { label: 'Payment Method', val: paymentType === 'instapay' ? '📱 InstaPay' : '🏦 Bank' },
