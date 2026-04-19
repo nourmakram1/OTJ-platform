@@ -1,37 +1,108 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, MapPin, Clock, Star, Briefcase, Heart, ArrowUpRight } from 'lucide-react';
 import { showToast } from './Toast';
 import type { Creative } from '../data/creatives';
+
+// Fashion
 import portfolioFashion from '@/assets/portfolio-fashion.jpg';
+import portfolioFashion2 from '@/assets/portfolio-fashion-2.jpg';
+import portfolioFashion3 from '@/assets/portfolio-fashion-3.jpg';
+// Product / E-commerce / Jewelry
 import portfolioProduct from '@/assets/portfolio-product.jpg';
+import portfolioProduct2 from '@/assets/portfolio-product-2.jpg';
+import portfolioProduct3 from '@/assets/portfolio-product-3.jpg';
+import portfolioEcommerce1 from '@/assets/portfolio-ecommerce-1.jpg';
+import portfolioJewelry1 from '@/assets/portfolio-jewelry-1.jpg';
+import portfolioJewelry2 from '@/assets/portfolio-jewelry-2.jpg';
+import portfolioPackaging1 from '@/assets/portfolio-packaging-1.jpg';
+// Food
 import portfolioFood from '@/assets/portfolio-food.jpg';
+import portfolioFood2 from '@/assets/portfolio-food-2.jpg';
+import portfolioFood3 from '@/assets/portfolio-food-3.jpg';
+// Event / Wedding / Real Estate
 import portfolioEvent from '@/assets/portfolio-event.jpg';
-import portfolioDesign from '@/assets/portfolio-design.jpg';
-import portfolioVideo from '@/assets/portfolio-video.jpg';
+import portfolioEvent2 from '@/assets/portfolio-event-2.jpg';
+import portfolioEvent3 from '@/assets/portfolio-event-3.jpg';
+import portfolioWedding1 from '@/assets/portfolio-wedding-1.jpg';
+import portfolioWedding2 from '@/assets/portfolio-wedding-2.jpg';
+import portfolioRealestate1 from '@/assets/portfolio-realestate-1.jpg';
+import portfolioRealestate2 from '@/assets/portfolio-realestate-2.jpg';
+// Beauty / Stylist
 import portfolioMakeup from '@/assets/portfolio-makeup.jpg';
+import portfolioMakeup2 from '@/assets/portfolio-makeup-2.jpg';
+import portfolioMakeup3 from '@/assets/portfolio-makeup-3.jpg';
+import portfolioStylist1 from '@/assets/portfolio-stylist-1.jpg';
+// Video / Content / Motion
+import portfolioVideo from '@/assets/portfolio-video.jpg';
+import portfolioVideo2 from '@/assets/portfolio-video-2.jpg';
+import portfolioVideo3 from '@/assets/portfolio-video-3.jpg';
+import portfolioContent1 from '@/assets/portfolio-content-1.jpg';
+import portfolioMotion1 from '@/assets/portfolio-motion-1.jpg';
+// Design / UI/UX / Dev
+import portfolioDesign from '@/assets/portfolio-design.jpg';
+import portfolioDesign2 from '@/assets/portfolio-design-2.jpg';
+import portfolioDesign3 from '@/assets/portfolio-design-3.jpg';
+import portfolioUiux1 from '@/assets/portfolio-uiux-1.jpg';
+import portfolioDev1 from '@/assets/portfolio-dev-1.jpg';
+import portfolioDev2 from '@/assets/portfolio-dev-2.jpg';
+// Marketing / Writing
 import portfolioMarketing from '@/assets/portfolio-marketing.jpg';
+import portfolioSocial1 from '@/assets/portfolio-social-1.jpg';
+import portfolioAds1 from '@/assets/portfolio-ads-1.jpg';
+import portfolioWriting1 from '@/assets/portfolio-writing-1.jpg';
+import portfolioWriting2 from '@/assets/portfolio-writing-2.jpg';
+import portfolioScript1 from '@/assets/portfolio-script-1.jpg';
 
-// Map a creative's niche/category to a curated set of portfolio images
-const getPortfolioImages = (niche: string, category: string): string[] => {
-  const n = niche.toLowerCase();
-  const c = category.toLowerCase();
-
-  if (n.includes('fashion')) return [portfolioFashion, portfolioMakeup, portfolioProduct, portfolioDesign];
-  if (n.includes('product') || n.includes('e-commerce') || n.includes('jewelry')) return [portfolioProduct, portfolioFashion, portfolioDesign, portfolioFood];
-  if (n.includes('food')) return [portfolioFood, portfolioProduct, portfolioEvent, portfolioFashion];
-  if (n.includes('event') || n.includes('wedding') || n.includes('real estate')) return [portfolioEvent, portfolioVideo, portfolioFashion, portfolioFood];
-  if (n.includes('makeup') || n.includes('stylist')) return [portfolioMakeup, portfolioFashion, portfolioProduct, portfolioEvent];
-  if (c.includes('videography') || n.includes('content creator') || n.includes('motion')) return [portfolioVideo, portfolioEvent, portfolioFashion, portfolioMarketing];
-  if (c.includes('design') || n.includes('developer') || n.includes('ui/ux') || n.includes('packaging')) return [portfolioDesign, portfolioProduct, portfolioMarketing, portfolioFashion];
-  if (c.includes('marketing') || c.includes('writing')) return [portfolioMarketing, portfolioDesign, portfolioVideo, portfolioProduct];
-
-  return [portfolioFashion, portfolioProduct, portfolioDesign, portfolioVideo];
+// Niche → curated portfolio image pool (3-5 highly relevant shots each)
+const NICHE_POOLS: Record<string, string[]> = {
+  'Fashion Photographer':       [portfolioFashion, portfolioFashion2, portfolioFashion3, portfolioMakeup3, portfolioStylist1],
+  'Product Photographer':       [portfolioProduct, portfolioProduct2, portfolioProduct3, portfolioPackaging1, portfolioJewelry1],
+  'Food Photographer':          [portfolioFood, portfolioFood2, portfolioFood3, portfolioProduct],
+  'E-commerce Photographer':    [portfolioEcommerce1, portfolioProduct, portfolioProduct2, portfolioPackaging1],
+  'Event Photographer':         [portfolioEvent, portfolioEvent2, portfolioEvent3, portfolioWedding2],
+  'Real Estate Photographer':   [portfolioRealestate1, portfolioRealestate2, portfolioRealestate1, portfolioRealestate2],
+  'Jewelry Photographer':       [portfolioJewelry1, portfolioJewelry2, portfolioProduct2, portfolioProduct3],
+  'Wedding Videographer':       [portfolioWedding1, portfolioWedding2, portfolioVideo, portfolioEvent],
+  'Commercial Videographer':    [portfolioVideo, portfolioVideo2, portfolioVideo3, portfolioMotion1],
+  'Content Creator':            [portfolioContent1, portfolioSocial1, portfolioVideo, portfolioMarketing],
+  'Brand Designer':             [portfolioDesign, portfolioDesign2, portfolioDesign3, portfolioPackaging1],
+  'UI/UX Designer':             [portfolioUiux1, portfolioDev2, portfolioDesign2, portfolioDesign3],
+  'Packaging Designer':         [portfolioPackaging1, portfolioProduct3, portfolioDesign, portfolioDesign2],
+  'Copywriter':                 [portfolioWriting2, portfolioWriting1, portfolioMarketing, portfolioSocial1],
+  'Content Writer':             [portfolioWriting1, portfolioWriting2, portfolioMarketing],
+  'Script Writer':              [portfolioScript1, portfolioWriting1, portfolioVideo3],
+  'Social Media Manager':       [portfolioSocial1, portfolioContent1, portfolioMarketing, portfolioAds1],
+  'Performance Marketer':       [portfolioAds1, portfolioMarketing, portfolioSocial1],
+  'Fashion Stylist':            [portfolioStylist1, portfolioFashion2, portfolioFashion, portfolioMakeup],
+  'Makeup Artist':              [portfolioMakeup, portfolioMakeup2, portfolioMakeup3, portfolioFashion],
+  'Web Developer':              [portfolioDev1, portfolioDev2, portfolioUiux1, portfolioDesign2],
+  'Motion Designer':            [portfolioMotion1, portfolioVideo3, portfolioDesign3, portfolioVideo2],
 };
 
-const ImageCarousel = ({ niche, category }: { niche: string; category: string }) => {
+// Deterministic shuffle so each creative gets a unique-feeling rotation
+const seededShuffle = <T,>(arr: T[], seed: string): T[] => {
+  const a = [...arr];
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
+  for (let i = a.length - 1; i > 0; i--) {
+    h = (h * 9301 + 49297) % 233280;
+    const j = Math.abs(h) % (i + 1);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
+const getPortfolioImages = (niche: string, id: string): string[] => {
+  const pool = NICHE_POOLS[niche] ?? [portfolioFashion, portfolioProduct, portfolioDesign, portfolioVideo];
+  // Dedupe while preserving order
+  const unique = Array.from(new Set(pool));
+  return seededShuffle(unique, id);
+};
+
+const ImageCarousel = ({ niche, id }: { niche: string; id: string }) => {
   const [current, setCurrent] = useState(0);
-  const slides = getPortfolioImages(niche, category);
+  const slides = useMemo(() => getPortfolioImages(niche, id), [niche, id]);
 
   const prev = (e: React.MouseEvent) => {e.stopPropagation();setCurrent((i) => i === 0 ? slides.length - 1 : i - 1);};
   const next = (e: React.MouseEvent) => {e.stopPropagation();setCurrent((i) => i === slides.length - 1 ? 0 : i + 1);};
@@ -46,7 +117,7 @@ const ImageCarousel = ({ niche, category }: { niche: string; category: string })
           <img
             key={i}
             src={src}
-            alt={`Portfolio work ${i + 1}`}
+            alt={`${niche} portfolio work ${i + 1}`}
             loading="lazy"
             width={800}
             height={640}
