@@ -5,7 +5,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { showToast } from './Toast';
 import { useProjects, ProjectMessage } from '../context/ProjectContext';
-import { RotateCw, CalendarCheck } from 'lucide-react';
+import { RotateCw, CalendarCheck, Eye, CheckCircle2, PartyPopper } from 'lucide-react';
 
 const threads = [
   { id: 'randa', name: 'Randa Hatem', initials: 'RH', preview: 'Can we do 3,200 EGP?', time: '10:35 AM', unread: 2, projectId: 'proj-existing-1', clientId: 'client-randa' },
@@ -17,9 +17,10 @@ interface Message {
   text: string;
   isMe: boolean;
   time: string;
-  type?: 'calendar' | 'attachment' | 'amend-request' | 'amend-deadline-confirmed';
+  type?: 'calendar' | 'attachment' | 'amend-request' | 'amend-deadline-confirmed' | 'phase-ready' | 'phase-approved';
   meetingData?: { title: string; date: string; time: string };
   amendData?: ProjectMessage['amendData'];
+  phaseData?: ProjectMessage['phaseData'];
 }
 
 const initialMessages: Message[] = [
@@ -67,6 +68,7 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
       time: `${senderLabel} · ${fmtTime(pm.createdAt)}${isMe ? ' · ✓' : ''}`,
       type: pm.type,
       amendData: pm.amendData,
+      phaseData: pm.phaseData,
     };
   }) : [];
   const mergedMessages: Message[] = [...messages, ...projectChatMessages];
@@ -379,6 +381,53 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
                     </div>
                     {a.acceptedNote && (
                       <p className="mt-1.5 pt-1.5 border-t border-otj-green-border text-[11.5px] text-foreground leading-[1.5] whitespace-pre-wrap italic">{a.acceptedNote}</p>
+                    )}
+                  </div>
+                  <div className={`text-[10.5px] text-otj-muted mt-0.5 ${msg.isMe ? 'text-right' : ''}`}>{msg.time}</div>
+                </div>
+              );
+            }
+
+            if (msg.type === 'phase-ready' && msg.phaseData) {
+              const ph = msg.phaseData;
+              return (
+                <div key={i} className={`${msg.isMe ? 'self-end' : 'self-start'} max-w-[340px]`}>
+                  <div className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-3 px-3.5">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Eye size={12} className="text-otj-blue" strokeWidth={2.5} />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue">{ph.isResubmit ? 'Re-Submitted for Review' : 'Ready for Review'}</span>
+                    </div>
+                    <div className="text-[12.5px] text-foreground leading-snug">
+                      <span className="font-bold">Phase {ph.phaseNum} — {ph.phaseTitle}</span>
+                    </div>
+                    {linkedProj && (
+                      <button
+                        onClick={() => navigate(`/project/${linkedProj.id}`)}
+                        className="mt-2 w-full text-[11.5px] font-bold py-[7px] rounded-full cursor-pointer transition-all duration-150 bg-otj-blue text-primary-foreground hover:opacity-90"
+                      >Open phase →</button>
+                    )}
+                  </div>
+                  <div className={`text-[10.5px] text-otj-muted mt-0.5 ${msg.isMe ? 'text-right' : ''}`}>{msg.time}</div>
+                </div>
+              );
+            }
+
+            if (msg.type === 'phase-approved' && msg.phaseData) {
+              const ph = msg.phaseData;
+              return (
+                <div key={i} className={`${msg.isMe ? 'self-end' : 'self-start'} max-w-[340px]`}>
+                  <div className="bg-otj-green-bg border border-otj-green-border rounded-[14px] p-3 px-3.5">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      {ph.isFinalPhase ? <PartyPopper size={12} className="text-otj-green" strokeWidth={2.5} /> : <CheckCircle2 size={12} className="text-otj-green" strokeWidth={2.5} />}
+                      <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-green">{ph.isFinalPhase ? 'Final Phase Approved' : 'Phase Approved'}</span>
+                    </div>
+                    <div className="text-[12.5px] text-foreground leading-snug">
+                      <span className="font-bold">Phase {ph.phaseNum} — {ph.phaseTitle}</span>
+                    </div>
+                    {ph.nextPhaseNum && ph.nextPhaseTitle && (
+                      <div className="mt-1 text-[11.5px] text-foreground leading-snug">
+                        ↳ Phase {ph.nextPhaseNum} — <span className="font-bold">{ph.nextPhaseTitle}</span> is now active
+                      </div>
                     )}
                   </div>
                   <div className={`text-[10.5px] text-otj-muted mt-0.5 ${msg.isMe ? 'text-right' : ''}`}>{msg.time}</div>
