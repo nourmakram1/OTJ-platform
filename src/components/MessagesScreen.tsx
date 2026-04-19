@@ -4,7 +4,8 @@ import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { showToast } from './Toast';
-import { useProjects } from '../context/ProjectContext';
+import { useProjects, ProjectMessage } from '../context/ProjectContext';
+import { RotateCw, CalendarCheck } from 'lucide-react';
 
 const threads = [
   { id: 'randa', name: 'Randa Hatem', initials: 'RH', preview: 'Can we do 3,200 EGP?', time: '10:35 AM', unread: 2, projectId: 'proj-existing-1', clientId: 'client-randa' },
