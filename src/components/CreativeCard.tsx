@@ -76,13 +76,6 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
       <div className="relative">
         <ImageCarousel bg={c.bg} emoji={c.emoji} />
 
-        {/* Availability — frosted badge top-left */}
-        <div className={`absolute top-[15px] left-[15px] z-[4] flex items-center gap-[5px] text-[9px] font-semibold px-[8px] py-[3.5px] rounded-full backdrop-blur-md border ${
-        c.avail.includes('now') ? 'bg-black/35 text-white border-white/15' : 'bg-black/30 text-white/70 border-white/10'}`
-        }>
-          {c.avail.includes('now') && <span className="w-[5px] h-[5px] rounded-full bg-emerald-400 shrink-0" />}
-          {c.avail.includes('now') ? 'Available' : c.avail}
-        </div>
 
         {/* Save — white circle top-right */}
         <button
