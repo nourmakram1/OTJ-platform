@@ -377,6 +377,9 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
                       <span className="font-bold">Phase {a.phaseNum} — {a.phaseTitle}</span>
                       {a.acceptedDeadline && <> · new deadline <span className="font-extrabold">{fmtAmendDate(a.acceptedDeadline)}</span></>}
                     </div>
+                    {a.acceptedNote && (
+                      <p className="mt-1.5 pt-1.5 border-t border-otj-green-border text-[11.5px] text-foreground leading-[1.5] whitespace-pre-wrap italic">{a.acceptedNote}</p>
+                    )}
                   </div>
                   <div className={`text-[10.5px] text-otj-muted mt-0.5 ${msg.isMe ? 'text-right' : ''}`}>{msg.time}</div>
                 </div>
