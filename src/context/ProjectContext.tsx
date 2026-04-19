@@ -231,6 +231,7 @@ interface ProjectContextType {
   acceptProposal: (projectId: string) => void;
   rejectProposal: (projectId: string) => void;
   toggleTask: (projectId: string, phaseNum: number, taskIndex: number) => void;
+  setPhaseReady: (projectId: string, phaseNum: number, ready: boolean) => void;
 }
 
 const defaultBriefs: BriefData[] = [
