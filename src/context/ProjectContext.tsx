@@ -484,13 +484,13 @@ const defaultActiveProjects: ProjectData[] = [
     proposalDeliverables: ['Portfolio website redesign', 'Mobile responsive design'],
     proposalPrice: '6,000 EGP',
     phases: [
-      { num: 1, title: 'Discovery', status: 'complete', tasks: [
+      { num: 1, title: 'Discovery', status: 'complete', description: 'Audited the existing portfolio site, interviewed Yara about her ideal clients, and defined the editorial direction for the redesign.', tasks: [
         { text: 'Review current portfolio', done: true, due: 'Mar 10' },
       ]},
-      { num: 2, title: 'Design', status: 'active', tasks: [
+      { num: 2, title: 'Design', status: 'active', description: 'Designing the full website in Figma — homepage, three gallery series, services page, and contact — with a minimal editorial layout system and refined typography.', tasks: [
         { text: 'Wireframes approval', done: false, due: 'Mar 20' },
       ]},
-      { num: 3, title: 'Development', status: 'locked', tasks: [] },
+      { num: 3, title: 'Development', status: 'locked', description: 'Building out the responsive site, integrating the galleries, and prepping the Figma handoff file with components and design tokens.', tasks: [] },
     ],
     paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'held' }],
     escrow: { total: '6,000 EGP', deposited: '3,000 EGP', held: '3,000 EGP', fee: '300 EGP' },
