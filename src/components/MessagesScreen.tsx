@@ -4,7 +4,8 @@ import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { showToast } from './Toast';
-import { useProjects } from '../context/ProjectContext';
+import { useProjects, ProjectMessage } from '../context/ProjectContext';
+import { RotateCw, CalendarCheck } from 'lucide-react';
 
 const threads = [
   { id: 'randa', name: 'Randa Hatem', initials: 'RH', preview: 'Can we do 3,200 EGP?', time: '10:35 AM', unread: 2, projectId: 'proj-existing-1', clientId: 'client-randa' },
@@ -16,8 +17,9 @@ interface Message {
   text: string;
   isMe: boolean;
   time: string;
-  type?: 'calendar' | 'attachment';
+  type?: 'calendar' | 'attachment' | 'amend-request' | 'amend-deadline-confirmed';
   meetingData?: { title: string; date: string; time: string };
+  amendData?: ProjectMessage['amendData'];
 }
 
 const initialMessages: Message[] = [
@@ -31,7 +33,7 @@ interface MessagesScreenProps {
 }
 
 export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter }) => {
-  const { addMeeting, addAttachment, activeProjects } = useProjects();
+  const { addMeeting, addAttachment, activeProjects, projectMessages, userRole } = useProjects();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeThread, setActiveThread] = useState('randa');
   const [messages, setMessages] = useState<Message[]>(initialMessages);
@@ -50,9 +52,28 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
   const currentThread = threads.find(t => t.id === activeThread);
   const linkedProj = activeProjects.find(p => p.id === currentThread?.projectId);
 
+  // Merge thread-local messages with mirrored project messages (amend events, etc.)
+  const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  const projectChatMessages: Message[] = (linkedProj && projectMessages[linkedProj.id]) ? projectMessages[linkedProj.id].map(pm => {
+    const isMe = userRole === pm.sender;
+    const senderLabel = pm.sender === 'creative'
+      ? (isMe ? 'You' : 'Creative')
+      : pm.sender === 'client'
+        ? (isMe ? 'You' : currentThread?.name?.split(' ')[0] || 'Client')
+        : 'System';
+    return {
+      text: pm.text || '',
+      isMe,
+      time: `${senderLabel} · ${fmtTime(pm.createdAt)}${isMe ? ' · ✓' : ''}`,
+      type: pm.type,
+      amendData: pm.amendData,
+    };
+  }) : [];
+  const mergedMessages: Message[] = [...messages, ...projectChatMessages];
+
   useEffect(() => {
     if (threadRef.current) threadRef.current.scrollTop = threadRef.current.scrollHeight;
-  }, [messages]);
+  }, [messages, projectChatMessages.length]);
 
   const sendMessage = () => {
     if (!input.trim()) return;
@@ -295,29 +316,84 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
 
         {/* Messages */}
         <div ref={threadRef} className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2.5">
-          {messages.map((msg, i) => msg.type === 'calendar' ? (
-            <div key={i} className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-3 px-4 max-w-[320px] self-start">
-              <div className="flex items-center gap-1.5 mb-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue">Calendar Mention Detected</span>
+          {mergedMessages.map((msg, i) => {
+            const fmtAmendDate = (iso?: string) => iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+
+            if (msg.type === 'calendar') {
+              return (
+                <div key={i} className="bg-otj-blue-bg border border-otj-blue-border rounded-[14px] p-3 px-4 max-w-[320px] self-start">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue">Calendar Mention Detected</span>
+                  </div>
+                  <div className="text-[14px] font-extrabold tracking-[-0.02em] text-foreground mb-2">
+                    {msg.meetingData ? `${msg.meetingData.title} · ${msg.meetingData.date}, ${msg.meetingData.time}` : msg.text}
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => msg.meetingData && handleAddMeeting(msg.meetingData)} className="flex-1 text-[12px] font-bold py-[7px] rounded-full cursor-pointer transition-all duration-150 bg-otj-blue text-primary-foreground active:scale-[0.98]">+ Add to Calendar</button>
+                    <button className="flex-1 text-[12px] font-bold py-[7px] rounded-full cursor-pointer transition-all duration-150 border-[1.5px] border-otj-blue-border text-otj-blue bg-card">Dismiss</button>
+                  </div>
+                </div>
+              );
+            }
+
+            if (msg.type === 'amend-request' && msg.amendData) {
+              const a = msg.amendData;
+              return (
+                <div key={i} className={`${msg.isMe ? 'self-end' : 'self-start'} max-w-[360px]`}>
+                  <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[14px] p-3.5 px-4">
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <RotateCw size={12} className="text-otj-yellow" strokeWidth={2.5} />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-yellow">Amends Requested · Round {a.round}</span>
+                    </div>
+                    <div className="text-[13px] font-extrabold tracking-[-0.02em] text-foreground mb-1.5">Phase {a.phaseNum} — {a.phaseTitle}</div>
+                    {a.note && <p className="text-[12.5px] text-foreground leading-[1.55] whitespace-pre-wrap mb-2">{a.note}</p>}
+                    {a.proposedDeadline && (
+                      <div className="text-[10.5px] font-semibold text-otj-text bg-card border border-otj-yellow-border rounded-full px-2 py-[2px] inline-flex">
+                        Suggested deadline: <span className="font-bold ml-1">{fmtAmendDate(a.proposedDeadline)}</span>
+                      </div>
+                    )}
+                    {linkedProj && (
+                      <button
+                        onClick={() => navigate(`/project/${linkedProj.id}`)}
+                        className="mt-2.5 w-full text-[11.5px] font-bold py-[7px] rounded-full cursor-pointer transition-all duration-150 bg-otj-yellow text-primary-foreground hover:opacity-90"
+                      >Open phase →</button>
+                    )}
+                  </div>
+                  <div className={`text-[10.5px] text-otj-muted mt-0.5 ${msg.isMe ? 'text-right' : ''}`}>{msg.time}</div>
+                </div>
+              );
+            }
+
+            if (msg.type === 'amend-deadline-confirmed' && msg.amendData) {
+              const a = msg.amendData;
+              return (
+                <div key={i} className={`${msg.isMe ? 'self-end' : 'self-start'} max-w-[340px]`}>
+                  <div className="bg-otj-green-bg border border-otj-green-border rounded-[14px] p-3 px-3.5">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <CalendarCheck size={12} className="text-otj-green" strokeWidth={2.5} />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-green">Deadline Confirmed · Round {a.round}</span>
+                    </div>
+                    <div className="text-[12.5px] text-foreground leading-snug">
+                      <span className="font-bold">Phase {a.phaseNum} — {a.phaseTitle}</span>
+                      {a.acceptedDeadline && <> · new deadline <span className="font-extrabold">{fmtAmendDate(a.acceptedDeadline)}</span></>}
+                    </div>
+                  </div>
+                  <div className={`text-[10.5px] text-otj-muted mt-0.5 ${msg.isMe ? 'text-right' : ''}`}>{msg.time}</div>
+                </div>
+              );
+            }
+
+            return (
+              <div key={i} className={msg.isMe ? 'self-end' : 'self-start'}>
+                <div className={`max-w-[70%] px-3.5 py-2.5 text-[13px] leading-relaxed ${
+                  msg.isMe
+                    ? 'bg-primary text-primary-foreground rounded-[14px_14px_4px_14px]'
+                    : 'bg-card border border-border rounded-[4px_14px_14px_14px]'
+                }`}>{msg.text}</div>
+                <div className={`text-[10.5px] text-otj-muted mt-0.5 ${msg.isMe ? 'text-right' : ''}`}>{msg.time}</div>
               </div>
-              <div className="text-[14px] font-extrabold tracking-[-0.02em] text-foreground mb-2">
-                {msg.meetingData ? `${msg.meetingData.title} · ${msg.meetingData.date}, ${msg.meetingData.time}` : msg.text}
-              </div>
-              <div className="flex gap-2">
-                <button onClick={() => msg.meetingData && handleAddMeeting(msg.meetingData)} className="flex-1 text-[12px] font-bold py-[7px] rounded-full cursor-pointer transition-all duration-150 bg-otj-blue text-primary-foreground active:scale-[0.98]">+ Add to Calendar</button>
-                <button className="flex-1 text-[12px] font-bold py-[7px] rounded-full cursor-pointer transition-all duration-150 border-[1.5px] border-otj-blue-border text-otj-blue bg-card">Dismiss</button>
-              </div>
-            </div>
-          ) : (
-            <div key={i} className={msg.isMe ? 'self-end' : 'self-start'}>
-              <div className={`max-w-[70%] px-3.5 py-2.5 text-[13px] leading-relaxed ${
-                msg.isMe
-                  ? 'bg-primary text-primary-foreground rounded-[14px_14px_4px_14px]'
-                  : 'bg-card border border-border rounded-[4px_14px_14px_14px]'
-              }`}>{msg.text}</div>
-              <div className={`text-[10.5px] text-otj-muted mt-0.5 ${msg.isMe ? 'text-right' : ''}`}>{msg.time}</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Input + Zoom picker side by side */}
