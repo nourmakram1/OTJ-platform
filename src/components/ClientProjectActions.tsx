@@ -10,6 +10,8 @@ import {
   DialogFooter,
 } from './ui/dialog';
 import { Button } from './ui/button';
+import { Textarea } from './ui/textarea';
+import { Input } from './ui/input';
 
 // ─── Proposal Review ───────────────────────────────────────
 export const ClientProposalReview: React.FC<{ project: ProjectData }> = ({ project }) => {
