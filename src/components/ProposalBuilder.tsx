@@ -187,17 +187,13 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
                     )}
                   </div>
                 </div>
-                <div className="p-4 flex flex-col gap-2">
-                  {phase.tasks.map((task, ti) => (
-                    <div key={ti} className="flex items-center gap-2.5">
-                      <div className="w-[18px] h-[18px] rounded border-[1.5px] border-border shrink-0" />
-                      <input type="text" value={task} onChange={e => updateTask(pi, ti, e.target.value)} placeholder="Add a task…" className="flex-1 text-[13px] font-medium bg-transparent border-none outline-none placeholder:text-otj-muted" />
-                      {phase.tasks.length > 1 && (
-                        <button onClick={() => removeTask(pi, ti)} className="text-otj-muted hover:text-foreground text-xs cursor-pointer">✕</button>
-                      )}
-                    </div>
-                  ))}
-                  <button onClick={() => addTask(pi)} className="text-[11.5px] font-semibold text-otj-blue cursor-pointer text-left mt-1 hover:underline">+ Add task</button>
+                <div className="p-4">
+                  <textarea
+                    value={phase.description}
+                    onChange={e => updatePhaseDescription(pi, e.target.value)}
+                    placeholder="Describe what this phase covers — what you'll deliver and how the work will progress…"
+                    className="w-full min-h-[90px] text-[13px] text-foreground leading-[1.6] bg-transparent border-none outline-none resize-none placeholder:text-otj-muted"
+                  />
                 </div>
               </div>
             ))}
