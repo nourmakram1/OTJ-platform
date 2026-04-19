@@ -322,31 +322,75 @@ const ProjectProfile = () => {
                             )}
 
                             {/* Open amend (highlighted) */}
-                            {hasOpenAmend && latestAmend && (
-                              <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[12px] p-3.5">
-                                <div className="flex items-center justify-between gap-2 mb-1.5">
-                                  <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-otj-yellow">↻ Client Amends — Round {latestAmend.round}</div>
-                                  {latestAmend.newDeadline && (
-                                    <span className="text-[10.5px] font-bold px-2 py-[2px] rounded-full bg-card border border-otj-yellow-border text-otj-yellow">New deadline: {fmtDate(latestAmend.newDeadline)}</span>
-                                  )}
+                            {hasOpenAmend && latestAmend && (() => {
+                              const hasAccepted = !!latestAmend.acceptedDeadline;
+                              return (
+                                <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[12px] p-3.5 flex flex-col gap-3">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-otj-yellow">↻ Client Amends — Round {latestAmend.round}</div>
+                                    {hasAccepted && (
+                                      <span className="text-[10.5px] font-bold px-2 py-[2px] rounded-full bg-otj-green-bg border border-otj-green-border text-otj-green">You set: {fmtDate(latestAmend.acceptedDeadline)}</span>
+                                    )}
+                                  </div>
+                                  <p className="text-[13px] text-foreground leading-[1.6] whitespace-pre-wrap">{latestAmend.note}</p>
+
+                                  {/* Inline deadline setter — creative confirms binding deadline */}
+                                  <div className="bg-card border border-otj-yellow-border rounded-[10px] p-3 flex flex-col gap-2">
+                                    <div className="flex items-baseline justify-between gap-2 flex-wrap">
+                                      <div className="text-[10.5px] font-extrabold uppercase tracking-[0.08em] text-foreground">Set new deadline</div>
+                                      {latestAmend.proposedDeadline && (
+                                        <div className="text-[10.5px] text-otj-muted">Client suggested: <span className="font-bold text-otj-text">{fmtDate(latestAmend.proposedDeadline)}</span></div>
+                                      )}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <input
+                                        type="date"
+                                        value={(latestAmend.acceptedDeadline || latestAmend.proposedDeadline || '').slice(0, 10)}
+                                        onChange={(e) => {
+                                          e.stopPropagation();
+                                          if (e.target.value) {
+                                            setAmendDeadline(proj.id, p.num, latestAmend.round, e.target.value);
+                                            showToast(hasAccepted ? 'Deadline updated' : 'Deadline confirmed ✓');
+                                          }
+                                        }}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="flex-1 text-[12.5px] font-semibold bg-card border border-border rounded-[8px] px-2.5 py-1.5 outline-none focus:border-otj-yellow"
+                                      />
+                                      {latestAmend.proposedDeadline && !hasAccepted && (
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setAmendDeadline(proj.id, p.num, latestAmend.round, latestAmend.proposedDeadline!);
+                                            showToast("Accepted client's date ✓");
+                                          }}
+                                          className="text-[11px] font-bold px-2.5 py-1.5 rounded-full border border-otj-yellow-border bg-otj-yellow-bg text-otj-yellow cursor-pointer hover:opacity-90"
+                                        >Accept date</button>
+                                      )}
+                                    </div>
+                                    {!hasAccepted && (
+                                      <div className="text-[10.5px] text-otj-muted leading-snug">Pick a deadline before re-submitting. The phase deadline updates once you confirm.</div>
+                                    )}
+                                  </div>
                                 </div>
-                                <p className="text-[13px] text-foreground leading-[1.6] whitespace-pre-wrap">{latestAmend.note}</p>
-                              </div>
-                            )}
+                              );
+                            })()}
 
                             {/* Earlier amend rounds */}
                             {amends.length > 1 && (
                               <div className="bg-otj-off rounded-[12px] p-3 flex flex-col gap-2">
                                 <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Earlier Amend Rounds</div>
-                                {amends.slice(0, -1).map(a => (
-                                  <div key={a.round} className="bg-card border border-border rounded-[10px] p-2.5 px-3">
-                                    <div className="flex items-center justify-between gap-2 mb-1">
-                                      <div className="text-[11.5px] font-extrabold">Round {a.round}</div>
-                                      {a.newDeadline && <span className="text-[10.5px] font-bold text-otj-muted">Deadline → {fmtDate(a.newDeadline)}</span>}
+                                {amends.slice(0, -1).map(a => {
+                                  const shown = a.acceptedDeadline || a.newDeadline;
+                                  return (
+                                    <div key={a.round} className="bg-card border border-border rounded-[10px] p-2.5 px-3">
+                                      <div className="flex items-center justify-between gap-2 mb-1">
+                                        <div className="text-[11.5px] font-extrabold">Round {a.round}</div>
+                                        {shown && <span className="text-[10.5px] font-bold text-otj-muted">Deadline → {fmtDate(shown)}</span>}
+                                      </div>
+                                      <p className="text-[12px] text-foreground leading-[1.55] whitespace-pre-wrap">{a.note}</p>
                                     </div>
-                                    <p className="text-[12px] text-foreground leading-[1.55] whitespace-pre-wrap">{a.note}</p>
-                                  </div>
-                                ))}
+                                  );
+                                })}
                               </div>
                             )}
 
@@ -359,12 +403,21 @@ const ProjectProfile = () => {
                                     className="text-[11.5px] font-bold px-3 py-2 rounded-full border border-border bg-card cursor-pointer hover:border-foreground"
                                   >Undo</button>
                                 </div>
-                              ) : (
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); setPhaseReady(proj.id, p.num, true); showToast(hasOpenAmend ? 'Re-submitted for client review ✓' : 'Marked ready for client review ✓'); }}
-                                  className={`w-full text-[12px] font-bold py-2.5 rounded-full border-none text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90 ${hasOpenAmend ? 'bg-otj-yellow' : 'bg-otj-blue'}`}
-                                >{hasOpenAmend ? '↻ Re-Submit for Client Review' : '✓ Mark Phase Ready for Client Review'}</button>
-                              )
+                              ) : (() => {
+                                const needsDeadline = hasOpenAmend && !latestAmend?.acceptedDeadline;
+                                return (
+                                  <button
+                                    disabled={needsDeadline}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (needsDeadline) return;
+                                      setPhaseReady(proj.id, p.num, true);
+                                      showToast(hasOpenAmend ? 'Re-submitted for client review ✓' : 'Marked ready for client review ✓');
+                                    }}
+                                    className={`w-full text-[12px] font-bold py-2.5 rounded-full border-none text-primary-foreground transition-all duration-150 ${needsDeadline ? 'bg-otj-muted opacity-60 cursor-not-allowed' : `cursor-pointer hover:opacity-90 ${hasOpenAmend ? 'bg-otj-yellow' : 'bg-otj-blue'}`}`}
+                                  >{needsDeadline ? '⏱ Set a deadline above to re-submit' : hasOpenAmend ? '↻ Re-Submit for Client Review' : '✓ Mark Phase Ready for Client Review'}</button>
+                                );
+                              })()
                             )}
                           </div>
                         )}
