@@ -122,7 +122,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
           <span className="w-[3px] h-[3px] rounded-full bg-otj-muted/40 shrink-0" />
           <span className="flex items-center gap-[3px]">
             <Briefcase className="w-[9px] h-[9px] shrink-0" strokeWidth={2.2} />
-            {c.jobs} jobs
+            {c.jobs}
           </span>
         </div>
 
