@@ -24,6 +24,21 @@ export interface BriefData {
   myRole?: ProjectRole;
 }
 
+export interface AmendRequest {
+  /** Round number, 1-indexed. */
+  round: number;
+  /** Client's written description of changes needed. */
+  note: string;
+  /** New ISO deadline proposed by the client (optional). */
+  newDeadline?: string;
+  /** Previous deadline before this amend was raised (for history). */
+  previousDeadline?: string;
+  /** ISO timestamp when the amend was requested. */
+  requestedAt: string;
+  /** Set when the creative re-marks the phase ready and the client approves. */
+  resolvedAt?: string;
+}
+
 export interface PhaseData {
   num: number;
   title: string;
@@ -33,6 +48,8 @@ export interface PhaseData {
   description?: string;
   /** Creative has marked this phase as ready for client review/approval. */
   readyForReview?: boolean;
+  /** Client has requested changes during review. Active when latest amend is unresolved. */
+  amends?: AmendRequest[];
   /** Legacy task checklist. Kept for backward compatibility but no longer rendered in phase views. */
   tasks: { text: string; done: boolean; due: string }[];
 }
