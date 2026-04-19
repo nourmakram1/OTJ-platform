@@ -31,6 +31,8 @@ export interface PhaseData {
   deadline?: string; // ISO date string
   /** Paragraph describing what this phase covers — preferred over `tasks` for display. */
   description?: string;
+  /** Creative has marked this phase as ready for client review/approval. */
+  readyForReview?: boolean;
   /** Legacy task checklist. Kept for backward compatibility but no longer rendered in phase views. */
   tasks: { text: string; done: boolean; due: string }[];
 }
