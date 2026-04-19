@@ -438,7 +438,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
           <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-3">Proposal Summary</div>
           {[
             { label: 'Phases', val: String(phases.filter(p => p.title.trim()).length) },
-            { label: 'Total Tasks', val: String(phases.reduce((acc, p) => acc + p.tasks.filter(t => t.trim()).length, 0)) },
+            { label: 'Phases Described', val: `${phases.filter(p => p.description.trim()).length} of ${phases.length}` },
             { label: 'Deliverables', val: String(deliverables.filter(d => d.trim()).length) },
             { label: 'Payment Split', val: milestones.map(m => `${m.percentage}%`).join(' / ') },
             { label: 'Payment Method', val: paymentType === 'instapay' ? '📱 InstaPay' : '🏦 Bank' },
