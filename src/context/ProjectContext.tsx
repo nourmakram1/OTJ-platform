@@ -444,12 +444,12 @@ const defaultActiveProjects: ProjectData[] = [
     proposalDeliverables: ['Brand refresh photos'],
     proposalPrice: '4,800 EGP',
     phases: [
-      { num: 1, title: 'Pre-Production', status: 'active', tasks: [
+      { num: 1, title: 'Pre-Production', status: 'active', description: 'Reviewing the brand brief with Vodafone, mapping shot lists across team portraits, workspace, and product lifestyle, and casting internal talent for authentic on-camera moments.', tasks: [
         { text: 'Creative brief review', done: false, due: 'Mar 22' },
       ]},
-      { num: 2, title: 'Shoot Day', status: 'locked', tasks: [] },
-      { num: 3, title: 'Editing', status: 'locked', tasks: [] },
-      { num: 4, title: 'Final Delivery', status: 'locked', tasks: [] },
+      { num: 2, title: 'Shoot Day', status: 'locked', description: 'Multi-day on-site shoot across Vodafone\'s Cairo HQ — capturing 20 portraits, 20 environment shots, and 20 product-in-use lifestyle frames with Vodafone red threaded throughout.', tasks: [] },
+      { num: 3, title: 'Editing', status: 'locked', description: 'Selecting the strongest 60 frames, retouching portraits, and color-grading the full set to match Vodafone\'s refreshed brand palette.', tasks: [] },
+      { num: 4, title: 'Final Delivery', status: 'locked', description: 'Packaging the final assets in web, social, and print resolutions and walking the marketing team through usage guidelines.', tasks: [] },
     ],
     paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'held' }],
     escrow: { total: '4,800 EGP', deposited: '2,400 EGP', held: '2,400 EGP', fee: '240 EGP' },
