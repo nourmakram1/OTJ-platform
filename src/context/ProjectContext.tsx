@@ -108,6 +108,27 @@ export interface ReviewData {
   createdAt: string;
 }
 
+/** A structured project chat message. Stored in `projectMessages[projectId]` and merged into the chat thread. */
+export interface ProjectMessage {
+  id: string;
+  /** Sender side. 'system' is for auto-generated event mirrors. */
+  sender: 'creative' | 'client' | 'system';
+  /** ISO timestamp. */
+  createdAt: string;
+  /** Plain text. Empty for purely structured messages. */
+  text?: string;
+  /** Optional structured payload. */
+  type?: 'amend-request' | 'amend-deadline-confirmed';
+  amendData?: {
+    phaseNum: number;
+    phaseTitle: string;
+    round: number;
+    note?: string;
+    proposedDeadline?: string;
+    acceptedDeadline?: string;
+  };
+}
+
 export interface ProjectData {
   id: string;
   icon: string;
