@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Briefcase, MessageCircle, Package, Lock, FileText, Phone, Video, Users, Clock, CreditCard, Paperclip, AlertTriangle, Star, MapPin, CheckCircle2, ArrowLeft, Share2 } from 'lucide-react';
+import { Briefcase, MessageCircle, Package, Lock, FileText, Phone, Video, Users, Clock, CreditCard, Paperclip, AlertTriangle, Star, MapPin, CheckCircle2, ArrowLeft, Share2, RotateCw } from 'lucide-react';
 import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';
@@ -660,18 +660,21 @@ const ProjectProfile = () => {
                     <div className="mb-4">
                       <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-2">Meetings & Calls</div>
                       <div className="flex flex-col gap-2">
-                        {proj.meetings.map((m, i) => (
-                          <div key={i} className="bg-card border border-border rounded-[10px] p-3.5 px-4 flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-otj-green-bg flex items-center justify-center shrink-0">
-                              {m.type === 'call' ? <Phone className="w-4 h-4 text-otj-green" /> : m.type === 'shoot' ? <Video className="w-4 h-4 text-otj-green" /> : <Users className="w-4 h-4 text-otj-green" />}
+                        {proj.meetings.map((m, i) => {
+                          const isDeadline = m.type === 'deadline';
+                          return (
+                            <div key={i} className={`bg-card border rounded-[10px] p-3.5 px-4 flex items-center gap-3 ${isDeadline ? 'border-otj-yellow-border' : 'border-border'}`}>
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isDeadline ? 'bg-otj-yellow-bg' : 'bg-otj-green-bg'}`}>
+                                {m.type === 'call' ? <Phone className="w-4 h-4 text-otj-green" /> : m.type === 'shoot' ? <Video className="w-4 h-4 text-otj-green" /> : isDeadline ? <RotateCw className="w-4 h-4 text-otj-yellow" /> : <Users className="w-4 h-4 text-otj-green" />}
+                              </div>
+                              <div className="flex-1">
+                                <div className="text-[13px] font-bold">{m.title}</div>
+                                <div className="text-[11px] text-otj-text">{m.date} · {m.time}{m.location ? ` · ${m.location}` : ''}</div>
+                              </div>
+                              <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${isDeadline ? 'bg-otj-yellow-bg text-otj-yellow' : 'bg-otj-green-bg text-otj-green'}`}>{isDeadline ? 'Amend Due' : 'Scheduled'}</span>
                             </div>
-                            <div className="flex-1">
-                              <div className="text-[13px] font-bold">{m.title}</div>
-                              <div className="text-[11px] text-otj-text">{m.date} · {m.time}{m.location ? ` · ${m.location}` : ''}</div>
-                            </div>
-                            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-otj-green-bg text-otj-green">Scheduled</span>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   )}

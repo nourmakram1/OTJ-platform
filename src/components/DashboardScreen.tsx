@@ -295,7 +295,7 @@ type ScheduleItem = {
   sublabel: string;
   projectId: string;
   deadline: Date;
-  type: 'phase' | 'task' | 'meeting' | 'call';
+  type: 'phase' | 'task' | 'meeting' | 'call' | 'deadline';
   status: string;
   hour: number; // 0-23
   duration: number; // hours
@@ -306,6 +306,7 @@ const typeConfig: Record<string, { bg: string; border: string; text: string; dot
   task: { bg: 'bg-otj-green-bg', border: 'border-otj-green-border', text: 'text-otj-green', dot: 'bg-otj-green', label: 'Task' },
   phase: { bg: 'bg-otj-yellow-bg', border: 'border-otj-yellow-border', text: 'text-otj-yellow', dot: 'bg-otj-yellow', label: 'Due' },
   call: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Call' },
+  deadline: { bg: 'bg-otj-yellow-bg', border: 'border-otj-yellow-border', text: 'text-otj-yellow', dot: 'bg-otj-yellow', label: 'Amend Due' },
 };
 
 const DAY_LABELS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
@@ -348,7 +349,8 @@ const ScheduleSection: React.FC<{ projects: ReturnType<typeof useProjects>['acti
           let hour = hourMatch ? parseInt(hourMatch[1]) : 9;
           if (isPM && hour < 12) hour += 12;
           if (!isPM && hour === 12) hour = 0;
-          items.push({ label: meeting.title, sublabel: `${proj.name}`, projectId: proj.id, deadline: d, type: meeting.type === 'call' ? 'call' : 'meeting', status: 'upcoming', hour, duration: meeting.type === 'call' ? 1 : 2 });
+          const mappedType: ScheduleItem['type'] = meeting.type === 'call' ? 'call' : meeting.type === 'deadline' ? 'deadline' : 'meeting';
+          items.push({ label: meeting.title, sublabel: `${proj.name}`, projectId: proj.id, deadline: d, type: mappedType, status: 'upcoming', hour, duration: meeting.type === 'call' ? 1 : 2 });
         } catch {}
       });
     });

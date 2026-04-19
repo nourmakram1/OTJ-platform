@@ -81,10 +81,12 @@ export interface MeetingData {
   title: string;
   date: string; // ISO date
   time: string;
-  type: 'meeting' | 'call' | 'shoot';
+  type: 'meeting' | 'call' | 'shoot' | 'deadline';
   projectId?: string;
   clientName?: string;
   location?: string;
+  /** True for system-managed entries (e.g. amend deadlines) — should not show edit/delete affordances. */
+  system?: boolean;
 }
 
 export interface AttachmentData {
@@ -1215,9 +1217,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const setAmendDeadline = useCallback((projectId: string, phaseNum: number, round: number, acceptedDeadline: string, acceptedNote?: string) => {
     let phaseTitle = '';
     let wasAlreadySet = false;
+    let projClientName = '';
     const trimmedNote = acceptedNote?.trim() || undefined;
+    const meetingId = `meet-amend-${phaseNum}-${round}`;
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
+      projClientName = p.clientName;
       const updatedPhases = p.phases.map(ph => {
         if (ph.num !== phaseNum) return ph;
         phaseTitle = ph.title;
@@ -1233,7 +1238,23 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         });
         return { ...ph, amends: updatedAmends, deadline: acceptedDeadline };
       });
-      return { ...p, phases: updatedPhases };
+      // Upsert a system-managed deadline meeting tied to this amend round.
+      // Use a stable id so re-edits move the calendar entry instead of duplicating it.
+      const newMeeting: MeetingData = {
+        id: meetingId,
+        title: `↻ Phase ${phaseNum} amend deadline${round > 1 ? ` · R${round}` : ''}`,
+        date: acceptedDeadline.slice(0, 10),
+        time: '11:59 PM',
+        type: 'deadline',
+        projectId,
+        clientName: p.clientName,
+        system: true,
+      };
+      const existingIdx = p.meetings.findIndex(m => m.id === meetingId);
+      const updatedMeetings = existingIdx >= 0
+        ? p.meetings.map(m => m.id === meetingId ? { ...m, date: newMeeting.date } : m)
+        : [...p.meetings, newMeeting];
+      return { ...p, phases: updatedPhases, meetings: updatedMeetings };
     }));
     // Only mirror the first time the deadline is confirmed for this round.
     if (!wasAlreadySet) {
