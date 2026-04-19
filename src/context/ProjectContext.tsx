@@ -402,12 +402,12 @@ const defaultActiveProjects: ProjectData[] = [
     proposalDeliverables: ['Campaign video assets'],
     proposalPrice: '5,200 EGP',
     phases: [
-      { num: 1, title: 'Pre-Production', status: 'complete', tasks: [] },
-      { num: 2, title: 'Production', status: 'complete', tasks: [] },
-      { num: 3, title: 'Post-Production', status: 'active', tasks: [
+      { num: 1, title: 'Pre-Production', status: 'complete', description: 'Aligned with the CIB marketing team on creative direction, locked the storyboard, cast diverse on-camera talent, and scouted urban Cairo locations for the campaign shoot.', tasks: [] },
+      { num: 2, title: 'Production', status: 'complete', description: 'Two-day production across three locations capturing the hero spot footage, B-roll for the cut-downs, and key visual stills.', tasks: [] },
+      { num: 3, title: 'Post-Production', status: 'active', description: 'Editing the rough cut of the 60s hero film, layering in motion graphics, and preparing the platform-optimised cut-downs for client review.', tasks: [
         { text: 'Edit rough cut', done: false, due: 'Mar 22' },
       ]},
-      { num: 4, title: 'Final Delivery', status: 'locked', tasks: [] },
+      { num: 4, title: 'Final Delivery', status: 'locked', description: 'Final color grade, sound mix, master exports for TV and digital, and handoff of all source files to CIB.', tasks: [] },
     ],
     paymentMilestones: [{ label: '50% Deposit', percentage: 50, status: 'paid' }, { label: '50% On Completion', percentage: 50, status: 'held' }],
     escrow: { total: '5,200 EGP', deposited: '2,600 EGP', held: '2,600 EGP', fee: '260 EGP' },
