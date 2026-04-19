@@ -169,7 +169,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
       
       {/* ── Inset image ─────────────────────────────────────────────── */}
       <div className="relative">
-        <ImageCarousel niche={c.niche} category={c.category} />
+        <ImageCarousel niche={c.niche} id={c.id} />
 
 
       </div>
