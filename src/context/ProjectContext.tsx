@@ -29,7 +29,11 @@ export interface AmendRequest {
   round: number;
   /** Client's written description of changes needed. */
   note: string;
-  /** New ISO deadline proposed by the client (optional). */
+  /** Optional deadline the client suggested when raising the amend. Non-binding — the creative confirms the actual deadline. */
+  proposedDeadline?: string;
+  /** ISO deadline set/confirmed by the creative. This is the binding deadline once committed. */
+  acceptedDeadline?: string;
+  /** @deprecated Use `acceptedDeadline` (creative-set) or `proposedDeadline` (client-suggested). Kept for backwards compatibility. */
   newDeadline?: string;
   /** Previous deadline before this amend was raised (for history). */
   previousDeadline?: string;
@@ -249,7 +253,8 @@ interface ProjectContextType {
   rejectProposal: (projectId: string) => void;
   toggleTask: (projectId: string, phaseNum: number, taskIndex: number) => void;
   setPhaseReady: (projectId: string, phaseNum: number, ready: boolean) => void;
-  requestAmends: (projectId: string, phaseNum: number, note: string, newDeadline?: string) => void;
+  requestAmends: (projectId: string, phaseNum: number, note: string, proposedDeadline?: string) => void;
+  setAmendDeadline: (projectId: string, phaseNum: number, round: number, acceptedDeadline: string) => void;
 }
 
 const defaultBriefs: BriefData[] = [
@@ -1109,7 +1114,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
-  const requestAmends = useCallback((projectId: string, phaseNum: number, note: string, newDeadline?: string) => {
+  const requestAmends = useCallback((projectId: string, phaseNum: number, note: string, proposedDeadline?: string) => {
     const nowIso = new Date().toISOString();
     let projName = '';
     let phaseTitle = '';
@@ -1123,14 +1128,14 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const newRound: AmendRequest = {
           round: existing.length + 1,
           note,
-          newDeadline: newDeadline || undefined,
+          proposedDeadline: proposedDeadline || undefined,
+          // Don't update phase.deadline yet — creative confirms the binding deadline.
           previousDeadline: ph.deadline,
           requestedAt: nowIso,
         };
         return {
           ...ph,
           readyForReview: false,
-          deadline: newDeadline || ph.deadline,
           amends: [...existing, newRound],
         };
       });
@@ -1153,6 +1158,20 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   }, [addNotification]);
 
+  const setAmendDeadline = useCallback((projectId: string, phaseNum: number, round: number, acceptedDeadline: string) => {
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      const updatedPhases = p.phases.map(ph => {
+        if (ph.num !== phaseNum) return ph;
+        const updatedAmends = (ph.amends || []).map(a =>
+          a.round === round ? { ...a, acceptedDeadline } : a
+        );
+        return { ...ph, amends: updatedAmends, deadline: acceptedDeadline };
+      });
+      return { ...p, phases: updatedPhases };
+    }));
+  }, []);
+
   const updateClient = useCallback((clientId: string, updates: Partial<ClientData>) => {
     setClients(prev => prev.map(c => c.id === clientId ? { ...c, ...updates } : c));
   }, []);
@@ -1160,7 +1179,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const getCompletedProject = useCallback((id: string) => completedProjects.find(p => p.id === id), [completedProjects]);
 
   return (
-    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, getCompletedProject, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, updateClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask, setPhaseReady, requestAmends }}>
+    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, getCompletedProject, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, updateClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask, setPhaseReady, requestAmends, setAmendDeadline }}>
       {children}
     </ProjectContext.Provider>
   );
