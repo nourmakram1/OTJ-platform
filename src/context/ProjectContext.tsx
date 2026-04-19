@@ -122,7 +122,7 @@ export interface ProjectMessage {
   /** Plain text. Empty for purely structured messages. */
   text?: string;
   /** Optional structured payload. */
-  type?: 'amend-request' | 'amend-deadline-confirmed';
+  type?: 'amend-request' | 'amend-deadline-confirmed' | 'phase-ready' | 'phase-approved';
   amendData?: {
     phaseNum: number;
     phaseTitle: string;
@@ -131,6 +131,18 @@ export interface ProjectMessage {
     proposedDeadline?: string;
     acceptedDeadline?: string;
     acceptedNote?: string;
+  };
+  /** Phase event payload (for phase-ready / phase-approved). */
+  phaseData?: {
+    phaseNum: number;
+    phaseTitle: string;
+    /** True when this 'phase-ready' is a re-submit after amends. */
+    isResubmit?: boolean;
+    /** Set on 'phase-approved' when the next phase auto-unlocks. */
+    nextPhaseNum?: number;
+    nextPhaseTitle?: string;
+    /** Set on 'phase-approved' when this was the final phase. */
+    isFinalPhase?: boolean;
   };
 }
 
@@ -980,34 +992,60 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const approvePhase = useCallback((projectId: string, phaseNum: number) => {
+    let phaseName = '';
+    let projName = '';
+    let nextPhaseNum: number | undefined;
+    let nextPhaseTitle: string | undefined;
+    let isFinalPhase = false;
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
+      projName = p.name;
       const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
       const updatedPhases = p.phases.map(ph => {
-        if (ph.num === phaseNum) return { ...ph, status: 'complete' as const, tasks: ph.tasks.map(t => ({ ...t, done: true })) };
-        if (ph.num === phaseNum + 1 && ph.status === 'locked') return { ...ph, status: 'active' as const };
+        if (ph.num === phaseNum) {
+          phaseName = ph.title;
+          return { ...ph, status: 'complete' as const, tasks: ph.tasks.map(t => ({ ...t, done: true })) };
+        }
+        if (ph.num === phaseNum + 1 && ph.status === 'locked') {
+          nextPhaseNum = ph.num;
+          nextPhaseTitle = ph.title;
+          return { ...ph, status: 'active' as const };
+        }
         return ph;
       });
+      // Detect final-phase approval (no later phase exists).
+      isFinalPhase = !p.phases.some(ph => ph.num > phaseNum);
       return {
         ...p,
         phases: updatedPhases,
         timeline: [...p.timeline, { label: `Phase ${phaseNum} Approved by Client`, date: today, status: 'complete' as const }],
       };
     }));
+    const safePhaseName = phaseName || `Phase ${phaseNum}`;
     // Add notification
-    const proj = activeProjects.find(p => p.id === projectId);
-    const phaseName = proj?.phases.find(ph => ph.num === phaseNum)?.title || `Phase ${phaseNum}`;
     addNotification({
       icon: '',
       bg: 'bg-[hsl(var(--otj-green-bg))]',
       title: `Phase ${phaseNum} approved`,
-      sub: `${phaseName} on ${proj?.name || 'project'} has been approved`,
+      sub: `${safePhaseName} on ${projName || 'project'} has been approved`,
       time: 'Just now',
       unread: true,
       type: 'payment',
       projectId,
     });
-  }, [activeProjects, addNotification]);
+    // Mirror into project chat
+    addProjectMessage(projectId, {
+      sender: 'client',
+      type: 'phase-approved',
+      phaseData: {
+        phaseNum,
+        phaseTitle: safePhaseName,
+        nextPhaseNum,
+        nextPhaseTitle,
+        isFinalPhase,
+      },
+    });
+  }, [addNotification, addProjectMessage]);
 
   const releasePayment = useCallback((projectId: string, milestoneIndex: number) => {
     setActiveProjects(prev => prev.map(p => {
@@ -1149,12 +1187,34 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const setPhaseReady = useCallback((projectId: string, phaseNum: number, ready: boolean) => {
+    let phaseTitle = '';
+    let isResubmit = false;
+    let wasAlreadyReady = false;
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
-      const updatedPhases = p.phases.map(ph => ph.num === phaseNum ? { ...ph, readyForReview: ready } : ph);
+      const updatedPhases = p.phases.map(ph => {
+        if (ph.num !== phaseNum) return ph;
+        phaseTitle = ph.title;
+        if (ph.readyForReview === ready) wasAlreadyReady = true;
+        // Re-submit when there's already at least one amend round on this phase.
+        isResubmit = (ph.amends?.length || 0) > 0;
+        return { ...ph, readyForReview: ready };
+      });
       return { ...p, phases: updatedPhases };
     }));
-  }, []);
+    // Only mirror when transitioning to ready (not when undoing) and when it actually changed.
+    if (ready && !wasAlreadyReady) {
+      addProjectMessage(projectId, {
+        sender: 'creative',
+        type: 'phase-ready',
+        phaseData: {
+          phaseNum,
+          phaseTitle: phaseTitle || `Phase ${phaseNum}`,
+          isResubmit,
+        },
+      });
+    }
+  }, [addProjectMessage]);
 
   const requestAmends = useCallback((projectId: string, phaseNum: number, note: string, proposedDeadline?: string) => {
     const nowIso = new Date().toISOString();
