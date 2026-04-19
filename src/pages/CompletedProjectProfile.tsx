@@ -5,7 +5,7 @@ import { NavBar } from '../components/NavBar';
 import { showToast, Toast } from '../components/Toast';
 import { useProjects } from '../context/ProjectContext';
 
-const tabs = ['Phases & Tasks', 'Brief', 'Deliverables', 'Payments', 'Reviews'];
+const tabs = ['Phases', 'Brief', 'Deliverables', 'Payments', 'Reviews'];
 
 const CompletedProjectProfile = () => {
   const navigate = useNavigate();
