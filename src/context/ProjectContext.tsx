@@ -24,6 +24,21 @@ export interface BriefData {
   myRole?: ProjectRole;
 }
 
+export interface AmendRequest {
+  /** Round number, 1-indexed. */
+  round: number;
+  /** Client's written description of changes needed. */
+  note: string;
+  /** New ISO deadline proposed by the client (optional). */
+  newDeadline?: string;
+  /** Previous deadline before this amend was raised (for history). */
+  previousDeadline?: string;
+  /** ISO timestamp when the amend was requested. */
+  requestedAt: string;
+  /** Set when the creative re-marks the phase ready and the client approves. */
+  resolvedAt?: string;
+}
+
 export interface PhaseData {
   num: number;
   title: string;
@@ -33,6 +48,8 @@ export interface PhaseData {
   description?: string;
   /** Creative has marked this phase as ready for client review/approval. */
   readyForReview?: boolean;
+  /** Client has requested changes during review. Active when latest amend is unresolved. */
+  amends?: AmendRequest[];
   /** Legacy task checklist. Kept for backward compatibility but no longer rendered in phase views. */
   tasks: { text: string; done: boolean; due: string }[];
 }
@@ -232,6 +249,7 @@ interface ProjectContextType {
   rejectProposal: (projectId: string) => void;
   toggleTask: (projectId: string, phaseNum: number, taskIndex: number) => void;
   setPhaseReady: (projectId: string, phaseNum: number, ready: boolean) => void;
+  requestAmends: (projectId: string, phaseNum: number, note: string, newDeadline?: string) => void;
 }
 
 const defaultBriefs: BriefData[] = [
@@ -1091,6 +1109,50 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   }, []);
 
+  const requestAmends = useCallback((projectId: string, phaseNum: number, note: string, newDeadline?: string) => {
+    const nowIso = new Date().toISOString();
+    let projName = '';
+    let phaseTitle = '';
+    setActiveProjects(prev => prev.map(p => {
+      if (p.id !== projectId) return p;
+      projName = p.name;
+      const updatedPhases = p.phases.map(ph => {
+        if (ph.num !== phaseNum) return ph;
+        phaseTitle = ph.title;
+        const existing = ph.amends || [];
+        const newRound: AmendRequest = {
+          round: existing.length + 1,
+          note,
+          newDeadline: newDeadline || undefined,
+          previousDeadline: ph.deadline,
+          requestedAt: nowIso,
+        };
+        return {
+          ...ph,
+          readyForReview: false,
+          deadline: newDeadline || ph.deadline,
+          amends: [...existing, newRound],
+        };
+      });
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      return {
+        ...p,
+        phases: updatedPhases,
+        timeline: [...p.timeline, { label: `Amends requested on Phase ${phaseNum}`, date: today, status: 'complete' as const }],
+      };
+    }));
+    addNotification({
+      icon: '',
+      bg: 'bg-[hsl(var(--otj-yellow-bg))]',
+      title: `Amends requested — Phase ${phaseNum}`,
+      sub: `Client requested changes on ${phaseTitle || `Phase ${phaseNum}`} for ${projName}`,
+      time: 'Just now',
+      unread: true,
+      type: 'brief',
+      projectId,
+    });
+  }, [addNotification]);
+
   const updateClient = useCallback((clientId: string, updates: Partial<ClientData>) => {
     setClients(prev => prev.map(c => c.id === clientId ? { ...c, ...updates } : c));
   }, []);
@@ -1098,7 +1160,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const getCompletedProject = useCallback((id: string) => completedProjects.find(p => p.id === id), [completedProjects]);
 
   return (
-    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, getCompletedProject, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, updateClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask, setPhaseReady }}>
+    <ProjectContext.Provider value={{ userRole, setUserRole, pendingBriefs, activeProjects, completedProjects, getCompletedProject, acceptBrief, getBrief, getProject, submitProposal, updateProject, addMeeting, addAttachment, removeAttachment, renameAttachment, allMeetings, completeProject, addReview, reviews: allReviews, notifications, addNotification, markAllRead, unreadCount, submitCounterOffer, clients, getClient, updateClient, addClientReview, approvePhase, releasePayment, submitPaymentProof, confirmPaymentReceipt, acceptProposal, rejectProposal, toggleTask, setPhaseReady, requestAmends }}>
       {children}
     </ProjectContext.Provider>
   );

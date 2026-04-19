@@ -276,17 +276,25 @@ const ProjectProfile = () => {
                 <div className="flex flex-col gap-3 animate-fade-up">
                   {proj.phases.map(p => {
                     const isExpanded = expandedPhase === p.num;
-                    const borderColor = p.status === 'complete' ? 'border-otj-green' : p.status === 'active' ? 'border-otj-blue' : 'border-border';
+                    const amends = p.amends || [];
+                    const latestAmend = amends.length > 0 ? amends[amends.length - 1] : null;
+                    const hasOpenAmend = !!latestAmend && p.status === 'active' && !p.readyForReview;
+                    const borderColor = p.status === 'complete'
+                      ? 'border-otj-green'
+                      : hasOpenAmend
+                        ? 'border-otj-yellow'
+                        : p.status === 'active' ? 'border-otj-blue' : 'border-border';
                     const statusBadge = p.status === 'complete'
                       ? 'bg-otj-green-bg text-otj-green'
                       : p.status === 'active'
-                        ? (p.readyForReview ? 'bg-otj-yellow-bg text-otj-yellow' : 'bg-otj-blue-bg text-otj-blue')
+                        ? (p.readyForReview ? 'bg-otj-yellow-bg text-otj-yellow' : hasOpenAmend ? 'bg-otj-yellow-bg text-otj-yellow' : 'bg-otj-blue-bg text-otj-blue')
                         : 'bg-otj-off text-otj-muted';
                     const phaseStatusLabel = p.status === 'complete'
                       ? '✓ Complete'
                       : p.status === 'active'
-                        ? (p.readyForReview ? '⏳ Awaiting Client Review' : '● In Progress')
+                        ? (p.readyForReview ? '⏳ Awaiting Client Review' : hasOpenAmend ? `↻ Amends Requested${amends.length > 1 ? ` · R${amends.length}` : ''}` : '● In Progress')
                         : 'Locked';
+                    const fmtDate = (iso?: string) => iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
 
                     return (
                       <div key={p.num} className={`bg-card border-[1.5px] ${borderColor} rounded-[14px] overflow-hidden transition-all duration-200`}>
@@ -310,8 +318,38 @@ const ProjectProfile = () => {
                               <p className="text-[12.5px] text-otj-muted italic">No description provided for this phase.</p>
                             )}
                             {p.deadline && (
-                              <div className="text-[11px] text-otj-muted">Deadline: <span className="font-semibold text-otj-text">{new Date(p.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span></div>
+                              <div className="text-[11px] text-otj-muted">Deadline: <span className="font-semibold text-otj-text">{fmtDate(p.deadline)}</span></div>
                             )}
+
+                            {/* Open amend (highlighted) */}
+                            {hasOpenAmend && latestAmend && (
+                              <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[12px] p-3.5">
+                                <div className="flex items-center justify-between gap-2 mb-1.5">
+                                  <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-otj-yellow">↻ Client Amends — Round {latestAmend.round}</div>
+                                  {latestAmend.newDeadline && (
+                                    <span className="text-[10.5px] font-bold px-2 py-[2px] rounded-full bg-card border border-otj-yellow-border text-otj-yellow">New deadline: {fmtDate(latestAmend.newDeadline)}</span>
+                                  )}
+                                </div>
+                                <p className="text-[13px] text-foreground leading-[1.6] whitespace-pre-wrap">{latestAmend.note}</p>
+                              </div>
+                            )}
+
+                            {/* Earlier amend rounds */}
+                            {amends.length > 1 && (
+                              <div className="bg-otj-off rounded-[12px] p-3 flex flex-col gap-2">
+                                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Earlier Amend Rounds</div>
+                                {amends.slice(0, -1).map(a => (
+                                  <div key={a.round} className="bg-card border border-border rounded-[10px] p-2.5 px-3">
+                                    <div className="flex items-center justify-between gap-2 mb-1">
+                                      <div className="text-[11.5px] font-extrabold">Round {a.round}</div>
+                                      {a.newDeadline && <span className="text-[10.5px] font-bold text-otj-muted">Deadline → {fmtDate(a.newDeadline)}</span>}
+                                    </div>
+                                    <p className="text-[12px] text-foreground leading-[1.55] whitespace-pre-wrap">{a.note}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
                             {p.status === 'active' && (
                               p.readyForReview ? (
                                 <div className="flex items-center gap-2">
@@ -323,9 +361,9 @@ const ProjectProfile = () => {
                                 </div>
                               ) : (
                                 <button
-                                  onClick={(e) => { e.stopPropagation(); setPhaseReady(proj.id, p.num, true); showToast('Marked ready for client review ✓'); }}
-                                  className="w-full text-[12px] font-bold py-2.5 rounded-full border-none bg-otj-blue text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90"
-                                >✓ Mark Phase Ready for Client Review</button>
+                                  onClick={(e) => { e.stopPropagation(); setPhaseReady(proj.id, p.num, true); showToast(hasOpenAmend ? 'Re-submitted for client review ✓' : 'Marked ready for client review ✓'); }}
+                                  className={`w-full text-[12px] font-bold py-2.5 rounded-full border-none text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90 ${hasOpenAmend ? 'bg-otj-yellow' : 'bg-otj-blue'}`}
+                                >{hasOpenAmend ? '↻ Re-Submit for Client Review' : '✓ Mark Phase Ready for Client Review'}</button>
                               )
                             )}
                           </div>

@@ -10,6 +10,8 @@ import {
   DialogFooter,
 } from './ui/dialog';
 import { Button } from './ui/button';
+import { Textarea } from './ui/textarea';
+import { Input } from './ui/input';
 
 // ─── Proposal Review ───────────────────────────────────────
 export const ClientProposalReview: React.FC<{ project: ProjectData }> = ({ project }) => {
@@ -110,9 +112,12 @@ export const ClientProposalReview: React.FC<{ project: ProjectData }> = ({ proje
 
 // ─── Phase Approval ────────────────────────────────────────
 export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPayments?: () => void }> = ({ project, onSwitchToPayments }) => {
-  const { approvePhase } = useProjects();
+  const { approvePhase, requestAmends } = useProjects();
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [approvedPhaseNum, setApprovedPhaseNum] = useState<number | null>(null);
+  const [amendsPhaseNum, setAmendsPhaseNum] = useState<number | null>(null);
+  const [amendNote, setAmendNote] = useState('');
+  const [amendDeadline, setAmendDeadline] = useState('');
   const [expandedPhase, setExpandedPhase] = useState(() => {
     const first = project.phases.find(p => p.status === 'active');
     return first?.num || 0;
@@ -138,21 +143,46 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPay
     onSwitchToPayments?.();
   };
 
+  const openAmendsModal = (phaseNum: number) => {
+    const phase = project.phases.find(ph => ph.num === phaseNum);
+    setAmendsPhaseNum(phaseNum);
+    setAmendNote('');
+    setAmendDeadline(phase?.deadline ? phase.deadline.slice(0, 10) : '');
+  };
+
+  const submitAmends = () => {
+    if (amendsPhaseNum === null || !amendNote.trim()) return;
+    requestAmends(project.id, amendsPhaseNum, amendNote.trim(), amendDeadline || undefined);
+    showToast('Amends requested ✓ Creative will be notified.');
+    setAmendsPhaseNum(null);
+    setAmendNote('');
+    setAmendDeadline('');
+  };
+
+  const fmtDate = (iso?: string) => iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+
   return (
     <div className="flex flex-col gap-3 animate-fade-up">
       {project.phases.map(p => {
         const isExpanded = expandedPhase === p.num;
         const canApprove = p.status === 'active' && !!p.readyForReview;
-        const borderColor = p.status === 'complete' ? 'border-otj-green' : p.status === 'active' ? 'border-otj-blue' : 'border-border';
+        const amends = p.amends || [];
+        const latestAmend = amends.length > 0 ? amends[amends.length - 1] : null;
+        const hasOpenAmend = !!latestAmend && p.status === 'active' && !p.readyForReview;
+        const borderColor = p.status === 'complete'
+          ? 'border-otj-green'
+          : hasOpenAmend
+            ? 'border-otj-yellow'
+            : p.status === 'active' ? 'border-otj-blue' : 'border-border';
         const statusBadge = p.status === 'complete'
           ? 'bg-otj-green-bg text-otj-green'
           : p.status === 'active'
-            ? (p.readyForReview ? 'bg-otj-yellow-bg text-otj-yellow' : 'bg-otj-blue-bg text-otj-blue')
+            ? (p.readyForReview ? 'bg-otj-yellow-bg text-otj-yellow' : hasOpenAmend ? 'bg-otj-yellow-bg text-otj-yellow' : 'bg-otj-blue-bg text-otj-blue')
             : 'bg-otj-off text-otj-muted';
         const phaseStatusLabel = p.status === 'complete'
           ? '✓ Approved'
           : p.status === 'active'
-            ? (p.readyForReview ? '⏳ Ready for Review' : '● In Progress')
+            ? (p.readyForReview ? '⏳ Ready for Review' : hasOpenAmend ? `↻ Amends Requested${amends.length > 1 ? ` · R${amends.length}` : ''}` : '● In Progress')
             : '🔒 Locked';
 
         return (
@@ -177,17 +207,47 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPay
                   <p className="text-[12.5px] text-otj-muted italic">The creative hasn't added a description for this phase yet.</p>
                 )}
                 {p.deadline && (
-                  <div className="text-[11px] text-otj-muted">Deadline: <span className="font-semibold text-otj-text">{new Date(p.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span></div>
+                  <div className="text-[11px] text-otj-muted">Deadline: <span className="font-semibold text-otj-text">{fmtDate(p.deadline)}</span></div>
                 )}
+
+                {/* Amends history */}
+                {amends.length > 0 && (
+                  <div className="bg-otj-off rounded-[12px] p-3 flex flex-col gap-2">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Amends History</div>
+                    {amends.map(a => (
+                      <div key={a.round} className="bg-card border border-border rounded-[10px] p-2.5 px-3">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <div className="text-[11.5px] font-extrabold">Round {a.round}</div>
+                          {a.newDeadline && <span className="text-[10.5px] font-bold text-otj-yellow">New deadline: {fmtDate(a.newDeadline)}</span>}
+                        </div>
+                        <p className="text-[12px] text-foreground leading-[1.55] whitespace-pre-wrap">{a.note}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 {canApprove && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleApprovePhase(p.num); }}
-                    className="w-full text-[12px] font-bold py-2.5 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90"
-                  >
-                    ✓ Approve Phase {p.num}
-                  </button>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleApprovePhase(p.num); }}
+                      className="flex-1 text-[12px] font-bold py-2.5 rounded-full border-none bg-otj-green text-primary-foreground cursor-pointer transition-all duration-150 hover:opacity-90"
+                    >
+                      ✓ Approve Phase {p.num}
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); openAmendsModal(p.num); }}
+                      className="flex-1 text-[12px] font-bold py-2.5 rounded-full border-[1.5px] border-otj-yellow bg-otj-yellow-bg text-otj-yellow cursor-pointer transition-all duration-150 hover:opacity-90"
+                    >
+                      ↻ Request Amends
+                    </button>
+                  </div>
                 )}
-                {p.status === 'active' && !canApprove && (
+                {p.status === 'active' && !canApprove && hasOpenAmend && (
+                  <div className="text-[11.5px] text-otj-text bg-otj-yellow-bg border border-otj-yellow-border rounded-lg p-2.5 px-3">
+                    ↻ Waiting for the creative to address your amends and re-submit for review.
+                  </div>
+                )}
+                {p.status === 'active' && !canApprove && !hasOpenAmend && (
                   <div className="text-[11px] text-otj-muted text-center py-2 bg-otj-off rounded-lg">
                     ⏳ Waiting for the creative to mark this phase as ready for your review
                   </div>
@@ -202,6 +262,53 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPay
           </div>
         );
       })}
+
+      {/* Request Amends Modal */}
+      <Dialog open={amendsPhaseNum !== null} onOpenChange={(open) => !open && setAmendsPhaseNum(null)}>
+        <DialogContent className="sm:max-w-[460px]">
+          <DialogHeader>
+            <DialogTitle className="text-[16px] font-extrabold tracking-[-0.03em]">
+              ↻ Request Amends — Phase {amendsPhaseNum}
+            </DialogTitle>
+            <DialogDescription className="text-[13px] text-otj-text">
+              Describe the changes you need and propose a new deadline. The creative will be notified and can re-submit for review.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 my-1">
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">What needs to change</div>
+              <Textarea
+                value={amendNote}
+                onChange={(e) => setAmendNote(e.target.value)}
+                placeholder="e.g. Lifestyle shots feel too cool — please re-grade with warmer tones and reshoot the 3 hero frames against a lighter backdrop."
+                rows={5}
+                className="text-[13px]"
+              />
+            </div>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">New deadline (optional)</div>
+              <Input
+                type="date"
+                value={amendDeadline}
+                onChange={(e) => setAmendDeadline(e.target.value)}
+                className="text-[13px]"
+              />
+            </div>
+          </div>
+          <DialogFooter className="flex gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => setAmendsPhaseNum(null)} className="rounded-full text-[12px] font-bold">
+              Cancel
+            </Button>
+            <Button
+              onClick={submitAmends}
+              disabled={!amendNote.trim()}
+              className="rounded-full text-[12px] font-bold bg-otj-yellow hover:bg-otj-yellow/90 text-primary-foreground disabled:opacity-50"
+            >
+              ↻ Send Amend Request
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Payment Proof Prompt Modal */}
       <Dialog open={paymentModalOpen} onOpenChange={setPaymentModalOpen}>
