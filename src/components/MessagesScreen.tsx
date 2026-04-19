@@ -17,8 +17,9 @@ interface Message {
   text: string;
   isMe: boolean;
   time: string;
-  type?: 'calendar' | 'attachment';
+  type?: 'calendar' | 'attachment' | 'amend-request' | 'amend-deadline-confirmed';
   meetingData?: { title: string; date: string; time: string };
+  amendData?: ProjectMessage['amendData'];
 }
 
 const initialMessages: Message[] = [
@@ -32,7 +33,7 @@ interface MessagesScreenProps {
 }
 
 export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter }) => {
-  const { addMeeting, addAttachment, activeProjects } = useProjects();
+  const { addMeeting, addAttachment, activeProjects, projectMessages, userRole } = useProjects();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeThread, setActiveThread] = useState('randa');
   const [messages, setMessages] = useState<Message[]>(initialMessages);
@@ -51,9 +52,28 @@ export const MessagesScreen: React.FC<MessagesScreenProps> = ({ onOpenCounter })
   const currentThread = threads.find(t => t.id === activeThread);
   const linkedProj = activeProjects.find(p => p.id === currentThread?.projectId);
 
+  // Merge thread-local messages with mirrored project messages (amend events, etc.)
+  const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  const projectChatMessages: Message[] = (linkedProj && projectMessages[linkedProj.id]) ? projectMessages[linkedProj.id].map(pm => {
+    const isMe = userRole === pm.sender;
+    const senderLabel = pm.sender === 'creative'
+      ? (isMe ? 'You' : 'Creative')
+      : pm.sender === 'client'
+        ? (isMe ? 'You' : currentThread?.name?.split(' ')[0] || 'Client')
+        : 'System';
+    return {
+      text: pm.text || '',
+      isMe,
+      time: `${senderLabel} · ${fmtTime(pm.createdAt)}${isMe ? ' · ✓' : ''}`,
+      type: pm.type,
+      amendData: pm.amendData,
+    };
+  }) : [];
+  const mergedMessages: Message[] = [...messages, ...projectChatMessages];
+
   useEffect(() => {
     if (threadRef.current) threadRef.current.scrollTop = threadRef.current.scrollHeight;
-  }, [messages]);
+  }, [messages, projectChatMessages.length]);
 
   const sendMessage = () => {
     if (!input.trim()) return;
