@@ -29,6 +29,9 @@ export interface PhaseData {
   title: string;
   status: 'complete' | 'active' | 'locked';
   deadline?: string; // ISO date string
+  /** Paragraph describing what this phase covers — preferred over `tasks` for display. */
+  description?: string;
+  /** Legacy task checklist. Kept for backward compatibility but no longer rendered in phase views. */
   tasks: { text: string; done: boolean; due: string }[];
 }
 
