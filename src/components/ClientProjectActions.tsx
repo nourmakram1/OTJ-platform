@@ -214,15 +214,22 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPay
                 {amends.length > 0 && (
                   <div className="bg-otj-off rounded-[12px] p-3 flex flex-col gap-2">
                     <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted">Amends History</div>
-                    {amends.map(a => (
-                      <div key={a.round} className="bg-card border border-border rounded-[10px] p-2.5 px-3">
-                        <div className="flex items-center justify-between gap-2 mb-1">
-                          <div className="text-[11.5px] font-extrabold">Round {a.round}</div>
-                          {a.newDeadline && <span className="text-[10.5px] font-bold text-otj-yellow">New deadline: {fmtDate(a.newDeadline)}</span>}
+                    {amends.map(a => {
+                      const shownDeadline = a.acceptedDeadline || a.newDeadline;
+                      return (
+                        <div key={a.round} className="bg-card border border-border rounded-[10px] p-2.5 px-3">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <div className="text-[11.5px] font-extrabold">Round {a.round}</div>
+                            {shownDeadline ? (
+                              <span className="text-[10.5px] font-bold text-otj-green">Confirmed deadline: {fmtDate(shownDeadline)}</span>
+                            ) : a.proposedDeadline ? (
+                              <span className="text-[10.5px] font-bold text-otj-muted">You suggested: {fmtDate(a.proposedDeadline)} · awaiting creative</span>
+                            ) : null}
+                          </div>
+                          <p className="text-[12px] text-foreground leading-[1.55] whitespace-pre-wrap">{a.note}</p>
                         </div>
-                        <p className="text-[12px] text-foreground leading-[1.55] whitespace-pre-wrap">{a.note}</p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
 
@@ -286,13 +293,14 @@ export const ClientPhaseApproval: React.FC<{ project: ProjectData; onSwitchToPay
               />
             </div>
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">New deadline (optional)</div>
+              <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-otj-muted mb-1.5">Suggested deadline (optional)</div>
               <Input
                 type="date"
                 value={amendDeadline}
                 onChange={(e) => setAmendDeadline(e.target.value)}
                 className="text-[13px]"
               />
+              <div className="text-[10.5px] text-otj-muted mt-1.5 leading-snug">The creative will confirm the actual deadline based on the scope of changes.</div>
             </div>
           </div>
           <DialogFooter className="flex gap-2 sm:gap-2">
