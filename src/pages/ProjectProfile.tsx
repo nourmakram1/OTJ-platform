@@ -41,6 +41,8 @@ const ProjectProfile = () => {
   const attachFileRef = useRef<HTMLInputElement>(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewType, setReviewType] = useState<'creative' | 'client'>('client');
+  // Draft note (per phase amend round) the creative is composing alongside the deadline.
+  const [amendNoteDrafts, setAmendNoteDrafts] = useState<Record<string, string>>({});
 
   const handleAttachFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -324,6 +326,8 @@ const ProjectProfile = () => {
                             {/* Open amend (highlighted) */}
                             {hasOpenAmend && latestAmend && (() => {
                               const hasAccepted = !!latestAmend.acceptedDeadline;
+                              const draftKey = `${proj.id}-${p.num}-${latestAmend.round}`;
+                              const draftNote = amendNoteDrafts[draftKey] ?? latestAmend.acceptedNote ?? '';
                               return (
                                 <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[12px] p-3.5 flex flex-col gap-3">
                                   <div className="flex items-center justify-between gap-2">
@@ -349,7 +353,7 @@ const ProjectProfile = () => {
                                         onChange={(e) => {
                                           e.stopPropagation();
                                           if (e.target.value) {
-                                            setAmendDeadline(proj.id, p.num, latestAmend.round, e.target.value);
+                                            setAmendDeadline(proj.id, p.num, latestAmend.round, e.target.value, draftNote);
                                             showToast(hasAccepted ? 'Deadline updated' : 'Deadline confirmed ✓');
                                           }
                                         }}
@@ -360,15 +364,35 @@ const ProjectProfile = () => {
                                         <button
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            setAmendDeadline(proj.id, p.num, latestAmend.round, latestAmend.proposedDeadline!);
+                                            setAmendDeadline(proj.id, p.num, latestAmend.round, latestAmend.proposedDeadline!, draftNote);
                                             showToast("Accepted client's date ✓");
                                           }}
                                           className="text-[11px] font-bold px-2.5 py-1.5 rounded-full border border-otj-yellow-border bg-otj-yellow-bg text-otj-yellow cursor-pointer hover:opacity-90"
                                         >Accept date</button>
                                       )}
                                     </div>
+                                    {/* Optional note from creative explaining the deadline */}
+                                    <textarea
+                                      value={draftNote}
+                                      onChange={(e) => {
+                                        e.stopPropagation();
+                                        setAmendNoteDrafts(prev => ({ ...prev, [draftKey]: e.target.value }));
+                                      }}
+                                      onBlur={(e) => {
+                                        e.stopPropagation();
+                                        // If a deadline is already accepted, persist note edits on blur.
+                                        if (hasAccepted && latestAmend.acceptedDeadline && (e.target.value || '').trim() !== (latestAmend.acceptedNote || '')) {
+                                          setAmendDeadline(proj.id, p.num, latestAmend.round, latestAmend.acceptedDeadline, e.target.value);
+                                          showToast('Note saved');
+                                        }
+                                      }}
+                                      onClick={(e) => e.stopPropagation()}
+                                      placeholder="Optional note for the client (e.g. why the date shifted)…"
+                                      rows={2}
+                                      className="text-[12.5px] bg-card border border-border rounded-[8px] px-2.5 py-2 outline-none focus:border-otj-yellow resize-none placeholder:text-otj-muted"
+                                    />
                                     {!hasAccepted && (
-                                      <div className="text-[10.5px] text-otj-muted leading-snug">Pick a deadline before re-submitting. The phase deadline updates once you confirm.</div>
+                                      <div className="text-[10.5px] text-otj-muted leading-snug">Pick a deadline before re-submitting. The phase deadline updates once you confirm. Your note is shared with the client.</div>
                                     )}
                                   </div>
                                 </div>
@@ -388,6 +412,12 @@ const ProjectProfile = () => {
                                         {shown && <span className="text-[10.5px] font-bold text-otj-muted">Deadline → {fmtDate(shown)}</span>}
                                       </div>
                                       <p className="text-[12px] text-foreground leading-[1.55] whitespace-pre-wrap">{a.note}</p>
+                                      {a.acceptedNote && (
+                                        <div className="mt-1.5 pt-1.5 border-t border-border">
+                                          <div className="text-[9.5px] font-bold uppercase tracking-[0.08em] text-otj-muted mb-0.5">Creative note</div>
+                                          <p className="text-[11.5px] text-foreground leading-[1.5] whitespace-pre-wrap italic">{a.acceptedNote}</p>
+                                        </div>
+                                      )}
                                     </div>
                                   );
                                 })}
