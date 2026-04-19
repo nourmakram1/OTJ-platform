@@ -3,31 +3,55 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, MapPin, Clock, Star, Briefcase, Heart, ArrowUpRight } from 'lucide-react';
 import { showToast } from './Toast';
 import type { Creative } from '../data/creatives';
+import portfolioFashion from '@/assets/portfolio-fashion.jpg';
+import portfolioProduct from '@/assets/portfolio-product.jpg';
+import portfolioFood from '@/assets/portfolio-food.jpg';
+import portfolioEvent from '@/assets/portfolio-event.jpg';
+import portfolioDesign from '@/assets/portfolio-design.jpg';
+import portfolioVideo from '@/assets/portfolio-video.jpg';
+import portfolioMakeup from '@/assets/portfolio-makeup.jpg';
+import portfolioMarketing from '@/assets/portfolio-marketing.jpg';
 
-const portfolioImages = [
-'from-[#2a2a2a] to-[#444]',
-'from-[#3a2a1a] to-[#5a4a3a]',
-'from-[#1a2a3a] to-[#3a4a5a]',
-'from-[#2a1a3a] to-[#4a3a5a]'];
+// Map a creative's niche/category to a curated set of portfolio images
+const getPortfolioImages = (niche: string, category: string): string[] => {
+  const n = niche.toLowerCase();
+  const c = category.toLowerCase();
 
+  if (n.includes('fashion')) return [portfolioFashion, portfolioMakeup, portfolioProduct, portfolioDesign];
+  if (n.includes('product') || n.includes('e-commerce') || n.includes('jewelry')) return [portfolioProduct, portfolioFashion, portfolioDesign, portfolioFood];
+  if (n.includes('food')) return [portfolioFood, portfolioProduct, portfolioEvent, portfolioFashion];
+  if (n.includes('event') || n.includes('wedding') || n.includes('real estate')) return [portfolioEvent, portfolioVideo, portfolioFashion, portfolioFood];
+  if (n.includes('makeup') || n.includes('stylist')) return [portfolioMakeup, portfolioFashion, portfolioProduct, portfolioEvent];
+  if (c.includes('videography') || n.includes('content creator') || n.includes('motion')) return [portfolioVideo, portfolioEvent, portfolioFashion, portfolioMarketing];
+  if (c.includes('design') || n.includes('developer') || n.includes('ui/ux') || n.includes('packaging')) return [portfolioDesign, portfolioProduct, portfolioMarketing, portfolioFashion];
+  if (c.includes('marketing') || c.includes('writing')) return [portfolioMarketing, portfolioDesign, portfolioVideo, portfolioProduct];
 
-const ImageCarousel = ({ bg, emoji }: {bg: string;emoji: string;}) => {
+  return [portfolioFashion, portfolioProduct, portfolioDesign, portfolioVideo];
+};
+
+const ImageCarousel = ({ niche, category }: { niche: string; category: string }) => {
   const [current, setCurrent] = useState(0);
-  const slides = [bg, ...portfolioImages];
+  const slides = getPortfolioImages(niche, category);
 
   const prev = (e: React.MouseEvent) => {e.stopPropagation();setCurrent((i) => i === 0 ? slides.length - 1 : i - 1);};
   const next = (e: React.MouseEvent) => {e.stopPropagation();setCurrent((i) => i === slides.length - 1 ? 0 : i + 1);};
 
   return (
-    <div className="aspect-[4/3] relative overflow-hidden group/carousel">
+    <div className="aspect-[4/3] relative overflow-hidden group/carousel bg-muted">
       <div
         className="flex h-full transition-transform duration-300 ease-out"
         style={{ transform: `translateX(-${current * 100}%)` }}>
-        
-        {slides.map((gradient, i) =>
-        <div key={i} className={`min-w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br ${gradient}`}>
-            {i === 0 && <span>{emoji}</span>}
-          </div>
+
+        {slides.map((src, i) =>
+          <img
+            key={i}
+            src={src}
+            alt={`Portfolio work ${i + 1}`}
+            loading="lazy"
+            width={800}
+            height={640}
+            className="min-w-full h-full object-cover"
+          />
         )}
       </div>
 
@@ -36,18 +60,18 @@ const ImageCarousel = ({ bg, emoji }: {bg: string;emoji: string;}) => {
       <button onClick={next} aria-label="Next" className="absolute right-0 top-0 h-full w-2/5 z-[2] cursor-pointer" />
 
       {/* Hover arrows */}
-      <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[3] shadow-sm">
-        <ChevronLeft className="w-3.5 h-3.5 text-gray-800" />
+      <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[3] shadow-sm">
+        <ChevronLeft className="w-3.5 h-3.5 text-foreground" />
       </button>
-      <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[3] shadow-sm">
-        <ChevronRight className="w-3.5 h-3.5 text-gray-800" />
+      <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[3] shadow-sm">
+        <ChevronRight className="w-3.5 h-3.5 text-foreground" />
       </button>
 
       {/* Pill dots */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 items-center z-[3]">
         {slides.map((_, i) =>
         <button key={i} onClick={(e) => {e.stopPropagation();setCurrent(i);}}
-        className={`h-[3px] rounded-full transition-all duration-300 ${i === current ? 'bg-white w-3.5' : 'bg-white/45 w-[5px]'}`} />
+        className={`h-[3px] rounded-full transition-all duration-300 ${i === current ? 'bg-foreground w-3.5' : 'bg-foreground/40 w-[5px]'}`} />
 
         )}
       </div>
@@ -74,7 +98,7 @@ export const CreativeCard: React.FC<CreativeCardProps> = ({ creative: c, onOpenB
       
       {/* ── Inset image ─────────────────────────────────────────────── */}
       <div className="relative">
-        <ImageCarousel bg={c.bg} emoji={c.emoji} />
+        <ImageCarousel niche={c.niche} category={c.category} />
 
 
       </div>
