@@ -209,7 +209,6 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
           <div className="bg-card border border-border rounded-[14px] p-4 flex flex-col gap-2">
             {deliverables.map((d, i) => (
               <div key={i} className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-otj-off flex items-center justify-center text-sm shrink-0">📦</div>
                 <input type="text" value={d} onChange={e => updateDeliverable(i, e.target.value)} placeholder="e.g. 20 edited product shots (high-res)" className="flex-1 text-[13px] font-medium bg-transparent border-none outline-none placeholder:text-otj-muted" />
                 {deliverables.length > 1 && (
                   <button onClick={() => removeDeliverable(i)} className="text-otj-muted hover:text-foreground text-xs cursor-pointer">✕</button>
