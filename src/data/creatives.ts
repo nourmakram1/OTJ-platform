@@ -114,6 +114,82 @@ export const allCreatives: Creative[] = [
   // 💻 Tech & Digital — Motion Designer
   { id: 'seif-a', emoji: '🎨', name: 'Seif Abdallah', role: 'Motion Graphics Designer', niche: 'Motion Designer', category: '💻 Tech & Digital', price: 'from 3,000 EGP', unit: '/ project', rating: '4.8', jobs: '57 jobs', avail: 'Available now', bg: 'from-[#2a1a3a] to-[#4a2a5a]', experience: 5 },
   { id: 'lara-k', emoji: '✨', name: 'Lara Khattab', role: '2D/3D Motion Designer', niche: 'Motion Designer', category: '💻 Tech & Digital', price: 'from 3,500 EGP', unit: '/ project', rating: '4.9', jobs: '43 jobs', avail: 'Next week', bg: 'from-[#3a3a1a] to-[#5a5a2a]', experience: 6 },
+
+  // 🎥 Videography — Ad Production Producer
+  { id: 'rami-p', emoji: '🎬', name: 'Rami Pasha', role: 'Ad Production Producer', niche: 'Ad Production Producer', category: '🎥 Videography', price: 'from 12,000 EGP', unit: '/ project', rating: '4.9', jobs: '48 jobs', avail: 'Next week', bg: 'from-[#1a2a3a] to-[#2a3a5a]', experience: 9 },
+  { id: 'leila-p', emoji: '🎞️', name: 'Leila Habib', role: 'Executive Producer', niche: 'Ad Production Producer', category: '🎥 Videography', price: 'from 15,000 EGP', unit: '/ project', rating: '5.0', jobs: '36 jobs', avail: 'Available now', bg: 'from-[#2a1a2a] to-[#4a2a4a]', experience: 11 },
+
+  // 🎥 Videography — Video Editor
+  { id: 'tamer-e', emoji: '✂️', name: 'Tamer Elsayed', role: 'Senior Video Editor', niche: 'Video Editor', category: '🎥 Videography', price: 'from 2,500 EGP', unit: '/ project', rating: '4.8', jobs: '142 jobs', avail: 'Available now', bg: 'from-[#1a1a3a] to-[#2a2a5a]', experience: 6 },
+  { id: 'rana-e', emoji: '🎞️', name: 'Rana Elhady', role: 'Editor & Colorist', niche: 'Video Editor', category: '🎥 Videography', price: 'from 3,000 EGP', unit: '/ project', rating: '4.9', jobs: '88 jobs', avail: 'Available now', bg: 'from-[#2a2a1a] to-[#4a4a2a]', experience: 5 },
+
+  // 🎬 Production Crew — Drone Operator
+  { id: 'kareem-d', emoji: '🚁', name: 'Kareem Diab', role: 'Licensed Drone Pilot', niche: 'Drone Operator', category: '🎬 Production Crew', price: 'from 3,500 EGP', unit: '/ session', rating: '4.9', jobs: '64 jobs', avail: 'Available now', bg: 'from-[#1a2a3a] to-[#2a3a5a]', experience: 5 },
+  { id: 'omar-d', emoji: '✈️', name: 'Omar Diaa', role: 'Aerial Cinematographer', niche: 'Drone Operator', category: '🎬 Production Crew', price: 'from 4,500 EGP', unit: '/ session', rating: '4.8', jobs: '41 jobs', avail: 'Next week', bg: 'from-[#2a2a3a] to-[#3a3a5a]', experience: 7 },
+
+  // 🎬 Production Crew — Gaffer / Lighting
+  { id: 'samer-g', emoji: '💡', name: 'Samer Gaber', role: 'Gaffer & Lighting Tech', niche: 'Gaffer / Lighting', category: '🎬 Production Crew', price: 'from 2,500 EGP', unit: '/ day', rating: '4.8', jobs: '92 jobs', avail: 'Available now', bg: 'from-[#3a2a1a] to-[#5a3a2a]', experience: 8 },
+  { id: 'haitham-l', emoji: '🔦', name: 'Haitham Labib', role: 'Chief Lighting Technician', niche: 'Gaffer / Lighting', category: '🎬 Production Crew', price: 'from 3,000 EGP', unit: '/ day', rating: '4.9', jobs: '57 jobs', avail: 'Available now', bg: 'from-[#3a1a1a] to-[#5a3a3a]', experience: 10 },
+
+  // 🎬 Production Crew — Photo Retoucher
+  { id: 'mariam-r', emoji: '🖌️', name: 'Mariam Refaat', role: 'High-End Photo Retoucher', niche: 'Photo Retoucher', category: '🎬 Production Crew', price: 'from 600 EGP', unit: '/ image', rating: '5.0', jobs: '215 jobs', avail: 'Available now', bg: 'from-[#1a1a2a] to-[#2a2a4a]', experience: 6 },
+  { id: 'youssra-r', emoji: '✨', name: 'Youssra Rida', role: 'Beauty & Fashion Retoucher', niche: 'Photo Retoucher', category: '🎬 Production Crew', price: 'from 800 EGP', unit: '/ image', rating: '4.9', jobs: '124 jobs', avail: 'Next week', bg: 'from-[#2a1a2a] to-[#4a3a4a]', experience: 5 },
+
+  // 🎬 Production Crew — Production Assistant
+  { id: 'ziad-p', emoji: '📋', name: 'Ziad Pasha', role: 'Production Assistant', niche: 'Production Assistant', category: '🎬 Production Crew', price: 'from 800 EGP', unit: '/ day', rating: '4.7', jobs: '178 jobs', avail: 'Available now', bg: 'from-[#2a2a2a] to-[#3a3a3a]', experience: 3 },
+  { id: 'nada-p', emoji: '🎬', name: 'Nada Pasha', role: 'Set PA & Coordinator', niche: 'Production Assistant', category: '🎬 Production Crew', price: 'from 1,000 EGP', unit: '/ day', rating: '4.8', jobs: '134 jobs', avail: 'Available now', bg: 'from-[#1a2a2a] to-[#3a4a4a]', experience: 4 },
+
+  // 🎤 Talent & On-Camera — Model
+  { id: 'hana-m', emoji: '👠', name: 'Hana Mostafa', role: 'Fashion & Editorial Model', niche: 'Model', category: '🎤 Talent & On-Camera', price: 'from 2,500 EGP', unit: '/ shoot', rating: '4.9', jobs: '78 jobs', avail: 'Available now', bg: 'from-[#3a1a2a] to-[#5a2a3a]', experience: 5 },
+  { id: 'malak-m', emoji: '💃', name: 'Malak Adel', role: 'Commercial & Lifestyle Model', niche: 'Model', category: '🎤 Talent & On-Camera', price: 'from 2,000 EGP', unit: '/ shoot', rating: '4.8', jobs: '92 jobs', avail: 'Available now', bg: 'from-[#2a1a3a] to-[#4a2a5a]', experience: 4 },
+
+  // 🎤 Talent & On-Camera — Actor
+  { id: 'youssef-a', emoji: '🎭', name: 'Youssef Anwar', role: 'Actor & Voice Talent', niche: 'Actor', category: '🎤 Talent & On-Camera', price: 'from 3,500 EGP', unit: '/ project', rating: '4.9', jobs: '54 jobs', avail: 'Next week', bg: 'from-[#1a1a2a] to-[#3a3a5a]', experience: 8 },
+  { id: 'donia-a', emoji: '🎬', name: 'Donia Sami', role: 'Theatre & Commercial Actor', niche: 'Actor', category: '🎤 Talent & On-Camera', price: 'from 3,000 EGP', unit: '/ project', rating: '4.8', jobs: '47 jobs', avail: 'Available now', bg: 'from-[#2a2a1a] to-[#4a4a3a]', experience: 6 },
+
+  // 🎤 Talent & On-Camera — Host / Presenter
+  { id: 'farah-h', emoji: '🎙️', name: 'Farah Hosny', role: 'TV Host & Presenter', niche: 'Host / Presenter', category: '🎤 Talent & On-Camera', price: 'from 4,000 EGP', unit: '/ event', rating: '4.9', jobs: '63 jobs', avail: 'Available now', bg: 'from-[#3a1a3a] to-[#5a2a5a]', experience: 7 },
+  { id: 'amr-h', emoji: '📺', name: 'Amr Helmy', role: 'Event MC & Host', niche: 'Host / Presenter', category: '🎤 Talent & On-Camera', price: 'from 3,500 EGP', unit: '/ event', rating: '4.7', jobs: '85 jobs', avail: 'Available now', bg: 'from-[#1a2a3a] to-[#2a3a5a]', experience: 5 },
+
+  // 🎤 Talent & On-Camera — Hair Stylist
+  { id: 'nour-h', emoji: '💇‍♀️', name: 'Nour Helal', role: 'Editorial Hair Stylist', niche: 'Hair Stylist', category: '🎤 Talent & On-Camera', price: 'from 1,500 EGP', unit: '/ session', rating: '4.8', jobs: '102 jobs', avail: 'Available now', bg: 'from-[#3a2a1a] to-[#5a3a2a]', experience: 6 },
+  { id: 'rania-h', emoji: '✂️', name: 'Rania Hassan', role: 'Bridal Hair Specialist', niche: 'Hair Stylist', category: '🎤 Talent & On-Camera', price: 'from 1,800 EGP', unit: '/ session', rating: '4.9', jobs: '74 jobs', avail: 'Next week', bg: 'from-[#2a1a1a] to-[#4a3a3a]', experience: 7 },
+
+  // 🎤 Talent & On-Camera — Nail Artist
+  { id: 'maya-n', emoji: '💅', name: 'Maya Nabil', role: 'Nail Artist & Designer', niche: 'Nail Artist', category: '🎤 Talent & On-Camera', price: 'from 600 EGP', unit: '/ session', rating: '4.8', jobs: '189 jobs', avail: 'Available now', bg: 'from-[#3a1a3a] to-[#5a2a5a]', experience: 4 },
+  { id: 'hala-n', emoji: '✨', name: 'Hala Naeem', role: 'Editorial Nail Specialist', niche: 'Nail Artist', category: '🎤 Talent & On-Camera', price: 'from 800 EGP', unit: '/ session', rating: '4.9', jobs: '96 jobs', avail: 'Available now', bg: 'from-[#2a1a2a] to-[#4a2a4a]', experience: 5 },
+
+  // 🎵 Audio & Music — Music Producer
+  { id: 'amir-mp', emoji: '🎹', name: 'Amir Mounir', role: 'Music Producer & Composer', niche: 'Music Producer', category: '🎵 Audio & Music', price: 'from 5,000 EGP', unit: '/ track', rating: '4.9', jobs: '67 jobs', avail: 'Available now', bg: 'from-[#1a1a3a] to-[#2a2a5a]', experience: 8 },
+  { id: 'mido-mp', emoji: '🎧', name: 'Mido Sherif', role: 'Beat Maker & Producer', niche: 'Music Producer', category: '🎵 Audio & Music', price: 'from 3,000 EGP', unit: '/ track', rating: '4.8', jobs: '94 jobs', avail: 'Available now', bg: 'from-[#2a1a3a] to-[#4a2a5a]', experience: 6 },
+
+  // 🎵 Audio & Music — Sound Engineer
+  { id: 'kareem-se', emoji: '🎚️', name: 'Kareem Saber', role: 'Studio Sound Engineer', niche: 'Sound Engineer', category: '🎵 Audio & Music', price: 'from 2,500 EGP', unit: '/ session', rating: '4.9', jobs: '88 jobs', avail: 'Available now', bg: 'from-[#1a2a2a] to-[#3a4a4a]', experience: 7 },
+  { id: 'sherif-se', emoji: '🔊', name: 'Sherif Selim', role: 'Live Sound Engineer', niche: 'Sound Engineer', category: '🎵 Audio & Music', price: 'from 3,500 EGP', unit: '/ event', rating: '4.7', jobs: '52 jobs', avail: 'Next week', bg: 'from-[#2a2a3a] to-[#4a4a5a]', experience: 9 },
+
+  // 🎵 Audio & Music — Voice Over Artist
+  { id: 'tarek-v', emoji: '🎙️', name: 'Tarek Voss', role: 'Voice Over Artist (AR/EN)', niche: 'Voice Over Artist', category: '🎵 Audio & Music', price: 'from 1,500 EGP', unit: '/ project', rating: '5.0', jobs: '145 jobs', avail: 'Available now', bg: 'from-[#3a1a1a] to-[#5a3a3a]', experience: 10 },
+  { id: 'reem-v', emoji: '🗣️', name: 'Reem Voss', role: 'Commercial Voice Talent', niche: 'Voice Over Artist', category: '🎵 Audio & Music', price: 'from 1,200 EGP', unit: '/ project', rating: '4.8', jobs: '167 jobs', avail: 'Available now', bg: 'from-[#2a1a2a] to-[#4a2a4a]', experience: 6 },
+
+  // 🎵 Audio & Music — Podcast Editor
+  { id: 'mostafa-pe', emoji: '🎤', name: 'Mostafa Podcast', role: 'Podcast Editor & Producer', niche: 'Podcast Editor', category: '🎵 Audio & Music', price: 'from 800 EGP', unit: '/ episode', rating: '4.8', jobs: '112 jobs', avail: 'Available now', bg: 'from-[#1a2a3a] to-[#2a3a5a]', experience: 4 },
+  { id: 'nada-pe', emoji: '🎧', name: 'Nada Podcast', role: 'Audio Editor & Mixer', niche: 'Podcast Editor', category: '🎵 Audio & Music', price: 'from 600 EGP', unit: '/ episode', rating: '4.7', jobs: '89 jobs', avail: 'Available now', bg: 'from-[#2a2a1a] to-[#4a4a3a]', experience: 3 },
+
+  // 🎵 Audio & Music — DJ
+  { id: 'hossam-dj', emoji: '🎶', name: 'Hossam DJ', role: 'Club & Wedding DJ', niche: 'DJ', category: '🎵 Audio & Music', price: 'from 4,000 EGP', unit: '/ event', rating: '4.9', jobs: '78 jobs', avail: 'Next week', bg: 'from-[#3a1a3a] to-[#5a2a5a]', experience: 8 },
+  { id: 'omar-dj', emoji: '🎵', name: 'Omar Beats', role: 'Event & Corporate DJ', niche: 'DJ', category: '🎵 Audio & Music', price: 'from 3,500 EGP', unit: '/ event', rating: '4.8', jobs: '95 jobs', avail: 'Available now', bg: 'from-[#1a1a3a] to-[#3a2a5a]', experience: 6 },
+
+  // 🏛️ Space Design — Interior Designer
+  { id: 'salma-id', emoji: '🛋️', name: 'Salma Ibrahim', role: 'Interior & Space Designer', niche: 'Interior Designer', category: '🏛️ Space Design', price: 'from 8,000 EGP', unit: '/ project', rating: '4.9', jobs: '42 jobs', avail: 'Available now', bg: 'from-[#3a2a1a] to-[#5a3a2a]', experience: 8 },
+  { id: 'ahmed-id', emoji: '🏠', name: 'Ahmed Idris', role: 'Residential Interior Designer', niche: 'Interior Designer', category: '🏛️ Space Design', price: 'from 6,000 EGP', unit: '/ project', rating: '4.8', jobs: '57 jobs', avail: 'Next week', bg: 'from-[#2a2a1a] to-[#4a4a3a]', experience: 6 },
+
+  // 🏛️ Space Design — Exhibition / Booth Designer
+  { id: 'tamer-bd', emoji: '🏪', name: 'Tamer Booth', role: 'Exhibition & Booth Designer', niche: 'Exhibition / Booth Designer', category: '🏛️ Space Design', price: 'from 10,000 EGP', unit: '/ project', rating: '4.9', jobs: '34 jobs', avail: 'Available now', bg: 'from-[#1a2a2a] to-[#3a4a4a]', experience: 9 },
+  { id: 'dina-bd', emoji: '🎪', name: 'Dina Bahgat', role: 'Trade Show Designer', niche: 'Exhibition / Booth Designer', category: '🏛️ Space Design', price: 'from 12,000 EGP', unit: '/ project', rating: '4.8', jobs: '28 jobs', avail: 'Available now', bg: 'from-[#2a1a2a] to-[#4a2a4a]', experience: 7 },
+
+  // 📊 Marketing — Media Buyer
+  { id: 'youssef-mb', emoji: '📺', name: 'Youssef Mahmoud', role: 'Media Buyer & Planner', niche: 'Media Buyer', category: '📊 Marketing', price: 'from 5,000 EGP', unit: '/ month', rating: '4.9', jobs: '41 jobs', avail: 'Available now', bg: 'from-[#1a1a3a] to-[#2a2a5a]', experience: 8 },
+  { id: 'ola-mb', emoji: '📡', name: 'Ola Mounir', role: 'OOH & Digital Media Buyer', niche: 'Media Buyer', category: '📊 Marketing', price: 'from 6,000 EGP', unit: '/ month', rating: '4.8', jobs: '36 jobs', avail: 'Next week', bg: 'from-[#2a1a3a] to-[#3a2a5a]', experience: 7 },
 ];
 
 // Get unique categories
