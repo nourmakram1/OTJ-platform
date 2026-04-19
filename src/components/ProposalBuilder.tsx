@@ -129,7 +129,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
         <div className="bg-otj-yellow-bg border border-otj-yellow-border rounded-[14px] p-3 md:p-4">
           <div className="text-[14px] font-extrabold text-otj-yellow mb-1">📝 Write Your Proposal</div>
           <div className="text-[12px] text-otj-text leading-relaxed">
-            Define phases, tasks, deliverables and pricing. Deadlines sync to your dashboard schedule. Drag phases to reorder.
+            Define phases, deliverables and pricing. Each phase gets a short paragraph describing the work. Deadlines sync to your dashboard schedule. Drag phases to reorder.
           </div>
         </div>
 
@@ -149,7 +149,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
         {/* Phases */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em]">Phases & Tasks</div>
+            <div className="text-[14px] md:text-[16px] font-extrabold tracking-[-0.03em]">Phases</div>
             <button onClick={addPhase} className="text-[10px] md:text-[11.5px] font-bold px-2.5 md:px-3.5 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground transition-all duration-150">+ Add Phase</button>
           </div>
           <div className="flex flex-col gap-3">
