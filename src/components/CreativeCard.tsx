@@ -53,6 +53,22 @@ import portfolioAds1 from '@/assets/portfolio-ads-1.jpg';
 import portfolioWriting1 from '@/assets/portfolio-writing-1.jpg';
 import portfolioWriting2 from '@/assets/portfolio-writing-2.jpg';
 import portfolioScript1 from '@/assets/portfolio-script-1.jpg';
+// New niches
+import portfolioDrone1 from '@/assets/portfolio-drone-1.jpg';
+import portfolioMusic1 from '@/assets/portfolio-music-1.jpg';
+import portfolioVoiceover1 from '@/assets/portfolio-voiceover-1.jpg';
+import portfolioPodcast1 from '@/assets/portfolio-podcast-1.jpg';
+import portfolioDj1 from '@/assets/portfolio-dj-1.jpg';
+import portfolioGaffer1 from '@/assets/portfolio-gaffer-1.jpg';
+import portfolioRetoucher1 from '@/assets/portfolio-retoucher-1.jpg';
+import portfolioModel1 from '@/assets/portfolio-model-1.jpg';
+import portfolioActor1 from '@/assets/portfolio-actor-1.jpg';
+import portfolioHost1 from '@/assets/portfolio-host-1.jpg';
+import portfolioHair1 from '@/assets/portfolio-hair-1.jpg';
+import portfolioNails1 from '@/assets/portfolio-nails-1.jpg';
+import portfolioInterior1 from '@/assets/portfolio-interior-1.jpg';
+import portfolioBooth1 from '@/assets/portfolio-booth-1.jpg';
+import portfolioPa1 from '@/assets/portfolio-pa-1.jpg';
 
 // Niche → curated portfolio image pool (3-5 highly relevant shots each)
 const NICHE_POOLS: Record<string, string[]> = {
@@ -61,19 +77,38 @@ const NICHE_POOLS: Record<string, string[]> = {
   'Food Photographer':          [portfolioFood, portfolioFood2, portfolioFood3, portfolioProduct],
   'E-commerce Photographer':    [portfolioEcommerce1, portfolioProduct, portfolioProduct2, portfolioPackaging1],
   'Event Photographer':         [portfolioEvent, portfolioEvent2, portfolioEvent3, portfolioWedding2],
-  'Real Estate Photographer':   [portfolioRealestate1, portfolioRealestate2, portfolioRealestate1, portfolioRealestate2],
+  'Real Estate Photographer':   [portfolioRealestate1, portfolioRealestate2, portfolioInterior1],
   'Jewelry Photographer':       [portfolioJewelry1, portfolioJewelry2, portfolioProduct2, portfolioProduct3],
   'Wedding Videographer':       [portfolioWedding1, portfolioWedding2, portfolioVideo, portfolioEvent],
   'Commercial Videographer':    [portfolioVideo, portfolioVideo2, portfolioVideo3, portfolioMotion1],
   'Content Creator':            [portfolioContent1, portfolioSocial1, portfolioVideo, portfolioMarketing],
+  'Ad Production Producer':     [portfolioVideo2, portfolioGaffer1, portfolioPa1, portfolioVideo],
+  'Video Editor':               [portfolioVideo3, portfolioMotion1, portfolioRetoucher1, portfolioVideo2],
+  'Drone Operator':             [portfolioDrone1, portfolioRealestate2, portfolioEvent3, portfolioVideo2],
+  'Gaffer / Lighting':          [portfolioGaffer1, portfolioVideo2, portfolioVideo, portfolioPa1],
+  'Photo Retoucher':            [portfolioRetoucher1, portfolioMakeup3, portfolioFashion2, portfolioFashion],
+  'Production Assistant':       [portfolioPa1, portfolioVideo2, portfolioGaffer1, portfolioContent1],
+  'Model':                      [portfolioModel1, portfolioFashion, portfolioFashion2, portfolioMakeup3],
+  'Actor':                      [portfolioActor1, portfolioVideo3, portfolioVideo2, portfolioPa1],
+  'Host / Presenter':           [portfolioHost1, portfolioPodcast1, portfolioContent1, portfolioActor1],
+  'Hair Stylist':               [portfolioHair1, portfolioMakeup, portfolioMakeup2, portfolioFashion],
+  'Nail Artist':                [portfolioNails1, portfolioMakeup3, portfolioJewelry2, portfolioMakeup],
+  'Music Producer':             [portfolioMusic1, portfolioPodcast1, portfolioDj1, portfolioVoiceover1],
+  'Sound Engineer':             [portfolioMusic1, portfolioVoiceover1, portfolioPodcast1, portfolioDj1],
+  'Voice Over Artist':          [portfolioVoiceover1, portfolioPodcast1, portfolioMusic1, portfolioScript1],
+  'Podcast Editor':             [portfolioPodcast1, portfolioVoiceover1, portfolioMusic1, portfolioContent1],
+  'DJ':                         [portfolioDj1, portfolioEvent3, portfolioMusic1, portfolioEvent],
   'Brand Designer':             [portfolioDesign, portfolioDesign2, portfolioDesign3, portfolioPackaging1],
   'UI/UX Designer':             [portfolioUiux1, portfolioDev2, portfolioDesign2, portfolioDesign3],
   'Packaging Designer':         [portfolioPackaging1, portfolioProduct3, portfolioDesign, portfolioDesign2],
+  'Interior Designer':          [portfolioInterior1, portfolioRealestate1, portfolioRealestate2, portfolioDesign],
+  'Exhibition / Booth Designer':[portfolioBooth1, portfolioInterior1, portfolioDesign, portfolioPackaging1],
   'Copywriter':                 [portfolioWriting2, portfolioWriting1, portfolioMarketing, portfolioSocial1],
   'Content Writer':             [portfolioWriting1, portfolioWriting2, portfolioMarketing],
   'Script Writer':              [portfolioScript1, portfolioWriting1, portfolioVideo3],
   'Social Media Manager':       [portfolioSocial1, portfolioContent1, portfolioMarketing, portfolioAds1],
   'Performance Marketer':       [portfolioAds1, portfolioMarketing, portfolioSocial1],
+  'Media Buyer':                [portfolioAds1, portfolioMarketing, portfolioSocial1, portfolioBooth1],
   'Fashion Stylist':            [portfolioStylist1, portfolioFashion2, portfolioFashion, portfolioMakeup],
   'Makeup Artist':              [portfolioMakeup, portfolioMakeup2, portfolioMakeup3, portfolioFashion],
   'Web Developer':              [portfolioDev1, portfolioDev2, portfolioUiux1, portfolioDesign2],
