@@ -33,6 +33,8 @@ export interface AmendRequest {
   proposedDeadline?: string;
   /** ISO deadline set/confirmed by the creative. This is the binding deadline once committed. */
   acceptedDeadline?: string;
+  /** Optional note from the creative explaining the deadline (e.g. why the date shifted). */
+  acceptedNote?: string;
   /** @deprecated Use `acceptedDeadline` (creative-set) or `proposedDeadline` (client-suggested). Kept for backwards compatibility. */
   newDeadline?: string;
   /** Previous deadline before this amend was raised (for history). */
@@ -126,6 +128,7 @@ export interface ProjectMessage {
     note?: string;
     proposedDeadline?: string;
     acceptedDeadline?: string;
+    acceptedNote?: string;
   };
 }
 
@@ -275,7 +278,7 @@ interface ProjectContextType {
   toggleTask: (projectId: string, phaseNum: number, taskIndex: number) => void;
   setPhaseReady: (projectId: string, phaseNum: number, ready: boolean) => void;
   requestAmends: (projectId: string, phaseNum: number, note: string, proposedDeadline?: string) => void;
-  setAmendDeadline: (projectId: string, phaseNum: number, round: number, acceptedDeadline: string) => void;
+  setAmendDeadline: (projectId: string, phaseNum: number, round: number, acceptedDeadline: string, acceptedNote?: string) => void;
   projectMessages: Record<string, ProjectMessage[]>;
   addProjectMessage: (projectId: string, msg: Omit<ProjectMessage, 'id' | 'createdAt'>) => void;
 }
@@ -1209,9 +1212,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   }, [addNotification, addProjectMessage]);
 
-  const setAmendDeadline = useCallback((projectId: string, phaseNum: number, round: number, acceptedDeadline: string) => {
+  const setAmendDeadline = useCallback((projectId: string, phaseNum: number, round: number, acceptedDeadline: string, acceptedNote?: string) => {
     let phaseTitle = '';
     let wasAlreadySet = false;
+    const trimmedNote = acceptedNote?.trim() || undefined;
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
       const updatedPhases = p.phases.map(ph => {
@@ -1220,7 +1224,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const updatedAmends = (ph.amends || []).map(a => {
           if (a.round !== round) return a;
           if (a.acceptedDeadline) wasAlreadySet = true;
-          return { ...a, acceptedDeadline };
+          return {
+            ...a,
+            acceptedDeadline,
+            // Preserve previous note if caller didn't pass a new one (e.g. date-only edit).
+            acceptedNote: trimmedNote !== undefined ? trimmedNote : a.acceptedNote,
+          };
         });
         return { ...ph, amends: updatedAmends, deadline: acceptedDeadline };
       });
@@ -1236,6 +1245,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           phaseTitle: phaseTitle || `Phase ${phaseNum}`,
           round,
           acceptedDeadline,
+          acceptedNote: trimmedNote,
         },
       });
     }
