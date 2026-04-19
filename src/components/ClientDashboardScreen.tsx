@@ -261,7 +261,8 @@ type ClientScheduleItem = {
 const clientTypeConfig: Record<string, {bg: string;border: string;text: string;dot: string;label: string;}> = {
   meeting: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Meeting' },
   phase: { bg: 'bg-otj-yellow-bg', border: 'border-otj-yellow-border', text: 'text-otj-yellow', dot: 'bg-otj-yellow', label: 'Due' },
-  call: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Call' }
+  call: { bg: 'bg-otj-blue-bg', border: 'border-otj-blue-border', text: 'text-otj-blue', dot: 'bg-otj-blue', label: 'Call' },
+  deadline: { bg: 'bg-otj-yellow-bg', border: 'border-otj-yellow-border', text: 'text-otj-yellow', dot: 'bg-otj-yellow', label: 'Amend Due' }
 };
 
 const DAY_LABELS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
@@ -307,12 +308,13 @@ const ClientScheduleSection: React.FC<{
           let hour = hourMatch ? parseInt(hourMatch[1]) : 9;
           if (isPM && hour < 12) hour += 12;
           if (!isPM && hour === 12) hour = 0;
+          const mappedType: ClientScheduleItem['type'] = meeting.type === 'call' ? 'call' : meeting.type === 'deadline' ? 'deadline' : 'meeting';
           items.push({
             label: meeting.title,
             sublabel: proj.name,
             projectId: proj.id,
             deadline: d,
-            type: meeting.type === 'call' ? 'call' : 'meeting',
+            type: mappedType,
             hour,
             duration: meeting.type === 'call' ? 1 : 2
           });
