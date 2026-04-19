@@ -40,7 +40,7 @@ const PRESET_SPLITS = [
 
 export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSubmit }) => {
   const [phases, setPhases] = useState<DraftPhase[]>([
-    { title: 'Pre-Production', tasks: [''], deadline: undefined },
+    { title: 'Pre-Production', description: '', deadline: undefined },
   ]);
   const [deliverables, setDeliverables] = useState<string[]>(['']);
   const [price, setPrice] = useState(project.budget.replace(/[^0-9]/g, ''));
@@ -55,13 +55,11 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
   const [accountNumber, setAccountNumber] = useState('');
 
   // Phase helpers
-  const addPhase = () => setPhases(prev => [...prev, { title: '', tasks: [''], deadline: undefined }]);
+  const addPhase = () => setPhases(prev => [...prev, { title: '', description: '', deadline: undefined }]);
   const removePhase = (idx: number) => { if (phases.length > 1) setPhases(prev => prev.filter((_, i) => i !== idx)); };
   const updatePhaseTitle = (idx: number, title: string) => setPhases(prev => prev.map((p, i) => i === idx ? { ...p, title } : p));
   const updatePhaseDeadline = (idx: number, date: Date | undefined) => setPhases(prev => prev.map((p, i) => i === idx ? { ...p, deadline: date } : p));
-  const addTask = (pi: number) => setPhases(prev => prev.map((p, i) => i === pi ? { ...p, tasks: [...p.tasks, ''] } : p));
-  const removeTask = (pi: number, ti: number) => setPhases(prev => prev.map((p, i) => { if (i !== pi || p.tasks.length <= 1) return p; return { ...p, tasks: p.tasks.filter((_, j) => j !== ti) }; }));
-  const updateTask = (pi: number, ti: number, text: string) => setPhases(prev => prev.map((p, i) => { if (i !== pi) return p; return { ...p, tasks: p.tasks.map((t, j) => j === ti ? text : t) }; }));
+  const updatePhaseDescription = (idx: number, description: string) => setPhases(prev => prev.map((p, i) => i === idx ? { ...p, description } : p));
 
   // Deliverable helpers
   const addDeliverable = () => setDeliverables(prev => [...prev, '']);
@@ -94,7 +92,7 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
   const numericPrice = parseInt(price) || 0;
   const paymentMethodValid = paymentType === 'instapay' ? instapayHandle.trim().length > 0 : (bankName.trim() && accountName.trim() && accountNumber.trim());
 
-  const canSubmit = phases.every(p => p.title.trim() && p.tasks.some(t => t.trim())) &&
+  const canSubmit = phases.every(p => p.title.trim() && p.description.trim()) &&
     deliverables.some(d => d.trim()) &&
     price.trim() &&
     totalPercentage === 100 &&
@@ -108,11 +106,8 @@ export const ProposalBuilder: React.FC<ProposalBuilderProps> = ({ project, onSub
       title: p.title,
       status: 'locked' as const,
       deadline: p.deadline ? p.deadline.toISOString() : undefined,
-      tasks: p.tasks.filter(t => t.trim()).map(t => ({
-        text: t,
-        done: false,
-        due: p.deadline ? format(p.deadline, 'MMM d') : project.deadline,
-      })),
+      description: p.description.trim(),
+      tasks: [],
     }));
     const cleanDeliverables = deliverables.filter(d => d.trim());
     const paymentMilestones: PaymentMilestone[] = milestones.map(m => ({
