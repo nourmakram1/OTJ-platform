@@ -25,7 +25,7 @@ const ProjectProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const { userRole, getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview, clients, confirmPaymentReceipt, toggleTask } = useProjects();
+  const { userRole, getProject, submitProposal, addMeeting, addAttachment, removeAttachment, renameAttachment, completeProject, addReview, clients, confirmPaymentReceipt, toggleTask, setPhaseReady } = useProjects();
   const isClient = userRole === 'client';
 
   const navigateToClient = (name: string) => {
