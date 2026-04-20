@@ -97,12 +97,14 @@ export const ProfileCompletenessCard: React.FC<ProfileCompletenessCardProps> = (
         </div>
       )}
 
-      <button
-        onClick={() => navigate('/settings')}
-        className="text-[12px] font-bold text-primary cursor-pointer bg-transparent border-none hover:underline p-0"
-      >
-        Complete now →
-      </button>
+      <div className="flex justify-end">
+        <button
+          onClick={() => navigate('/settings')}
+          className="text-[12px] font-bold px-3 py-1.5 rounded-full bg-foreground text-background cursor-pointer transition-all duration-150 hover:opacity-90 active:scale-95"
+        >
+          Complete now
+        </button>
+      </div>
     </div>
   );
 };
