@@ -4,6 +4,7 @@ import { CheckCircle2, Lock, MapPin, Package, Star, MessageCircle, Download, Rot
 import { NavBar } from '../components/NavBar';
 import { showToast, Toast } from '../components/Toast';
 import { useProjects } from '../context/ProjectContext';
+import { downloadPaymentProof } from '../lib/downloadProof';
 
 const tabs = ['Phases', 'Brief', 'Deliverables', 'Payments', 'Reviews'];
 
@@ -264,13 +265,28 @@ const CompletedProjectProfile = () => {
                     <div className="flex items-center justify-between gap-3">
                       <div className="min-w-0">
                         <div className="text-[13px] font-bold">{m.label} ({m.percentage}%)</div>
-                        <div className="text-[11px] font-bold text-otj-green flex items-center gap-1.5 mt-0.5">
+                        <div className="text-[11px] font-bold text-otj-green flex items-center gap-1.5 mt-0.5 flex-wrap">
                           Received ✓
                           {m.paidAt && <span className="text-otj-muted font-medium">· {m.paidAt}</span>}
                         </div>
                       </div>
                       <div className="text-[16px] font-extrabold shrink-0">{amount}</div>
                     </div>
+                    {m.proofUrl && (
+                      <div className="border-t border-border mt-3 pt-3 flex items-center gap-3">
+                        <img src={m.proofUrl} alt="Bank transfer proof" className="w-12 h-12 rounded-lg object-cover border border-border cursor-pointer" onClick={() => window.open(m.proofUrl, '_blank')} />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[11.5px] font-bold text-foreground truncate">{m.proofName || 'bank-transfer-receipt.png'}</div>
+                          <div className="text-[10px] text-otj-muted">Bank transfer screenshot</div>
+                        </div>
+                        <button
+                          onClick={() => { downloadPaymentProof(m.proofUrl!, m.proofName || `payment-proof-${i + 1}.png`); showToast('Downloading proof…'); }}
+                          className="text-[10.5px] font-bold px-3 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground active:scale-[0.98] flex items-center gap-1 shrink-0"
+                        >
+                          <Download className="w-3 h-3" /> Download
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}

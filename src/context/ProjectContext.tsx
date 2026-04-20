@@ -571,6 +571,29 @@ const defaultActiveProjects: ProjectData[] = [
   },
 ];
 
+// Mock bank transfer screenshot used to seed historical completed-project payment proofs.
+const MOCK_BANK_PROOF = "data:image/svg+xml;utf8," + encodeURIComponent(
+  `<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800' viewBox='0 0 600 800'>
+    <rect width='600' height='800' fill='#f5f5f7'/>
+    <rect x='40' y='40' width='520' height='720' rx='16' fill='white' stroke='#e5e5e5'/>
+    <text x='300' y='110' text-anchor='middle' font-family='Arial' font-size='22' font-weight='bold' fill='#111'>CIB Mobile Banking</text>
+    <text x='300' y='150' text-anchor='middle' font-family='Arial' font-size='14' fill='#666'>Transfer Receipt</text>
+    <line x1='80' y1='180' x2='520' y2='180' stroke='#eee'/>
+    <text x='80' y='230' font-family='Arial' font-size='13' fill='#888'>Status</text>
+    <text x='520' y='230' text-anchor='end' font-family='Arial' font-size='15' font-weight='bold' fill='#22c55e'>✓ Successful</text>
+    <text x='80' y='280' font-family='Arial' font-size='13' fill='#888'>Amount</text>
+    <text x='520' y='280' text-anchor='end' font-family='Arial' font-size='18' font-weight='bold' fill='#111'>EGP</text>
+    <text x='80' y='330' font-family='Arial' font-size='13' fill='#888'>To</text>
+    <text x='520' y='330' text-anchor='end' font-family='Arial' font-size='14' fill='#111'>Nour Makram</text>
+    <text x='80' y='380' font-family='Arial' font-size='13' fill='#888'>Reference</text>
+    <text x='520' y='380' text-anchor='end' font-family='Arial' font-size='14' fill='#111'>OTJ-PROJECT</text>
+    <text x='80' y='430' font-family='Arial' font-size='13' fill='#888'>Date</text>
+    <text x='520' y='430' text-anchor='end' font-family='Arial' font-size='14' fill='#111'>See timestamp</text>
+    <line x1='80' y1='470' x2='520' y2='470' stroke='#eee'/>
+    <text x='300' y='720' text-anchor='middle' font-family='Arial' font-size='11' fill='#aaa'>Mock receipt — On The Job</text>
+  </svg>`
+);
+
 const defaultCompleted: CompletedProjectData[] = [
   {
     id: 'completed-1',
@@ -589,8 +612,8 @@ const defaultCompleted: CompletedProjectData[] = [
       { num: 4, title: 'Final Delivery', status: 'complete', description: 'Delivered the final 30 edited frames plus a Lightroom preset pack, and walked the client through the gallery for sign-off.', tasks: [{ text: 'Upload finals', done: true, due: 'Feb 9' }, { text: 'Client sign-off', done: true, due: 'Feb 10' }] },
     ],
     paymentMilestones: [
-      { label: '50% Deposit', percentage: 50, status: 'paid', paidAt: 'Jan 15, 2026 · 10:24' },
-      { label: '50% On Completion', percentage: 50, status: 'paid', paidAt: 'Feb 10, 2026 · 17:48' },
+      { label: '50% Deposit', percentage: 50, status: 'paid', paidAt: 'Jan 15, 2026 · 10:24', proofUrl: MOCK_BANK_PROOF, proofName: 'bank-transfer-receipt.png' },
+      { label: '50% On Completion', percentage: 50, status: 'paid', paidAt: 'Feb 10, 2026 · 17:48', proofUrl: MOCK_BANK_PROOF, proofName: 'bank-transfer-receipt.png' },
     ],
     paymentMethod: { type: 'instapay', instapayHandle: '@nour.creative' },
     completedDate: 'February 10, 2026', startedDate: 'January 15, 2026',
@@ -612,9 +635,9 @@ const defaultCompleted: CompletedProjectData[] = [
       { num: 3, title: 'Post-Production', status: 'complete', description: 'Edited the rough cut, locked picture with OPPO, then color-graded and sound-designed the final hero film plus all three social cut-downs.', tasks: [{ text: 'Rough cut', done: true, due: 'Jan 25' }, { text: 'Final edit + color', done: true, due: 'Jan 30' }] },
     ],
     paymentMilestones: [
-      { label: '30% Deposit', percentage: 30, status: 'paid', paidAt: 'Jan 5, 2026 · 09:12' },
-      { label: '40% On Rough Cut', percentage: 40, status: 'paid', paidAt: 'Jan 26, 2026 · 15:30' },
-      { label: '30% Final Delivery', percentage: 30, status: 'paid', paidAt: 'Feb 2, 2026 · 18:05' },
+      { label: '30% Deposit', percentage: 30, status: 'paid', paidAt: 'Jan 5, 2026 · 09:12', proofUrl: MOCK_BANK_PROOF, proofName: 'bank-transfer-receipt.png' },
+      { label: '40% On Rough Cut', percentage: 40, status: 'paid', paidAt: 'Jan 26, 2026 · 15:30', proofUrl: MOCK_BANK_PROOF, proofName: 'bank-transfer-receipt.png' },
+      { label: '30% Final Delivery', percentage: 30, status: 'paid', paidAt: 'Feb 2, 2026 · 18:05', proofUrl: MOCK_BANK_PROOF, proofName: 'bank-transfer-receipt.png' },
     ],
     paymentMethod: { type: 'bank', bankName: 'CIB', accountName: 'Nour Makram', accountNumber: '1234567890' },
     completedDate: 'February 2, 2026', startedDate: 'January 5, 2026',
@@ -636,8 +659,8 @@ const defaultCompleted: CompletedProjectData[] = [
       { num: 3, title: 'Editing & Delivery', status: 'complete', description: 'Culled and edited 150 final frames, picked 20 hero selects for press use, and packaged the social media gallery for immediate publishing.', tasks: [{ text: 'Cull & select', done: true, due: 'Jan 23' }, { text: 'Final delivery', done: true, due: 'Jan 25' }] },
     ],
     paymentMilestones: [
-      { label: '50% Deposit', percentage: 50, status: 'paid', paidAt: 'Jan 10, 2026 · 11:45' },
-      { label: '50% On Delivery', percentage: 50, status: 'paid', paidAt: 'Jan 25, 2026 · 19:20' },
+      { label: '50% Deposit', percentage: 50, status: 'paid', paidAt: 'Jan 10, 2026 · 11:45', proofUrl: MOCK_BANK_PROOF, proofName: 'bank-transfer-receipt.png' },
+      { label: '50% On Delivery', percentage: 50, status: 'paid', paidAt: 'Jan 25, 2026 · 19:20', proofUrl: MOCK_BANK_PROOF, proofName: 'bank-transfer-receipt.png' },
     ],
     completedDate: 'January 25, 2026', startedDate: 'January 10, 2026',
     reviews: [],
@@ -658,7 +681,7 @@ const defaultCompleted: CompletedProjectData[] = [
       { num: 3, title: 'Delivery', status: 'complete', description: 'Edited and color-corrected all 25 final frames and delivered web-ready and print-ready versions to the Edita team.', tasks: [{ text: 'Editing & delivery', done: true, due: 'Jan 14' }] },
     ],
     paymentMilestones: [
-      { label: 'Full Payment', percentage: 100, status: 'paid', paidAt: 'Jan 14, 2026 · 16:02' },
+      { label: 'Full Payment', percentage: 100, status: 'paid', paidAt: 'Jan 14, 2026 · 16:02', proofUrl: MOCK_BANK_PROOF, proofName: 'bank-transfer-receipt.png' },
     ],
     paymentMethod: { type: 'instapay', instapayHandle: '@nour.creative' },
     completedDate: 'January 14, 2026', startedDate: 'January 3, 2026',
@@ -680,8 +703,8 @@ const defaultCompleted: CompletedProjectData[] = [
       { num: 3, title: 'Final Delivery', status: 'complete', description: 'Delivered all 20 static posts, 5 final reels, written captions, and the scheduled content calendar ready for Juhayna\'s social team to publish.', tasks: [{ text: 'All assets delivered', done: true, due: 'Jan 7' }] },
     ],
     paymentMilestones: [
-      { label: '50% Deposit', percentage: 50, status: 'paid', paidAt: 'Dec 15, 2025 · 14:08' },
-      { label: '50% On Completion', percentage: 50, status: 'paid', paidAt: 'Jan 7, 2026 · 13:50' },
+      { label: '50% Deposit', percentage: 50, status: 'paid', paidAt: 'Dec 15, 2025 · 14:08', proofUrl: MOCK_BANK_PROOF, proofName: 'bank-transfer-receipt.png' },
+      { label: '50% On Completion', percentage: 50, status: 'paid', paidAt: 'Jan 7, 2026 · 13:50', proofUrl: MOCK_BANK_PROOF, proofName: 'bank-transfer-receipt.png' },
     ],
     completedDate: 'January 7, 2026', startedDate: 'December 15, 2025',
     reviews: [],
