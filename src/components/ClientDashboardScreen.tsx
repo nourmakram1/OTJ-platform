@@ -4,10 +4,13 @@ import { format, parseISO, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, 
 import { showToast } from './Toast';
 import { useProjects, MeetingData } from '../context/ProjectContext';
 import { ClipboardList, Zap, Sparkles, Calendar, Users2, Clock, SendHorizonal, FileText } from 'lucide-react';
+import { ClientProfileCompletenessCard, useClientProfileCompleteness } from './ClientProfileCompleteness';
+import { ProfileIncompleteBanner } from './ProfileIncompleteBanner';
 
 export const ClientDashboardScreen: React.FC = () => {
   const navigate = useNavigate();
   const { activeProjects, completedProjects, pendingBriefs, allMeetings } = useProjects();
+  const { percentage: clientPct } = useClientProfileCompleteness();
   const [tab, setTab] = useState<'briefs' | 'active' | 'complete'>('briefs');
 
   const clientBriefs = pendingBriefs;
