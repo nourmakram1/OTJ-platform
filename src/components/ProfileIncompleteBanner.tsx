@@ -54,15 +54,15 @@ export const ProfileIncompleteBanner: React.FC<ProfileIncompleteBannerProps> = (
   };
 
   return (
-    <div className="mb-4 rounded-[14px] border border-[hsl(var(--otj-yellow-border))] bg-[hsl(var(--otj-yellow-bg))] p-3 px-4 flex items-center gap-3 animate-fade-up">
-      <div className="w-9 h-9 rounded-full bg-card border border-[hsl(var(--otj-yellow-border))] flex items-center justify-center shrink-0">
+    <div className="mb-4 rounded-[14px] border border-foreground bg-foreground p-3 px-4 flex items-center gap-3 animate-fade-up">
+      <div className="w-9 h-9 rounded-full bg-background/10 border border-background/20 flex items-center justify-center shrink-0">
         <Sparkles className="w-4 h-4 text-[hsl(var(--otj-yellow))]" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-[12.5px] font-extrabold text-foreground tracking-[-0.01em]">
+        <div className="text-[12.5px] font-extrabold text-background tracking-[-0.01em]">
           Your profile is {percentage}% complete
         </div>
-        <div className="text-[11px] text-muted-foreground leading-snug truncate">
+        <div className="text-[11px] text-background/70 leading-snug truncate">
           {roleLabel === 'creative'
             ? 'Finish setting it up to unlock bookings and stand out in search.'
             : 'Add the last details so creatives can respond to your briefs faster.'}
@@ -70,14 +70,14 @@ export const ProfileIncompleteBanner: React.FC<ProfileIncompleteBannerProps> = (
       </div>
       <button
         onClick={() => navigate(ctaPath)}
-        className="text-[11.5px] font-bold px-3 py-1.5 rounded-full bg-foreground text-card cursor-pointer transition-all duration-150 hover:opacity-90 active:scale-95 shrink-0"
+        className="text-[11.5px] font-bold px-3 py-1.5 rounded-full bg-background text-foreground cursor-pointer transition-all duration-150 hover:opacity-90 active:scale-95 shrink-0"
       >
         Finish setup →
       </button>
       <button
         onClick={handleDismiss}
         aria-label="Dismiss"
-        className="w-7 h-7 rounded-full hover:bg-card flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors shrink-0"
+        className="w-7 h-7 rounded-full hover:bg-background/10 flex items-center justify-center text-background/60 hover:text-background transition-colors shrink-0"
       >
         <X className="w-3.5 h-3.5" />
       </button>
