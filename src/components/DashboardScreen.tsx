@@ -41,13 +41,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
       {/* Profile incomplete nudges (banner + one-shot toast) */}
       <ProfileIncompleteBanner percentage={percentage} ctaPath="/settings" storageKey="profile-banner:creative" roleLabel="creative" />
 
-      {/* Profile Completeness card */}
-      {percentage < 100 && (
-        <div className="mb-5">
-          <ProfileCompletenessCard variant="compact" />
-        </div>
-      )}
-
       {/* Stats — 4 cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
         {(() => {
