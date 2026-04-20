@@ -5,8 +5,6 @@
  */
 export async function downloadPaymentProof(url: string, filename: string = 'payment-proof.jpg') {
   try {
-    // For blob: and data: URLs, anchor download works directly.
-    // For remote URLs we fetch as blob first to avoid cross-origin "navigate instead of download" behavior.
     let href = url;
     let revoke = false;
 
@@ -28,7 +26,6 @@ export async function downloadPaymentProof(url: string, filename: string = 'paym
 
     if (revoke) setTimeout(() => URL.revokeObjectURL(href), 1000);
   } catch (err) {
-    // Fallback: open in new tab so user can save manually.
     window.open(url, '_blank', 'noopener');
   }
 }
