@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Sparkles } from 'lucide-react';
+import { X } from 'lucide-react';
 import { showToast } from './Toast';
 
 interface ProfileIncompleteBannerProps {
@@ -55,9 +55,6 @@ export const ProfileIncompleteBanner: React.FC<ProfileIncompleteBannerProps> = (
 
   return (
     <div className="mb-4 rounded-[14px] border border-foreground bg-foreground p-3 px-4 flex items-center gap-3 animate-fade-up">
-      <div className="w-9 h-9 rounded-full bg-background/10 border border-background/20 flex items-center justify-center shrink-0">
-        <Sparkles className="w-4 h-4 text-[hsl(var(--otj-yellow))]" />
-      </div>
       <div className="flex-1 min-w-0">
         <div className="text-[12.5px] font-extrabold text-background tracking-[-0.01em]">
           Your profile is {percentage}% complete
