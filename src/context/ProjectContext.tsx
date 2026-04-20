@@ -571,6 +571,29 @@ const defaultActiveProjects: ProjectData[] = [
   },
 ];
 
+// Mock bank transfer screenshot used to seed historical completed-project payment proofs.
+const MOCK_BANK_PROOF = "data:image/svg+xml;utf8," + encodeURIComponent(
+  `<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800' viewBox='0 0 600 800'>
+    <rect width='600' height='800' fill='#f5f5f7'/>
+    <rect x='40' y='40' width='520' height='720' rx='16' fill='white' stroke='#e5e5e5'/>
+    <text x='300' y='110' text-anchor='middle' font-family='Arial' font-size='22' font-weight='bold' fill='#111'>CIB Mobile Banking</text>
+    <text x='300' y='150' text-anchor='middle' font-family='Arial' font-size='14' fill='#666'>Transfer Receipt</text>
+    <line x1='80' y1='180' x2='520' y2='180' stroke='#eee'/>
+    <text x='80' y='230' font-family='Arial' font-size='13' fill='#888'>Status</text>
+    <text x='520' y='230' text-anchor='end' font-family='Arial' font-size='15' font-weight='bold' fill='#22c55e'>✓ Successful</text>
+    <text x='80' y='280' font-family='Arial' font-size='13' fill='#888'>Amount</text>
+    <text x='520' y='280' text-anchor='end' font-family='Arial' font-size='18' font-weight='bold' fill='#111'>EGP</text>
+    <text x='80' y='330' font-family='Arial' font-size='13' fill='#888'>To</text>
+    <text x='520' y='330' text-anchor='end' font-family='Arial' font-size='14' fill='#111'>Nour Makram</text>
+    <text x='80' y='380' font-family='Arial' font-size='13' fill='#888'>Reference</text>
+    <text x='520' y='380' text-anchor='end' font-family='Arial' font-size='14' fill='#111'>OTJ-PROJECT</text>
+    <text x='80' y='430' font-family='Arial' font-size='13' fill='#888'>Date</text>
+    <text x='520' y='430' text-anchor='end' font-family='Arial' font-size='14' fill='#111'>See timestamp</text>
+    <line x1='80' y1='470' x2='520' y2='470' stroke='#eee'/>
+    <text x='300' y='720' text-anchor='middle' font-family='Arial' font-size='11' fill='#aaa'>Mock receipt — On The Job</text>
+  </svg>`
+);
+
 const defaultCompleted: CompletedProjectData[] = [
   {
     id: 'completed-1',
