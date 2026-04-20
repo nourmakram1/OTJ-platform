@@ -37,6 +37,16 @@ export const ClientDashboardScreen: React.FC = () => {
         </button>
       </div>
 
+      {/* Profile incomplete nudges (banner + one-shot toast) */}
+      <ProfileIncompleteBanner percentage={clientPct} ctaPath="/client-onboarding" storageKey="profile-banner:client" roleLabel="client" />
+
+      {/* Profile Completeness card */}
+      {clientPct < 100 && (
+        <div className="mb-5">
+          <ClientProfileCompletenessCard variant="compact" />
+        </div>
+      )}
+
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2 mb-5">
         {[
