@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProjectProvider } from "./context/ProjectContext";
 import { CreativeProfileProvider } from "./context/CreativeProfileContext";
+import { ClientProfileProvider } from "./context/ClientProfileContext";
 import LandingPage from "./pages/LandingPage";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
@@ -28,30 +29,32 @@ const App = () => (
     <TooltipProvider>
       <ProjectProvider>
         <CreativeProfileProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<Auth />} />
-              <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/client-onboarding" element={<ClientOnboarding />} />
-              <Route path="/explore" element={<BookingFlow />} />
-              <Route path="/dashboard" element={<BookingFlow />} />
-              <Route path="/messages" element={<BookingFlow />} />
-              <Route path="/booking" element={<BookingFlow />} />
-              <Route path="/brief/:id" element={<BriefProfile />} />
-              <Route path="/project/:id" element={<ProjectProfile />} />
-              <Route path="/creative/:id" element={<CreativeProfile />} />
-              <Route path="/client/:id" element={<ClientProfile />} />
-              <Route path="/settings" element={<CreativeSettings />} />
-              <Route path="/completed/:id" element={<CompletedProjectProfile />} />
-              <Route path="/designs" element={<DesignExport />} />
-              <Route path="/archive" element={<Archive />} />
-              <Route path="/dashboard-preview" element={<DashboardPreview />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <ClientProfileProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<Auth />} />
+                <Route path="/onboarding" element={<Onboarding />} />
+                <Route path="/client-onboarding" element={<ClientOnboarding />} />
+                <Route path="/explore" element={<BookingFlow />} />
+                <Route path="/dashboard" element={<BookingFlow />} />
+                <Route path="/messages" element={<BookingFlow />} />
+                <Route path="/booking" element={<BookingFlow />} />
+                <Route path="/brief/:id" element={<BriefProfile />} />
+                <Route path="/project/:id" element={<ProjectProfile />} />
+                <Route path="/creative/:id" element={<CreativeProfile />} />
+                <Route path="/client/:id" element={<ClientProfile />} />
+                <Route path="/settings" element={<CreativeSettings />} />
+                <Route path="/completed/:id" element={<CompletedProjectProfile />} />
+                <Route path="/designs" element={<DesignExport />} />
+                <Route path="/archive" element={<Archive />} />
+                <Route path="/dashboard-preview" element={<DashboardPreview />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </ClientProfileProvider>
         </CreativeProfileProvider>
       </ProjectProvider>
     </TooltipProvider>
