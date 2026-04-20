@@ -1069,7 +1069,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
       const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-      const updatedMilestones = p.paymentMilestones.map((m, i) => i === milestoneIndex ? { ...m, status: 'paid' as const } : m);
+      const paidAtStamp = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).replace(',', ' ·');
+      const updatedMilestones = p.paymentMilestones.map((m, i) => i === milestoneIndex ? { ...m, status: 'paid' as const, paidAt: paidAtStamp } : m);
       const milestone = p.paymentMilestones[milestoneIndex];
       const numericPrice = parseInt(p.budget.replace(/[^0-9]/g, '')) || 0;
       const amount = numericPrice > 0 ? `${Math.round(numericPrice * milestone.percentage / 100).toLocaleString()} EGP` : '';
@@ -1124,8 +1125,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const confirmPaymentReceipt = useCallback((projectId: string, milestoneIndex: number) => {
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
+      const paidAtStamp = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).replace(',', ' ·');
       const updatedMilestones = p.paymentMilestones.map((m, i) =>
-        i === milestoneIndex ? { ...m, status: 'paid' as const } : m
+        i === milestoneIndex ? { ...m, status: 'paid' as const, paidAt: paidAtStamp } : m
       );
       return { ...p, paymentMilestones: updatedMilestones };
     }));
@@ -1150,11 +1152,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setActiveProjects(prev => prev.map(p => {
       if (p.id !== projectId) return p;
       const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      const paidAtStamp = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).replace(',', ' ·');
       return {
         ...p,
         status: 'active' as const,
         phases: p.phases.map((ph, i) => ({ ...ph, status: (i === 0 ? 'active' : 'locked') as 'active' | 'locked' })),
-        paymentMilestones: p.paymentMilestones.map((m, i) => i === 0 ? { ...m, status: 'paid' as const } : m),
+        paymentMilestones: p.paymentMilestones.map((m, i) => i === 0 ? { ...m, status: 'paid' as const, paidAt: paidAtStamp } : m),
         timeline: [...p.timeline.map(t => ({ ...t, status: 'complete' as const })), { label: 'Proposal Accepted', date: today, status: 'complete' as const }, { label: 'Project Started', date: today, status: 'active' as const }],
       };
     }));
