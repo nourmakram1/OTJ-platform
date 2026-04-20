@@ -261,12 +261,15 @@ const CompletedProjectProfile = () => {
                 const amount = numericPrice > 0 ? `${Math.round(numericPrice * m.percentage / 100).toLocaleString()} EGP` : '—';
                 return (
                   <div key={i} className="bg-card border border-border rounded-[14px] p-4 mb-3">
-                    <div className="flex items-center justify-between">
-                      <div>
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
                         <div className="text-[13px] font-bold">{m.label} ({m.percentage}%)</div>
-                        <div className="text-[11px] font-bold text-otj-green">Received ✓</div>
+                        <div className="text-[11px] font-bold text-otj-green flex items-center gap-1.5 mt-0.5">
+                          Received ✓
+                          {m.paidAt && <span className="text-otj-muted font-medium">· {m.paidAt}</span>}
+                        </div>
                       </div>
-                      <div className="text-[16px] font-extrabold">{amount}</div>
+                      <div className="text-[16px] font-extrabold shrink-0">{amount}</div>
                     </div>
                   </div>
                 );
@@ -370,9 +373,14 @@ const CompletedProjectProfile = () => {
             {proj.paymentMilestones.map((m, i) => {
               const amount = numericPrice > 0 ? `${Math.round(numericPrice * m.percentage / 100).toLocaleString()} EGP` : '—';
               return (
-                <div key={i} className="flex items-center justify-between py-1.5 border-t border-border">
-                  <div className="text-[11px] text-otj-text">{m.label} ({m.percentage}%)</div>
-                  <div className="text-[12px] font-bold text-otj-text">{amount}</div>
+                <div key={i} className="py-1.5 border-t border-border">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="text-[11px] text-otj-text truncate">{m.label} ({m.percentage}%)</div>
+                    <div className="text-[12px] font-bold text-otj-text shrink-0">{amount}</div>
+                  </div>
+                  {m.paidAt && (
+                    <div className="text-[10px] text-otj-muted mt-0.5">Paid {m.paidAt}</div>
+                  )}
                 </div>
               );
             })}
