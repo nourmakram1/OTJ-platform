@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Briefcase, MessageCircle, Package, Lock, FileText, Phone, Video, Users, Clock, CreditCard, Paperclip, AlertTriangle, Star, MapPin, CheckCircle2, ArrowLeft, Share2, RotateCw } from 'lucide-react';
+import { Briefcase, MessageCircle, Package, Lock, FileText, Phone, Video, Users, Clock, CreditCard, Paperclip, AlertTriangle, Star, MapPin, CheckCircle2, ArrowLeft, Share2, RotateCw, Download } from 'lucide-react';
+import { downloadPaymentProof } from '../lib/downloadProof';
 import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
 import { Toast } from '../components/Toast';

@@ -12,6 +12,8 @@ import {
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { Input } from './ui/input';
+import { Download } from 'lucide-react';
+import { downloadPaymentProof } from '../lib/downloadProof';
 
 // ─── Proposal Review ───────────────────────────────────────
 export const ClientProposalReview: React.FC<{ project: ProjectData }> = ({ project }) => {
