@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { NotifPopup } from './BookingModals';
 import { showToast } from './Toast';
-import { Search, X, Bell, MessageCircle, User, Settings, LogOut, Menu } from 'lucide-react';
+import { Search, X, Bell, MessageCircle, User, Settings, LogOut, Menu, HelpCircle } from 'lucide-react';
 import { useProjects } from '../context/ProjectContext';
 
 interface NavBarProps {
@@ -140,6 +140,7 @@ export const NavBar: React.FC<NavBarProps> = ({ onAcceptBrief, onOpenCounter, se
               <div className="absolute top-10 right-0 w-[180px] bg-card border border-border rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.1)] py-1.5 z-[200]">
                 <div onClick={() => { setShowProfileMenu(false); navigate('/creative/nour'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-foreground cursor-pointer hover:bg-otj-off flex items-center gap-2"><User className="w-3.5 h-3.5 text-otj-muted" /> My Profile</div>
                 <div onClick={() => { setShowProfileMenu(false); navigate('/settings'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-foreground cursor-pointer hover:bg-otj-off flex items-center gap-2"><Settings className="w-3.5 h-3.5 text-otj-muted" /> Settings</div>
+                <div onClick={() => { setShowProfileMenu(false); navigate('/help'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-foreground cursor-pointer hover:bg-otj-off flex items-center gap-2"><HelpCircle className="w-3.5 h-3.5 text-otj-muted" /> Get Help</div>
                 <div className="h-px bg-border mx-2 my-1" />
                 <div onClick={() => { setShowProfileMenu(false); navigate('/login'); showToast('Logged out'); }} className="px-3.5 py-2 text-[12.5px] font-semibold text-otj-text cursor-pointer hover:bg-otj-off flex items-center gap-2"><LogOut className="w-3.5 h-3.5 text-otj-muted" /> Log Out</div>
               </div>

@@ -124,7 +124,7 @@ const CreativeSettings = () => {
     { key: 'subscription' as Section, icon: Crown, title: 'Subscription', subtitle: currentPlan === 'pro' ? 'Pro plan · Active' : 'Free plan' },
     { key: 'account' as Section, icon: Settings, title: 'Account Settings', subtitle: 'Email, password, payments' },
     { key: 'privacy' as Section, icon: Shield, title: 'Privacy', subtitle: 'Visibility and data' },
-    { key: 'help' as Section, icon: HelpCircle, title: 'Help & Support', subtitle: 'FAQs, contact us' },
+    { key: 'help' as Section, icon: HelpCircle, title: 'Get Help', subtitle: 'FAQs, contact us' },
   ];
 
   // Hub view
@@ -166,7 +166,7 @@ const CreativeSettings = () => {
               {menuItems2.map((item, i) => (
                 <div
                   key={item.key}
-                  onClick={() => setActiveSection(item.key)}
+                  onClick={() => item.key === 'help' ? navigate('/help') : setActiveSection(item.key)}
                   className={`flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors hover:bg-accent active:bg-accent ${i < menuItems2.length - 1 ? 'border-b border-border' : ''}`}
                 >
                   <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shrink-0">

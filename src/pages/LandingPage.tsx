@@ -712,8 +712,9 @@ const LandingPage = () => {
             <div>
               <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground mb-3">Support</div>
               <ul className="space-y-2">
+                <li onClick={() => navigate('/help')} className="text-[12px] text-foreground font-medium cursor-pointer hover:text-muted-foreground transition-colors">Get Help</li>
                 {['Contact Us', 'FAQ', 'Terms of Service', 'Privacy Policy'].map((item) => (
-                  <li key={item} className="text-[12px] text-foreground font-medium cursor-pointer hover:text-muted-foreground transition-colors">{item}</li>
+                  <li key={item} onClick={() => item === 'Contact Us' || item === 'FAQ' ? navigate('/help') : undefined} className="text-[12px] text-foreground font-medium cursor-pointer hover:text-muted-foreground transition-colors">{item}</li>
                 ))}
               </ul>
             </div>
