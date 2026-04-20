@@ -123,6 +123,14 @@ export const OnboardingSidebar: React.FC<OnboardingSidebarProps> = ({
           {isReady ? 'All required steps complete!' : `Complete steps ${missing.join(', ')} to go live`}
         </div>
       </div>
+
+      {/* Get help */}
+      <a
+        href="/help"
+        className="mt-3 text-[11px] font-semibold text-otj-muted hover:text-foreground transition-colors text-center"
+      >
+        Need help? <span className="underline">Get support</span>
+      </a>
     </aside>
   );
 };

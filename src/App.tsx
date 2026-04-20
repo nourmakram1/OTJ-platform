@@ -20,6 +20,7 @@ import DesignExport from "./pages/DesignExport";
 import CompletedProjectProfile from "./pages/CompletedProjectProfile";
 import DashboardPreview from "./pages/DashboardPreview";
 import Archive from "./pages/Archive";
+import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
                 <Route path="/designs" element={<DesignExport />} />
                 <Route path="/archive" element={<Archive />} />
                 <Route path="/dashboard-preview" element={<DashboardPreview />} />
+                <Route path="/help" element={<Help />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
