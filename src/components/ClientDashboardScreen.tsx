@@ -4,10 +4,13 @@ import { format, parseISO, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, 
 import { showToast } from './Toast';
 import { useProjects, MeetingData } from '../context/ProjectContext';
 import { ClipboardList, Zap, Sparkles, Calendar, Users2, Clock, SendHorizonal, FileText } from 'lucide-react';
+import { ClientProfileCompletenessCard, useClientProfileCompleteness } from './ClientProfileCompleteness';
+import { ProfileIncompleteBanner } from './ProfileIncompleteBanner';
 
 export const ClientDashboardScreen: React.FC = () => {
   const navigate = useNavigate();
   const { activeProjects, completedProjects, pendingBriefs, allMeetings } = useProjects();
+  const { percentage: clientPct } = useClientProfileCompleteness();
   const [tab, setTab] = useState<'briefs' | 'active' | 'complete'>('briefs');
 
   const clientBriefs = pendingBriefs;
@@ -33,6 +36,16 @@ export const ClientDashboardScreen: React.FC = () => {
           Send a Brief
         </button>
       </div>
+
+      {/* Profile incomplete nudges (banner + one-shot toast) */}
+      <ProfileIncompleteBanner percentage={clientPct} ctaPath="/client-onboarding" storageKey="profile-banner:client" roleLabel="client" />
+
+      {/* Profile Completeness card */}
+      {clientPct < 100 && (
+        <div className="mb-5">
+          <ClientProfileCompletenessCard variant="compact" />
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2 mb-5">

@@ -1,0 +1,106 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useClientProfile, ClientProfileData } from '../context/ClientProfileContext';
+
+interface CompletionStep {
+  label: string;
+  key: string;
+  check: (p: ClientProfileData) => boolean;
+}
+
+const steps: CompletionStep[] = [
+  { label: 'Add your name', key: 'name', check: p => p.name.trim().length > 0 },
+  { label: 'Add company name', key: 'company', check: p => p.company.trim().length > 0 },
+  { label: 'Choose an industry', key: 'industry', check: p => p.industry.trim().length > 0 },
+  { label: 'Write a short bio', key: 'bio', check: p => p.bio.trim().length >= 20 },
+  { label: 'Add contact email', key: 'email', check: p => p.email.trim().length > 0 },
+  { label: 'Add a phone number', key: 'phone', check: p => p.phone.trim().length > 0 },
+  { label: 'Add your city', key: 'city', check: p => p.city.trim().length > 0 },
+  { label: 'Add your website', key: 'website', check: p => p.website.trim().length > 0 },
+  { label: 'Pick preferred categories', key: 'preferredCategories', check: p => p.preferredCategories.length > 0 },
+  { label: 'Upload a logo or avatar', key: 'logoOrAvatar', check: p => p.logoOrAvatar.trim().length > 0 },
+];
+
+export function useClientProfileCompleteness() {
+  const { profile } = useClientProfile();
+  const completed = steps.filter(s => s.check(profile));
+  const missing = steps.filter(s => !s.check(profile));
+  const percentage = Math.round((completed.length / steps.length) * 100);
+  return { percentage, completed, missing, total: steps.length, completedCount: completed.length };
+}
+
+interface ClientProfileCompletenessCardProps {
+  variant?: 'full' | 'compact';
+}
+
+export const ClientProfileCompletenessCard: React.FC<ClientProfileCompletenessCardProps> = ({ variant = 'full' }) => {
+  const navigate = useNavigate();
+  const { percentage, missing, completedCount, total } = useClientProfileCompleteness();
+
+  if (percentage === 100) {
+    if (variant === 'compact') return null;
+    return (
+      <div className="bg-[hsl(var(--otj-green-bg))] border border-[hsl(var(--otj-green-border))] rounded-[14px] p-4 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-[hsl(var(--otj-green))] flex items-center justify-center text-primary-foreground text-lg">✓</div>
+        <div>
+          <div className="text-[13px] font-bold text-[hsl(var(--otj-green))]">Profile Complete!</div>
+          <div className="text-[11px] text-[hsl(var(--otj-green))]/80">Creatives can see who you are and respond faster.</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-card border border-border rounded-[14px] p-4 overflow-hidden">
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <div className="text-[13px] font-bold text-foreground">Complete Your Profile</div>
+          <div className="text-[11px] text-muted-foreground">{completedCount} of {total} steps done</div>
+        </div>
+        <span className="text-[13px] font-extrabold text-foreground">{percentage}%</span>
+      </div>
+
+      <div className="w-full h-1.5 bg-muted rounded-full mb-3 overflow-hidden">
+        <div
+          className="h-full rounded-full transition-all duration-500"
+          style={{
+            width: `${percentage}%`,
+            backgroundColor: percentage >= 80 ? 'hsl(var(--otj-green))' : percentage >= 50 ? 'hsl(var(--otj-yellow))' : 'hsl(var(--primary))',
+          }}
+        />
+      </div>
+
+      {variant === 'full' && missing.length > 0 && (
+        <div className="flex flex-col gap-1.5 mb-3">
+          {missing.slice(0, 3).map(step => (
+            <div
+              key={step.key}
+              onClick={() => navigate('/client-onboarding')}
+              className="flex items-center gap-2.5 p-2 px-3 rounded-[9px] bg-accent/50 cursor-pointer transition-colors hover:bg-accent"
+            >
+              <div className="w-[18px] h-[18px] rounded-full border-[1.5px] border-border shrink-0" />
+              <div className="text-[12px] font-medium text-foreground flex-1">{step.label}</div>
+              <div className="text-[10px] text-muted-foreground">→</div>
+            </div>
+          ))}
+          {missing.length > 3 && (
+            <div className="text-[11px] text-muted-foreground pl-3">+{missing.length - 3} more</div>
+          )}
+        </div>
+      )}
+
+      {variant === 'compact' && missing.length > 0 && (
+        <div className="text-[11px] text-muted-foreground mb-3">
+          Missing: {missing.slice(0, 2).map(s => s.label.toLowerCase()).join(', ')}{missing.length > 2 ? ` +${missing.length - 2} more` : ''}
+        </div>
+      )}
+
+      <button
+        onClick={() => navigate('/client-onboarding')}
+        className="text-[12px] font-bold text-primary cursor-pointer bg-transparent border-none hover:underline p-0"
+      >
+        Complete now →
+      </button>
+    </div>
+  );
+};

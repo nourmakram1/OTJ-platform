@@ -5,6 +5,7 @@ import { showToast } from './Toast';
 import { useProjects, MeetingData } from '../context/ProjectContext';
 import { Star, PartyPopper, Zap, Sparkles, Calendar, Users2, CheckSquare2, Clock, Plus, Briefcase, Lock, RotateCcw } from 'lucide-react';
 import { ProfileCompletenessCard, useProfileCompleteness } from './ProfileCompleteness';
+import { ProfileIncompleteBanner } from './ProfileIncompleteBanner';
 
 interface DashboardScreenProps {
   onOpenBrief: () => void;
@@ -37,7 +38,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenBrief, o
           <button onClick={() => showToast('Profile link copied!')} className="text-[11.5px] font-bold px-3.5 py-1.5 rounded-full border-none bg-primary text-primary-foreground cursor-pointer active:scale-95">Share Profile</button>
         </div>
       </div>
-      {/* Profile Completeness */}
+      {/* Profile incomplete nudges (banner + one-shot toast) */}
+      <ProfileIncompleteBanner percentage={percentage} ctaPath="/settings" storageKey="profile-banner:creative" roleLabel="creative" />
+
+      {/* Profile Completeness card */}
       {percentage < 100 && (
         <div className="mb-5">
           <ProfileCompletenessCard variant="compact" />

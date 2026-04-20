@@ -215,7 +215,7 @@ export interface NotificationData {
   sub: string;
   time: string;
   unread: boolean;
-  type: 'counter-accepted' | 'message' | 'payment' | 'booking' | 'brief';
+  type: 'counter-accepted' | 'message' | 'payment' | 'booking' | 'brief' | 'profile';
   briefId?: string;
   projectId?: string;
 }
@@ -680,6 +680,7 @@ export const useProjects = () => {
 };
 
 const defaultNotifications: NotificationData[] = [
+  { id: 'notif-profile', icon: '', bg: 'bg-[hsl(var(--otj-yellow-bg))]', title: 'Your profile is almost ready', sub: 'Finish the last few steps so you stand out and unlock bookings.', time: 'Now', unread: true, type: 'profile' },
   { id: 'notif-1', icon: '', bg: 'bg-muted', title: 'Ahmed Karim sent you a message', sub: 'Can we schedule a call for Thursday?', time: '12m ago', unread: true, type: 'message' },
   { id: 'notif-2', icon: '', bg: 'bg-[hsl(var(--otj-green-bg))]', title: 'Payment released — 3,325 EGP', sub: 'Edita Campaign · Phase 2 approved by client', time: '2h ago', unread: true, type: 'payment' },
   { id: 'notif-3', icon: '', bg: 'bg-[hsl(var(--otj-blue-bg))]', title: 'Booking confirmed · March 15', sub: 'Edita Group campaign — added to your calendar', time: 'Yesterday', unread: false, type: 'booking' },

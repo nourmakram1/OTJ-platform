@@ -18,17 +18,19 @@ interface CreativeProfileContextType {
   updateProfile: (updates: Partial<CreativeProfileData>) => void;
 }
 
+// Seeded so ProfileCompletenessCard reports ~75% — 3 of 10 steps left
+// (instagram, portfolio link, fewer skills). Used for demo / onboarding nudges.
 const defaultProfile: CreativeProfileData = {
   name: 'Nour Makram',
   tagline: 'Fashion & E-commerce Photographer · Cairo',
   bio: 'Cairo-based fashion and e-commerce photographer with 7+ years of experience. Specializing in product photography, lifestyle campaigns, and brand content for leading Egyptian and MENA brands.',
   profession: 'Photographer',
   selectedNiches: ['Fashion Editorial', 'E-Commerce'],
-  skills: ['Photography', 'Product', 'Fashion', 'E-Commerce', 'Lifestyle', 'Branding'],
+  skills: ['Photography', 'Product', 'Fashion'],
   city: 'Cairo',
   experience: '5–8 years',
-  instagram: '@nourmakram',
-  links: [{ label: 'Portfolio', url: 'https://nourmakram.com' }],
+  instagram: '',
+  links: [{ label: 'Portfolio', url: '' }],
 };
 
 const CreativeProfileContext = createContext<CreativeProfileContextType | null>(null);
