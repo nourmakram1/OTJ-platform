@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Briefcase, MessageCircle, Package, Lock, FileText, Phone, Video, Users, Clock, CreditCard, Paperclip, AlertTriangle, Star, MapPin, CheckCircle2, ArrowLeft, Share2, RotateCw } from 'lucide-react';
+import { Briefcase, MessageCircle, Package, Lock, FileText, Phone, Video, Users, Clock, CreditCard, Paperclip, AlertTriangle, Star, MapPin, CheckCircle2, ArrowLeft, Share2, RotateCw, Download } from 'lucide-react';
 import { NavBar } from '../components/NavBar';
 import { showToast } from '../components/Toast';
+import { downloadPaymentProof } from '../lib/downloadProof';
 import { Toast } from '../components/Toast';
 import { useProjects, PhaseData, PaymentMilestone, PaymentMethod, MeetingData, AttachmentData, ProjectData } from '../context/ProjectContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
@@ -864,11 +865,14 @@ const CreativePaymentView: React.FC<{
         return (
           <div key={i} className={`bg-card border rounded-[14px] p-4 mb-3 ${m.status === 'proof-submitted' ? 'border-otj-blue border-[1.5px]' : 'border-border'}`}>
             <div className="flex items-center justify-between mb-2">
-              <div>
+              <div className="min-w-0">
                 <div className="text-[13px] font-bold">{m.label} ({m.percentage}%)</div>
-                <div className={`text-[11px] font-bold ${statusClass}`}>{statusLabel}</div>
+                <div className={`text-[11px] font-bold ${statusClass} flex items-center gap-1.5 flex-wrap`}>
+                  {statusLabel}
+                  {m.status === 'paid' && m.paidAt && <span className="text-otj-muted font-medium">· {m.paidAt}</span>}
+                </div>
               </div>
-              <div className="text-[16px] font-extrabold">{amount}</div>
+              <div className="text-[16px] font-extrabold shrink-0">{amount}</div>
             </div>
 
             {/* Show proof screenshot from client */}
@@ -895,7 +899,18 @@ const CreativePaymentView: React.FC<{
             {m.status === 'paid' && m.proofUrl && (
               <div className="border-t border-border pt-3 flex items-center gap-3">
                 <img src={m.proofUrl} alt="Transfer proof" className="w-10 h-10 rounded-lg object-cover border border-border" />
-                <div className="text-[11px] text-otj-green font-bold">✓ Payment received & confirmed</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[11px] text-otj-green font-bold">✓ Payment received & confirmed</div>
+                  {m.proofName && <div className="text-[10px] text-otj-muted truncate">{m.proofName}</div>}
+                </div>
+                {project.status === 'complete' && (
+                  <button
+                    onClick={() => { downloadPaymentProof(m.proofUrl!, m.proofName || `payment-proof-${i + 1}.jpg`); showToast('Downloading proof…'); }}
+                    className="text-[10.5px] font-bold px-3 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground active:scale-[0.98] flex items-center gap-1 shrink-0"
+                  >
+                    <Download className="w-3 h-3" /> Download
+                  </button>
+                )}
               </div>
             )}
           </div>
