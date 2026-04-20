@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CheckCircle2, Lock, MapPin, Package, Star, MessageCircle, Download, RotateCcw, CreditCard } from 'lucide-react';
+import { downloadPaymentProof } from '../lib/downloadProof';
 import { NavBar } from '../components/NavBar';
 import { showToast, Toast } from '../components/Toast';
 import { useProjects } from '../context/ProjectContext';
@@ -271,6 +272,28 @@ const CompletedProjectProfile = () => {
                       </div>
                       <div className="text-[16px] font-extrabold shrink-0">{amount}</div>
                     </div>
+
+                    {/* Bank transfer proof — downloadable */}
+                    {m.proofUrl && (
+                      <div className="border-t border-border pt-3 mt-3 flex items-center gap-3">
+                        <img
+                          src={m.proofUrl}
+                          alt="Transfer proof"
+                          onClick={() => window.open(m.proofUrl, '_blank')}
+                          className="w-12 h-12 rounded-lg object-cover border border-border cursor-pointer"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[12px] font-bold text-foreground truncate">{m.proofName || 'transfer-proof.jpg'}</div>
+                          <div className="text-[10px] text-otj-muted">Bank transfer screenshot</div>
+                        </div>
+                        <button
+                          onClick={() => downloadPaymentProof(m.proofUrl!, m.proofName)}
+                          className="text-[11px] font-bold px-3 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground active:scale-95 flex items-center gap-1.5 shrink-0"
+                        >
+                          <Download className="w-3 h-3" /> Download
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}
