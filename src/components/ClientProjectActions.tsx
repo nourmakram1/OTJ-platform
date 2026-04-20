@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Download } from 'lucide-react';
 import { useProjects, ProjectData } from '../context/ProjectContext';
 import { showToast } from './Toast';
+import { downloadPaymentProof } from '../lib/downloadProof';
 import {
   Dialog,
   DialogContent,
@@ -428,11 +430,14 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
         return (
           <div key={i} className="bg-card border border-border rounded-[14px] p-4 mb-3">
             <div className="flex items-center justify-between mb-3">
-              <div>
+              <div className="min-w-0">
                 <div className="text-[13px] font-bold">{m.label} ({m.percentage}%)</div>
-                <div className={`text-[11px] font-bold ${statusClass}`}>{statusLabel}</div>
+                <div className={`text-[11px] font-bold ${statusClass} flex items-center gap-1.5 flex-wrap`}>
+                  {statusLabel}
+                  {m.status === 'paid' && m.paidAt && <span className="text-otj-muted font-medium">· {m.paidAt}</span>}
+                </div>
               </div>
-              <div className="text-[16px] font-extrabold">{amount}</div>
+              <div className="text-[16px] font-extrabold shrink-0">{amount}</div>
             </div>
 
             {/* Upload area — only when not yet submitted */}
@@ -499,7 +504,18 @@ export const ClientPaymentTab: React.FC<{ project: ProjectData }> = ({ project }
             {m.status === 'paid' && proof && (
               <div className="border-t border-border pt-3 flex items-center gap-3">
                 <img src={proof.url} alt="Transfer proof" className="w-10 h-10 rounded-lg object-cover border border-border" />
-                <div className="text-[11px] text-otj-green font-bold">✓ Payment confirmed by creative</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[11px] text-otj-green font-bold">✓ Payment confirmed by creative</div>
+                  {proof.name && <div className="text-[10px] text-otj-muted truncate">{proof.name}</div>}
+                </div>
+                {project.status === 'complete' && (
+                  <button
+                    onClick={() => { downloadPaymentProof(proof.url, proof.name || `payment-proof-${i + 1}.jpg`); showToast('Downloading proof…'); }}
+                    className="text-[10.5px] font-bold px-3 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground active:scale-[0.98] flex items-center gap-1 shrink-0"
+                  >
+                    <Download className="w-3 h-3" /> Download
+                  </button>
+                )}
               </div>
             )}
           </div>
