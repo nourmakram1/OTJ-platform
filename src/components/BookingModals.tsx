@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { showToast } from './Toast';
 import { useProjects } from '../context/ProjectContext';
-import { MessageCircle, CreditCard, Calendar, FileText, CheckCircle, Paperclip, X as XIcon } from 'lucide-react';
+import { MessageCircle, CreditCard, Calendar, FileText, CheckCircle, Paperclip, X as XIcon, UserCircle } from 'lucide-react';
 
 const notifIconMap: Record<string, React.ReactNode> = {
   message: <MessageCircle className="w-4 h-4" />,
@@ -9,6 +9,7 @@ const notifIconMap: Record<string, React.ReactNode> = {
   booking: <Calendar className="w-4 h-4" />,
   brief: <FileText className="w-4 h-4" />,
   'counter-accepted': <CheckCircle className="w-4 h-4" />,
+  profile: <UserCircle className="w-4 h-4" />,
 };
 
 // Quick Brief Popup
