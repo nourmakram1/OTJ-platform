@@ -66,6 +66,8 @@ export interface PaymentMilestone {
   status: 'pending' | 'paid' | 'held' | 'proof-submitted';
   proofUrl?: string;
   proofName?: string;
+  /** Human-readable timestamp of when this milestone was paid, e.g. "Jan 15, 2026 · 14:32". */
+  paidAt?: string;
 }
 
 export interface PaymentMethod {
