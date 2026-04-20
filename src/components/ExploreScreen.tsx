@@ -15,7 +15,8 @@ const CAT_LABELS: Record<string, string> = {
   '✏️ Writing': 'Writing',
   '📊 Marketing': 'Marketing',
   '👗 Fashion & Style': 'Fashion',
-  '💻 Tech & Digital': 'Tech'
+  '💻 Tech & Digital': 'Tech',
+  '🏛️ Space Design': 'Space Design'
 };
 const getCatLabel = (cat: string) => CAT_LABELS[cat] ?? cat.replace(/^[\p{Emoji_Presentation}\s]+/u, '').trim();
 
