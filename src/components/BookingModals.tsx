@@ -266,7 +266,7 @@ interface NotifPopupProps {
 }
 
 export const NotifPopup: React.FC<NotifPopupProps> = ({ visible, onClose, onAcceptBrief, onCounter, onSwitchToMessages, onNavigate }) => {
-  const { notifications, markAllRead, pendingBriefs } = useProjects();
+  const { notifications, markAllRead, pendingBriefs, userRole } = useProjects();
   if (!visible) return null;
 
   const briefNotif = pendingBriefs[0]; // Show first pending brief as featured
@@ -296,7 +296,9 @@ export const NotifPopup: React.FC<NotifPopupProps> = ({ visible, onClose, onAcce
         {notifications.map((n) => (
           <div key={n.id} onClick={() => {
             onClose();
-            if (n.type === 'counter-accepted' && n.briefId) {
+            if (n.type === 'profile') {
+              onNavigate(userRole === 'client' ? '/client-onboarding' : '/settings');
+            } else if (n.type === 'counter-accepted' && n.briefId) {
               onNavigate(`/brief/${n.briefId}`);
             } else if (n.type === 'payment' && n.projectId) {
               onNavigate(`/project/${n.projectId}?tab=4`);
