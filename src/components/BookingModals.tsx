@@ -311,7 +311,7 @@ export const NotifPopup: React.FC<NotifPopupProps> = ({ visible, onClose, onAcce
             <div className="flex items-start gap-2 md:gap-2.5">
               <div className={`w-8 h-8 md:w-[34px] md:h-[34px] rounded-lg md:rounded-[10px] flex items-center justify-center shrink-0 ${n.bg}`}>{notifIconMap[n.type] || <FileText className="w-4 h-4" />}</div>
               <div className="flex-1 min-w-0">
-                <div className={`text-[11px] md:text-[12.5px] font-bold tracking-[-0.01em] mb-px truncate ${n.type === 'counter-accepted' ? 'text-[hsl(var(--otj-green))]' : 'text-foreground'}`}>{n.title}</div>
+                <div className={`text-[11px] md:text-[12.5px] font-bold tracking-[-0.01em] mb-px truncate ${n.type === 'counter-accepted' ? 'text-[hsl(var(--otj-green))]' : n.type === 'profile' ? 'text-[hsl(var(--otj-yellow))]' : 'text-foreground'}`}>{n.title}</div>
                 <div className="text-[10px] md:text-[11.5px] text-muted-foreground leading-snug truncate">{n.sub}</div>
                 <div className="text-[9px] md:text-[10.5px] text-muted-foreground mt-0.5">{n.time}</div>
               </div>
