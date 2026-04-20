@@ -69,7 +69,7 @@ export const ProfileIncompleteBanner: React.FC<ProfileIncompleteBannerProps> = (
         onClick={() => navigate(ctaPath)}
         className="text-[11.5px] font-bold px-3 py-1.5 rounded-full bg-background text-foreground cursor-pointer transition-all duration-150 hover:opacity-90 active:scale-95 shrink-0"
       >
-        Finish setup →
+        Finish setup
       </button>
       <button
         onClick={handleDismiss}
