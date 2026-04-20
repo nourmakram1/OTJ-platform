@@ -877,10 +877,16 @@ const CreativePaymentView: React.FC<{
                 <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-otj-blue mb-2">Client's Transfer Proof</div>
                 <div className="flex items-center gap-3 bg-otj-blue-bg border border-otj-blue-border rounded-[10px] p-3">
                   <img src={m.proofUrl} alt="Transfer proof" className="w-16 h-16 rounded-lg object-cover border border-border cursor-pointer" onClick={() => window.open(m.proofUrl, '_blank')} />
-                  <div className="flex-1">
-                    <div className="text-[12px] font-bold text-foreground">{m.proofName || 'transfer-proof.jpg'}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[12px] font-bold text-foreground truncate">{m.proofName || 'transfer-proof.jpg'}</div>
                     <div className="text-[10px] text-otj-muted">Click image to view full size</div>
                   </div>
+                  <button
+                    onClick={() => downloadPaymentProof(m.proofUrl!, m.proofName)}
+                    className="text-[11px] font-bold px-3 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground active:scale-95 flex items-center gap-1.5 shrink-0"
+                  >
+                    <Download className="w-3 h-3" /> Download
+                  </button>
                 </div>
                 <button
                   onClick={() => setConfirmIdx(i)}
@@ -895,7 +901,13 @@ const CreativePaymentView: React.FC<{
             {m.status === 'paid' && m.proofUrl && (
               <div className="border-t border-border pt-3 flex items-center gap-3">
                 <img src={m.proofUrl} alt="Transfer proof" className="w-10 h-10 rounded-lg object-cover border border-border" />
-                <div className="text-[11px] text-otj-green font-bold">✓ Payment received & confirmed</div>
+                <div className="text-[11px] text-otj-green font-bold flex-1">✓ Payment received & confirmed</div>
+                <button
+                  onClick={() => downloadPaymentProof(m.proofUrl!, m.proofName)}
+                  className="text-[11px] font-bold px-3 py-1.5 rounded-full border border-border bg-card text-foreground cursor-pointer hover:border-foreground active:scale-95 flex items-center gap-1.5 shrink-0"
+                >
+                  <Download className="w-3 h-3" /> Download
+                </button>
               </div>
             )}
           </div>
